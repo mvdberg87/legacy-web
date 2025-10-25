@@ -1,17 +1,21 @@
+// src/app/club/[slug]/page.tsx
 import { getSupabase } from "../../../lib/supabaseClient";
 import LegacySwipeAndList from "../../../components/LegacySwipeAndList";
 
-export default async function Page({ params }: { params: { slug: string } }) {
+export default async function Page(props: { params: Promise<{ slug: string }> }) {
+  // ✅ eerst awaiten, daarna pas gebruiken
+  const { slug } = await props.params;
+
   const supabase = getSupabase();
 
   const { data: club, error: clubError } = await supabase
     .from("clubs")
     .select("id, slug, name")
-    .eq("slug", params.slug)
+    .eq("slug", slug)
     .single();
 
   if (clubError || !club) {
-    return <div className="p-6">Club niet gevonden: {params.slug}</div>;
+    return <div className="p-6">Club niet gevonden: {slug}</div>;
   }
 
   const { data: jobs, error: jobsError } = await supabase
@@ -26,7 +30,7 @@ export default async function Page({ params }: { params: { slug: string } }) {
     .order("created_at", { ascending: false });
 
   if (jobsError) {
-    return <div className="p-6">Fout bij ophalen vacatures: {jobsError.message}</div>;
+    throw new Error(`Fout bij ophalen vacatures: ${jobsError.message}`);
   }
 
   const initialJobs = (jobs ?? []).map((j: any) => ({
@@ -41,5 +45,5 @@ export default async function Page({ params }: { params: { slug: string } }) {
     logo_url: j.sponsors?.logo_url ?? "",
   }));
 
-  return <LegacySwipeAndList initialJobs={initialJobs} />;
+  return <LegacySwipeAndList club_id={club.id} initialJobs={initialJobs} />;
 }
