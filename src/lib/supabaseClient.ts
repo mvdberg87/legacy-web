@@ -1,6 +1,21 @@
 import { createClient } from "@supabase/supabase-js";
+
 export function getSupabase() {
-  const url = "https://oemyfengrikpgovbyhqv.supabase.co";
-  const key = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9lbXlmZW5ncmlrcGdvdmJ5aHF2Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjA2NjY1NTUsImV4cCI6MjA3NjI0MjU1NX0.cft4CakULLW-Q6xt_4ECnBl5GUx1ETyyWoE21YyutSg";
+  const rawUrl = process.env.NEXT_PUBLIC_SUPABASE_URL ?? "";
+  const rawKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY ?? "";
+
+  // Debug naar serverconsole:
+  console.log("RAW URL =", JSON.stringify(rawUrl));
+  console.log("RAW KEY present =", !!rawKey);
+  // Toon de charcodes (ontmaskert zero-width/BOM/spaties):
+  console.log("URL char codes =", Array.from(rawUrl).map(c => c.charCodeAt(0)));
+
+  // Schoonmaken:
+  const url = rawUrl.replace(/["'\u200B\u200C\u200D\uFEFF]/g, "").trim().replace(/\/+$/,"");
+  const key = rawKey.replace(/["'\u200B\u200C\u200D\uFEFF]/g, "").trim();
+
+  console.log("CLEAN URL =", JSON.stringify(url));
+
+  if (!url || !key) throw new Error("Missing Supabase env vars");
   return createClient(url, key);
 }

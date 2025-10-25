@@ -1,26 +1,26 @@
-// src/app/legacy-demo/page.tsx
+// src/app/page.tsx
 import Image from "next/image";
 import Link from "next/link";
 import { getSupabase } from "@/lib/supabaseClient";
 
-// --- Types die overeenkomen met je SELECT uit Supabase ---
-type DbJobSponsor = {
+/** --- API types (zoals Supabase ze teruggeeft) --- */
+type ApiSponsor = {
   name?: string | null;
   logo_url?: string | null;
   website?: string | null;
-} | null;
+};
 
-type DbJob = {
+type ApiJob = {
   id: string;
   title: string;
   location?: string | null;
   description?: string | null;
   apply_url: string | null;
   tags?: string[] | null;
-  sponsors?: DbJobSponsor;
+  sponsors?: ApiSponsor[] | null; // <-- array, niet enkel object
 };
 
-// --- UI-shape voor weergave ---
+/** --- UI type (wat de component toont) --- */
 type UiJob = {
   id: string;
   title: string;
@@ -33,11 +33,27 @@ type UiJob = {
   tags: string[];
 };
 
+/** --- Mapper van API -> UI --- */
+function toUiJob(j: ApiJob): UiJob {
+  const s = (j.sponsors ?? [])[0] ?? {};
+  return {
+    id: j.id,
+    title: j.title ?? "",
+    sponsor_name: s.name ?? "Sponsor",
+    location: j.location ?? "",
+    description: j.description ?? "",
+    apply_url: j.apply_url ?? "#",
+    sponsor_url: s.website ?? "#",
+    logo_url: s.logo_url ?? "https://placehold.co/64x64?text=Logo",
+    tags: j.tags ?? [],
+  };
+}
+
 export default async function Page() {
   const supabase = getSupabase();
 
-  // Demo: recente vacatures (algemeen; geen club-filter)
-  const { data: jobs, error } = await supabase
+  // Haal de laatste 18 vacatures op (algemene homepage)
+  const { data, error } = await supabase
     .from("jobs")
     .select(`
       id, title, location, description, apply_url, tags,
@@ -49,20 +65,11 @@ export default async function Page() {
     .limit(18);
 
   if (error) {
-    throw new Error(`Fout bij ophalen demo-vacatures: ${error.message}`);
+    throw new Error(`Fout bij ophalen vacatures: ${error.message}`);
   }
 
-  const uiJobs: UiJob[] = (jobs ?? []).map((j: DbJob) => ({
-    id: j.id,
-    title: j.title,
-    sponsor_name: j.sponsors?.name ?? "Sponsor",
-    location: j.location ?? "",
-    description: j.description ?? "",
-    apply_url: j.apply_url ?? "#",
-    sponsor_url: j.sponsors?.website ?? "#",
-    logo_url: j.sponsors?.logo_url ?? "https://placehold.co/64x64?text=Logo",
-    tags: j.tags ?? [],
-  }));
+  const jobs = (data ?? []) as unknown as ApiJob[];
+  const uiJobs: UiJob[] = jobs.map(toUiJob);
 
   return (
     <main className="min-h-screen bg-slate-50">
@@ -73,19 +80,19 @@ export default async function Page() {
             <div className="h-8 w-8 rounded-xl bg-black" />
             <span className="font-semibold">Legacy</span>
           </div>
-          <nav className="text-sm opacity-80">Legacy Demo</nav>
+          <nav className="text-sm opacity-80">Vacatures</nav>
         </div>
       </header>
 
       {/* Content */}
       <section className="max-w-6xl mx-auto px-4 pt-6">
-        <h1 className="text-xl font-semibold mb-4">Demo: recente vacatures</h1>
+        <h1 className="text-xl font-semibold mb-4">Recente vacatures</h1>
 
         {uiJobs.length === 0 ? (
           <div className="max-w-xl bg-white border rounded-2xl shadow p-8">
             <p className="text-lg font-medium">Geen vacatures gevonden.</p>
             <p className="text-sm opacity-70 mt-1">
-              Keer later terug of bekijk een clubpagina voor meer resultaten.
+              Kom later terug of bekijk de clubpagina’s voor meer resultaten.
             </p>
           </div>
         ) : (
@@ -100,7 +107,7 @@ export default async function Page() {
               >
                 <div className="flex items-center gap-3">
                   <Image
-                    src={job.logo_url || "https://placehold.co/64x64?text=Logo"}
+                    src={job.logo_url}
                     alt=""
                     width={32}
                     height={32}
@@ -173,3 +180,4 @@ export default async function Page() {
     </main>
   );
 }
+
