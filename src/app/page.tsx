@@ -20,12 +20,12 @@ export default function HomePage() {
 
       {/* HERO */}
       <section className="max-w-6xl mx-auto px-6 py-24 text-center">
-        <h1>
-Recruitment via sportclubs.
-<br />
-<span className="text-[#1f9d55]">
-Extra waarde voor sponsors.
-</span>
+        <h1 className="text-4xl md:text-5xl font-bold leading-tight">
+  Recruitment via sportclubs.
+  <br />
+  <span className="text-[#1f9d55]">
+    Extra waarde voor sponsors.
+  </span>
 </h1>
 
 <p>
