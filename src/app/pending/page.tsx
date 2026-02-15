@@ -3,7 +3,7 @@
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import getSupabaseBrowser from "@/lib/supabaseBrowser";
+import { getSupabaseBrowser } from "@/lib/supabaseBrowser";
 
 export default function PendingPage() {
   const router = useRouter();
