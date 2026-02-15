@@ -252,7 +252,7 @@ export default function VerenigingenPage() {
           ACTIVATE
         </h3>
 
-        <p className="mt-4 text-4xl font-bold">€300</p>
+        <p className="mt-4 text-4xl font-bold text-black">€300</p>
         <p className="text-sm text-gray-500">per maand</p>
 
         <ul className="mt-6 space-y-3 text-sm text-gray-700">
@@ -287,7 +287,7 @@ export default function VerenigingenPage() {
           GROWTH
         </h3>
 
-        <p className="mt-4 text-4xl font-bold">€750</p>
+        <p className="mt-4 text-4xl font-bold text-black">€750</p>
         <p className="text-sm text-gray-500">per maand</p>
 
         <ul className="mt-6 space-y-3 text-sm text-gray-700">
@@ -295,12 +295,11 @@ export default function VerenigingenPage() {
           <li>✓ LinkedIn, Instagram & Facebook</li>
           <li>✓ 1 maandelijkse meeting</li>
           <li>✓ Vacature-campagne op maat</li>
-          <li>✓ Uitgebreide maandrapportage</li>
           <li>✓ Vacature in the spotlight</li>
         </ul>
 
         <p className="mt-6 text-xs text-gray-500">
-          Voor sponsoren die recruitment serieus nemen.
+          Voor clubs die recruitment serieus nemen.
         </p>
 
         <Link
@@ -318,7 +317,7 @@ export default function VerenigingenPage() {
           PREMIUM
         </h3>
 
-        <p className="mt-4 text-4xl font-bold">€1.350</p>
+        <p className="mt-4 text-4xl font-bold text-black">€1.350</p>
         <p className="text-sm text-gray-500">per maand</p>
 
         <ul className="mt-6 space-y-3 text-sm text-gray-700">
@@ -347,7 +346,7 @@ export default function VerenigingenPage() {
           ELITE
         </h3>
 
-        <p className="mt-4 text-4xl font-bold">€1.750</p>
+        <p className="mt-4 text-4xl font-bold text-black">€1.750</p>
         <p className="text-sm text-gray-500">per maand</p>
 
         <ul className="mt-6 space-y-3 text-sm text-gray-700">
