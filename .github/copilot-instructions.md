@@ -15,7 +15,7 @@ Key architecture and patterns
 - TypeScript baseUrl is `src` and imports use the `@/...` alias. Example: `import { saveTrackEvent } from '@/lib/track'`.
 - There are two Supabase clients:
   - `src/lib/supabaseClient.ts` — browser/public client; expects `NEXT_PUBLIC_SUPABASE_URL` and `NEXT_PUBLIC_SUPABASE_ANON_KEY`. It validates the URL and throws early if malformed.
-  - `src/lib/supabaseServer.ts` — server-side client; uses `SUPABASE_SERVICE_ROLE_KEY` and should only be used in server runtime code.
+  - `src/lib/supabase.server.ts` — server-side client; uses `SUPABASE_SERVICE_ROLE_KEY` and should only be used in server runtime code.
 - API route handlers are Next.js route handlers (Edge or Server). They use `NextResponse` and often declare `export const runtime = 'edge'`.
 - Layouts can opt out of ISR/SSG issues by using `export const dynamic = 'force-dynamic'` (see `src/app/layout.tsx`).
 
@@ -38,7 +38,7 @@ Useful files to inspect
 - `package.json` — scripts & dependencies
 - `next.config.ts`, `tsconfig.json` — important build/runtime flags and path alias
 - `src/app/layout.tsx` — top-level layout and `dynamic` usage
-- `src/lib/supabaseClient.ts`, `src/lib/supabaseServer.ts`, `src/lib/track.ts` — integration patterns
+- `src/lib/supabaseClient.ts`, `src/lib/supabase.server.ts`, `src/lib/track.ts` — integration patterns
 
 If you need more context
 - Ask which runtime (edge/server) and whether the change must run client-side, server-side, or as an edge function.

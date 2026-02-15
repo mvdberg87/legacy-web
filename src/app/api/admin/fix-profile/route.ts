@@ -1,6 +1,6 @@
 // src/app/api/admin/fix-profile/route.ts
 import { NextRequest, NextResponse } from "next/server";
-import getSupabaseServer from "../../../../lib/supabase.server";
+import { getSupabaseServer } from "@/lib/supabase.server";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -27,7 +27,7 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: "Missing user_id or club_id" }, { status: 400 });
     }
 
-    const supabase = getSupabaseServer();
+    const supabase = await getSupabaseServer();
 
     // check club bestaat
     const { data: club, error: cErr } = await supabase

@@ -1,4 +1,4 @@
-import getSupabaseServer from "@/lib/supabase.server";
+import { getSupabaseServer } from "@/lib/supabase.server";
 
 export default async function DebugAuth() {
   const supabase = await getSupabaseServer();
