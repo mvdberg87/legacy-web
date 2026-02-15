@@ -1,4 +1,4 @@
-import { getSupabaseServer } from "@/lib/supabase.server";
+import { getSupabaseServer } from "@/lib/supabaseServer";
 import ClientPage from "./ClientPage";
 
 export const dynamic = "force-dynamic";

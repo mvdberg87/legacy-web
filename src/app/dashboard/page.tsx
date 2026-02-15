@@ -1,5 +1,5 @@
 // src/app/dashboard/page.tsx
-import { getSupabaseServer } from "@/lib/supabase.server";
+import { getSupabaseServer } from "@/lib/supabaseServer";
 import Link from "next/link";
 
 type Club = {
