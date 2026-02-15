@@ -1,26 +1,112 @@
 @import "tailwindcss";
 
+/* ===============================
+   Basis reset & typography
+   =============================== */
+html, body {
+  margin: 0;
+  padding: 0;
+  min-height: 100%;
+  font-family: system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif;
+}
+
+/* ===============================
+   Sponsorjobs design tokens
+   =============================== */
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  /* Achtergrond */
+  --bg-primary: #0a1e3f;          /* Sponsorjobs blauw */
+  --bg-secondary: #122b57;        /* iets lichter blauw */
+  --bg-gold: #c9a24d;             /* zacht goud (accent) */
+
+  /* Content */
+  --surface: #ffffff;
+  --surface-border: rgba(255, 255, 255, 0.14);
+
+  /* Tekst */
+  --text-primary: #ffffff;
+  --text-secondary: #cfd6e4;
+  --text-dark: #0f172a;
+
+  /* CTA */
+  --cta-green: #22c55e;
+  --cta-green-hover: #16a34a;
+
+  /* Radius & lijnen */
+  --radius-lg: 16px;
+  --radius-md: 12px;
+  --border-width: 2px;
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
-}
-
+/* ===============================
+   Pagina achtergrond
+   =============================== */
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  color: var(--text-primary);
+  background:
+    radial-gradient(
+      1200px 600px at top right,
+      rgba(201, 162, 77, 0.18),
+      transparent 60%
+    ),
+    linear-gradient(
+      180deg,
+      var(--bg-primary) 0%,
+      var(--bg-secondary) 100%
+    );
+}
+
+/* ===============================
+   Cards / panels (dashboard, lijsten)
+   =============================== */
+.card,
+.surface {
+  background-color: var(--surface);
+  color: var(--text-dark);
+  border-radius: var(--radius-lg);
+  border: var(--border-width) solid var(--surface-border);
+}
+
+/* ===============================
+   Buttons
+   =============================== */
+.btn-primary {
+  background-color: var(--cta-green);
+  color: #ffffff;
+  border-radius: 9999px;
+  padding: 0.6rem 1.2rem;
+  font-weight: 600;
+}
+
+.btn-primary:hover {
+  background-color: var(--cta-green-hover);
+}
+
+/* ===============================
+   Links
+   =============================== */
+a {
+  color: #93c5fd;
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+/* ===============================
+   Forms
+   =============================== */
+input,
+select,
+textarea {
+  border-radius: var(--radius-md);
+  border: 1.5px solid #d1d5db;
+}
+
+input:focus,
+select:focus,
+textarea:focus {
+  outline: none;
+  border-color: var(--cta-green);
 }

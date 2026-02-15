@@ -1,21 +1,33 @@
+// src/lib/supabaseClient.ts
 import { createClient } from "@supabase/supabase-js";
+
+let didLog = false; // log slechts 1x
+
+function visibleCharCodes(s: string) {
+  return Array.from(s).map((ch) => ch.charCodeAt(0));
+}
 
 export function getSupabase() {
   const rawUrl = process.env.NEXT_PUBLIC_SUPABASE_URL ?? "";
   const rawKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY ?? "";
 
-  // Debug naar serverconsole:
-  console.log("RAW URL =", JSON.stringify(rawUrl));
-  console.log("RAW KEY present =", !!rawKey);
-  // Toon de charcodes (ontmaskert zero-width/BOM/spaties):
-  console.log("URL char codes =", Array.from(rawUrl).map(c => c.charCodeAt(0)));
+  if (!didLog && process.env.NODE_ENV !== "production") {
+    didLog = true;
+    console.log("🔍 SUPABASE DEBUG — RAW URL:", JSON.stringify(rawUrl));
+    console.log("🔍 SUPABASE DEBUG — CHAR CODES:", visibleCharCodes(rawUrl));
+    console.log("🔍 SUPABASE DEBUG — KEY present:", !!rawKey);
+  }
 
-  // Schoonmaken:
-  const url = rawUrl.replace(/["'\u200B\u200C\u200D\uFEFF]/g, "").trim().replace(/\/+$/,"");
-  const key = rawKey.replace(/["'\u200B\u200C\u200D\uFEFF]/g, "").trim();
+  const url = rawUrl.trim().replace(/^['"]|['"]$/g, "").replace(/\/+$/, "");
+  if (!url.startsWith("https://") || !url.endsWith(".supabase.co")) {
+    throw new Error(
+      `Invalid supabaseUrl: Provided URL is malformed (${url || "(leeg)"}).`
+    );
+  }
+  if (!rawKey) {
+    throw new Error("Missing Supabase anon key (NEXT_PUBLIC_SUPABASE_ANON_KEY).");
+  }
 
-  console.log("CLEAN URL =", JSON.stringify(url));
-
-  if (!url || !key) throw new Error("Missing Supabase env vars");
-  return createClient(url, key);
+  return createClient(url, rawKey);
 }
+

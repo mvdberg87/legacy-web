@@ -127,7 +127,7 @@ function SwipeCard({
   );
 }
 
-export default function LegacySwipeAndList({
+export default function SponsorjobsSwipeAndList({
   initialJobs,
   club_id,
 }: {
@@ -190,7 +190,7 @@ export default function LegacySwipeAndList({
         <div className="max-w-6xl mx-auto px-4 py-3 flex items-center justify-between">
           <div className="flex items-center gap-2">
             <div className="h-8 w-8 rounded-xl bg-black" />
-            <span className="font-semibold">Legacy</span>
+            <span className="font-semibold">Sponsorjobs</span>
           </div>
           <nav className="text-sm opacity-80">Beta MVP</nav>
         </div>
@@ -359,7 +359,7 @@ export default function LegacySwipeAndList({
       {/* Footer */}
       <footer className="border-t bg-white">
         <div className="max-w-6xl mx-auto px-4 py-6 text-xs opacity-70">
-          © {new Date().getFullYear()} Legacy — legacy.eu
+          © {new Date().getFullYear()} Sponsorjobs — sponsorjobs.nl
         </div>
       </footer>
     </div>

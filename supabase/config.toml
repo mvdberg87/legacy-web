@@ -1,0 +1,6 @@
+# supabase/config.toml
+
+project_id = "oemyfengrikpgovbyhqv"
+
+[functions]
+verify_jwt = { enabled = false }
