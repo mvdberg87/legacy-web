@@ -191,7 +191,7 @@ export default function ClientPage({
             rel="noopener noreferrer"
             className="underline"
           >
-            <Sponsorjobs></Sponsorjobs>
+            <title>Sponsorjobs</title>
           </a>
         </footer>
       </div>

@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import getSupabaseBrowser from "@/lib/supabaseBrowser";
+import { getSupabaseBrowser } from "@/lib/supabaseBrowser";
 
 export default function AdminLoginPage() {
   const supabase = getSupabaseBrowser();

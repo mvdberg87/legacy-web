@@ -4,7 +4,7 @@ import { useRouter, usePathname } from "next/navigation";
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Menu, X } from "lucide-react";
-import getSupabaseBrowser from "@/lib/supabaseBrowser";
+import { getSupabaseBrowser } from "@/lib/supabaseBrowser";
 
 export default function AdminNavbar() {
   const router = useRouter();
@@ -73,7 +73,7 @@ export default function AdminNavbar() {
             className="font-semibold text-base tracking-tight"
             style={{ color: primary }}
           >
-            <Sponsorjobs></Sponsorjobs> Admin
+            Sponsorjobs Admin
           </span>
         </button>
 
