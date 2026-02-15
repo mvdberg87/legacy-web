@@ -1,7 +1,8 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
-import getSupabaseBrowser from "../../../../lib/supabaseBrowser";
+import { getSupabaseBrowser } from "../../../../lib/supabaseBrowser";
+
 
 type Profile = { user_id: string; club_id: string; role: string };
 type Club = { id: string; name: string | null; slug: string };

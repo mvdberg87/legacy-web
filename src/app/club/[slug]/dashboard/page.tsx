@@ -3,7 +3,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { motion } from "framer-motion";
 import { useParams } from "next/navigation";
-import getSupabaseBrowser from "@/lib/supabaseBrowser";
+import { getSupabaseBrowser } from "@/lib/supabaseBrowser";
 import ClubNavbar from "@/components/club/ClubNavbar";
 import {
   SUBSCRIPTIONS,

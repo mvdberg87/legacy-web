@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import getSupabaseBrowser from "@/lib/supabaseBrowser";
+import { getSupabaseBrowser } from "@/lib/supabaseBrowser";
 
 /* ===============================
    Types

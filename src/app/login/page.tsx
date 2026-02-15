@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import getSupabaseBrowser from "@/lib/supabaseBrowser";
+import { getSupabaseBrowser } from "@/lib/supabaseBrowser";
 
 export default function ClubLoginPage() {
   const supabase = getSupabaseBrowser();
