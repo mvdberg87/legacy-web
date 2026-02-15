@@ -11,7 +11,6 @@ export default function HomePage() {
     <div className="font-semibold text-lg">Sponsorjobs</div>
     <nav className="space-x-6 text-sm opacity-80">
       <Link href="/verenigingen">Voor verenigingen</Link>
-      <Link href="/abonnementen">Abonnementen</Link>
       <Link href="/login" target="_blank">Login</Link>
     </nav>
   </div>
