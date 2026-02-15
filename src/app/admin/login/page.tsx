@@ -27,7 +27,7 @@ export default function AdminLoginPage() {
       email,
       options: {
         emailRedirectTo:
-          "http://localhost:3000/auth/admin-callback",
+  `${window.location.origin}/auth/admin-callback`,
       },
     });
 

@@ -1,72 +1,41 @@
-// src/app/auth/club-callback/route.ts
-
-import { NextRequest, NextResponse } from "next/server";
+import { NextResponse } from "next/server";
 import { createServerClient } from "@supabase/ssr";
+import { cookies } from "next/headers";
 
-export async function GET(req: NextRequest) {
-  const { searchParams } = new URL(req.url);
-  const code = searchParams.get("code");
+export async function GET(req: Request) {
+  const url = new URL(req.url);
+  const code = url.searchParams.get("code");
 
   if (!code) {
-    console.warn("❌ Geen code in callback URL");
-    return NextResponse.redirect(new URL("/login", req.url));
+    return NextResponse.redirect(new URL("/login", url.origin));
   }
 
-  console.log("🔐 CLUB CALLBACK HIT");
-
-  // 👉 Na login altijd door naar /club
-  const response = NextResponse.redirect(new URL("/club", req.url));
+  const cookieStore = await cookies();
+  const response = NextResponse.redirect(new URL("/club", url.origin));
 
   const supabase = createServerClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
     process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
     {
       cookies: {
-        get(name) {
-          return req.cookies.get(name)?.value;
+        get(name: string) {
+          return cookieStore.get(name)?.value;
         },
-        set(name, value, options) {
+        set(name: string, value: string, options: any) {
           response.cookies.set({ name, value, ...options });
         },
-        remove(name, options) {
+        remove(name: string, options: any) {
           response.cookies.set({ name, value: "", ...options });
         },
       },
     }
   );
 
-  /* -------------------------------------------------
-     1️⃣ PKCE code → sessie
-     ------------------------------------------------- */
-  const { error: exchangeError } =
-    await supabase.auth.exchangeCodeForSession(code);
+  const { error } = await supabase.auth.exchangeCodeForSession(code);
 
-  if (exchangeError) {
-    console.error("❌ PKCE exchange mislukt:", exchangeError);
-    return NextResponse.redirect(new URL("/login", req.url));
+  if (error) {
+    return NextResponse.redirect(new URL("/login", url.origin));
   }
-
-  /* -------------------------------------------------
-     2️⃣ User ophalen (optioneel, puur sanity check)
-     ------------------------------------------------- */
-  const {
-    data: { user },
-    error: userError,
-  } = await supabase.auth.getUser();
-
-   console.log("👤 CALLBACK USER:", user?.id, user?.email);
-
-  if (userError || !user) {
-    console.error("❌ Geen user na PKCE exchange");
-    return NextResponse.redirect(new URL("/login", req.url));
-  }
-
-  console.log("⛔ Geen user → redirect /login");
-  console.log("✅ Callback OK → redirect /club");
-
-  /* -------------------------------------------------
-     3️⃣ GEEN club-logica hier ❌
-     ------------------------------------------------- */
 
   return response;
 }
