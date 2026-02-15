@@ -100,7 +100,7 @@ export default function VerenigingenPage() {
                 Resultaat:
               </p>
               <p className="mt-2 text-sm">
-                Zelfs met een Plus-abonnement houd je al bijna €800 over.
+                Zelfs met een Pro-abonnement houd je meer dan €1.000 over.
               </p>
             </div>
 
@@ -143,13 +143,15 @@ export default function VerenigingenPage() {
           <li>✓ Sponsor dashboard</li>
         </ul>
 
-        <Link
-          href="/signup"
-          className="mt-auto bg-white text-black py-3 rounded-xl text-center font-medium"
-        >
-          Start Gratis
-        </Link>
-      </div>
+       <div className="mt-auto pt-12">
+  <Link
+    href="/signup"
+    className="block bg-white text-black py-3 rounded-xl text-center font-medium"
+  >
+    Start Basic
+  </Link>
+</div>
+</div>
 
 
       {/* PLUS */}
@@ -172,12 +174,14 @@ export default function VerenigingenPage() {
           <li>✓ Sponsor dashboard</li>
         </ul>
 
-        <Link
-          href="/signup"
-          className="mt-auto bg-[#1f9d55] text-white py-3 rounded-xl text-center font-medium"
-        >
-          Start Plus
-        </Link>
+        <div className="mt-auto pt-12">
+  <Link
+    href="/signup"
+    className="block bg-[#1f9d55] text-white py-3 rounded-xl text-center font-medium hover:bg-[#15803d] transition"
+  >
+    Start Plus
+  </Link>
+</div>
       </div>
 
 
@@ -194,12 +198,14 @@ export default function VerenigingenPage() {
           <li>✓ Sponsor dashboard</li>
         </ul>
 
-        <Link
-          href="/signup"
-          className="mt-auto bg-white text-black py-3 rounded-xl text-center font-medium"
-        >
-          Start Pro
-        </Link>
+        <div className="mt-auto pt-12">
+  <Link
+    href="/signup"
+    className="block bg-white text-black py-3 rounded-xl text-center font-medium"
+  >
+    Start Pro
+  </Link>
+</div>
       </div>
 
 
@@ -218,12 +224,14 @@ export default function VerenigingenPage() {
           <li>✓ Sponsor dashboard</li>
         </ul>
 
-        <Link
-          href="/signup"
-          className="mt-auto bg-yellow-400 text-black py-3 rounded-xl text-center font-medium"
-        >
-          Start Unlimited
-        </Link>
+        <div className="mt-auto pt-12">
+  <Link
+    href="/signup"
+    className="block bg-yellow-400 text-black py-3 rounded-xl text-center font-medium hover:bg-yellow-300 transition"
+  >
+    Start Unlimited
+  </Link>
+</div>
       </div>
 
     </div>
@@ -267,12 +275,14 @@ export default function VerenigingenPage() {
           Voor zichtbaarheid op social media.
         </p>
 
-        <Link
-          href="/signup"
-          className="mt-auto bg-green-600 text-white py-3 rounded-xl text-center font-medium hover:bg-green-700 transition"
-        >
-          Start Activate
-        </Link>
+        <div className="mt-auto pt-12">
+  <Link
+    href="/signup"
+    className="block bg-green-600 text-white py-3 rounded-xl text-center font-medium hover:bg-green-700 transition"
+  >
+    Start Activate
+  </Link>
+</div>
       </div>
 
 
@@ -302,12 +312,14 @@ export default function VerenigingenPage() {
           Voor clubs die recruitment serieus nemen.
         </p>
 
-        <Link
-          href="/signup"
-          className="mt-auto bg-yellow-400 text-black py-3 rounded-xl text-center font-medium hover:opacity-90 transition"
-        >
-          Start Growth
-        </Link>
+        <div className="mt-auto pt-12">
+  <Link
+    href="/signup"
+    className="block bg-yellow-400 text-black py-3 rounded-xl text-center font-medium hover:bg-yellow-300 transition"
+  >
+    Start Growth
+  </Link>
+</div>
       </div>
 
 
@@ -331,12 +343,14 @@ export default function VerenigingenPage() {
           Dit is waar je écht impact maakt.
         </p>
 
-        <Link
-          href="/signup"
-          className="mt-auto bg-blue-600 text-white py-3 rounded-xl text-center font-medium hover:bg-blue-700 transition"
-        >
-          Start Premium
-        </Link>
+        <div className="mt-auto pt-12">
+  <Link
+    href="/signup"
+    className="block bg-blue-600 text-white py-3 rounded-xl text-center font-medium hover:bg-blue-700 transition"
+  >
+    Start Premium
+  </Link>
+</div>
       </div>
 
 
@@ -361,12 +375,14 @@ export default function VerenigingenPage() {
           High-end sponsoractivatie.
         </p>
 
-        <Link
-          href="/signup"
-          className="mt-auto bg-gradient-to-r from-purple-500 to-pink-500 text-white py-3 rounded-xl text-center font-medium hover:opacity-90 transition"
-        >
-          Start Elite
-        </Link>
+        <div className="mt-auto pt-12">
+  <Link
+    href="/signup"
+    className="block bg-gradient-to-r from-purple-500 to-pink-500 text-white py-3 rounded-xl text-center font-medium hover:opacity-90 transition"
+  >
+    Start Elite
+  </Link>
+</div>
       </div>
 
     </div>
