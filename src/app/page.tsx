@@ -24,18 +24,22 @@ export default function HomePage() {
 
         <div className="mt-10 flex flex-col md:flex-row gap-4 justify-center">
           <Link
-            href="/login"
-            className="bg-[#1f9d55] px-6 py-3 rounded-xl font-semibold hover:bg-[#15803d] transition"
-          >
-            Club login
-          </Link>
+  href="/login"
+  target="_blank"
+  rel="noopener noreferrer"
+  className="bg-[#1f9d55] px-6 py-3 rounded-xl font-semibold hover:bg-[#15803d] transition"
+>
+  Club login
+</Link>
 
           <Link
-            href="/signup"
-            className="border border-white px-6 py-3 rounded-xl font-semibold hover:bg-white hover:text-black transition"
-          >
-            Meld je club aan
-          </Link>
+  href="/signup"
+  target="_blank"
+  rel="noopener noreferrer"
+  className="border border-white px-6 py-3 rounded-xl font-semibold hover:bg-white hover:text-black transition"
+>
+  Meld je club aan
+</Link>
         </div>
       </section>
 
@@ -155,11 +159,13 @@ export default function HomePage() {
 
         <div className="mt-10">
           <Link
-            href="/signup"
-            className="bg-[#1f9d55] px-8 py-4 rounded-2xl font-semibold hover:bg-[#15803d] transition"
-          >
-            Start met Sponsorjobs
-          </Link>
+  href="/signup"
+  target="_blank"
+  rel="noopener noreferrer"
+  className="bg-[#1f9d55] px-8 py-4 rounded-2xl font-semibold hover:bg-[#15803d] transition"
+>
+  Start met Sponsorjobs
+</Link>
         </div>
       </section>
 
