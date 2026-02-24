@@ -229,14 +229,15 @@ export default function ClubDashboardPage() {
     })();
   }, [supabase]);
 
-  async function requestUpgrade(
-    targetPackage: PackageKey
-  ) {
-    if (!club || requestingUpgrade) return;
+ async function requestUpgrade(
+  targetPackage: PackageKey
+) {
+  if (!club || requestingUpgrade) return;
 
-    setRequestingUpgrade(true);
+  setRequestingUpgrade(true);
 
-    await fetch("/api/club/request-upgrade", {
+  try {
+    const res = await fetch("/api/club/request-upgrade", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -247,8 +248,25 @@ export default function ClubDashboardPage() {
       }),
     });
 
-    setRequestingUpgrade(false);
+    const data = await res.json();
+
+    if (!res.ok) {
+      alert(data.error || "Upgrade mislukt");
+      return;
+    }
+
+    alert("Upgrade aanvraag succesvol verstuurd!");
+
+    // Optioneel: herlaad om status te verversen
+    window.location.reload();
+
+  } catch (err) {
+    console.error("Upgrade error:", err);
+    alert("Server fout bij upgrade.");
   }
+
+  setRequestingUpgrade(false);
+}
 
   /* ===============================
      STATES
@@ -304,8 +322,57 @@ export default function ClubDashboardPage() {
         animate={{ opacity: 1, y: 0 }}
       >
         <h1 className="text-2xl font-semibold mb-6">
-          Dashboard – {club.name}
-        </h1>
+  Dashboard – {club.name}
+</h1>
+
+{/* ===============================
+   Publieke vacaturepagina
+=============================== */}
+<section className="border-2 rounded-xl p-6 bg-gray-50 mb-10">
+  <h2 className="font-semibold text-lg mb-2">
+    Publieke vacaturepagina
+  </h2>
+
+  <p className="text-sm text-gray-600 mb-4">
+    Deel deze link op jullie website of social media:
+  </p>
+
+  <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 mb-3">
+    <input
+      readOnly
+      value={`https://sponsorjobs.nl/${slug}`}
+      className="flex-1 border rounded-lg px-3 py-2 text-sm bg-white"
+    />
+
+    <button
+      onClick={() =>
+        navigator.clipboard.writeText(
+          `https://sponsorjobs.nl/${slug}`
+        )
+      }
+      className="bg-[#0d1b2a] hover:bg-[#132a44] text-white px-4 py-2 rounded-lg text-sm font-medium transition"
+    >
+      Kopieer link
+    </button>
+  </div>
+
+  <div className="mt-2 mb-4">
+    <a
+      href={`https://sponsorjobs.nl/${slug}`}
+      target="_blank"
+      rel="noopener noreferrer"
+      className="text-blue-600 hover:underline text-sm font-medium"
+    >
+      Bekijk publieke pagina →
+    </a>
+  </div>
+
+  <ul className="text-sm text-gray-600 space-y-1">
+    <li>• Plaats deze link onder ‘Vacatures’ op jullie website</li>
+    <li>• Gebruik deze URL voor social media posts</li>
+    <li>• Gebruik deze link in sponsorcommunicatie</li>
+  </ul>
+</section>
 
         <section className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-10">
           <InsightCard
@@ -445,7 +512,7 @@ const canUpgrade = isHigher;
 
 <p className="text-sm font-medium text-[#0d1b2a] mb-3">
   {SUBSCRIPTIONS[key].ads === Infinity
-    ? "Onbeperkt advertenties"
+    ? "Onbeperkte advertenties"
     : `${SUBSCRIPTIONS[key].ads} ${
         SUBSCRIPTIONS[key].ads === 1
           ? "advertentie"
