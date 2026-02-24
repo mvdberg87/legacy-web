@@ -75,11 +75,11 @@ export default function ClientPage({
       {/* Header */}
       <div className="h-28 flex flex-col justify-center items-center text-center shadow bg-white">
         <h1 className="text-2xl sm:text-3xl font-semibold">
-          Vacatures bij sponsoren van {club.name}
-        </h1>
-        <p className="text-sm text-gray-700">
-          Sponsoren en leden met elkaar verbinden
-        </p>
+  Vacatures bij sponsoren van {club.name}
+</h1>
+<p className="text-sm text-gray-600">
+  Leden, supporters en bedrijven verbinden
+</p>
       </div>
 
       <div
@@ -94,13 +94,21 @@ export default function ClientPage({
           text-white
         "
       >
+
+        {/* =========================
+            INTROTEKST
+        ========================== */}
+        <section className="mb-10 rounded-2xl bg-[#0d1b2a] p-6 text-white leading-relaxed whitespace-pre-line">
+          {introText}
+        </section>
+
         {/* =========================
             SPONSOREN (ADS)
         ========================== */}
         {ads.length > 0 && (
           <section className="mb-12">
             <h2 className="text-lg font-semibold mb-4 text-white">
-              Sponsoren
+              Uitgelichte kansen
             </h2>
 
             <div className="grid gap-4">
@@ -140,12 +148,16 @@ export default function ClientPage({
           </section>
         )}
 
-        {/* =========================
-            INTROTEKST
-        ========================== */}
-        <section className="mb-10 rounded-2xl bg-[#0d1b2a] p-6 text-white leading-relaxed whitespace-pre-line">
-          {introText}
-        </section>
+{/* =========================
+    OVERGANG
+========================== */}
+<div className="my-12 border-t border-white/20"></div>
+
+<section className="mb-12 text-center text-sm text-white/60">
+  <p>
+    Hieronder vind je alle actuele vacatures binnen het netwerk van {club.name}.
+  </p>
+</section> 
 
         {/* =========================
             VACATURES
