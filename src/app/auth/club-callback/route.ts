@@ -24,12 +24,16 @@ export async function GET(req: NextRequest) {
     }
   );
 
-  // 🔥 BELANGRIJK: volledige URL meegeven
-  const { error } = await supabase.auth.exchangeCodeForSession(req.url);
+  const { searchParams } = new URL(req.url);
+  const code = searchParams.get("code");
 
-  if (error) {
-    console.error("Exchange error:", error.message);
-    return NextResponse.redirect(new URL("/login", req.url));
+  if (code) {
+    const { error } = await supabase.auth.exchangeCodeForSession(code);
+
+    if (error) {
+      console.error("Exchange error:", error.message);
+      return NextResponse.redirect(new URL("/login", req.url));
+    }
   }
 
   return response;
