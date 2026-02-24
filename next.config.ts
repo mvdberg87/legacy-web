@@ -15,6 +15,17 @@ const nextConfig: NextConfig = {
     ],
   },
 
+  // ✅ Rewrite voor publieke clubpagina
+  async rewrites() {
+    return [
+      {
+        source:
+          "/:slug((?!admin|login|signup|club|api|_next|favicon.ico).*)",
+        destination: "/club/:slug/jobs/public",
+      },
+    ];
+  },
+
   // ✅ CORRECT voor Next.js 15
   turbopack: {
     root: __dirname,

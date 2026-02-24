@@ -340,7 +340,7 @@ export default function ClubDashboardPage() {
   <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 mb-3">
     <input
       readOnly
-      value={`https://sponsorjobs.nl/${slug}`}
+      value={`${process.env.NEXT_PUBLIC_SITE_URL}/club/${slug}/jobs/public`}
       className="flex-1 border rounded-lg px-3 py-2 text-sm bg-white"
     />
 
@@ -358,7 +358,7 @@ export default function ClubDashboardPage() {
 
   <div className="mt-2 mb-4">
     <a
-      href={`https://sponsorjobs.nl/${slug}`}
+      href={`${process.env.NEXT_PUBLIC_SITE_URL}/club/${slug}/jobs/public`}
       target="_blank"
       rel="noopener noreferrer"
       className="text-blue-600 hover:underline text-sm font-medium"
