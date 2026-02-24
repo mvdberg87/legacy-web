@@ -436,16 +436,22 @@ const canUpgrade = isHigher;
                   </h3>
 
                   <p className="text-2xl font-bold my-2">
-                    €
-                    {
-                      SUBSCRIPTIONS[key]
-                        .pricePerYear
-                    }
-                    <span className="text-sm font-normal">
-                      {" "}
-                      / jaar
-                    </span>
-                  </p>
+  €{SUBSCRIPTIONS[key].pricePerMonth}
+  <span className="text-sm font-normal">
+    {" "}
+    / maand
+  </span>
+</p>
+
+<p className="text-sm font-medium text-[#0d1b2a] mb-3">
+  {SUBSCRIPTIONS[key].ads === Infinity
+    ? "Onbeperkt advertenties"
+    : `${SUBSCRIPTIONS[key].ads} ${
+        SUBSCRIPTIONS[key].ads === 1
+          ? "advertentie"
+          : "advertenties"
+      }`}
+</p>
 
                   <button
   disabled={!canUpgrade || requestingUpgrade}

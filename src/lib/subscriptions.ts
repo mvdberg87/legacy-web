@@ -7,7 +7,7 @@ export const SUBSCRIPTIONS: Record<
     durationMonths: number;
     ads: number;
     vacancies: number;
-    pricePerYear: number;
+    pricePerMonth: number;
     upgradeOnly: boolean;
   }
 > = {
@@ -16,7 +16,7 @@ export const SUBSCRIPTIONS: Record<
     durationMonths: 12,
     ads: 0,                // ❌ Geen advertenties
     vacancies: 1,
-    pricePerYear: 0,
+    pricePerMonth: 0,
     upgradeOnly: true,
   },
 
@@ -25,7 +25,7 @@ export const SUBSCRIPTIONS: Record<
     durationMonths: 12,
     ads: 1,                // ✅ 1 advertentie
     vacancies: 5,
-    pricePerYear: 299,
+    pricePerMonth: 49,
     upgradeOnly: true,
   },
 
@@ -34,7 +34,7 @@ export const SUBSCRIPTIONS: Record<
     durationMonths: 12,
     ads: 3,                // ✅ 3 advertenties
     vacancies: 15,
-    pricePerYear: 699,
+    pricePerMonth: 79,
     upgradeOnly: true,
   },
 
@@ -43,7 +43,7 @@ export const SUBSCRIPTIONS: Record<
     durationMonths: 12,
     ads: Number.POSITIVE_INFINITY,  // ✅ Ongelimiteerd (veiliger dan Infinity)
     vacancies: Number.POSITIVE_INFINITY,
-    pricePerYear: 1499,
+    pricePerMonth: 99,
     upgradeOnly: true,
   },
 };
