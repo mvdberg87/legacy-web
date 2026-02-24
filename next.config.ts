@@ -9,26 +9,19 @@ const nextConfig: NextConfig = {
   },
   images: {
     unoptimized: true,
-    domains: [
-      "logo.clearbit.com",
-      "placehold.co",
-    ],
+    domains: ["logo.clearbit.com", "placehold.co"],
+  },
+  turbopack: {
+    root: __dirname,
   },
 
-  // ✅ Rewrite voor publieke clubpagina
   async rewrites() {
     return [
       {
-        source:
-          "/:slug((?!admin|login|signup|club|api|_next|favicon.ico).*)",
+        source: "/:slug",
         destination: "/club/:slug/jobs/public",
       },
     ];
-  },
-
-  // ✅ CORRECT voor Next.js 15
-  turbopack: {
-    root: __dirname,
   },
 };
 

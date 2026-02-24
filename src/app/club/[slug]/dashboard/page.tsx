@@ -337,35 +337,44 @@ export default function ClubDashboardPage() {
     Deel deze link op jullie website of social media:
   </p>
 
-  <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 mb-3">
-    <input
-      readOnly
-      value={`${process.env.NEXT_PUBLIC_SITE_URL}/club/${slug}/jobs/public`}
-      className="flex-1 border rounded-lg px-3 py-2 text-sm bg-white"
-    />
+  {(() => {
+    const publicUrl =
+      typeof window !== "undefined"
+        ? `${window.location.origin}/${slug}`
+        : "";
 
-    <button
-      onClick={() =>
-        navigator.clipboard.writeText(
-          `https://sponsorjobs.nl/${slug}`
-        )
-      }
-      className="bg-[#0d1b2a] hover:bg-[#132a44] text-white px-4 py-2 rounded-lg text-sm font-medium transition"
-    >
-      Kopieer link
-    </button>
-  </div>
+    return (
+      <>
+        <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 mb-3">
+          <input
+            readOnly
+            value={publicUrl}
+            className="flex-1 border rounded-lg px-3 py-2 text-sm bg-white"
+          />
 
-  <div className="mt-2 mb-4">
-    <a
-      href={`${process.env.NEXT_PUBLIC_SITE_URL}/club/${slug}/jobs/public`}
-      target="_blank"
-      rel="noopener noreferrer"
-      className="text-blue-600 hover:underline text-sm font-medium"
-    >
-      Bekijk publieke pagina →
-    </a>
-  </div>
+          <button
+            onClick={() =>
+              navigator.clipboard.writeText(publicUrl)
+            }
+            className="bg-[#0d1b2a] hover:bg-[#132a44] text-white px-4 py-2 rounded-lg text-sm font-medium transition"
+          >
+            Kopieer link
+          </button>
+        </div>
+
+        <div className="mt-2 mb-4">
+          <a
+            href={publicUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-blue-600 hover:underline text-sm font-medium"
+          >
+            Bekijk publieke pagina →
+          </a>
+        </div>
+      </>
+    );
+  })()}
 
   <ul className="text-sm text-gray-600 space-y-1">
     <li>• Plaats deze link onder ‘Vacatures’ op jullie website</li>

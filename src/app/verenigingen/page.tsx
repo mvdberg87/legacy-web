@@ -165,7 +165,7 @@ export default function VerenigingenPage() {
           Plus
         </h3>
 
-        <p className="mt-4 text-4xl font-bold text-[#1f9d55]">€29</p>
+        <p className="mt-4 text-4xl font-bold text-[#1f9d55]">€49</p>
         <p className="text-sm opacity-60">per maand</p>
 
         <ul className="mt-6 space-y-3 text-sm opacity-80">
@@ -189,7 +189,7 @@ export default function VerenigingenPage() {
       <div className="border border-white/20 rounded-2xl p-8 flex flex-col h-full">
         <h3 className="text-xl font-semibold">Pro</h3>
 
-        <p className="mt-4 text-4xl font-bold">€39</p>
+        <p className="mt-4 text-4xl font-bold">€79</p>
         <p className="text-sm opacity-60">per maand</p>
 
         <ul className="mt-6 space-y-3 text-sm opacity-80">
@@ -215,7 +215,7 @@ export default function VerenigingenPage() {
           Unlimited
         </h3>
 
-        <p className="mt-4 text-4xl font-bold text-yellow-400">€49</p>
+        <p className="mt-4 text-4xl font-bold text-yellow-400">€99</p>
         <p className="text-sm opacity-60">per maand</p>
 
         <ul className="mt-6 space-y-3 text-sm opacity-80">
@@ -277,7 +277,7 @@ export default function VerenigingenPage() {
 
         <div className="mt-auto pt-12">
   <Link
-    href="/signup"
+  href="/contact?pakket=activate"
     className="block bg-green-600 text-white py-3 rounded-xl text-center font-medium hover:bg-green-700 transition"
   >
     Start Activate
@@ -314,7 +314,7 @@ export default function VerenigingenPage() {
 
         <div className="mt-auto pt-12">
   <Link
-    href="/signup"
+  href="/contact?pakket=growth"
     className="block bg-yellow-400 text-black py-3 rounded-xl text-center font-medium hover:bg-yellow-300 transition"
   >
     Start Growth
@@ -345,7 +345,7 @@ export default function VerenigingenPage() {
 
         <div className="mt-auto pt-12">
   <Link
-    href="/signup"
+  href="/contact?pakket=premium"
     className="block bg-blue-600 text-white py-3 rounded-xl text-center font-medium hover:bg-blue-700 transition"
   >
     Start Premium
@@ -377,7 +377,7 @@ export default function VerenigingenPage() {
 
         <div className="mt-auto pt-12">
   <Link
-    href="/signup"
+  href="/contact?pakket=elite"
     className="block bg-gradient-to-r from-purple-500 to-pink-500 text-white py-3 rounded-xl text-center font-medium hover:opacity-90 transition"
   >
     Start Elite
