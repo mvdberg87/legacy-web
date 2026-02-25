@@ -1,6 +1,7 @@
 "use client";
 
 import ListingCard from "@/components/ListingCard";
+import { useEffect } from "react";
 
 /* ---------- Types ---------- */
 
@@ -47,6 +48,22 @@ export default function ClientPage({
   jobs,
   ads,
 }: Props) {
+
+    /* ===============================
+     Pageview tracking
+  =============================== */
+  useEffect(() => {
+    fetch("/api/track-pageview", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        clubId: club.id,
+      }),
+    }).catch(() => {});
+  }, [club.id]);
+  
   async function trackJobClick(jobId: string) {
     try {
       await fetch("/api/jobs/track-click", {

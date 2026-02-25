@@ -82,6 +82,34 @@ export async function GET() {
       const totalClicksMonthBefore =
         clicksMonthBefore?.length ?? 0;
 
+      /* ===============================
+         Pageviews vorige maand
+      =============================== */
+
+      const { data: pageviewsLastMonth } = await supabaseAdmin
+        .from("club_page_views")
+        .select("created_at")
+        .eq("club_id", club.id)
+        .gte("created_at", firstDayLastMonth.toISOString())
+        .lt("created_at", firstDayCurrentMonth.toISOString());
+
+      const { data: pageviewsMonthBefore } = await supabaseAdmin
+        .from("club_page_views")
+        .select("created_at")
+        .eq("club_id", club.id)
+        .gte("created_at", firstDayMonthBefore.toISOString())
+        .lt("created_at", firstDayLastMonth.toISOString());
+
+      const totalPageviewsLastMonth =
+        pageviewsLastMonth?.length ?? 0;
+
+      const totalPageviewsMonthBefore =
+        pageviewsMonthBefore?.length ?? 0;
+
+      /* ===============================
+         Click groei
+      =============================== */
+
       let growth = 0;
 
       if (
@@ -94,6 +122,39 @@ export async function GET() {
           ((totalClicksLastMonth -
             totalClicksMonthBefore) /
             totalClicksMonthBefore) *
+            100
+        );
+      }
+
+      /* ===============================
+         CTR berekening
+      =============================== */
+
+      const ctrLastMonth =
+        totalPageviewsLastMonth > 0
+          ? (totalClicksLastMonth /
+              totalPageviewsLastMonth) *
+            100
+          : 0;
+
+      const ctrMonthBefore =
+        totalPageviewsMonthBefore > 0
+          ? (totalClicksMonthBefore /
+              totalPageviewsMonthBefore) *
+            100
+          : 0;
+
+      let ctrGrowth = 0;
+
+      if (
+        ctrMonthBefore === 0 &&
+        ctrLastMonth > 0
+      ) {
+        ctrGrowth = 100;
+      } else if (ctrMonthBefore > 0) {
+        ctrGrowth = Math.round(
+          ((ctrLastMonth - ctrMonthBefore) /
+            ctrMonthBefore) *
             100
         );
       }
@@ -119,7 +180,6 @@ export async function GET() {
             last_activity: null,
           };
         }
-
         sponsorMap[job.company_name].vacancies++;
       });
 
@@ -202,76 +262,43 @@ export async function GET() {
           }
         );
 
-                  /* ===============================
-         7️⃣ MAIL VERSTUREN + LOGGING
+      /* ===============================
+         7️⃣ Mail versturen
       =============================== */
 
-      try {
-        await resend.emails.send({
-          from: "Sponsorjobs <no-reply@sponsorjobs.nl>",
-          to: club.report_email,
-          subject: `Maandrapport vacatures – ${monthName}`,
-          html: generateHtml({
-            club,
-            monthName,
-            totalCompanies: Object.keys(sponsorMap).length,
-            totalVacancies: jobs?.length ?? 0,
-            totalClicksLastMonth,
-            growth,
-            sponsors,
-            topJobs,
-            zeroClickJobs,
-            adsCount: adsCount ?? 0,
-            maxAds,
-          }),
-        });
-
-        /* ✅ Opslaan als SENT */
-        await supabaseAdmin
-          .from("monthly_reports")
-          .upsert({
-            club_id: club.id,
-            month: firstDayLastMonth,
-            total_vacancies: jobs?.length ?? 0,
-            total_clicks: totalClicksLastMonth,
-            growth,
-            status: "sent",
-          }, {
-            onConflict: "club_id,month"
-          });
-
-      } catch (mailError) {
-
-        console.error("MAIL FAILED:", mailError);
-
-        /* ❌ Opslaan als FAILED */
-        await supabaseAdmin
-          .from("monthly_reports")
-          .upsert({
-            club_id: club.id,
-            month: firstDayLastMonth,
-            total_vacancies: jobs?.length ?? 0,
-            total_clicks: totalClicksLastMonth,
-            growth,
-            status: "failed",
-          }, {
-            onConflict: "club_id,month"
-          });
-      }
-          } // ✅ sluit for (const club of clubs)
+      await resend.emails.send({
+        from: "Sponsorjobs <no-reply@sponsorjobs.nl>",
+        to: club.report_email,
+        subject: `Maandrapport vacatures – ${monthName}`,
+        html: generateHtml({
+          club,
+          monthName,
+          totalCompanies: Object.keys(sponsorMap).length,
+          totalVacancies: jobs?.length ?? 0,
+          totalClicksLastMonth,
+          totalPageviewsLastMonth,
+          ctrLastMonth: ctrLastMonth.toFixed(1),
+          ctrGrowth,
+          growth,
+          sponsors,
+          topJobs,
+          zeroClickJobs,
+          adsCount: adsCount ?? 0,
+          maxAds,
+        }),
+      });
+    }
 
     return NextResponse.json({ success: true });
 
   } catch (err) {
     console.error("CRON ERROR:", err);
-
     return NextResponse.json(
       { error: "Cron failed" },
       { status: 500 }
     );
   }
 }
-
 
 /* ===============================
    HTML TEMPLATE
@@ -295,8 +322,11 @@ function generateHtml(data: any) {
       <h2 style="color:${navy};">Overzicht</h2>
       <p><strong>Bedrijven actief:</strong> ${data.totalCompanies}</p>
       <p><strong>Vacatures actief:</strong> ${data.totalVacancies}</p>
+      <p><strong>Pageviews afgelopen maand:</strong> ${data.totalPageviewsLastMonth}</p>
       <p><strong>Clicks afgelopen maand:</strong> ${data.totalClicksLastMonth}</p>
-      <p><strong>Groei t.o.v vorige maand:</strong> ${data.growth}%</p>
+      <p><strong>Click-through rate:</strong> ${data.ctrLastMonth}%</p>
+      <p><strong>CTR groei t.o.v vorige maand:</strong> ${data.ctrGrowth}%</p>
+      <p><strong>Click groei t.o.v vorige maand:</strong> ${data.growth}%</p>
 
       <hr style="margin:30px 0;" />
 
@@ -356,13 +386,6 @@ function generateHtml(data: any) {
              </p>`
           : ""
       }
-
-      <a href="https://jouwdomein.nl/club/${
-        data.club.slug
-      }/jobs"
-        style="display:inline-block;margin-top:20px;background:${green};color:white;padding:12px 20px;border-radius:8px;text-decoration:none;">
-        Voeg nieuwe vacatures toe
-      </a>
 
     </div>
   </div>

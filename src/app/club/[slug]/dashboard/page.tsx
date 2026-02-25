@@ -29,6 +29,8 @@ type ClubDashboardInsights = {
   active_jobs: number;
   total_ads: number;
   total_clicks: number;
+  total_pageviews: number;
+  ctr: string;
   last_activity_at: string | null;
 };
 
@@ -107,6 +109,18 @@ export default function ClubDashboardPage() {
       if (!clubData) return setLoading(false);
 
       setClub(clubData);
+
+      /* ===============================
+   Pageviews ophalen
+=============================== */
+
+const { count: pageviews } = await supabase
+  .from("club_page_views")
+  .select("id", {
+    count: "exact",
+    head: true,
+  })
+  .eq("club_id", clubData.id);
 
       /* ===============================
          1️⃣ Actieve vacatures
@@ -193,21 +207,30 @@ export default function ClubDashboardPage() {
 
       setAdsCount(ads ?? 0);
 
+      const totalPageviews = pageviews ?? 0;
+
+const ctr =
+  totalPageviews > 0
+    ? ((totalClicks / totalPageviews) * 100).toFixed(1)
+    : "0.0";
+
       /* ===============================
          4️⃣ KPI samenstellen
       =============================== */
 
       setInsights({
-        active_jobs: jobIds.length,
-        total_ads: ads ?? 0,
-        total_clicks: totalClicks,
-        last_activity_at:
-          Object.values(sponsorMap)
-            .map((s) => s.last_activity_at)
-            .filter(Boolean)
-            .sort()
-            .pop() ?? null,
-      });
+  active_jobs: jobIds.length,
+  total_ads: ads ?? 0,
+  total_clicks: totalClicks,
+  total_pageviews: totalPageviews,
+  ctr,
+  last_activity_at:
+    Object.values(sponsorMap)
+      .map((s) => s.last_activity_at)
+      .filter(Boolean)
+      .sort()
+      .pop() ?? null,
+});
 
       /* ===============================
          5️⃣ Upgrade status
@@ -415,7 +438,16 @@ export default function ClubDashboardPage() {
   </ul>
 </section>
 
-        <section className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-10">
+        <section className="grid grid-cols-2 lg:grid-cols-6 gap-4 mb-10">
+          <InsightCard
+  label="Pageviews"
+  value={insights?.total_pageviews ?? 0}
+/>
+
+<InsightCard
+  label="CTR"
+  value={`${insights?.ctr ?? "0.0"} %`}
+/>
           <InsightCard
             label="Actieve vacatures"
             value={insights?.active_jobs ?? 0}
