@@ -33,7 +33,7 @@ export async function GET(req: NextRequest) {
         .select(
           "id, name, email, subscription_end"
         )
-        .neq("subscription_status", "trial")
+        .eq("subscription_status", "cancelled")
         .not("subscription_cancelled_at", "is", null)
         .lt("subscription_end", now);
 

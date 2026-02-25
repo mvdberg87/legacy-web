@@ -59,13 +59,6 @@ if (existing) {
   return NextResponse.json({ received: true });
 }
 
-await supabaseAdmin
-  .from("stripe_events")
-  .insert({
-    id: event.id,
-    type: event.type,
-  });
-
     /* ===============================
        CHECKOUT COMPLETED
     =============================== */
@@ -74,16 +67,19 @@ await supabaseAdmin
       const session = event.data.object as Stripe.Checkout.Session;
 
       const clubId = session.metadata?.club_id;
-      const packageKey = session.metadata?.package_key;
+
+if (!clubId) {
+  return NextResponse.json({ received: true });
+}
 
       const subscriptionId =
         typeof session.subscription === "string"
           ? session.subscription
           : session.subscription?.id;
 
-      if (!clubId || !packageKey || !subscriptionId) {
-        return NextResponse.json({ received: true });
-      }
+      if (!clubId || !subscriptionId) {
+  return NextResponse.json({ received: true });
+}
 
       const subscription =
         await stripe.subscriptions.retrieve(subscriptionId);
@@ -91,20 +87,35 @@ await supabaseAdmin
       const item = subscription.items.data[0];
       if (!item) return NextResponse.json({ received: true });
 
+      const priceId = item.price.id;
+
+const PRICE_TO_PACKAGE_MAP: Record<string, string> = {
+  [process.env.STRIPE_PRICE_PLUS!]: "plus",
+  [process.env.STRIPE_PRICE_PRO!]: "pro",
+  [process.env.STRIPE_PRICE_UNLIMITED!]: "unlimited",
+};
+
+const packageKey = PRICE_TO_PACKAGE_MAP[priceId];
+
+if (!packageKey) {
+  throw new Error("Unknown Stripe price ID");
+}
+
       await supabaseAdmin
-        .from("clubs")
-        .update({
-          active_package: packageKey,
-          subscription_status: subscription.status,
-          subscription_start: new Date(
-            item.current_period_start * 1000
-          ).toISOString(),
-          subscription_end: new Date(
-            item.current_period_end * 1000
-          ).toISOString(),
-          stripe_subscription_id: subscriptionId,
-        })
-        .eq("id", clubId);
+  .from("clubs")
+  .update({
+    active_package: packageKey,
+    stripe_price_id: priceId,
+    stripe_subscription_id: subscriptionId,
+    subscription_status: subscription.status,
+    subscription_start: new Date(
+      item.current_period_start * 1000
+    ).toISOString(),
+    subscription_end: new Date(
+      item.current_period_end * 1000
+    ).toISOString(),
+  })
+  .eq("id", clubId);
     }
 
     /* ===============================
@@ -126,6 +137,7 @@ await supabaseAdmin
         .from("clubs")
         .update({
           subscription_status: "past_due",
+          payment_failed_at: new Date().toISOString(),
         })
         .eq("stripe_subscription_id", subscriptionId);
     }
@@ -202,6 +214,12 @@ await supabaseAdmin
       { status: 500 }
     );
   }
+
+  await supabaseAdmin.from("stripe_events").insert({
+  id: event.id,
+  type: event.type,
+  payload: event,
+});
 
   return NextResponse.json({ received: true });
 }

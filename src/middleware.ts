@@ -3,12 +3,14 @@ import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 import { createServerClient } from "@supabase/ssr";
 
+const GRACE_DAYS = 7;
+
 export async function middleware(req: NextRequest) {
   const res = NextResponse.next();
   const { pathname, origin } = req.nextUrl;
 
   /* ======================================================
-     0️⃣ Publieke routes (nooit blokkeren)
+     0️⃣ Publieke routes
   ====================================================== */
   if (
     pathname === "/login" ||
@@ -17,7 +19,9 @@ export async function middleware(req: NextRequest) {
     pathname.startsWith("/api") ||
     pathname.startsWith("/onboarding") ||
     pathname === "/pending" ||
-    pathname === "/unauthorized"
+    pathname === "/unauthorized" ||
+    pathname === "/billing-blocked" ||
+    pathname.startsWith("/club/billing")
   ) {
     return res;
   }
@@ -25,13 +29,12 @@ export async function middleware(req: NextRequest) {
   const isAdminRoute = pathname.startsWith("/admin");
   const isClubRoute = pathname.startsWith("/club");
 
-  // Alles buiten admin/club laten we door
   if (!isAdminRoute && !isClubRoute) {
     return res;
   }
 
   /* ======================================================
-     1️⃣ Supabase server client
+     1️⃣ Supabase client
   ====================================================== */
   const supabase = createServerClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -46,7 +49,7 @@ export async function middleware(req: NextRequest) {
   );
 
   /* ======================================================
-     2️⃣ Auth check (verplicht)
+     2️⃣ Auth check
   ====================================================== */
   const {
     data: { user },
@@ -59,7 +62,7 @@ export async function middleware(req: NextRequest) {
   }
 
   /* ======================================================
-     3️⃣ Profiel ophalen (role + club_id)
+     3️⃣ Profile ophalen
   ====================================================== */
   const { data: profile } = await supabase
     .from("profiles")
@@ -73,7 +76,6 @@ export async function middleware(req: NextRequest) {
 
   /* ======================================================
      4️⃣ Admin rules
-     - Alleen role === admin mag /admin/*
   ====================================================== */
   if (isAdminRoute) {
     if (profile.role !== "admin") {
@@ -87,27 +89,99 @@ export async function middleware(req: NextRequest) {
 
   /* ======================================================
      5️⃣ Club rules
-     - /club = altijd toegestaan (onboarding / router)
-     - /club/* vereist role === club + club_id
   ====================================================== */
   if (isClubRoute) {
-    const isClubRoot = pathname === "/club";
+  if (profile.role !== "club") {
+    return NextResponse.redirect(
+      new URL("/unauthorized", origin)
+    );
+  }
 
-    if (!isClubRoot) {
-      if (profile.role !== "club") {
-        return NextResponse.redirect(
-          new URL("/unauthorized", origin)
-        );
-      }
+  if (!profile.club_id) {
+    return NextResponse.redirect(
+      new URL("/onboarding/claim", origin)
+    );
+  }
 
-      if (!profile.club_id) {
-        return NextResponse.redirect(
-          new URL("/onboarding/claim", origin)
-        );
-      }
+  /* ===============================
+     Club ophalen
+  =============================== */
+  const { data: club } = await supabase
+    .from("clubs")
+    .select("subscription_status, payment_failed_at, subscription_end")
+    .eq("id", profile.club_id)
+    .maybeSingle();
+
+  if (!club) {
+    return NextResponse.redirect(
+      new URL("/unauthorized", origin)
+    );
+  }
+
+  /* ===============================
+     Realtime trial check
+  =============================== */
+  if (
+    club.subscription_status === "trial" &&
+    club.subscription_end
+  ) {
+    const now = new Date();
+    const end = new Date(club.subscription_end);
+
+    if (now > end) {
+      await supabase
+        .from("clubs")
+        .update({ subscription_status: "blocked" })
+        .eq("id", profile.club_id);
+
+      return NextResponse.redirect(
+        new URL("/billing-blocked", origin)
+      );
     }
   }
 
+  /* ===============================
+     Cancelled
+  =============================== */
+  if (club.subscription_status === "cancelled") {
+    return NextResponse.redirect(
+      new URL("/billing-blocked", origin)
+    );
+  }
+
+  /* ===============================
+     Blocked / expired
+  =============================== */
+  if (
+    club.subscription_status === "blocked" ||
+    club.subscription_status === "expired"
+  ) {
+    return NextResponse.redirect(
+      new URL("/billing-blocked", origin)
+    );
+  }
+
+  /* ===============================
+     Past due grace
+  =============================== */
+  if (
+    club.subscription_status === "past_due" &&
+    club.payment_failed_at
+  ) {
+    const diff =
+      Date.now() -
+      new Date(club.payment_failed_at).getTime();
+
+    const days = diff / (1000 * 60 * 60 * 24);
+
+    if (days > GRACE_DAYS) {
+      return NextResponse.redirect(
+        new URL("/billing-blocked", origin)
+      );
+    }
+  }
+}
+  
   return res;
 }
 

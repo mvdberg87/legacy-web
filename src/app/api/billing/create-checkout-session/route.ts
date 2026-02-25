@@ -20,10 +20,9 @@ const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
    =============================== */
 
 const PRICE_IDS: Record<
-  "basic" | "plus" | "pro" | "unlimited",
+  | "plus" | "pro" | "unlimited",
   string
 > = {
-  basic: process.env.STRIPE_PRICE_BASIC!,
   plus: process.env.STRIPE_PRICE_PLUS!,
   pro: process.env.STRIPE_PRICE_PRO!,
   unlimited: process.env.STRIPE_PRICE_UNLIMITED!,
@@ -36,7 +35,7 @@ const PRICE_IDS: Record<
 export async function POST(req: NextRequest) {
   try {
     const { packageKey } = (await req.json()) as {
-      packageKey?: "basic" | "plus" | "pro" | "unlimited";
+      packageKey?: | "plus" | "pro" | "unlimited";
     };
 
     if (!packageKey) {
@@ -112,6 +111,25 @@ export async function POST(req: NextRequest) {
         { status: 404 }
       );
     }
+
+    /* ===============================
+   3b. Check actieve subscription
+================================ */
+const { data: existingClub } = await supabase
+  .from("clubs")
+  .select("stripe_subscription_id, subscription_status")
+  .eq("id", club.id)
+  .single();
+
+if (
+  existingClub?.stripe_subscription_id &&
+  existingClub.subscription_status === "active"
+) {
+  return NextResponse.json(
+    { error: "Er is al een actieve subscription." },
+    { status: 400 }
+  );
+}
 
     /* ===============================
        4. Stripe price
