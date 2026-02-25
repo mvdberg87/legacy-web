@@ -299,14 +299,22 @@ export default function ClubDashboardPage() {
       : "Nog niet ingesteld";
 
   const statusLabel =
-    club.subscription_status === "trial"
-      ? "Proefperiode"
-      : club.subscription_status === "active"
-      ? "Actief"
-      : club.subscription_status === "blocked"
-      ? "Geblokkeerd"
-      : club.subscription_status ??
-        "Onbekend";
+  club.subscription_status === "trial"
+    ? "Proefperiode"
+    : club.subscription_status === "active"
+    ? "Actief"
+    : club.subscription_status === "past_due"
+    ? "Betaling mislukt"
+    : club.subscription_status === "cancelled"
+    ? "Geannuleerd"
+    : club.subscription_status === "blocked"
+    ? "Geblokkeerd"
+    : club.subscription_status ??
+      "Onbekend";
+
+      const isBillingBlocked =
+  club.subscription_status === "past_due" ||
+  club.subscription_status === "cancelled";
 
   /* ===============================
      RENDER
@@ -324,6 +332,30 @@ export default function ClubDashboardPage() {
         <h1 className="text-2xl font-semibold mb-6">
   Dashboard – {club.name}
 </h1>
+
+{club.subscription_status === "past_due" && (
+  <div className="mb-6 p-4 rounded-lg bg-red-100 border border-red-300 text-red-700 text-sm">
+    ⚠️ Je betaling is mislukt.
+    <br />
+    Volgende incassopoging vóór:{" "}
+    <strong>
+      {club.subscription_end
+        ? new Date(
+            club.subscription_end
+          ).toLocaleDateString("nl-NL")
+        : "onbekend"}
+    </strong>
+    <br />
+    Update je betaalgegevens om blokkade te voorkomen.
+  </div>
+)}
+
+{club.subscription_status === "cancelled" && (
+  <div className="mb-6 p-4 rounded-lg bg-yellow-100 border border-yellow-300 text-yellow-800 text-sm">
+    ❌ Je abonnement is geannuleerd. 
+    Upgrade opnieuw om functies te herstellen.
+  </div>
+)}
 
 {/* ===============================
    Publieke vacaturepagina
@@ -530,7 +562,7 @@ const canUpgrade = isHigher;
 </p>
 
                   <button
-  disabled={!canUpgrade || requestingUpgrade}
+  disabled={!canUpgrade || requestingUpgrade || isBillingBlocked}
   onClick={() =>
     canUpgrade && requestUpgrade(key)
   }
@@ -543,10 +575,12 @@ const canUpgrade = isHigher;
   }`}
 >
   {isCurrent
-    ? "Huidig pakket"
-    : isHigher
-    ? "Upgrade"
-    : "–"}
+  ? "Huidig pakket"
+  : isHigher
+  ? isBillingBlocked
+    ? "Geblokkeerd"
+    : "Upgrade"
+  : "–"}
 </button>
                 </div>
               );
