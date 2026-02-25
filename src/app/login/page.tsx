@@ -1,47 +1,120 @@
 "use client";
 
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { getSupabaseBrowser } from "@/lib/supabaseBrowser";
 
 export default function ClubLoginPage() {
   const supabase = getSupabaseBrowser();
+  const router = useRouter();
 
   const [email, setEmail] = useState("");
+  const [code, setCode] = useState("");
+  const [step, setStep] = useState<"email" | "code">("email");
   const [status, setStatus] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
 
-  async function handleLogin(e: React.FormEvent) {
-  e.preventDefault();
-  if (!email) return;
+  /* ===============================
+     STAP 1 – CODE VERSTUREN
+  =============================== */
+  async function handleSendCode(e: React.FormEvent) {
+    e.preventDefault();
+    if (!email) return;
 
-  setLoading(true);
-  setStatus("Magic link wordt verstuurd…");
+    setLoading(true);
+    setStatus("Versturen van inlogcode…");
 
-  const { error } = await supabase.auth.signInWithOtp({
-    email,
-    options: {
-      shouldCreateUser: false,
-      // ✅ JUISTE CALLBACK
-      emailRedirectTo: `${window.location.origin}/auth/club-callback`,
-    },
-  });
+    const { error } = await supabase.auth.signInWithOtp({
+      email,
+      options: {
+        shouldCreateUser: false,
+      },
+    });
 
-  if (error) {
-    console.error(error.message);
-    setStatus(
-      "Dit e-mailadres is (nog) niet bekend. Meld je eerst aan."
-    );
-  } else {
-    setStatus("Check je mailbox voor de magic link.");
+    if (error) {
+      console.error(error.message);
+      setStatus(
+        "Dit e-mailadres is (nog) niet bekend. Meld je eerst aan."
+      );
+    } else {
+      setStep("code");
+      setStatus(
+        "Er is een 6-cijferige code naar je e-mailadres gestuurd."
+      );
+    }
+
+    setLoading(false);
   }
 
+  /* ===============================
+     STAP 2 – CODE VERIFIËREN
+  =============================== */
+  async function handleVerifyCode(e: React.FormEvent) {
+    e.preventDefault();
+    if (!code) return;
+
+    setLoading(true);
+    setStatus("Controleren van code…");
+
+    const { error } = await supabase.auth.verifyOtp({
+  email,
+  token: code,
+  type: "email",
+});
+
+if (error) {
+  console.error(error.message);
+  setStatus("Ongeldige of verlopen code.");
   setLoading(false);
+  return;
 }
+
+// 🔥 1️⃣ Ingelogde user ophalen
+const {
+  data: { user },
+} = await supabase.auth.getUser();
+
+if (!user) {
+  setStatus("Kon gebruiker niet ophalen.");
+  setLoading(false);
+  return;
+}
+
+// 🔥 2️⃣ Profiel ophalen
+const { data: profile } = await supabase
+  .from("profiles")
+  .select("club_id")
+  .eq("user_id", user.id)
+  .maybeSingle();
+
+if (!profile?.club_id) {
+  setStatus("Geen club gekoppeld aan dit account.");
+  setLoading(false);
+  return;
+}
+
+// 🔥 3️⃣ Club slug ophalen
+const { data: club } = await supabase
+  .from("clubs")
+  .select("slug")
+  .eq("id", profile.club_id)
+  .maybeSingle();
+
+if (!club?.slug) {
+  setStatus("Club niet gevonden.");
+  setLoading(false);
+  return;
+}
+
+// 🔥 4️⃣ Redirect naar juiste dashboard
+router.push(`/club/${club.slug}/dashboard`);
+  }
 
   return (
     <main className="min-h-screen flex items-center justify-center bg-[#0d1b2a] p-6">
       <div className="w-full max-w-sm bg-white border-2 border-white rounded-2xl p-6 shadow-xl space-y-5">
+
         <h1 className="text-xl font-semibold text-center">
           Club Login
         </h1>
@@ -54,36 +127,90 @@ export default function ClubLoginPage() {
           Log in met het e-mailadres dat gekoppeld is aan je clubaccount.
         </p>
 
-        <form onSubmit={handleLogin} className="space-y-4">
-          <input
-            id="email"
-            name="email"
-            type="email"
-            autoComplete="email"
-            required
-            placeholder="bijv. contact@club.nl"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            className="
-              w-full rounded-lg border-2 border-gray-300 px-3 py-2 text-sm
-              text-[#0d1b2a] placeholder:text-gray-400
-              focus:outline-none focus:border-[#0d1b2a]
-            "
-          />
+        {/* ===============================
+            STAP 1 – EMAIL
+        =============================== */}
+        {step === "email" && (
+          <form onSubmit={handleSendCode} className="space-y-4">
 
-          <button
-            type="submit"
-            disabled={loading}
-            className="
-              w-full rounded-xl px-4 py-2 text-sm font-semibold transition
-              bg-[#1f9d55] text-white
-              hover:bg-[#15803d]
-              disabled:opacity-60
-            "
-          >
-            {loading ? "Versturen…" : "Verstuur magic link"}
-          </button>
-        </form>
+            <input
+              type="email"
+              required
+              placeholder="bijv. contact@club.nl"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              className="
+                w-full rounded-lg border-2 border-gray-300 px-3 py-2 text-sm
+                text-[#0d1b2a] placeholder:text-gray-400
+                focus:outline-none focus:border-[#0d1b2a]
+              "
+            />
+
+            <button
+              type="submit"
+              disabled={loading}
+              className="
+                w-full rounded-xl px-4 py-2 text-sm font-semibold transition
+                bg-[#1f9d55] text-white
+                hover:bg-[#15803d]
+                disabled:opacity-60
+              "
+            >
+              {loading ? "Versturen…" : "Verstuur inlogcode"}
+            </button>
+
+          </form>
+        )}
+
+        {/* ===============================
+            STAP 2 – CODE
+        =============================== */}
+        {step === "code" && (
+          <form onSubmit={handleVerifyCode} className="space-y-4">
+
+            <input
+              type="text"
+              inputMode="numeric"
+              maxLength={6}
+              required
+              placeholder="Voer 6-cijferige code in"
+              value={code}
+              onChange={(e) => setCode(e.target.value)}
+              className="
+                w-full rounded-lg border-2 border-gray-300 px-3 py-2 text-sm
+                text-center tracking-widest
+                text-[#0d1b2a]
+                focus:outline-none focus:border-[#0d1b2a]
+              "
+            />
+
+            <button
+              type="submit"
+              disabled={loading}
+              className="
+                w-full rounded-xl px-4 py-2 text-sm font-semibold transition
+                bg-[#0d1b2a] text-white
+                hover:bg-[#132a44]
+                disabled:opacity-60
+              "
+            >
+              {loading ? "Controleren…" : "Inloggen"}
+            </button>
+
+            <button
+              type="button"
+              onClick={() => {
+                setStep("email");
+                setCode("");
+                setStatus(null);
+              }}
+              className="text-xs text-gray-500 underline w-full"
+            >
+              Ander e-mailadres gebruiken
+            </button>
+
+          </form>
+        )}
 
         {status && (
           <p className="text-sm text-center text-gray-600">
@@ -102,6 +229,7 @@ export default function ClubLoginPage() {
             Meld je club aan
           </Link>
         </div>
+
       </div>
     </main>
   );
