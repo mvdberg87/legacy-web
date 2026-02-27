@@ -66,13 +66,20 @@ export async function middleware(req: NextRequest) {
   ====================================================== */
   const { data: profile } = await supabase
     .from("profiles")
-    .select("role, club_id")
+    .select("role, club_id, active")
     .eq("user_id", user.id)
     .maybeSingle();
 
   if (!profile) {
     return NextResponse.redirect(new URL("/unauthorized", origin));
   }
+
+  if (profile.active === false) {
+  return NextResponse.redirect(
+    new URL(isAdminRoute ? "/admin/login" : "/login", origin)
+  );
+}
+
 
   /* ======================================================
      4️⃣ Admin rules

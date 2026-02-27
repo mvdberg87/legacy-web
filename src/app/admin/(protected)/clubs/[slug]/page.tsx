@@ -42,6 +42,8 @@ export default function AdminClubDetailPage() {
   const [jobs, setJobs] = useState<JobWithStats[]>([]);
   const [loading, setLoading] = useState(true);
   const [reports, setReports] = useState<any[]>([]);
+  const [clubUser, setClubUser] = useState<any>(null);
+const [newEmail, setNewEmail] = useState("");
 
   /* ---------- Data ophalen ---------- */
 
@@ -61,6 +63,19 @@ export default function AdminClubDetailPage() {
 }
 
     setClub(clubData);
+
+    /* ===============================
+   Club gebruiker ophalen
+=============================== */
+
+const res = await fetch("/api/admin/get-club-user", {
+  method: "POST",
+  headers: { "Content-Type": "application/json" },
+  body: JSON.stringify({ clubId: clubData.id }),
+});
+
+const userData = await res.json();
+setClubUser(userData.user);
 
     /* ===============================
    Monthly reports ophalen
@@ -172,6 +187,36 @@ setReports(reportsData ?? []);
   } catch {
     alert("Opnieuw versturen mislukt.");
   }
+}
+
+async function deactivateUser() {
+  if (!clubUser) return;
+  if (!confirm("Weet je zeker dat je deze gebruiker wilt deactiveren?")) return;
+
+  await fetch("/api/admin/deactivate-user", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ userId: clubUser.id }),
+  });
+
+  setClubUser(null);
+}
+
+async function inviteUser() {
+  if (!newEmail) return;
+
+  await fetch("/api/admin/invite-club-user", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      email: newEmail,
+      clubId: club?.id,
+    }),
+  });
+
+  alert("Uitnodiging verzonden");
+  setNewEmail("");
+  load();
 }
 
   /* ---------- Render ---------- */
@@ -306,6 +351,57 @@ setReports(reportsData ?? []);
           </table>
         </div>
             </motion.div>
+
+         <motion.div
+  className="bg-white text-black rounded-2xl shadow p-6"
+  initial={{ opacity: 0, y: 10 }}
+  animate={{ opacity: 1, y: 0 }}
+>
+  <h2 className="text-lg font-semibold mb-4">
+    Club gebruiker
+  </h2>
+
+  {clubUser ? (
+    <div className="space-y-4">
+      <div>
+        <p className="text-sm text-gray-500">Login e-mail</p>
+        <p className="font-medium">{clubUser.email}</p>
+      </div>
+
+      <button
+        onClick={deactivateUser}
+        className="bg-red-600 text-white px-4 py-2 rounded-lg text-sm"
+      >
+        Deactiveer gebruiker
+      </button>
+    </div>
+  ) : (
+    <p className="text-gray-500 mb-4">
+      Geen actieve gebruiker gekoppeld.
+    </p>
+  )}
+
+  <div className="mt-6 border-t pt-6 space-y-3">
+    <p className="text-sm font-medium">
+      Nieuwe gebruiker uitnodigen
+    </p>
+
+    <input
+      type="email"
+      value={newEmail}
+      onChange={(e) => setNewEmail(e.target.value)}
+      placeholder="email@club.nl"
+      className="w-full border px-3 py-2 rounded-lg text-sm"
+    />
+
+    <button
+      onClick={inviteUser}
+      className="bg-black text-white px-4 py-2 rounded-lg text-sm"
+    >
+      Verstuur uitnodiging
+    </button>
+  </div>
+</motion.div>   
 
       {/* ===============================
           Maandrapport geschiedenis
