@@ -55,6 +55,8 @@ export default function ClientPage({
   useEffect(() => {
   if (!club?.id) return;
 
+  console.log("TRACK PAGEVIEW:", club.id);
+
   fetch("/api/track-pageviews", {
     method: "POST",
     headers: {
@@ -64,7 +66,7 @@ export default function ClientPage({
       clubId: club.id,
     }),
   }).catch(() => {});
-}, [club]);
+}, [club?.id]);
   
   async function trackJobClick(jobId: string) {
     try {
