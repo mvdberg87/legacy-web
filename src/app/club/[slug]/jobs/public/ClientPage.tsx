@@ -52,14 +52,8 @@ export default function ClientPage({
     /* ===============================
      Pageview tracking
   =============================== */
-  const hasTracked = useRef(false);
-
-useEffect(() => {
-  console.log("PAGEVIEW EFFECT RUNS");
+  useEffect(() => {
   if (!club?.id) return;
-  if (hasTracked.current) return;
-
-  hasTracked.current = true;
 
   fetch("/api/track-pageviews", {
     method: "POST",
@@ -70,7 +64,7 @@ useEffect(() => {
       clubId: club.id,
     }),
   }).catch(() => {});
-}, []);
+}, [club]);
   
   async function trackJobClick(jobId: string) {
     try {
