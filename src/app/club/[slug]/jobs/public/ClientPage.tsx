@@ -53,7 +53,7 @@ export default function ClientPage({
      Pageview tracking
   =============================== */
   useEffect(() => {
-    fetch("/api/track-pageview", {
+    fetch("/api/track-pageviews", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
