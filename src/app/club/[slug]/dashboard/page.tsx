@@ -108,6 +108,7 @@ export default function ClubDashboardPage() {
         .maybeSingle();
 
       if (!clubData) return setLoading(false);
+      console.log("DASHBOARD CLUB ID:", clubData.id);
 
       setClub(clubData);
 
