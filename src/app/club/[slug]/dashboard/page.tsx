@@ -1,5 +1,6 @@
 "use client";
 
+import ClubSupportBar from "@/components/ClubSupportBar";
 import { useEffect, useMemo, useState } from "react";
 import { motion } from "framer-motion";
 import { useParams } from "next/navigation";
@@ -619,6 +620,10 @@ const canUpgrade = isHigher;
             })}
           </div>
         </section>
+        {/* ===============================
+            Support balk
+        =============================== */}
+        <ClubSupportBar />
       </motion.div>
     </main>
   );

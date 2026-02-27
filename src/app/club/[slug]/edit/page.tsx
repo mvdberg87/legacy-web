@@ -1,5 +1,6 @@
 "use client";
 
+import ClubSupportBar from "@/components/ClubSupportBar";
 import { useEffect, useMemo, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 import { getSupabaseBrowser } from "@/lib/supabaseBrowser";
@@ -266,7 +267,13 @@ export default function ClubEditPage() {
             </button>
           </div>
         </form>
-      </div>
+            </div>
+
+      {/* ===============================
+          Support balk
+      =============================== */}
+      <ClubSupportBar />
+
     </main>
   );
 }

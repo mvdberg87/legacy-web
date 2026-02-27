@@ -1,5 +1,6 @@
 "use client";
 
+import ClubSupportBar from "@/components/ClubSupportBar";
 import { useEffect, useMemo, useState } from "react";
 import { useRouter, useParams } from "next/navigation";
 import { getSupabaseBrowser } from "@/lib/supabaseBrowser";
@@ -383,6 +384,10 @@ export default function ClubJobsPage() {
             ))}
           </tbody>
         </table>
+        {/* ===============================
+            Support balk
+        =============================== */}
+        <ClubSupportBar />
       </div>
     </main>
   );
