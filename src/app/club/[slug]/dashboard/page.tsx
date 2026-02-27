@@ -54,6 +54,7 @@ const PACKAGE_ORDER: PackageKey[] = [
 ];
 
 export default function ClubDashboardPage() {
+  console.log("DASHBOARD COMPONENT RENDERED");
   const supabase = useMemo(() => getSupabaseBrowser(), []);
   const { slug } = useParams<{ slug: string }>();
 
