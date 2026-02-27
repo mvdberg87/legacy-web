@@ -1,7 +1,7 @@
 "use client";
 
 import ListingCard from "@/components/ListingCard";
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 
 /* ---------- Types ---------- */
 
@@ -52,17 +52,24 @@ export default function ClientPage({
     /* ===============================
      Pageview tracking
   =============================== */
-  useEffect(() => {
-    fetch("/api/track-pageviews", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        clubId: club.id,
-      }),
-    }).catch(() => {});
-  }, [club.id]);
+  const hasTracked = useRef(false);
+
+useEffect(() => {
+  if (!club?.id) return;
+  if (hasTracked.current) return;
+
+  hasTracked.current = true;
+
+  fetch("/api/track-pageviews", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      clubId: club.id,
+    }),
+  }).catch(() => {});
+}, [club?.id]);
   
   async function trackJobClick(jobId: string) {
     try {
