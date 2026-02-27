@@ -55,6 +55,7 @@ export default function ClientPage({
   const hasTracked = useRef(false);
 
 useEffect(() => {
+  console.log("PAGEVIEW EFFECT RUNS");
   if (!club?.id) return;
   if (hasTracked.current) return;
 
@@ -69,7 +70,7 @@ useEffect(() => {
       clubId: club.id,
     }),
   }).catch(() => {});
-}, [club?.id]);
+}, []);
   
   async function trackJobClick(jobId: string) {
     try {
