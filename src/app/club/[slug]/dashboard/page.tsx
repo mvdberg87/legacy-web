@@ -104,7 +104,7 @@ export default function ClubDashboardPage() {
           subscription_status,
           subscription_cancelled_at
         `)
-        .eq("id", profile.club_id)
+        .eq("slug", slug)
         .maybeSingle();
 
       if (!clubData) return setLoading(false);
