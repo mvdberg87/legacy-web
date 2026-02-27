@@ -252,7 +252,7 @@ const ctr =
 
       setLoading(false);
     })();
-  }, [supabase]);
+  }, []);
 
  async function requestUpgrade(
   targetPackage: PackageKey
