@@ -55,8 +55,6 @@ export default function ClientPage({
   useEffect(() => {
   if (!club?.id) return;
 
-  console.log("TRACK PAGEVIEW:", club.id);
-
   fetch("/api/track-pageviews", {
     method: "POST",
     headers: {
@@ -65,24 +63,26 @@ export default function ClientPage({
     body: JSON.stringify({
       clubId: club.id,
     }),
+    keepalive: true,   // 🔥 BELANGRIJK
   }).catch(() => {});
-}, [club?.id]);
+}, [club.id]);
   
-  async function trackJobClick(jobId: string) {
-    try {
-      await fetch("/api/jobs/track-click", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          job_id: jobId,
-          club_id: club.id,
-          source: "public_jobs_page",
-        }),
-      });
-    } catch (err) {
-      console.error("track click failed", err);
-    }
-  }
+  function trackJobClick(jobId: string) {
+  if (!club?.id) return;
+
+  fetch("/api/jobs/track-click", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      job_id: jobId,
+      club_id: club.id,
+      source: "public_jobs_page",
+    }),
+    keepalive: true,   // 🔥 zorgt dat request niet wordt afgebroken bij navigatie
+  }).catch(() => {});
+}
 
   const sortedJobs = [...jobs].sort(
     (a, b) => Number(b.is_featured) - Number(a.is_featured)
