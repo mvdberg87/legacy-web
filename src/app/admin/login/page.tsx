@@ -17,30 +17,30 @@ export default function AdminLoginPage() {
   /* ===============================
      STAP 1 – CODE VERSTUREN
   =============================== */
-  async function handleSendCode(e: React.FormEvent) {
-    e.preventDefault();
-    if (!email) return;
+ async function handleSendCode(e: React.FormEvent) {
+  e.preventDefault();
+  if (!email) return;
 
-    setLoading(true);
-    setStatus("Versturen van inlogcode…");
+  setLoading(true);
+  setStatus("Versturen van inlogcode…");
 
-    const { error } = await supabase.auth.signInWithOtp({
-      email,
-      options: {
-        shouldCreateUser: false,
-      },
-    });
+  const { error } = await supabase.auth.signInWithOtp({
+    email: email.toLowerCase().trim(),
+    options: {
+      shouldCreateUser: false,
+    },
+  });
 
-    if (error) {
-      setStatus(error.message);
-      setLoading(false);
-      return;
-    }
-
-    setStep("code");
-    setStatus("Er is een 6-cijferige code verstuurd.");
+  if (error) {
+    setStatus(error.message);
     setLoading(false);
+    return;
   }
+
+  setStep("code");
+  setStatus("Er is een 6-cijferige code verstuurd.");
+  setLoading(false);
+}
 
   /* ===============================
      STAP 2 – CODE CONTROLEREN
@@ -54,7 +54,7 @@ export default function AdminLoginPage() {
 
     const { error } = await supabase.auth.verifyOtp({
   email,
-  token: code,
+  token: code.trim(),
   type: "email",
 });
 
@@ -65,9 +65,8 @@ if (error) {
 }
 
 // 🔥 Ingelogde user ophalen
-const {
-  data: { user },
-} = await supabase.auth.getUser();
+const { data: sessionData } = await supabase.auth.getSession();
+const user = sessionData?.session?.user;
 
 if (!user) {
   setStatus("Kon gebruiker niet ophalen.");

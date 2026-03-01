@@ -26,11 +26,11 @@ export default function ClubLoginPage() {
     setStatus("Versturen van inlogcode…");
 
     const { error } = await supabase.auth.signInWithOtp({
-      email,
-      options: {
-        shouldCreateUser: false,
-      },
-    });
+  email: email.toLowerCase().trim(),
+  options: {
+    shouldCreateUser: false,
+  },
+});
 
     if (error) {
       console.error(error.message);
@@ -58,8 +58,8 @@ export default function ClubLoginPage() {
     setStatus("Controleren van code…");
 
     const { error } = await supabase.auth.verifyOtp({
-  email,
-  token: code,
+  email: email.toLowerCase().trim(),
+  token: code.trim(),
   type: "email",
 });
 
@@ -71,9 +71,8 @@ if (error) {
 }
 
 // 🔥 1️⃣ Ingelogde user ophalen
-const {
-  data: { user },
-} = await supabase.auth.getUser();
+const { data: sessionData } = await supabase.auth.getSession();
+const user = sessionData?.session?.user;
 
 if (!user) {
   setStatus("Kon gebruiker niet ophalen.");
