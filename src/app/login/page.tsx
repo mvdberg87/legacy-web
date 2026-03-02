@@ -70,9 +70,13 @@ if (error) {
   return;
 }
 
+console.log("OTP verified");
+
 // 🔥 1️⃣ Ingelogde user ophalen
 const { data: sessionData } = await supabase.auth.getSession();
 const user = sessionData?.session?.user;
+
+console.log("USER:", user);
 
 if (!user) {
   setStatus("Kon gebruiker niet ophalen.");
@@ -86,6 +90,7 @@ const { data: profile } = await supabase
   .select("club_id")
   .eq("user_id", user.id)
   .maybeSingle();
+  
 
 if (!profile?.club_id) {
   setStatus("Geen club gekoppeld aan dit account.");
