@@ -1,7 +1,7 @@
 {
   "crons": [
     {
-      "path": "/api/cron/trial-monitor",
+      "path": "/api/cron/basic-monitor",
       "schedule": "0 9 * * *"
     },
     {
