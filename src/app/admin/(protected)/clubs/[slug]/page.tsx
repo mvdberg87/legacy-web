@@ -44,6 +44,12 @@ export default function AdminClubDetailPage() {
   const [reports, setReports] = useState<any[]>([]);
   const [clubUser, setClubUser] = useState<any>(null);
 const [newEmail, setNewEmail] = useState("");
+const [stats, setStats] = useState({
+  totalVacancies: 0,
+  totalClicks: 0,
+  monthClicks: 0,
+  featuredCount: 0,
+});
 
   /* ---------- Data ophalen ---------- */
 
@@ -99,6 +105,39 @@ setReports(reportsData ?? []);
       .order("created_at", { ascending: false });
 
     const jobIds = (jobsData ?? []).map((j) => j.id);
+
+    // ===============================
+// Extra statistieken berekenen
+// ===============================
+
+const totalVacancies = jobsData?.length ?? 0;
+
+const featuredCount =
+  jobsData?.filter((j) => j.featured).length ?? 0;
+
+// Totaal clicks
+const { count: totalClicks } = await supabase
+  .from("job_clicks")
+  .select("*", { count: "exact", head: true })
+  .in("job_id", jobIds);
+
+// Clicks deze maand
+const startOfMonth = new Date();
+startOfMonth.setDate(1);
+startOfMonth.setHours(0, 0, 0, 0);
+
+const { count: monthClicks } = await supabase
+  .from("job_clicks")
+  .select("*", { count: "exact", head: true })
+  .in("job_id", jobIds)
+  .gte("created_at", startOfMonth.toISOString());
+
+setStats({
+  totalVacancies,
+  totalClicks: totalClicks ?? 0,
+  monthClicks: monthClicks ?? 0,
+  featuredCount,
+});
 
     const { data: clicks } = await supabase
       .from("job_clicks")
@@ -223,6 +262,68 @@ async function inviteUser() {
 
   return (
     <div className="space-y-8">
+{/* ======================================
+   ADMIN PERFORMANCE DASHBOARD
+====================================== */}
+
+<motion.div
+  className="bg-white text-black rounded-2xl shadow p-6"
+  initial={{ opacity: 0, y: 10 }}
+  animate={{ opacity: 1, y: 0 }}
+>
+  <div className="flex justify-between items-center mb-6">
+    <div>
+      <h1 className="text-2xl font-semibold">
+        {club.name} – Performance overzicht
+      </h1>
+      <p className="text-sm text-gray-500">
+        Admin controlepaneel
+      </p>
+    </div>
+
+    <div className="text-right text-sm">
+      <p className="text-gray-500">Publieke pagina</p>
+      <a
+        href={`/club/${club.slug}/jobs/public`}
+        target="_blank"
+        className="text-blue-600 underline"
+      >
+        https://www.sponsorjobs.nl/club/{club.slug}/jobs/public
+      </a>
+    </div>
+  </div>
+
+  {/* Stat cards */}
+  <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+    <div className="bg-slate-50 p-4 rounded-xl">
+      <p className="text-xs text-gray-500">Actieve vacatures</p>
+      <p className="text-2xl font-semibold">
+        {stats.totalVacancies}
+      </p>
+    </div>
+
+    <div className="bg-slate-50 p-4 rounded-xl">
+      <p className="text-xs text-gray-500">Totaal clicks</p>
+      <p className="text-2xl font-semibold">
+        {stats.totalClicks}
+      </p>
+    </div>
+
+    <div className="bg-slate-50 p-4 rounded-xl">
+      <p className="text-xs text-gray-500">Clicks deze maand</p>
+      <p className="text-2xl font-semibold">
+        {stats.monthClicks}
+      </p>
+    </div>
+
+    <div className="bg-slate-50 p-4 rounded-xl">
+      <p className="text-xs text-gray-500">Uitgelichte vacatures</p>
+      <p className="text-2xl font-semibold">
+        {stats.featuredCount}
+      </p>
+    </div>
+  </div>
+</motion.div>
       <motion.div
         className="bg-white text-black rounded-2xl shadow p-6"
         initial={{ opacity: 0, y: 10 }}
