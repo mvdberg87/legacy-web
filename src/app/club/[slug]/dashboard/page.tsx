@@ -117,13 +117,16 @@ export default function ClubDashboardPage() {
    Pageviews ophalen
 =============================== */
 
-const { count: pageviews } = await supabase
+const { data: pageviewsData } = await supabase
   .from("club_page_views")
-  .select("id", {
-    count: "exact",
-    head: true,
-  })
+  .select("ip_address")
   .eq("club_id", clubData.id);
+
+const totalPageviews = pageviewsData?.length ?? 0;
+
+const uniquePageviews = new Set(
+  (pageviewsData ?? []).map((p) => p.ip_address)
+).size;
 
       /* ===============================
          1️⃣ Actieve vacatures
@@ -142,57 +145,57 @@ const { count: pageviews } = await supabase
       =============================== */
 
       let totalClicks = 0;
-      const sponsorMap: Record<string, SponsorOverviewRow> = {};
+let uniqueClickers = 0;   // 👈 HIER declareren
 
-      if (jobIds.length > 0) {
-        const { data: clicks } = await supabase
-          .from("job_clicks")
-          .select("job_id, created_at")
-          .in("job_id", jobIds);
+const sponsorMap: Record<string, SponsorOverviewRow> = {};
 
-        totalClicks = clicks?.length ?? 0;
+if (jobIds.length > 0) {
+  const { data: clicks } = await supabase
+    .from("job_clicks")
+    .select("job_id, created_at, ip_address")
+    .in("job_id", jobIds);
 
-        // vacatures tellen per sponsor
-        jobs?.forEach((job) => {
-          if (!sponsorMap[job.company_name]) {
-            sponsorMap[job.company_name] = {
-              sponsor_name: job.company_name,
-              total_jobs: 0,
-              total_clicks: 0,
-              last_activity_at: null,
-            };
-          }
-          sponsorMap[job.company_name].total_jobs++;
-        });
+  totalClicks = clicks?.length ?? 0;
 
-        // clicks tellen per sponsor
-        clicks?.forEach((click) => {
-          const job = jobs?.find(
-            (j) => j.id === click.job_id
-          );
-          if (!job) return;
+  uniqueClickers = new Set(
+    (clicks ?? [])
+      .map((c) => c.ip_address)
+      .filter(Boolean)
+  ).size;
 
-          const sponsor =
-            sponsorMap[job.company_name];
+  // vacatures tellen per sponsor
+  jobs?.forEach((job) => {
+    if (!sponsorMap[job.company_name]) {
+      sponsorMap[job.company_name] = {
+        sponsor_name: job.company_name,
+        total_jobs: 0,
+        total_clicks: 0,
+        last_activity_at: null,
+      };
+    }
+    sponsorMap[job.company_name].total_jobs++;
+  });
 
-          sponsor.total_clicks++;
+  // clicks tellen per sponsor
+  clicks?.forEach((click) => {
+    const job = jobs?.find(
+      (j) => j.id === click.job_id
+    );
+    if (!job) return;
 
-          if (
-            !sponsor.last_activity_at ||
-            new Date(click.created_at) >
-              new Date(sponsor.last_activity_at)
-          ) {
-            sponsor.last_activity_at =
-              click.created_at;
-          }
-        });
-      }
+    const sponsor = sponsorMap[job.company_name];
 
-      setSponsors(
-        Object.values(sponsorMap).sort(
-          (a, b) => b.total_clicks - a.total_clicks
-        )
-      );
+    sponsor.total_clicks++;
+
+    if (
+      !sponsor.last_activity_at ||
+      new Date(click.created_at) >
+        new Date(sponsor.last_activity_at)
+    ) {
+      sponsor.last_activity_at = click.created_at;
+    }
+  });
+}
 
       /* ===============================
          3️⃣ Advertenties tellen
@@ -210,11 +213,9 @@ const { count: pageviews } = await supabase
 
       setAdsCount(ads ?? 0);
 
-      const totalPageviews = pageviews ?? 0;
-
 const ctr =
   totalPageviews > 0
-    ? ((totalClicks / totalPageviews) * 100).toFixed(1)
+    ? ((uniqueClickers / totalPageviews) * 100).toFixed(1)
     : "0.0";
 
       /* ===============================
