@@ -69,7 +69,7 @@ export default function ClubEditPage() {
     setUploadingLogo(true);
 
     const fileExt = file.name.split(".").pop();
-    const filePath = `${club.id}/logo.${fileExt}`;
+    const filePath = `${club.id}/logo-${Date.now()}.${fileExt}`;
 
     const { error: uploadError } = await supabase.storage
       .from("club-logos")
@@ -82,12 +82,14 @@ export default function ClubEditPage() {
     }
 
     const { data } = supabase.storage
-      .from("club-logos")
-      .getPublicUrl(filePath);
+  .from("club-logos")
+  .getPublicUrl(filePath);
 
-    setClub((c) =>
-      c ? { ...c, logo_url: data.publicUrl } : c
-    );
+const publicUrlWithCacheBust = `${data.publicUrl}?t=${Date.now()}`;
+
+setClub((c) =>
+  c ? { ...c, logo_url: publicUrlWithCacheBust } : c
+);
 
     setUploadingLogo(false);
   }
