@@ -49,7 +49,22 @@ const [stats, setStats] = useState({
   totalClicks: 0,
   monthClicks: 0,
   featuredCount: 0,
+  pageviews: 0,
+  ctr: 0,
+  totalAds: 0,
+  activeAds: 0,
 });
+
+function StatCard({ label, value }: { label: string; value: any }) {
+  return (
+    <div className="border-2 border-slate-900 rounded-2xl p-6 text-center">
+      <div className="text-3xl font-semibold">{value}</div>
+      <div className="text-xs text-gray-500 uppercase tracking-wide mt-2">
+        {label}
+      </div>
+    </div>
+  );
+}
 
   /* ---------- Data ophalen ---------- */
 
@@ -107,6 +122,44 @@ setReports(reportsData ?? []);
     const jobIds = (jobsData ?? []).map((j) => j.id);
 
     // ===============================
+// ADMIN PERFORMANCE METRICS
+// ===============================
+
+// Actieve vacatures
+const activeVacancies = jobsData?.length ?? 0;
+
+// Totaal clicks
+const { count: totalClicks } = await supabase
+  .from("job_clicks")
+  .select("*", { count: "exact", head: true })
+  .in("job_id", jobIds);
+
+// Pageviews (indien je deze tabel hebt)
+const { count: pageviews } = await supabase
+  .from("job_pageviews") // pas aan als jouw tabel anders heet
+  .select("*", { count: "exact", head: true })
+  .in("job_id", jobIds);
+
+// Advertenties totaal
+const { count: totalAds } = await supabase
+  .from("club_ads")
+  .select("*", { count: "exact", head: true })
+  .eq("club_id", clubData.id);
+
+// Advertenties actief
+const { count: activeAds } = await supabase
+  .from("club_ads")
+  .select("*", { count: "exact", head: true })
+  .eq("club_id", clubData.id)
+  .is("archived_at", null);
+
+// CTR berekenen
+const ctr =
+  pageviews && pageviews > 0
+    ? ((totalClicks ?? 0) / pageviews) * 100
+    : 0;
+
+    // ===============================
 // Extra statistieken berekenen
 // ===============================
 
@@ -116,7 +169,7 @@ const featuredCount =
   jobsData?.filter((j) => j.featured).length ?? 0;
 
 // Totaal clicks
-const { count: totalClicks } = await supabase
+const { count: totalClicksCount } = await supabase
   .from("job_clicks")
   .select("*", { count: "exact", head: true })
   .in("job_id", jobIds);
@@ -134,9 +187,13 @@ const { count: monthClicks } = await supabase
 
 setStats({
   totalVacancies,
-  totalClicks: totalClicks ?? 0,
-  monthClicks: monthClicks ?? 0,
+  totalClicks: totalClicksCount ?? 0,
+  monthClicks,
   featuredCount,
+  pageviews: pageviews ?? 0,
+  ctr: Number(ctr.toFixed(1)),
+  totalAds: totalAds ?? 0,
+  activeAds: activeAds ?? 0,
 });
 
     const { data: clicks } = await supabase
@@ -294,34 +351,22 @@ async function inviteUser() {
   </div>
 
   {/* Stat cards */}
-  <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-    <div className="bg-slate-50 p-4 rounded-xl">
-      <p className="text-xs text-gray-500">Actieve vacatures</p>
-      <p className="text-2xl font-semibold">
-        {stats.totalVacancies}
-      </p>
-    </div>
+  <div className="grid grid-cols-2 md:grid-cols-6 gap-4">
 
-    <div className="bg-slate-50 p-4 rounded-xl">
-      <p className="text-xs text-gray-500">Totaal clicks</p>
-      <p className="text-2xl font-semibold">
-        {stats.totalClicks}
-      </p>
-    </div>
+  <StatCard label="Pageviews" value={stats.pageviews} />
 
-    <div className="bg-slate-50 p-4 rounded-xl">
-      <p className="text-xs text-gray-500">Clicks deze maand</p>
-      <p className="text-2xl font-semibold">
-        {stats.monthClicks}
-      </p>
-    </div>
+  <StatCard label="CTR" value={`${stats.ctr} %`} />
 
-    <div className="bg-slate-50 p-4 rounded-xl">
-      <p className="text-xs text-gray-500">Uitgelichte vacatures</p>
-      <p className="text-2xl font-semibold">
-        {stats.featuredCount}
-      </p>
-    </div>
+  <StatCard label="Actieve vacatures" value={stats.totalVacancies} />
+
+  <StatCard label="Advertenties" value={stats.totalAds} />
+
+  <StatCard label="Totaal clicks" value={stats.totalClicks} />
+
+  <StatCard
+    label="Advertenties actief"
+    value={`${stats.activeAds} / ${stats.totalAds}`}
+  />
   </div>
 </motion.div>
       <motion.div
