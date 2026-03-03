@@ -117,16 +117,13 @@ export default function ClubDashboardPage() {
    Pageviews ophalen
 =============================== */
 
-const { data: pageviewsData } = await supabase
+const { count: totalPageviews } = await supabase
   .from("club_page_views")
-  .select("ip_address")
+  .select("id", {
+    count: "exact",
+    head: true,
+  })
   .eq("club_id", clubData.id);
-
-const totalPageviews = pageviewsData?.length ?? 0;
-
-const uniquePageviews = new Set(
-  (pageviewsData ?? []).map((p) => p.ip_address)
-).size;
 
       /* ===============================
          1️⃣ Actieve vacatures
@@ -145,7 +142,6 @@ const uniquePageviews = new Set(
       =============================== */
 
       let totalClicks = 0;
-let uniqueClickers = 0;   // 👈 HIER declareren
 
 const sponsorMap: Record<string, SponsorOverviewRow> = {};
 
@@ -156,12 +152,6 @@ if (jobIds.length > 0) {
     .in("job_id", jobIds);
 
   totalClicks = clicks?.length ?? 0;
-
-  uniqueClickers = new Set(
-    (clicks ?? [])
-      .map((c) => c.ip_address)
-      .filter(Boolean)
-  ).size;
 
   // vacatures tellen per sponsor
   jobs?.forEach((job) => {
@@ -214,8 +204,8 @@ if (jobIds.length > 0) {
       setAdsCount(ads ?? 0);
 
 const ctr =
-  totalPageviews > 0
-    ? ((uniqueClickers / totalPageviews) * 100).toFixed(1)
+  totalPageviews && totalPageviews > 0
+    ? ((totalClicks / totalPageviews) * 100).toFixed(1)
     : "0.0";
 
       /* ===============================
