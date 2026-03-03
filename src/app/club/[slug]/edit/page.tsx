@@ -5,6 +5,7 @@ import { useEffect, useMemo, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 import { getSupabaseBrowser } from "@/lib/supabaseBrowser";
 import ClubNavbar from "@/components/club/ClubNavbar";
+import { DEFAULT_PUBLIC_JOBS_INTRO } from "@/lib/defaultTexts";
 
 /* ---------- Types ---------- */
 
@@ -16,16 +17,6 @@ type Club = {
   slug: string;
   jobs_intro_text: string;
 };
-
-/* ---------- Default intro tekst ---------- */
-
-const DEFAULT_JOBS_INTRO = `Deze pagina brengt sponsoren en leden van de vereniging dichter bij elkaar.
-
-Onze sponsoren zijn vaak op zoek naar nieuwe collega’s, stagiairs of talenten uit de regio. Tegelijkertijd zijn onze leden en supporters regelmatig op zoek naar een nieuwe uitdaging, bijbaan of vervolgstap in hun carrière.
-
-Op deze pagina vind je actuele vacatures en partners die verbonden zijn aan de club. Door lokaal te verbinden, versterken we niet alleen onze vereniging, maar ook het netwerk eromheen.
-
-Ben je geïnteresseerd? Klik op een vacature of sponsor en ontdek de mogelijkheden.`;
 
 /* ---------- Pagina ---------- */
 
@@ -57,7 +48,7 @@ export default function ClubEditPage() {
         setClub({
           ...data,
           jobs_intro_text:
-            data.jobs_intro_text ?? DEFAULT_JOBS_INTRO,
+  data.jobs_intro_text ?? DEFAULT_PUBLIC_JOBS_INTRO,
         });
       }
 
@@ -117,10 +108,15 @@ export default function ClubEditPage() {
     setError(null);
     setSuccess(null);
 
-    const { data: updateData, error: updateError } = await supabase
+    const cleanedText = club.jobs_intro_text.trim();
+
+const { data: updateData, error: updateError } = await supabase
   .from("clubs")
   .update({
-    jobs_intro_text: club.jobs_intro_text.trim(),
+    jobs_intro_text:
+      cleanedText === DEFAULT_PUBLIC_JOBS_INTRO
+        ? null
+        : cleanedText,
   })
   .eq("id", club.id)
   .select();
@@ -214,6 +210,19 @@ console.log("UPDATE RESULT:", updateData, updateError);
               className="w-full border rounded-lg px-3 py-2 text-sm"
             />
           </div>
+
+          <button
+  type="button"
+  onClick={() =>
+    setClub({
+      ...club,
+      jobs_intro_text: DEFAULT_PUBLIC_JOBS_INTRO,
+    })
+  }
+  className="text-xs text-blue-600 underline mt-2"
+>
+  Standaardtekst herstellen
+</button>
 
           {/* Logo upload */}
           <div>
