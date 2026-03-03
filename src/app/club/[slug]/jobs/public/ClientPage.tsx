@@ -11,7 +11,6 @@ type Club = {
   slug: string;
   primary_color?: string | null;
   secondary_color?: string | null;
-  admin_email?: string | null;
 };
 
 type Job = {
@@ -215,24 +214,6 @@ export default function ClientPage({
             </div>
           </section>
         )}
-<footer className="text-center text-sm text-gray-400 mt-12">
-  <p className="text-white text-lg mb-2">
-    Heb je vragen over SponsorJobs?
-  </p>
-  <p>
-    Neem dan contact op via{" "}
-    {club.admin_email ? (
-      <a
-        href={`mailto:${club.admin_email}`}
-        className="underline text-blue-300"
-      >
-        {club.admin_email}
-      </a>
-    ) : (
-      "het clubbestuur"
-    )}
-  </p>
-</footer>
 
       </div>
     </main>
