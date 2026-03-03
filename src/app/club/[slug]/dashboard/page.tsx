@@ -227,6 +227,8 @@ const ctr =
       .pop() ?? null,
 });
 
+setSponsors(Object.values(sponsorMap));
+
       /* ===============================
          5️⃣ Upgrade status
       =============================== */
