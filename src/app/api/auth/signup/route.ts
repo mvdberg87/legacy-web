@@ -21,7 +21,11 @@ export async function POST(req: NextRequest) {
     }
 
     const normalizedEmail = email.toLowerCase();
-    const adminEmail = process.env.SPONSORJOBS_ADMIN_EMAILS?.toLowerCase();
+    const adminEmails =
+  process.env.SPONSORJOBS_ADMIN_EMAILS
+    ?.split(",")
+    .map((e) => e.trim())
+    .filter(Boolean) ?? [];
 
     /* ======================================================
        1. 🔒 DEDUPLICATIE: bestaat er al een pending aanvraag?
@@ -71,30 +75,31 @@ export async function POST(req: NextRequest) {
         { status: 500 }
       );
     }
-
+console.log("ADMIN EMAILS:", adminEmails);
     /* ======================================================
        3. Admin notificatie (MAIL)
        ====================================================== */
+console.log("Sending admin notification email...");
 
-    if (adminEmail) {
-      await resend.emails.send({
-        from: process.env.EMAIL_FROM!,
-        replyTo: process.env.EMAIL_REPLY_TO,
-        to: [adminEmail],
-        subject: "🆕 Nieuwe club aangemeld",
-        html: `
-          <h2>Nieuwe club aangemeld</h2>
-          <p><strong>Club:</strong> ${clubName}</p>
-          <p><strong>Contactpersoon:</strong> ${contactName}</p>
-          <p><strong>E-mail:</strong> ${normalizedEmail}</p>
-          <p>
-            <a href="${process.env.NEXT_PUBLIC_SITE_URL}/admin">
-              👉 Ga naar admin dashboard
-            </a>
-          </p>
-        `,
-      });
-    }
+    if (adminEmails.length > 0) {
+  await resend.emails.send({
+    from: process.env.EMAIL_FROM!,
+    replyTo: process.env.EMAIL_REPLY_TO,
+    to: adminEmails,
+    subject: "🆕 Nieuwe club aangemeld",
+    html: `
+      <h2>Nieuwe club aangemeld</h2>
+      <p><strong>Club:</strong> ${clubName}</p>
+      <p><strong>Contactpersoon:</strong> ${contactName}</p>
+      <p><strong>E-mail:</strong> ${normalizedEmail}</p>
+      <p>
+        <a href="${process.env.NEXT_PUBLIC_SITE_URL}/admin">
+          👉 Ga naar admin dashboard
+        </a>
+      </p>
+    `,
+  });
+}
 
     return NextResponse.json({ success: true });
   } catch (err) {
