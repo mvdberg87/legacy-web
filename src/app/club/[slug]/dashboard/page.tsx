@@ -117,15 +117,14 @@ export default function ClubDashboardPage() {
    Pageviews ophalen
 =============================== */
 
-const { count: totalPageviews } = await supabase
+const { data: pageviewsData } = await supabase
   .from("club_page_views")
-  .select("id", {
-    count: "exact",
-    head: true,
-  })
+  .select("id")
   .eq("club_id", clubData.id);
 
-  console.log("PAGEVIEWS COUNT:", totalPageviews);
+const totalPageviews = pageviewsData?.length ?? 0;
+
+console.log("PAGEVIEWS COUNT:", totalPageviews);
 
       /* ===============================
          1️⃣ Actieve vacatures
