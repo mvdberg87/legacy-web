@@ -1,5 +1,21 @@
 // src/lib/companyLogo.ts
 
+function extractDomain(input?: string | null): string | null {
+  if (!input) return null;
+
+  try {
+    const normalized = input.startsWith("http")
+      ? input
+      : `https://${input}`;
+
+    const hostname = new URL(normalized).hostname;
+
+    return hostname.replace(/^www\./, "");
+  } catch {
+    return null;
+  }
+}
+
 export function getCompanyLogo(
   website?: string | null,
   cachedLogo?: string | null
@@ -7,30 +23,19 @@ export function getCompanyLogo(
   // 1️⃣ Gebruik gecachet logo (beste kwaliteit)
   if (cachedLogo) return cachedLogo;
 
-  // 2️⃣ Geen website → lokale placeholder
-  if (!website) return "/placeholder-logo.svg";
+  const domain = extractDomain(website);
+  if (!domain) return "/placeholder-logo.svg";
 
-  try {
-    const domain = new URL(website).hostname.replace(/^www\./, "");
-
-    // 3️⃣ Clearbit (merklogo, premium)
-    return `https://logo.clearbit.com/${domain}`;
-  } catch {
-    return "/placeholder-logo.svg";
-  }
+  // 2️⃣ Clearbit merklogo
+  return `https://logo.clearbit.com/${domain}`;
 }
 
 /**
- * ⚠️ Favicon fallback wordt in de UI gebruikt
- * als Clearbit geen logo toont (img onError)
+ * ⚠️ Favicon fallback wordt gebruikt als Clearbit faalt
  */
 export function getFaviconFallback(website?: string | null) {
-  if (!website) return "/placeholder-logo.svg";
+  const domain = extractDomain(website);
+  if (!domain) return "/placeholder-logo.svg";
 
-  try {
-    const domain = new URL(website).hostname.replace(/^www\./, "");
-    return `https://www.google.com/s2/favicons?domain=${domain}&sz=128`;
-  } catch {
-    return "/placeholder-logo.svg";
-  }
+  return `https://www.google.com/s2/favicons?domain=${domain}&sz=128`;
 }

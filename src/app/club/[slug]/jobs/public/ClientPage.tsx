@@ -204,13 +204,13 @@ export default function ClientPage({
                   }}
                 >
                   <ListingCard
-                    href={job.apply_url ?? "#"}
-                    external
-                    title={job.job_title}
-                    company={job.company_name}
-                    website={job.company_website}
-                    cachedLogo={job.company_logo_url}
-                  />
+  href={job.apply_url ?? "#"}
+  external
+  title={job.job_title}
+  company={job.company_name}
+  website={job.company_website || job.apply_url}
+  cachedLogo={job.company_logo_url}
+/>
                 </div>
               ))}
             </div>
