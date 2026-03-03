@@ -125,6 +125,8 @@ const { count: totalPageviews } = await supabase
   })
   .eq("club_id", clubData.id);
 
+  console.log("PAGEVIEWS COUNT:", totalPageviews);
+
       /* ===============================
          1️⃣ Actieve vacatures
       =============================== */
