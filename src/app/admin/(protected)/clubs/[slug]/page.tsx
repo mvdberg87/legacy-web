@@ -128,17 +128,11 @@ setReports(reportsData ?? []);
 // Actieve vacatures
 const activeVacancies = jobsData?.length ?? 0;
 
-// Totaal clicks
-const { count: totalClicks } = await supabase
-  .from("job_clicks")
-  .select("*", { count: "exact", head: true })
-  .in("job_id", jobIds);
-
-// Pageviews (indien je deze tabel hebt)
+// Pageviews (clubniveau, gelijk aan club dashboard)
 const { count: pageviews } = await supabase
-  .from("job_pageviews") // pas aan als jouw tabel anders heet
+  .from("club_page_views")
   .select("*", { count: "exact", head: true })
-  .in("job_id", jobIds);
+  .eq("club_id", clubData.id);
 
 // Advertenties totaal
 const { count: totalAds } = await supabase
@@ -152,12 +146,6 @@ const { count: activeAds } = await supabase
   .select("*", { count: "exact", head: true })
   .eq("club_id", clubData.id)
   .is("archived_at", null);
-
-// CTR berekenen
-const ctr =
-  pageviews && pageviews > 0
-    ? ((totalClicks ?? 0) / pageviews) * 100
-    : 0;
 
     // ===============================
 // Extra statistieken berekenen
@@ -184,6 +172,12 @@ const { count: monthClicks } = await supabase
   .select("*", { count: "exact", head: true })
   .in("job_id", jobIds)
   .gte("created_at", startOfMonth.toISOString());
+
+// CTR berekenen
+const ctr =
+  pageviews && pageviews > 0
+    ? ((totalClicksCount ?? 0) / pageviews) * 100
+    : 0;
 
 setStats({
   totalVacancies,
@@ -341,12 +335,12 @@ async function inviteUser() {
     <div className="text-right text-sm">
       <p className="text-gray-500">Publieke pagina</p>
       <a
-        href={`/club/${club.slug}/jobs/public`}
-        target="_blank"
-        className="text-blue-600 underline"
-      >
-        https://www.sponsorjobs.nl/club/{club.slug}/jobs/public
-      </a>
+  href={`https://www.sponsorjobs.nl/${club.slug}`}
+  target="_blank"
+  className="text-blue-600 underline"
+>
+  sponsorjobs.nl/{club.slug}
+</a>
     </div>
   </div>
 
@@ -388,12 +382,6 @@ async function inviteUser() {
             </p>
           </div>
 
-          <button
-            onClick={() => router.push("/admin")}
-            className="px-4 py-2 text-sm border rounded-lg"
-          >
-            Terug
-          </button>
         </div>
 
         {/* Tabel */}
