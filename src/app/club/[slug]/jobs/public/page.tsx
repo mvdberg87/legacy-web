@@ -19,12 +19,12 @@ export default async function PublicJobsPage({ params }: PageProps) {
      1️⃣ Club ophalen
      =============================== */
   const { data: club } = await supabase
-    .from("clubs")
-    .select(
-      "id, name, slug, primary_color, secondary_color, jobs_intro_text"
-    )
-    .eq("slug", slug)
-    .maybeSingle();
+  .from("clubs")
+  .select(
+    "id, name, slug, primary_color, secondary_color, jobs_intro_text, admin_email"
+  )
+  .eq("slug", slug)
+  .maybeSingle();
 
   if (!club) {
     return <p className="p-8">Club niet gevonden</p>;
@@ -115,13 +115,14 @@ export default async function PublicJobsPage({ params }: PageProps) {
      =============================== */
   return (
     <ClientPage
-      club={{
-        id: club.id,
-        name: club.name,
-        slug: club.slug,
-        primary_color: club.primary_color,
-        secondary_color: club.secondary_color,
-      }}
+  club={{
+    id: club.id,
+    name: club.name,
+    slug: club.slug,
+    primary_color: club.primary_color,
+    secondary_color: club.secondary_color,
+    admin_email: club.admin_email,
+  }}
       introText={
         club.jobs_intro_text?.trim() ||
         DEFAULT_PUBLIC_JOBS_INTRO
