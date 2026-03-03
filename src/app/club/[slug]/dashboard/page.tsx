@@ -42,10 +42,6 @@ type SponsorOverviewRow = {
   last_activity_at: string | null;
 };
 
-type UpgradeRequest = {
-  status: "pending" | "approved" | "rejected";
-};
-
 const PACKAGE_ORDER: PackageKey[] = [
   "basic",
   "plus",
@@ -63,13 +59,9 @@ export default function ClubDashboardPage() {
     useState<ClubDashboardInsights | null>(null);
   const [sponsors, setSponsors] =
     useState<SponsorOverviewRow[]>([]);
-  const [upgradeRequest, setUpgradeRequest] =
-    useState<UpgradeRequest | null>(null);
 
   const [adsCount, setAdsCount] = useState(0);
   const [loading, setLoading] = useState(true);
-  const [requestingUpgrade, setRequestingUpgrade] =
-    useState(false);
 
   /* =====================================================
      DATA OPHALEN
@@ -112,6 +104,7 @@ export default function ClubDashboardPage() {
       console.log("DASHBOARD CLUB ID:", clubData.id);
 
       setClub(clubData);
+
 
       /* ===============================
    Pageviews ophalen
@@ -229,64 +222,9 @@ const ctr =
 
 setSponsors(Object.values(sponsorMap));
 
-      /* ===============================
-         5️⃣ Upgrade status
-      =============================== */
-
-      const { data: upgrade } = await supabase
-        .from("club_upgrade_requests")
-        .select("status")
-        .eq("club_id", clubData.id)
-        .order("created_at", {
-          ascending: false,
-        })
-        .limit(1)
-        .maybeSingle();
-
-      setUpgradeRequest(upgrade ?? null);
-
-      setLoading(false);
+            setLoading(false);
     })();
   }, []);
-
- async function requestUpgrade(
-  targetPackage: PackageKey
-) {
-  if (!club || requestingUpgrade) return;
-
-  setRequestingUpgrade(true);
-
-  try {
-    const res = await fetch("/api/club/request-upgrade", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        clubId: club.id,
-        packageKey: targetPackage,
-      }),
-    });
-
-    const data = await res.json();
-
-    if (!res.ok) {
-      alert(data.error || "Upgrade mislukt");
-      return;
-    }
-
-    alert("Upgrade aanvraag succesvol verstuurd!");
-
-    // Optioneel: herlaad om status te verversen
-    window.location.reload();
-
-  } catch (err) {
-    console.error("Upgrade error:", err);
-    alert("Server fout bij upgrade.");
-  }
-
-  setRequestingUpgrade(false);
-}
 
   /* ===============================
      STATES
@@ -319,9 +257,7 @@ setSponsors(Object.values(sponsorMap));
       : "Nog niet ingesteld";
 
   const statusLabel =
-  club.subscription_status === "trial"
-    ? "Proefperiode"
-    : club.subscription_status === "active"
+  club.subscription_status === "active"
     ? "Actief"
     : club.subscription_status === "past_due"
     ? "Betaling mislukt"
@@ -329,13 +265,48 @@ setSponsors(Object.values(sponsorMap));
     ? "Geannuleerd"
     : club.subscription_status === "blocked"
     ? "Geblokkeerd"
-    : club.subscription_status ??
-      "Onbekend";
+    : club.subscription_status ?? "Onbekend";
 
       const isBillingBlocked =
   club.subscription_status === "past_due" ||
   club.subscription_status === "cancelled";
 
+  /* ===============================
+               5️⃣ Upgrade status
+            =============================== */
+      
+       async function goToCheckout(targetPackage: PackageKey) {
+        if (!club) return;
+      
+        try {
+          const res = await fetch("/api/billing/create-checkout-session", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              clubId: club.id,
+              packageKey: targetPackage,
+            }),
+          });
+      
+          const data = await res.json();
+      
+          if (!res.ok) {
+            alert(data.error || "Checkout mislukt");
+            return;
+          }
+      
+          if (data.url) {
+            window.location.href = data.url;
+          }
+      
+        } catch (err) {
+          console.error("Checkout error:", err);
+          alert("Server fout bij checkout.");
+        }
+      }
+      
   /* ===============================
      RENDER
   =============================== */
@@ -591,10 +562,10 @@ const canUpgrade = isHigher;
 </p>
 
                   <button
-  disabled={!canUpgrade || requestingUpgrade || isBillingBlocked}
+disabled={!canUpgrade || isBillingBlocked}
   onClick={() =>
-    canUpgrade && requestUpgrade(key)
-  }
+  canUpgrade && goToCheckout(key)
+}
   className={`w-full py-2 rounded-lg text-sm font-medium ${
     isCurrent
       ? "bg-gray-300 text-gray-600"
