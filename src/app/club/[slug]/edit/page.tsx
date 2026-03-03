@@ -117,17 +117,17 @@ export default function ClubEditPage() {
     setError(null);
     setSuccess(null);
 
-    const { error } = await supabase
-      .from("clubs")
-      .update({
-        name: club.name,
-        description: club.description,
-        logo_url: club.logo_url,
-        jobs_intro_text: club.jobs_intro_text.trim(),
-      })
-      .eq("id", club.id);
+    const { data: updateData, error: updateError } = await supabase
+  .from("clubs")
+  .update({
+    jobs_intro_text: club.jobs_intro_text.trim(),
+  })
+  .eq("id", club.id)
+  .select();
 
-    if (error) {
+console.log("UPDATE RESULT:", updateData, updateError);
+
+    if (updateError) {
       setError("Fout bij opslaan.");
     } else {
       setSuccess("Clubgegevens succesvol opgeslagen.");
@@ -138,6 +138,8 @@ export default function ClubEditPage() {
 
     setSaving(false);
   }
+
+  
 
   /* ---------- States ---------- */
 
