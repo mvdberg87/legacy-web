@@ -57,10 +57,16 @@ export default function ClaimPage() {
         {status === "success" && (
   <>
     <h1 className="text-xl font-semibold mb-2">
-      Club geactiveerd
+      Club geactiveerd 🎉
     </h1>
-    <p>
+    <p className="mb-3">
       Je club is succesvol geactiveerd.
+    </p>
+    <p className="text-sm text-gray-600">
+      🚀 Jullie hebben nu <strong>2 maanden volledige toegang</strong>
+      om SponsorJobs uitgebreid te testen.
+    </p>
+    <p className="text-sm text-gray-600 mt-2">
       Je wordt doorgestuurd naar de loginpagina…
     </p>
   </>

@@ -61,23 +61,27 @@ export async function POST(req: NextRequest) {
     }
 
     /* ===============================
-       2. Club activeren
-       =============================== */
-    const clubUpdate = await supabaseAdmin
-      .from("clubs")
-      .update({
-        subscription_status: "active",
-        activated_at: new Date().toISOString(),
-      })
-      .eq("id", signup.club_id);
+   2. Club activeren
+=============================== */
+const now = new Date();
+const basicEnd = new Date();
+basicEnd.setMonth(basicEnd.getMonth() + 2);
 
-    if (clubUpdate.error) {
-      console.error("❌ club update error:", clubUpdate.error);
-      return NextResponse.json(
-        { error: "Club activeren mislukt" },
-        { status: 500 }
-      );
-    }
+const clubUpdate = await supabaseAdmin
+  .from("clubs")
+  .update({
+    activated_at: now.toISOString(),
+
+    // Iedereen start in Basic
+    active_package: "basic",
+
+    // Basic is 2 maanden geldig
+    basic_end: basicEnd.toISOString(),
+
+    // Billing actief (nog geen Stripe)
+    billing_status: "active",
+  })
+  .eq("id", signup.club_id);
 
     /* ===============================
        3. Token ongeldig maken (EENMALIG)

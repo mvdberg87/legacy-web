@@ -1,4 +1,4 @@
-// src/app/api/cron/trial-monitor/route.ts
+// src/app/api/cron/basic-monitor/route.ts
 
 import { NextResponse } from "next/server";
 import { supabaseAdmin } from "@/lib/supabaseAdmin";
@@ -8,7 +8,6 @@ export const runtime = "nodejs";
 
 export async function GET(req: Request) {
   try {
-    // 🔐 simpele beveiliging
     const auth = req.headers.get("authorization");
     if (auth !== `Bearer ${process.env.ADMIN_SECRET}`) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
@@ -19,8 +18,8 @@ export async function GET(req: Request) {
     const { data: clubs, error } = await supabaseAdmin
       .from("clubs")
       .select("*")
-      .eq("subscription_status", "trial")
-      .not("subscription_end", "is", null);
+      .eq("active_package", "basic")
+.not("basic_end", "is", null);
 
     if (error) {
       console.error("❌ Clubs ophalen mislukt:", error);
@@ -28,19 +27,18 @@ export async function GET(req: Request) {
     }
 
     for (const club of clubs ?? []) {
-      const end = new Date(club.subscription_end);
-      const diffDays =
-        Math.ceil(
-          (end.getTime() - now.getTime()) / (1000 * 60 * 60 * 24)
-        );
+      const end = new Date(club.basic_end);
+      const diffDays = Math.ceil(
+        (end.getTime() - now.getTime()) / (1000 * 60 * 60 * 24)
+      );
 
       /* ===============================
          📩 MAIL 1 – 14 dagen
-         =============================== */
+      =============================== */
       if (
         diffDays <= 14 &&
         diffDays > 7 &&
-        !club.trial_mail_14_sent_at
+        !club.basic_mail_14_sent_at
       ) {
         await sendMail(
           club.email,
@@ -50,17 +48,17 @@ export async function GET(req: Request) {
 
         await supabaseAdmin
           .from("clubs")
-          .update({ trial_mail_14_sent_at: now.toISOString() })
+          .update({ basic_mail_14_sent_at: now.toISOString() })
           .eq("id", club.id);
       }
 
       /* ===============================
          📩 MAIL 2 – 7 dagen
-         =============================== */
+      =============================== */
       if (
         diffDays <= 7 &&
         diffDays > 0 &&
-        !club.trial_mail_7_sent_at
+        !club.basic_mail_7_sent_at
       ) {
         await sendMail(
           club.email,
@@ -70,14 +68,14 @@ export async function GET(req: Request) {
 
         await supabaseAdmin
           .from("clubs")
-          .update({ trial_mail_7_sent_at: now.toISOString() })
+          .update({ basic_mail_7_sent_at: now.toISOString() })
           .eq("id", club.id);
       }
 
       /* ===============================
-         🚫 TRIAL VERLOPEN
-         =============================== */
-      if (diffDays <= 0 && !club.trial_mail_expired_sent_at) {
+         🚫 BASIC VERLOPEN
+      =============================== */
+      if (diffDays <= 0 && !club.basic_mail_expired_sent_at) {
         await sendMail(
           club.email,
           "🚫 Je account is tijdelijk geblokkeerd",
@@ -87,16 +85,16 @@ export async function GET(req: Request) {
         await supabaseAdmin
           .from("clubs")
           .update({
-            trial_mail_expired_sent_at: now.toISOString(),
-            subscription_status: "blocked",
+            basic_mail_expired_sent_at: now.toISOString(),
           })
           .eq("id", club.id);
       }
     }
 
     return NextResponse.json({ success: true });
+
   } catch (err) {
-    console.error("❌ Trial cron error:", err);
+    console.error("❌ Basic cron error:", err);
     return NextResponse.json({ error: "Server error" }, { status: 500 });
   }
 }

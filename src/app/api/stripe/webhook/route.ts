@@ -104,10 +104,8 @@ if (!packageKey) {
       await supabaseAdmin
   .from("clubs")
   .update({
-    active_package: packageKey,
-    stripe_price_id: priceId,
-    stripe_subscription_id: subscriptionId,
     subscription_status: subscription.status,
+    billing_status: subscription.status === "active" ? "active" : subscription.status,
     subscription_start: new Date(
       item.current_period_start * 1000
     ).toISOString(),
@@ -115,7 +113,7 @@ if (!packageKey) {
       item.current_period_end * 1000
     ).toISOString(),
   })
-  .eq("id", clubId);
+  .eq("stripe_subscription_id", subscription.id);
     }
 
     /* ===============================
@@ -134,12 +132,12 @@ if (!packageKey) {
       if (!subscriptionId) return NextResponse.json({ received: true });
 
       await supabaseAdmin
-        .from("clubs")
-        .update({
-          subscription_status: "past_due",
-          payment_failed_at: new Date().toISOString(),
-        })
-        .eq("stripe_subscription_id", subscriptionId);
+  .from("clubs")
+  .update({
+    subscription_status: "active",
+    billing_status: "active",   // 👈
+  })
+  .eq("stripe_subscription_id", subscriptionId);
     }
 
     /* ===============================
@@ -158,11 +156,13 @@ if (!packageKey) {
       if (!subscriptionId) return NextResponse.json({ received: true });
 
       await supabaseAdmin
-        .from("clubs")
-        .update({
-          subscription_status: "active",
-        })
-        .eq("stripe_subscription_id", subscriptionId);
+  .from("clubs")
+  .update({
+    subscription_status: "past_due",
+    billing_status: "past_due",  // 👈
+    payment_failed_at: new Date().toISOString(),
+  })
+  .eq("stripe_subscription_id", subscriptionId);
     }
 
     /* ===============================
@@ -199,13 +199,14 @@ if (!packageKey) {
         event.data.object as Stripe.Subscription;
 
       await supabaseAdmin
-        .from("clubs")
-        .update({
-          active_package: "basic",
-          subscription_status: "cancelled",
-          stripe_subscription_id: null,
-        })
-        .eq("stripe_subscription_id", subscription.id);
+  .from("clubs")
+  .update({
+    active_package: "basic",
+    subscription_status: "cancelled",
+    billing_status: "canceled",  // 👈
+    stripe_subscription_id: null,
+  })
+  .eq("stripe_subscription_id", subscription.id);
     }
 
   } catch (err) {

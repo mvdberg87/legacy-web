@@ -95,9 +95,9 @@ export async function middleware(req: NextRequest) {
   }
 
   /* ======================================================
-     5️⃣ Club rules
-  ====================================================== */
-  if (isClubRoute) {
+   5️⃣ Club rules
+====================================================== */
+if (isClubRoute) {
   if (profile.role !== "club") {
     return NextResponse.redirect(
       new URL("/unauthorized", origin)
@@ -110,12 +110,15 @@ export async function middleware(req: NextRequest) {
     );
   }
 
-  /* ===============================
-     Club ophalen
-  =============================== */
   const { data: club } = await supabase
     .from("clubs")
-    .select("subscription_status, payment_failed_at, subscription_end")
+    .select(`
+  active_package,
+  basic_end,
+  billing_status,
+  billing_override,
+  payment_failed_at
+`)
     .eq("id", profile.club_id)
     .maybeSingle();
 
@@ -126,43 +129,42 @@ export async function middleware(req: NextRequest) {
   }
 
   /* ===============================
-     Realtime trial check
+     MANUAL OVERRIDE
   =============================== */
-  if (
-    club.subscription_status === "trial" &&
-    club.subscription_end
-  ) {
-    const now = new Date();
-    const end = new Date(club.subscription_end);
-
-    if (now > end) {
-      await supabase
-        .from("clubs")
-        .update({ subscription_status: "blocked" })
-        .eq("id", profile.club_id);
-
-      return NextResponse.redirect(
-        new URL("/billing-blocked", origin)
-      );
-    }
+  if (club.billing_override) {
+    return res;
   }
+
+  /* ===============================
+   BASIC VERLOPEN CHECK
+=============================== */
+if (
+  club.active_package === "basic" &&
+  club.basic_end
+) {
+  const now = new Date();
+  const end = new Date(club.basic_end);
+
+  if (now > end) {
+    return NextResponse.redirect(
+      new URL("/billing-blocked", origin)
+    );
+  }
+}
 
   /* ===============================
      Cancelled
   =============================== */
-  if (club.subscription_status === "cancelled") {
+  if (club.billing_status === "canceled") {
     return NextResponse.redirect(
       new URL("/billing-blocked", origin)
     );
   }
 
   /* ===============================
-     Blocked / expired
+     Blocked
   =============================== */
-  if (
-    club.subscription_status === "blocked" ||
-    club.subscription_status === "expired"
-  ) {
+  if (club.billing_status === "blocked") {
     return NextResponse.redirect(
       new URL("/billing-blocked", origin)
     );
@@ -172,7 +174,7 @@ export async function middleware(req: NextRequest) {
      Past due grace
   =============================== */
   if (
-    club.subscription_status === "past_due" &&
+    club.billing_status === "past_due" &&
     club.payment_failed_at
   ) {
     const diff =
