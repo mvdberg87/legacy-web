@@ -1,5 +1,6 @@
 import { getSupabaseServer } from "@/lib/supabase.server";
 import ClientPage from "./ClientPage";
+import { supabaseAdmin } from "@/lib/supabaseAdmin";
 
 export const dynamic = "force-dynamic";
 
@@ -34,11 +35,11 @@ const { data: adminProfile } = await supabase
   .limit(1)
   .maybeSingle();
 
-const adminEmail = adminProfile?.email ?? null;
-
   if (!club) {
     return <p className="p-8">Club niet gevonden</p>;
   }
+
+const adminEmail = adminProfile?.email ?? null;
 
   /* ===============================
      2️⃣ Vacatures ophalen
@@ -132,6 +133,7 @@ const adminEmail = adminProfile?.email ?? null;
     primary_color: club.primary_color,
     secondary_color: club.secondary_color,
   }}
+  adminEmail={adminEmail}
   introText={
     club.jobs_intro_text?.trim() ||
     DEFAULT_PUBLIC_JOBS_INTRO

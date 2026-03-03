@@ -38,6 +38,7 @@ type Props = {
   introText: string;
   jobs: Job[];
   ads: Ad[];
+  adminEmail?: string | null;
 };
 
 /* ---------- Component ---------- */
@@ -47,6 +48,7 @@ export default function ClientPage({
   introText,
   jobs,
   ads,
+  adminEmail,
 }: Props) {
 
     /* ===============================
@@ -214,7 +216,21 @@ export default function ClientPage({
             </div>
           </section>
         )}
-
+<footer className="text-center text-sm text-white mt-12 opacity-80">
+  <p className="mb-2 font-medium">
+    Heb je vragen over SponsorJobs?
+  </p>
+  {adminEmail ? (
+    <a
+      href={`mailto:${adminEmail}`}
+      className="underline text-blue-300"
+    >
+      Neem gerust contact op via {adminEmail}
+    </a>
+  ) : (
+    <p>Neem gerust contact op met het clubbestuur.</p>
+  )}
+</footer>
       </div>
     </main>
   );
