@@ -26,6 +26,16 @@ export default async function PublicJobsPage({ params }: PageProps) {
   .eq("slug", slug)
   .maybeSingle();
 
+  // Admin e-mail ophalen
+const { data: adminProfile } = await supabase
+  .from("profiles")
+  .select("email")
+  .eq("club_id", club?.id)
+  .limit(1)
+  .maybeSingle();
+
+const adminEmail = adminProfile?.email ?? null;
+
   if (!club) {
     return <p className="p-8">Club niet gevonden</p>;
   }
@@ -121,7 +131,7 @@ export default async function PublicJobsPage({ params }: PageProps) {
     slug: club.slug,
     primary_color: club.primary_color,
     secondary_color: club.secondary_color,
-    admin_email: club.admin_email,
+    admin_email: adminEmail,
   }}
       introText={
         club.jobs_intro_text?.trim() ||
