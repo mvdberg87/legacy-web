@@ -113,6 +113,8 @@ export default function ClubEditPage() {
 const { data: updateData, error: updateError } = await supabase
   .from("clubs")
   .update({
+    name: club.name,
+    logo_url: club.logo_url,
     jobs_intro_text:
       cleanedText === DEFAULT_PUBLIC_JOBS_INTRO
         ? null
@@ -134,8 +136,6 @@ console.log("UPDATE RESULT:", updateData, updateError);
 
     setSaving(false);
   }
-
-  
 
   /* ---------- States ---------- */
 
