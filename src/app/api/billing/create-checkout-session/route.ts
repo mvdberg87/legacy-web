@@ -94,14 +94,13 @@ export async function POST(req: NextRequest) {
        =============================== */
     const { data: club } = await supabase
       .from("clubs")
-      .select(
-        `
-        id,
-        name,
-        email,
-        stripe_customer_id
-      `
-      )
+      .select(`
+  id,
+  name,
+  email,
+  slug,
+  stripe_customer_id
+`)
       .eq("id", profile.club_id)
       .maybeSingle();
 
@@ -131,6 +130,28 @@ if (
   );
 }
 
+/* ===============================
+   3c. Stripe customer aanmaken indien nodig
+================================ */
+
+let customerId = club.stripe_customer_id;
+
+if (!customerId) {
+  const customer = await stripe.customers.create({
+    email: club.email ?? undefined,
+    name: club.name ?? undefined,
+  });
+
+  customerId = customer.id;
+
+  await supabase
+    .from("clubs")
+    .update({
+      stripe_customer_id: customerId,
+    })
+    .eq("id", club.id);
+}
+
     /* ===============================
        4. Stripe price
        =============================== */
@@ -152,15 +173,15 @@ console.log("🧪 club:", club);
     
        const session = await stripe.checkout.sessions.create({
       mode: "subscription",
-      customer: club.stripe_customer_id ?? undefined,
+      customer: customerId,
       line_items: [
         {
           price: priceId,
           quantity: 1,
         },
       ],
-      success_url: `${process.env.NEXT_PUBLIC_SITE_URL}/club/billing/success`,
-      cancel_url: `${process.env.NEXT_PUBLIC_SITE_URL}/club/billing/cancel`,
+      success_url: `${process.env.NEXT_PUBLIC_SITE_URL}/club/${club.slug}/dashboard`,
+cancel_url: `${process.env.NEXT_PUBLIC_SITE_URL}/billing-blocked`,
       metadata: {
         club_id: club.id,
         package_key: packageKey,
