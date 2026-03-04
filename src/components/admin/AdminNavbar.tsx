@@ -23,6 +23,7 @@ export default function AdminNavbar() {
   { label: "🧾 Abonnementen", path: "/admin/subscriptions" },
   { label: "👥 Profielen", path: "/admin/profiles" },
   { label: "🔐 Upgrades", path: "/admin/upgrades" },
+  { label: "📊 Analytics", path: "/admin/analytics" },
 ];
 
   /* ===============================
