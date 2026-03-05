@@ -35,12 +35,6 @@ export default function AdminNavbar() {
 
   function navigate(path: string) {
   setMenuOpen(false);
-
-  if (path === "/admin/clubs") {
-    router.push("/admin");
-    return;
-  }
-
   router.push(path);
 }
 
