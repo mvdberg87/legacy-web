@@ -29,12 +29,13 @@ export default function AdminClubsPage() {
 });
 
   async function load() {
-  const { data } = await supabase
+  const { data, error } = await supabase
     .from("club_admin_overview")
-    .select(
-      "id,name,slug,active_package,active_jobs,total_clicks,pageviews"
-    )
+    .select("*")
     .order("name");
+
+  console.log("CLUB ADMIN DATA:", data);
+  console.log("CLUB ADMIN ERROR:", error);
 
   const clubsData = data ?? [];
 
