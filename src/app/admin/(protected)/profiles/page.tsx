@@ -45,14 +45,22 @@ export default function AdminProfilesPage() {
 
     const { data, error } = await supabase
       .from("admin_profiles_overview")
-      .select("*")
+.select(`
+  *,
+  clubs(active_package)
+`)
       .order("created_at", { ascending: false });
 
     if (error) {
       console.error("Fout bij laden profielen:", error);
       setProfiles([]);
     } else {
-      setProfiles(data ?? []);
+      setProfiles(
+  (data ?? []).map((p: any) => ({
+    ...p,
+    club_package: p.clubs?.active_package ?? null,
+  }))
+);
     }
 
     setLoading(false);

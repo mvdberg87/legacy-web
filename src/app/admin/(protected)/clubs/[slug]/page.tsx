@@ -129,10 +129,12 @@ setReports(reportsData ?? []);
 const activeVacancies = jobsData?.length ?? 0;
 
 // Pageviews (clubniveau, gelijk aan club dashboard)
-const { count: pageviews } = await supabase
+const { data: pageviewsData } = await supabase
   .from("club_page_views")
-  .select("*", { count: "exact", head: true })
+  .select("id")
   .eq("club_id", clubData.id);
+
+const pageviews = pageviewsData?.length ?? 0;
 
 // Advertenties totaal
 const { count: totalAds } = await supabase
