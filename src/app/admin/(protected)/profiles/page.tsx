@@ -17,6 +17,7 @@ type Profile = {
   club_name: string | null;
   club_slug: string | null;
   club_status: string | null;
+  club_package: string | null;
 
   signup_request_id: string | null;
   signup_request_status: "pending" | "approved" | "rejected" | null;
@@ -179,7 +180,8 @@ async function resendActivationLink(requestId: string) {
                   <th className="px-3 py-3 text-left">E-mail</th>
                   <th className="px-3 py-3 text-left">Club</th>
                   <th className="px-3 py-3 text-left">Rol</th>
-                  <th className="px-3 py-3 text-left">Aangemaakt</th>
+<th className="px-3 py-3 text-left">Pakket</th>
+<th className="px-3 py-3 text-left">Aangemaakt</th>
                   <th className="px-3 py-3 text-center">Acties</th>
                 </tr>
               </thead>
@@ -231,6 +233,10 @@ async function resendActivationLink(requestId: string) {
                       <td className="px-3 py-3">
                         {p.role}
                       </td>
+
+                      <td className="px-3 py-3">
+  {p.club_package ?? "—"}
+</td>
 
                       <td className="px-3 py-3">
                         {new Date(p.created_at).toLocaleDateString("nl-NL")}

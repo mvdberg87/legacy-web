@@ -39,6 +39,18 @@ const { data: adminProfile } = await supabase
     return <p className="p-8">Club niet gevonden</p>;
   }
 
+  /* ===============================
+   Pageview registreren
+=============================== */
+
+try {
+  await supabaseAdmin.from("club_page_views").insert({
+    club_id: club.id,
+  });
+} catch (e) {
+  console.error("Pageview tracking error", e);
+}
+
 const adminEmail = adminProfile?.email ?? null;
 
   /* ===============================
