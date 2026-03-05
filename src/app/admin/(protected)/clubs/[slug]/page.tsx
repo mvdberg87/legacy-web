@@ -324,13 +324,44 @@ async function inviteUser() {
 >
   <div className="flex justify-between items-center mb-6">
     <div>
-      <h1 className="text-2xl font-semibold">
-        {club.name} – Performance overzicht
-      </h1>
-      <p className="text-sm text-gray-500">
-        Admin controlepaneel
-      </p>
-    </div>
+  <h1 className="text-2xl font-semibold">
+    {club.name} – Performance overzicht
+  </h1>
+
+  <p className="text-sm text-gray-500">
+    Admin controlepaneel
+  </p>
+
+  {/* PACKAGE SELECTOR */}
+  <div className="mt-3 flex items-center gap-3">
+    <span className="text-sm font-medium">Pakket:</span>
+
+    <select
+      value={club.active_package}
+      onChange={async (e) => {
+        const newPackage = e.target.value;
+
+        const confirmed = confirm(
+          `Pakket wijzigen naar "${newPackage}"?`
+        );
+        if (!confirmed) return;
+
+        await supabase
+          .from("clubs")
+          .update({ active_package: newPackage })
+          .eq("id", club.id);
+
+        load();
+      }}
+      className="border rounded px-2 py-1 text-sm"
+    >
+      <option value="basic">Basic</option>
+      <option value="plus">Plus</option>
+      <option value="pro">Pro</option>
+      <option value="unlimited">Unlimited</option>
+    </select>
+  </div>
+</div>
 
     <div className="text-right text-sm">
       <p className="text-gray-500">Publieke pagina</p>
