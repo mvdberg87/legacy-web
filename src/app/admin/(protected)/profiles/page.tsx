@@ -212,9 +212,9 @@ async function resendActivationLink(requestId: string) {
                           <div className="flex flex-col">
                             <Link
   href={`/admin/clubs/${club.slug}`}
+  prefetch={false}
   className="text-blue-600 hover:underline"
 >
-
   {club.name}
 </Link>
                             <span className="text-xs text-gray-500">

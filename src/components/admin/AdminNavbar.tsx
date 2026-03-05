@@ -19,7 +19,7 @@ export default function AdminNavbar() {
      Navigatie
      =============================== */
   const links = [
-  { label: "📋 Clubs", path: "/admin" },
+  { label: "📋 Clubs", path: "/admin/clubs" },
   { label: "🧾 Abonnementen", path: "/admin/subscriptions" },
   { label: "👥 Profielen", path: "/admin/profiles" },
   { label: "🔐 Upgrades", path: "/admin/upgrades" },
@@ -34,9 +34,15 @@ export default function AdminNavbar() {
   }
 
   function navigate(path: string) {
-    setMenuOpen(false);
-    router.push(path);
+  setMenuOpen(false);
+
+  if (path === "/admin/clubs") {
+    router.push("/admin");
+    return;
   }
+
+  router.push(path);
+}
 
   /* ===============================
      Logout (admin-only)
