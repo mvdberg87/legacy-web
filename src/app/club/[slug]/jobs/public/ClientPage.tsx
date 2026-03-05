@@ -67,7 +67,7 @@ export default function ClientPage({
     }),
     keepalive: true,   // 🔥 BELANGRIJK
   }).catch(() => {});
-}, [club.id]);
+}, []);
   
   function trackJobClick(jobId: string) {
   if (!club?.id) return;
