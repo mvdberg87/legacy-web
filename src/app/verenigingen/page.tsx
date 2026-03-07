@@ -90,9 +90,9 @@ export default function VerenigingenPage() {
             </p>
 
             <ul className="space-y-4 text-sm">
-              <li>• 3 sponsoren kopen een highlight advertentie</li>
-              <li>• €500 per seizoen per sponsor</li>
-              <li>• Totaal extra inkomsten: <strong>€1.500</strong></li>
+              <li>• 3 sponsoren kopen een highlight advertentie voor €500 per seizoen per sponsor</li>
+              <li>• 5 sponsoren kopen 1 reguliere vacature voor €250 per seizoen per sponsor</li>
+              <li>• Totaal extra inkomsten: <strong>€1.750</strong></li>
             </ul>
 
             <div className="mt-8 p-6 bg-green-50 rounded-xl">
@@ -100,7 +100,7 @@ export default function VerenigingenPage() {
                 Resultaat:
               </p>
               <p className="mt-2 text-sm">
-                Zelfs met een Pro-abonnement houd je meer dan €1.000 over.
+                Zelfs met een Pro-abonnement houd je meer dan €4.500 over.
               </p>
             </div>
 
@@ -109,6 +109,15 @@ export default function VerenigingenPage() {
               zonder recruitmentcampagnes,
               zonder aanvullende sponsorupsells.
             </p>
+
+            <div className="mt-8 p-6 bg-green-50 rounded-xl">
+              <p className="font-semibold text-green-700">
+                Recruitment via de community van jouw sportvereniging.
+              </p>
+              <p className="mt-2 text-sm">
+                De activatiemogelijkheden zijn eindeloos en Sponsorjobs is een nieuwe onderdeel van jouw sponsorpopositie. Met de sportmarketing ervaring van Sponsorjobs vertellen we je hier graag vrijblijvend meer over.
+              </p>
+            </div>
 
           </div>
 
@@ -264,7 +273,7 @@ export default function VerenigingenPage() {
         <p className="text-sm text-gray-500">per maand</p>
 
         <ul className="mt-6 space-y-3 text-sm text-gray-700">
-          <li>✓ 1 post per week</li>
+          <li>✓ 1 post per maand</li>
           <li>✓ LinkedIn, Instagram & Facebook</li>
           <li>✓ Vacature in the spotlight</li>
           <li>✓ Standaard template visuals</li>
@@ -301,7 +310,7 @@ export default function VerenigingenPage() {
         <p className="text-sm text-gray-500">per maand</p>
 
         <ul className="mt-6 space-y-3 text-sm text-gray-700">
-          <li>✓ 2 posts per week</li>
+          <li>✓ 2 posts per maand</li>
           <li>✓ LinkedIn, Instagram & Facebook</li>
           <li>✓ 1 maandelijkse meeting</li>
           <li>✓ Vacature-campagne op maat</li>
@@ -334,7 +343,7 @@ export default function VerenigingenPage() {
 
         <ul className="mt-6 space-y-3 text-sm text-gray-700">
           <li>✓ Alles van Growth</li>
-          <li>✓ 2 video’s per maand (op locatie)</li>
+          <li>✓ 1 vacaturevideo per maand (op locatie)</li>
           <li>✓ Uitgelichte advertentiecampagne</li>
           <li>✓ Maandelijkse strategische sessie</li>
         </ul>
@@ -365,10 +374,10 @@ export default function VerenigingenPage() {
 
         <ul className="mt-6 space-y-3 text-sm text-gray-700">
           <li>✓ Alles van Premium</li>
-          <li>✓ Maandelijks nieuwe foto’s & video’s</li>
+          <li>✓ Maandelijks 2 vacaturevideo's</li>
           <li>✓ Dedicated social media manager</li>
           <li>✓ Rapportage op maat</li>
-          <li>✓ Extra campagne rondom events</li>
+          <li>✓ Extra offline campagne</li>
         </ul>
 
         <p className="mt-6 text-xs text-gray-500">
