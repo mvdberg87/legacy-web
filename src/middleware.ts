@@ -21,6 +21,7 @@ export async function middleware(req: NextRequest) {
     pathname === "/pending" ||
     pathname === "/unauthorized" ||
     pathname === "/billing-blocked" ||
+    pathname.includes("/jobs/public") ||
     pathname.startsWith("/club/billing")
   ) {
     return res;

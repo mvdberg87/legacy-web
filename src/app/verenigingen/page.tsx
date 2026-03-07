@@ -100,7 +100,7 @@ export default function VerenigingenPage() {
                 Resultaat:
               </p>
               <p className="mt-2 text-sm">
-                Zelfs met een Pro-abonnement houd je meer dan €1.750 over.
+                Zelfs met een Pro-abonnement houd je meer dan €1.800 over.
               </p>
             </div>
 
