@@ -50,21 +50,17 @@ const adminEmail = adminProfile?.email ?? null;
   const { data: jobs } = await supabase
   .from("jobs")
   .select(`
-      id,
-      title,
-      company_name,
-      apply_url,
-      created_at,
-      featured,
-      company_website,
-      company_logo_url
+    id,
+    title,
+    company_name,
+    apply_url,
+    created_at,
+    featured,
+    company_website,
+    company_logo_url
   `)
   .eq("club_id", club.id)
-  .eq("is_active", true)
   .is("archived_at", null)
-  .order("featured", { ascending: false })
-  .order("created_at", { ascending: false })
-  .limit(100);
 
   /* ===============================
      3️⃣ Advertenties uit featured vacatures
