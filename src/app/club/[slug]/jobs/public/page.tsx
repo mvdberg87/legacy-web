@@ -4,6 +4,8 @@ import { supabaseAdmin } from "@/lib/supabaseAdmin";
 
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
+export const fetchCache = "force-no-store";
+
 
 const DEFAULT_PUBLIC_JOBS_INTRO = `
 Onze club is meer dan sport alleen. Samen met onze sponsoren bouwen we aan een sterk netwerk waarin sport, werk en talent samenkomen.
@@ -46,8 +48,8 @@ const adminEmail = adminProfile?.email ?? null;
      2️⃣ Vacatures ophalen
      =============================== */
   const { data: jobs } = await supabase
-    .from("jobs")
-    .select(`
+  .from("jobs")
+  .select(`
       id,
       title,
       company_name,
@@ -56,12 +58,13 @@ const adminEmail = adminProfile?.email ?? null;
       featured,
       company_website,
       company_logo_url
-    `)
-    .eq("club_id", club.id)
-    .eq("is_active", true)
-    .is("archived_at", null)
-    .order("featured", { ascending: false })
-    .order("created_at", { ascending: false });
+  `)
+  .eq("club_id", club.id)
+  .eq("is_active", true)
+  .is("archived_at", null)
+  .order("featured", { ascending: false })
+  .order("created_at", { ascending: false })
+  .limit(100);
 
   /* ===============================
      3️⃣ Advertenties uit featured vacatures
