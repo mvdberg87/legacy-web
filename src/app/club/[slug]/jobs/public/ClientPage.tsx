@@ -164,7 +164,9 @@ const companies = Array.from(
 
         {[...companies, ...companies].map((company, index) => {
 
-  const logo = getCompanyLogo(company.website, company.logo);
+  const website = company.website ?? jobs.find(j => j.company_name === company.name)?.apply_url;
+
+const logo = getCompanyLogo(website, company.logo);
 
           return (
             <div
@@ -181,10 +183,17 @@ const companies = Array.from(
 >
               {logo ? (
   <img
-    src={logo}
-    alt={company.name}
-    className="h-10 object-contain"
-  />
+  src={logo}
+  alt={company.name}
+  className="h-10 object-contain"
+  onError={(e) => {
+    const fallback = website
+      ? `https://www.google.com/s2/favicons?domain=${new URL(company.website).hostname}&sz=128`
+      : "/placeholder-logo.svg";
+
+    (e.currentTarget as HTMLImageElement).src = fallback;
+  }}
+/>
 ) : (
   <img
     src={`https://www.google.com/s2/favicons?domain=${company.name}&sz=128`}
