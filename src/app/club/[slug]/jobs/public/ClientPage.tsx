@@ -156,23 +156,15 @@ const companies = Array.from(
 {companies.length > 0 && (
   <section className="mb-12">
     <h2 className="text-lg font-semibold mb-4 text-white text-center">
-      Werk bij onze sponsoren
+      Werken bij onze sponsoren
     </h2>
 
     <div className="overflow-hidden py-4 px-6">
       <div className="flex gap-8 animate-scroll w-max">
 
         {[...companies, ...companies].map((company, index) => {
-          let logo = company.logo;
 
-if (!logo && company.website) {
-  try {
-    const domain = new URL(company.website).hostname;
-    logo = `https://www.google.com/s2/favicons?domain=${domain}&sz=128`;
-  } catch {
-    logo = null;
-  }
-}
+  const logo = getCompanyLogo(company.website, company.logo);
 
           return (
             <div
