@@ -92,7 +92,7 @@ export default function VerenigingenPage() {
             <ul className="space-y-4 text-sm">
               <li>• 3 sponsoren kopen een highlight advertentie voor €500 per seizoen per sponsor</li>
               <li>• 5 sponsoren kopen 1 reguliere vacature voor €250 per seizoen per sponsor</li>
-              <li>• Totaal extra inkomsten: <strong>€1.750</strong></li>
+              <li>• Totaal extra inkomsten: <strong>€2.750</strong></li>
             </ul>
 
             <div className="mt-8 p-6 bg-green-50 rounded-xl">
@@ -100,7 +100,7 @@ export default function VerenigingenPage() {
                 Resultaat:
               </p>
               <p className="mt-2 text-sm">
-                Zelfs met een Pro-abonnement houd je meer dan €4.500 over.
+                Zelfs met een Pro-abonnement houd je meer dan €1.750 over.
               </p>
             </div>
 
