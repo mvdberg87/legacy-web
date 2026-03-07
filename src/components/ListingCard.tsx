@@ -112,33 +112,35 @@ ${href}`;
 <div className="mt-6 flex gap-3">
 
   <button
-    onClick={handlePrimaryClick}
-    disabled={!isValidHref}
-    className="
-      rounded-xl px-6 py-2 text-sm font-semibold transition
-      bg-[#1f9d55] text-white
-      hover:bg-[#15803d]
-      disabled:bg-gray-300 disabled:text-gray-500
-    "
-  >
-    Meer info &amp; solliciteren
-  </button>
+  onClick={handlePrimaryClick}
+  disabled={!isValidHref}
+  className="
+    flex-1
+    rounded-xl py-2 text-sm font-semibold transition
+    bg-[#1f9d55] text-white
+    hover:bg-[#15803d]
+    disabled:bg-gray-300 disabled:text-gray-500
+  "
+>
+  Meer info &amp; solliciteren
+</button>
 
   <button
-    onClick={(e) => {
-      e.stopPropagation();
-      shareInTeamApp();
-    }}
-    className="
-      rounded-xl px-5 py-2 text-sm font-semibold
-      border border-[#1f9d55]
-      text-[#1f9d55]
-      hover:bg-[#1f9d55] hover:text-white
-      transition
-    "
-  >
-    📲 Deel in teamapp
-  </button>
+  onClick={(e) => {
+    e.stopPropagation();
+    shareInTeamApp();
+  }}
+  className="
+    flex-1
+    rounded-xl py-2 text-sm font-semibold
+    border border-[#1f9d55]
+    text-[#1f9d55]
+    hover:bg-[#1f9d55] hover:text-white
+    transition
+  "
+>
+  📲 Deel in teamapp
+</button>
 
 </div>
 

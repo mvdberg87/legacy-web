@@ -1,7 +1,7 @@
 "use client";
 
 import ListingCard from "@/components/ListingCard";
-import { useEffect, useRef } from "react";
+import { useEffect, useState } from "react";
 import { getCompanyLogo } from "@/lib/companyLogo";
 
 /* ---------- Types ---------- */
@@ -87,9 +87,15 @@ export default function ClientPage({
   }).catch(() => {});
 }
 
-  const sortedJobs = [...jobs].sort(
-    (a, b) => Number(b.is_featured) - Number(a.is_featured)
-  );
+  const [companyFilter, setCompanyFilter] = useState<string | null>(null);
+
+const filteredJobs = companyFilter
+  ? jobs.filter((job) => job.company_name === companyFilter)
+  : jobs;
+
+const sortedJobs = [...filteredJobs].sort(
+  (a, b) => Number(b.is_featured) - Number(a.is_featured)
+);
 
   /* ===============================
    Bedrijven met vacatures
@@ -153,10 +159,10 @@ const companies = Array.from(
       Werk bij onze sponsoren
     </h2>
 
-    <div className="overflow-hidden py-4">
-      <div className="flex gap-8 animate-scroll">
+    <div className="overflow-hidden py-4 px-6">
+      <div className="flex gap-8 animate-scroll w-max">
 
-        {companies.map((company) => {
+        {[...companies, ...companies].map((company, index) => {
           let logo = company.logo;
 
 if (!logo && company.website) {
@@ -170,13 +176,17 @@ if (!logo && company.website) {
 
           return (
             <div
-              key={company.name}
-              className="
-                flex items-center justify-center
-                bg-white rounded-xl px-6 py-3
-                min-w-[140px]
-              "
-            >
+  key={company.name + index}
+  onClick={() => setCompanyFilter(company.name)}
+  className="
+    flex items-center justify-center
+    bg-white rounded-xl px-6 py-3
+    min-w-[140px]
+    cursor-pointer
+    hover:scale-105
+    transition
+  "
+>
               {logo ? (
   <img
     src={logo}
@@ -184,9 +194,11 @@ if (!logo && company.website) {
     className="h-10 object-contain"
   />
 ) : (
-  <span className="text-sm text-gray-700 px-4">
-    {company.name}
-  </span>
+  <img
+    src={`https://www.google.com/s2/favicons?domain=${company.name}&sz=128`}
+    alt={company.name}
+    className="h-10 object-contain opacity-70"
+  />
 )}
             </div>
           );
@@ -264,9 +276,20 @@ if (!logo && company.website) {
           </p>
         ) : (
           <section>
-            <h2 className="text-lg font-semibold mb-4 text-white">
-              Vacatures
-            </h2>
+            <div className="flex items-center justify-between mb-4">
+  <h2 className="text-lg font-semibold text-white">
+    Vacatures
+  </h2>
+
+  {companyFilter && (
+    <button
+      onClick={() => setCompanyFilter(null)}
+      className="text-sm text-blue-300 underline"
+    >
+      Toon alle vacatures
+    </button>
+  )}
+</div>
 
             <div className="grid gap-4">
               {sortedJobs.map((job) => (
