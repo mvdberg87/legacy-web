@@ -157,7 +157,16 @@ const companies = Array.from(
       <div className="flex gap-8 animate-scroll">
 
         {companies.map((company) => {
-          const logo = getCompanyLogo(company.website, company.logo);
+          let logo = company.logo;
+
+if (!logo && company.website) {
+  try {
+    const domain = new URL(company.website).hostname;
+    logo = `https://www.google.com/s2/favicons?domain=${domain}&sz=128`;
+  } catch {
+    logo = null;
+  }
+}
 
           return (
             <div
@@ -168,11 +177,17 @@ const companies = Array.from(
                 min-w-[140px]
               "
             >
-              <img
-                src={logo}
-                alt={company.name}
-                className="h-10 object-contain"
-              />
+              {logo ? (
+  <img
+    src={logo}
+    alt={company.name}
+    className="h-10 object-contain"
+  />
+) : (
+  <span className="text-sm text-gray-700 px-4">
+    {company.name}
+  </span>
+)}
             </div>
           );
         })}
