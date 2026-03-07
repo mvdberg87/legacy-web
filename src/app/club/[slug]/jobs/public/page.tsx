@@ -57,10 +57,17 @@ const adminEmail = adminProfile?.email ?? null;
     created_at,
     featured,
     company_website,
-    company_logo_url
+    company_logo_url,
+    is_active,
+    is_approved,
+    archived_at
   `)
   .eq("club_id", club.id)
+  .eq("is_active", true)
+  .eq("is_approved", true)
   .is("archived_at", null)
+  .order("featured", { ascending: false })
+  .order("created_at", { ascending: false });
 
   /* ===============================
      3️⃣ Advertenties uit featured vacatures
