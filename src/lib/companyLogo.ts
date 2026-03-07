@@ -6,7 +6,7 @@ function extractDomain(input?: string | null): string | null {
   try {
     let normalized = input.trim();
 
-    // 🔧 protocol toevoegen als het ontbreekt
+    // protocol toevoegen als het ontbreekt
     if (!normalized.startsWith("http")) {
       normalized = "https://" + normalized;
     }
@@ -23,20 +23,17 @@ export function getCompanyLogo(
   website?: string | null,
   cachedLogo?: string | null
 ) {
-  // 1️⃣ eerst gecachet logo gebruiken
+  // 1️⃣ gecachet logo eerst
   if (cachedLogo) return cachedLogo;
 
   const domain = extractDomain(website);
 
   if (!domain) return "/placeholder-logo.svg";
 
-  // 2️⃣ Clearbit bedrijfslogo (beste kwaliteit)
-  return `https://logo.clearbit.com/${domain}`;
+  // 2️⃣ Google favicon (stabiel)
+  return `https://www.google.com/s2/favicons?domain=${domain}&sz=128`;
 }
 
-/**
- * Favicon fallback wanneer Clearbit geen logo heeft
- */
 export function getFaviconFallback(website?: string | null) {
   const domain = extractDomain(website);
 
