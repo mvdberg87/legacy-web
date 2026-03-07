@@ -3,6 +3,7 @@ import ClientPage from "./ClientPage";
 import { supabaseAdmin } from "@/lib/supabaseAdmin";
 
 export const dynamic = "force-dynamic";
+export const revalidate = 0;
 
 const DEFAULT_PUBLIC_JOBS_INTRO = `
 Onze club is meer dan sport alleen. Samen met onze sponsoren bouwen we aan een sterk netwerk waarin sport, werk en talent samenkomen.
