@@ -36,14 +36,32 @@ export default function ListingCard({
     typeof href === "string" && href.trim().startsWith("http");
 
   function handlePrimaryClick() {
-    if (!isValidHref) return;
+  if (!isValidHref) return;
 
-    if (external) {
-      window.open(href, "_blank", "noopener,noreferrer");
-    } else {
-      router.push(href);
-    }
+  if (external) {
+    window.open(href, "_blank", "noopener,noreferrer");
+  } else {
+    router.push(href);
   }
+}
+
+/* =========================
+   WhatsApp share
+========================= */
+function shareInTeamApp() {
+  if (!isValidHref) return;
+
+  const text = `Vacature bij ${company}
+
+${title}
+
+Bekijk deze vacature via Sponsorjobs:
+${href}`;
+
+  const whatsappUrl = `https://wa.me/?text=${encodeURIComponent(text)}`;
+
+  window.open(whatsappUrl, "_blank");
+}
 
   return (
     <div
@@ -91,20 +109,35 @@ export default function ListingCard({
       </div>
 
       {/* ---------- CTA ---------- */}
-      <div className="mt-6">
-        <button
-          onClick={handlePrimaryClick}
-          disabled={!isValidHref}
-          className="
-            rounded-xl px-6 py-2 text-sm font-semibold transition
-            bg-[#1f9d55] text-white
-            hover:bg-[#15803d]
-            disabled:bg-gray-300 disabled:text-gray-500
-          "
-        >
-          Meer info &amp; solliciteren
-        </button>
-      </div>
-    </div>
-  );
-}
+<div className="mt-6 flex gap-3">
+
+  <button
+    onClick={handlePrimaryClick}
+    disabled={!isValidHref}
+    className="
+      rounded-xl px-6 py-2 text-sm font-semibold transition
+      bg-[#1f9d55] text-white
+      hover:bg-[#15803d]
+      disabled:bg-gray-300 disabled:text-gray-500
+    "
+  >
+    Meer info &amp; solliciteren
+  </button>
+
+  <button
+    onClick={(e) => {
+      e.stopPropagation();
+      shareInTeamApp();
+    }}
+    className="
+      rounded-xl px-5 py-2 text-sm font-semibold
+      border border-[#1f9d55]
+      text-[#1f9d55]
+      hover:bg-[#1f9d55] hover:text-white
+      transition
+    "
+  >
+    📲 Deel in teamapp
+  </button>
+
+</div>

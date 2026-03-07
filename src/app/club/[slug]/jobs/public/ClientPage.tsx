@@ -90,6 +90,22 @@ export default function ClientPage({
     (a, b) => Number(b.is_featured) - Number(a.is_featured)
   );
 
+  /* ===============================
+   Bedrijven met vacatures
+================================ */
+
+const companies = Array.from(
+  new Map(
+    jobs.map((job) => [
+      job.company_name,
+      {
+        name: job.company_name,
+        logo: job.company_logo_url,
+      },
+    ])
+  ).values()
+);
+
   return (
     <main
       className="min-h-screen"
@@ -124,6 +140,39 @@ export default function ClientPage({
         <section className="mb-10 rounded-2xl bg-[#0d1b2a] p-6 text-white leading-relaxed whitespace-pre-line">
           {introText}
         </section>
+
+        {/* =========================
+    BEDRIJVEN MET VACATURES
+========================= */}
+
+{companies.length > 0 && (
+  <section className="mb-12">
+    <h2 className="text-lg font-semibold mb-4 text-white text-center">
+      Werk bij onze sponsoren
+    </h2>
+
+    <div className="flex overflow-x-auto gap-6 py-4 justify-center flex-wrap">
+      {companies.map((company) => (
+        <div
+          key={company.name}
+          className="flex items-center justify-center bg-white rounded-xl p-3"
+        >
+          {company.logo ? (
+            <img
+              src={company.logo}
+              alt={company.name}
+              className="h-10 object-contain"
+            />
+          ) : (
+            <span className="text-sm text-gray-700 px-4">
+              {company.name}
+            </span>
+          )}
+        </div>
+      ))}
+    </div>
+  </section>
+)}
 
         {/* =========================
             SPONSOREN (ADS)
@@ -218,7 +267,7 @@ export default function ClientPage({
         )}
 <footer className="text-center text-sm text-white mt-12 opacity-80">
   <p className="mb-2 font-medium">
-    Heb je vragen over SponsorJobs?
+    Heb je vragen over SponsorJobs? Of wil je als bedrijf ook toegang tot regionaal talent?
   </p>
   {adminEmail ? (
     <a
