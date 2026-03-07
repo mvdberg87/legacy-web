@@ -103,14 +103,18 @@ const sortedJobs = [...filteredJobs].sort(
 
 const companies = Array.from(
   new Map(
-    jobs.map((job) => [
-      job.company_name,
-      {
+    [
+      ...jobs.map((job) => ({
         name: job.company_name,
         logo: job.company_logo_url,
-        website: job.company_website,
-      },
-    ])
+        website: job.company_website || job.apply_url,
+      })),
+      ...ads.map((ad) => ({
+        name: ad.company_name,
+        logo: ad.image_url,
+        website: ad.link_url,
+      })),
+    ].map((company) => [company.name, company])
   ).values()
 );
 
