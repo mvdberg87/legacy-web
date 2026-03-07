@@ -2,6 +2,7 @@
 
 import ListingCard from "@/components/ListingCard";
 import { useEffect, useRef } from "react";
+import { getCompanyLogo } from "@/lib/companyLogo";
 
 /* ---------- Types ---------- */
 
@@ -101,6 +102,7 @@ const companies = Array.from(
       {
         name: job.company_name,
         logo: job.company_logo_url,
+        website: job.company_website,
       },
     ])
   ).values()
@@ -151,26 +153,33 @@ const companies = Array.from(
       Werk bij onze sponsoren
     </h2>
 
-    <div className="flex overflow-x-auto gap-6 py-4 justify-center flex-wrap">
-      {companies.map((company) => (
-        <div
-          key={company.name}
-          className="flex items-center justify-center bg-white rounded-xl p-3"
-        >
-          {company.logo ? (
-            <img
-              src={company.logo}
-              alt={company.name}
-              className="h-10 object-contain"
-            />
-          ) : (
-            <span className="text-sm text-gray-700 px-4">
-              {company.name}
-            </span>
-          )}
-        </div>
-      ))}
+    <div className="overflow-hidden py-4">
+      <div className="flex gap-8 animate-scroll">
+
+        {companies.map((company) => {
+          const logo = getCompanyLogo(company.website, company.logo);
+
+          return (
+            <div
+              key={company.name}
+              className="
+                flex items-center justify-center
+                bg-white rounded-xl px-6 py-3
+                min-w-[140px]
+              "
+            >
+              <img
+                src={logo}
+                alt={company.name}
+                className="h-10 object-contain"
+              />
+            </div>
+          );
+        })}
+
+      </div>
     </div>
+
   </section>
 )}
 
