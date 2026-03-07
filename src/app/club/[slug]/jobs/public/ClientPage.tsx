@@ -191,12 +191,18 @@ const logo = getCompanyLogo(website, company.logo);
   alt={company.name}
   className="h-10 object-contain"
   onError={(e) => {
-    const fallback = website
-      ? `https://www.google.com/s2/favicons?domain=${new URL(company.website).hostname}&sz=128`
-      : "/placeholder-logo.svg";
+  try {
+    const domain = website
+      ? new URL(website.startsWith("http") ? website : `https://${website}`).hostname
+      : null;
 
-    (e.currentTarget as HTMLImageElement).src = fallback;
-  }}
+    (e.currentTarget as HTMLImageElement).src = domain
+      ? `https://www.google.com/s2/favicons?domain=${domain}&sz=128`
+      : "/placeholder-logo.svg";
+  } catch {
+    (e.currentTarget as HTMLImageElement).src = "/placeholder-logo.svg";
+  }
+}}
 />
 ) : (
   <img
