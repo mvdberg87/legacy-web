@@ -93,9 +93,9 @@ const filteredJobs = companyFilter
   ? jobs.filter((job) => job.company_name === companyFilter)
   : jobs;
 
-const sortedJobs = [...filteredJobs].sort(
-  (a, b) => Number(b.is_featured) - Number(a.is_featured)
-);
+const sortedJobs = [...filteredJobs]
+  .filter((job) => !job.is_featured)
+  .sort((a, b) => Number(b.is_featured) - Number(a.is_featured));
 
   /* ===============================
    Bedrijven met vacatures

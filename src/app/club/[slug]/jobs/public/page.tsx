@@ -101,9 +101,7 @@ const adminEmail = adminProfile?.email ?? null;
      5️⃣ Vacatures mappen (zonder featured)
      =============================== */
   const jobsMapped =
-    (jobs ?? [])
-      .filter((job) => !job.featured) // geen dubbele weergave
-      .map((job) => ({
+  (jobs ?? []).map((job) => ({
         id: job.id,
         job_title: job.title,
         company_name: job.company_name,
