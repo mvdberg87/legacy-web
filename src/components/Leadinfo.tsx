@@ -15,14 +15,11 @@ export default function Leadinfo() {
     }
   }, []);
 
-  // Alleen deze pagina's tracken
-  const allowedRoutes = [
-    "/",
-    "/signup",
-    "/verenigingen"
-  ];
-
-  const isAllowed = allowedRoutes.includes(pathname);
+  // Alleen deze routes tracken
+  const isAllowed =
+    pathname === "/" ||
+    pathname.startsWith("/signup") ||
+    pathname.startsWith("/verenigingen");
 
   if (!consent || !isAllowed) return null;
 
@@ -32,15 +29,20 @@ export default function Leadinfo() {
       strategy="afterInteractive"
       dangerouslySetInnerHTML={{
         __html: `
-(function(l,e,a,d,i,n,f,o){if(!l[i]){
+(function(l,e,a,d,i,n,f,o){
+if(!l[i]){
 l.GlobalLeadinfoNamespace=l.GlobalLeadinfoNamespace||[];
-l.GlobalLeadinfoNamespace.push(i);l[i]=function(){
-(l[i].q=l[i].q||[]).push(arguments)};
-n=e.createElement(a);f=e.getElementsByTagName(a)[0];
-n.async=1;n.src=d;f.parentNode.insertBefore(n,f);
-}})(window,document,"script","https://cdn.leadinfo.net/ping.js","leadinfo");
-leadinfo("init","LI-69ADD5BB8FEE0");
-`,
+l.GlobalLeadinfoNamespace.push(i);
+l[i]=function(){(l[i].q=l[i].q||[]).push(arguments)};
+l[i].t=l[i].t||n;
+f=e.createElement(a);
+o=e.getElementsByTagName(a)[0];
+f.async=1;
+f.src=d;
+o.parentNode.insertBefore(f,o);
+}
+}(window,document,'script','https://tracking.leadinfo.com/track.js','leadinfo','LI-69ADD5BB8FEE0'));
+        `,
       }}
     />
   );
