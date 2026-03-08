@@ -2,9 +2,11 @@
 
 import Script from "next/script";
 import { useEffect, useState } from "react";
+import { usePathname } from "next/navigation";
 
 export default function Leadinfo() {
   const [consent, setConsent] = useState(false);
+  const pathname = usePathname();
 
   useEffect(() => {
     const cookieConsent = localStorage.getItem("cookie_consent");
@@ -13,7 +15,16 @@ export default function Leadinfo() {
     }
   }, []);
 
-  if (!consent) return null;
+  // Alleen deze pagina's tracken
+  const allowedRoutes = [
+    "/",
+    "/signup",
+    "/verenigingen"
+  ];
+
+  const isAllowed = allowedRoutes.includes(pathname);
+
+  if (!consent || !isAllowed) return null;
 
   return (
     <Script
