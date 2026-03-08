@@ -10,9 +10,9 @@ export default function VerenigingenPage() {
         <Image
   src="/logo/sponsorjobs-light.png"
   alt="SponsorJobs"
-  width={320}
-  height={120}
-  className="mx-auto"
+  width={420}
+  height={160}
+  className="mx-auto mb-10"
 />
 
         <p className="mt-6 max-w-2xl mx-auto opacity-80 text-lg">

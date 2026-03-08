@@ -120,13 +120,13 @@ router.push(`/club/${club.slug}/dashboard`);
     <main className="min-h-screen flex items-center justify-center bg-[#0d1b2a] p-6">
       <div className="w-full max-w-sm bg-white border-2 border-white rounded-2xl p-6 shadow-xl space-y-5">
 
-        <Image
-    src="/logo/sponsorjobs-dark.svg"
-    alt="SponsorJobs"
-    width={180}
-    height={80}
-    className="mx-auto"
-  />
+<Image
+  src="/logo/sponsorjobs-dark.png"
+  alt="SponsorJobs"
+  width={180}
+  height={80}
+  className="mx-auto mb-4"
+/>
 
         <h1 className="text-xl font-semibold text-center">
           Club Login
