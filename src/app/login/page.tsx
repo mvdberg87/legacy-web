@@ -120,16 +120,16 @@ router.push(`/club/${club.slug}/dashboard`);
   return (
     <main className="min-h-screen bg-[#0d1b2a] flex items-center justify-center px-6 pt-32 pb-16">
       <Navbar />
-      <div className="w-full max-w-sm bg-white border border-gray-200 rounded-2xl p-8 shadow-xl space-y-4">
+      <div className="w-full max-w-sm bg-white border border-gray-200 rounded-2xl p-8 shadow-xl space-y-3">
 
 <Link href="/" className="flex justify-center">
   <Image
-    src="/logo/sponsorjobs-dark.png"
-    alt="SponsorJobs"
-    width={260}
-    height={120}
-    className="mb-2 cursor-pointer"
-  />
+  src="/logo/sponsorjobs-dark.png"
+  alt="SponsorJobs"
+  width={300}
+  height={140}
+  className="cursor-pointer mb-1"
+/>
 </Link>
 
         <h1 className="text-xl font-semibold text-center">
