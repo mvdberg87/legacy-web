@@ -4,6 +4,7 @@ import type { Metadata } from "next";
 import Footer from "@/components/Footer";
 import CookieBanner from "@/components/CookieBanner";
 import GoogleAnalytics from "@/components/GoogleAnalytics";
+import Leadinfo from "@/components/Leadinfo";
 
 export const metadata: Metadata = {
   title: "Sponsorjobs Platform",
@@ -30,6 +31,8 @@ export default function RootLayout({
         <CookieBanner />
 
         <GoogleAnalytics />
+
+        <Leadinfo />
 
       </body>
     </html>
