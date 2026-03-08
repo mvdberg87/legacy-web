@@ -9,9 +9,9 @@ export default function VerenigingenPage() {
       <Navbar />
 
       {/* HERO */}
-<section className="relative flex items-center justify-center min-h-[80vh] text-center px-6 pb-24">
+<section className="relative flex items-center justify-center min-h-[60vh] text-center px-6 pb-16">
 
-  <div className="max-w-4xl mx-auto pt-20">
+  <div className="max-w-4xl mx-auto pt-12">
 
     <Image
       src="/logo/sponsorjobs-light.png"
@@ -64,7 +64,7 @@ export default function VerenigingenPage() {
 
 </section>
 
-<section className="bg-white text-black py-20">
+<section className="bg-white text-black py-12">
   <div className="max-w-6xl mx-auto px-6 grid md:grid-cols-2 gap-16">
 
     <div>
@@ -93,7 +93,7 @@ export default function VerenigingenPage() {
 </section>
 
       {/* HOE WERKT HET */}
-      <section className="bg-white text-black py-24">
+      <section className="bg-white text-black py-16">
         <div className="max-w-5xl mx-auto px-6 text-center">
 
           <h2 className="text-3xl font-bold">

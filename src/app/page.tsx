@@ -243,12 +243,6 @@ die zichtbaar worden binnen het clubnetwerk en via de clubkanalen.
         </div>
       </section>
 
-
-      {/* FOOTER */}
-      <footer className="border-t border-white/10 py-10 text-center text-sm opacity-60">
-        © {new Date().getFullYear()} Sponsorjobs
-      </footer>
-
     </main>
   );
 }
