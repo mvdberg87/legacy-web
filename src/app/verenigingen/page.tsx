@@ -5,8 +5,25 @@ export default function VerenigingenPage() {
   return (
     <main className="min-h-screen bg-[#0d1b2a] text-white">
 
+      <header className="absolute top-0 left-0 w-full py-6">
+  <div className="max-w-6xl mx-auto px-6 flex justify-between items-center">
+
+    <img
+      src="/logo/sponsorjobs-light.png"
+      alt="SponsorJobs"
+      className="h-8"
+    />
+
+    <nav className="space-x-6 text-sm opacity-80 text-white">
+  <Link href="/verenigingen">Voor verenigingen</Link>
+  <Link href="/login">Login</Link>
+</nav>
+
+  </div>
+</header>
+
       {/* HERO */}
-      <section className="max-w-6xl mx-auto px-6 py-24 text-center">
+      <section className="max-w-6xl mx-auto px-6 pt-32 pb-24 text-center">
         <Image
   src="/logo/sponsorjobs-light.png"
   alt="SponsorJobs"
@@ -26,7 +43,7 @@ export default function VerenigingenPage() {
             href="/signup"
             className="bg-[#1f9d55] px-8 py-4 rounded-2xl font-semibold hover:bg-[#15803d] transition"
           >
-            Plan een kennismaking
+            Start met Sponsorjobs
           </Link>
         </div>
       </section>
@@ -120,7 +137,7 @@ export default function VerenigingenPage() {
                 Recruitment via de community van jouw sportvereniging.
               </p>
               <p className="mt-2 text-sm">
-                De activatiemogelijkheden zijn eindeloos en Sponsorjobs is een nieuwe onderdeel van jouw sponsorpopositie. Met de sportmarketing ervaring van Sponsorjobs vertellen we je hier graag vrijblijvend meer over.
+                De activatiemogelijkheden zijn eindeloos en Sponsorjobs is een nieuwe onderdeel van jouw sponsorpropositie. Met de sportmarketing ervaring van Sponsorjobs vertellen we je hier graag vrijblijvend meer over.
               </p>
             </div>
 
