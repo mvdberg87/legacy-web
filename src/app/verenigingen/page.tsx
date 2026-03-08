@@ -9,9 +9,9 @@ export default function VerenigingenPage() {
       <Navbar />
 
       {/* HERO */}
-<section className="relative flex items-center justify-center min-h-[70vh] text-center px-6">
+<section className="relative flex items-center justify-center min-h-[80vh] text-center px-6 pb-24">
 
-  <div className="max-w-4xl mx-auto">
+  <div className="max-w-4xl mx-auto pt-20">
 
     <Image
       src="/logo/sponsorjobs-light.png"
@@ -21,11 +21,15 @@ export default function VerenigingenPage() {
       className="mx-auto mb-8"
     />
 
-    <p className="text-lg text-white/80 max-w-2xl mx-auto">
-      Het recruitmentplatform voor sportverenigingen.
-      Maak vacatures onderdeel van je sponsorpropositie
-      en creëer een nieuwe structurele inkomstenstroom.
-    </p>
+    <h1 className="text-4xl md:text-5xl font-bold leading-tight">
+  Maak vacatures onderdeel van je sponsorpropositie.
+</h1>
+
+<p className="mt-6 text-lg text-white/80 max-w-2xl mx-auto">
+  Het recruitmentplatform voor sportverenigingen.
+  Maak vacatures onderdeel van je sponsorpropositie
+  en creëer een nieuwe structurele inkomstenstroom.
+</p>
 
     <div className="mt-10">
       <Link
@@ -38,6 +42,53 @@ export default function VerenigingenPage() {
 
   </div>
 
+<div className="mt-6 flex flex-wrap justify-center gap-6 text-sm text-white/70">
+
+  <div className="flex items-center gap-2">
+    <span className="text-green-400">✓</span>
+    Binnen 5 minuten live
+  </div>
+
+  <div className="flex items-center gap-2">
+    <span className="text-green-400">✓</span>
+    Nieuwe structurele sponsorinkomsten
+  </div>
+
+  <div className="flex items-center gap-2">
+    <span className="text-green-400">✓</span>
+    Recruitment via je clubnetwerk
+  </div>
+
+</div>
+
+</section>
+
+<section className="bg-white text-black py-20">
+  <div className="max-w-6xl mx-auto px-6 grid md:grid-cols-2 gap-16">
+
+    <div>
+      <h2 className="text-2xl font-bold">
+        Sponsoring levert vaak alleen zichtbaarheid op.
+      </h2>
+
+      <p className="mt-4 text-gray-600">
+        Bedrijven zoeken personeel. Clubs zoeken duurzame sponsoring.
+        Toch blijven beide werelden vaak los van elkaar.
+      </p>
+    </div>
+
+    <div>
+      <h2 className="text-2xl font-bold">
+        SponsorJobs verbindt die werelden.
+      </h2>
+
+      <p className="mt-4 text-gray-600">
+        Vacatures van sponsoren worden zichtbaar binnen het clubnetwerk.
+        Zo wordt sponsoring ook een recruitmentkanaal.
+      </p>
+    </div>
+
+  </div>
 </section>
 
       {/* HOE WERKT HET */}
