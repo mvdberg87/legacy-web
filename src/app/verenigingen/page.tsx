@@ -1,54 +1,44 @@
 import Link from "next/link";
 import Image from "next/image";
+import Navbar from "@/components/Navbar";
 
 export default function VerenigingenPage() {
   return (
     <main className="min-h-screen bg-[#0d1b2a] text-white">
 
-      <header className="absolute top-0 left-0 w-full py-6">
-  <div className="max-w-6xl mx-auto px-6 flex justify-between items-center">
-
-    <Link href="/">
-  <img
-    src="/logo/sponsorjobs-light.png"
-    alt="SponsorJobs"
-    className="h-8 cursor-pointer"
-  />
-</Link>
-
-    <nav className="space-x-6 text-sm opacity-80 text-white">
-  <Link href="/verenigingen">Voor verenigingen</Link>
-  <Link href="/login">Login</Link>
-</nav>
-
-  </div>
-</header>
+      <Navbar />
 
       {/* HERO */}
-      <section className="max-w-6xl mx-auto px-6 pt-32 pb-20 text-center">
-        <Image
-  src="/logo/sponsorjobs-light.png"
-  alt="SponsorJobs"
-  width={520}
-  height={200}
-  className="mx-auto mb-10"
-/>
+<section className="relative flex items-center justify-center min-h-[70vh] text-center px-6">
 
-        <p className="mt-6 max-w-2xl mx-auto opacity-80 text-lg">
-          Het recruitmentplatform voor sportverenigingen.
-          Maak vacatures onderdeel van je sponsorpropositie
-          en creëer een nieuwe structurele inkomstenstroom.
-        </p>
+  <div className="max-w-4xl mx-auto">
 
-        <div className="mt-10">
-          <Link
-            href="/signup"
-            className="bg-[#1f9d55] px-8 py-4 rounded-2xl font-semibold hover:bg-[#15803d] transition"
-          >
-            Start met Sponsorjobs
-          </Link>
-        </div>
-      </section>
+    <Image
+      src="/logo/sponsorjobs-light.png"
+      alt="SponsorJobs"
+      width={520}
+      height={200}
+      className="mx-auto mb-8"
+    />
+
+    <p className="text-lg text-white/80 max-w-2xl mx-auto">
+      Het recruitmentplatform voor sportverenigingen.
+      Maak vacatures onderdeel van je sponsorpropositie
+      en creëer een nieuwe structurele inkomstenstroom.
+    </p>
+
+    <div className="mt-10">
+      <Link
+        href="/signup"
+        className="bg-[#1f9d55] px-8 py-4 rounded-2xl font-semibold hover:bg-[#15803d] transition shadow-lg"
+      >
+        Start met Sponsorjobs
+      </Link>
+    </div>
+
+  </div>
+
+</section>
 
       {/* HOE WERKT HET */}
       <section className="bg-white text-black py-24">
