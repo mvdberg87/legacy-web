@@ -25,12 +25,12 @@ export default function VerenigingenPage() {
 </header>
 
       {/* HERO */}
-      <section className="max-w-6xl mx-auto px-6 pt-40 pb-24 text-center">
+      <section className="max-w-6xl mx-auto px-6 pt-32 pb-20 text-center">
         <Image
   src="/logo/sponsorjobs-light.png"
   alt="SponsorJobs"
-  width={400}
-  height={160}
+  width={520}
+  height={200}
   className="mx-auto mb-10"
 />
 
@@ -147,6 +147,58 @@ export default function VerenigingenPage() {
 
         </div>
       </section>
+
+      {/* LAUNCH PARTNERS */}
+<section className="bg-white text-black py-24">
+  <div className="max-w-5xl mx-auto px-6 text-center">
+
+    <h2 className="text-3xl font-bold">
+      Launch partners van SponsorJobs
+    </h2>
+
+    <p className="mt-6 max-w-2xl mx-auto opacity-70">
+      SponsorJobs wordt momenteel gelanceerd bij een eerste groep sportverenigingen.
+      Voor deze launchfase zoeken we <strong>10 clubs</strong> die recruitment
+      onderdeel willen maken van hun sponsorpropositie.
+    </p>
+
+    <div className="mt-12 bg-slate-50 rounded-2xl p-10 text-left shadow-xl">
+
+      <p className="text-lg font-semibold mb-6">
+        Launch partners ontvangen:
+      </p>
+
+      <ul className="space-y-4 text-sm">
+        <li>✓ Toegang tot het <strong>Pro pakket van SponsorJobs</strong></li>
+        <li>✓ <strong>€39 per maand</strong> (normaal €79)</li>
+        <li>✓ <strong>Lifetime prijs</strong> zolang de club actief blijft</li>
+        <li>✓ Persoonlijke onboarding en ondersteuning</li>
+        <li>✓ Invloed op nieuwe features en platformontwikkeling</li>
+      </ul>
+
+      <div className="mt-8 p-6 bg-green-50 rounded-xl">
+        <p className="font-semibold text-green-700">
+          Er zijn momenteel nog 5 launch partner plekken beschikbaar.
+        </p>
+        <p className="mt-2 text-sm">
+          Clubs die nu aansluiten profiteren van het volledige Pro pakket
+          tegen een gereduceerd tarief.
+        </p>
+      </div>
+
+      <div className="mt-10 text-center">
+        <Link
+          href="/signup"
+          className="bg-[#1f9d55] text-white px-8 py-4 rounded-2xl font-semibold hover:bg-[#15803d] transition"
+        >
+          Word launch partner
+        </Link>
+      </div>
+
+    </div>
+
+  </div>
+</section>
 
       {/* PLATFORM ABONNEMENTEN */}
 <section className="py-24">

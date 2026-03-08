@@ -118,24 +118,30 @@ router.push(`/club/${club.slug}/dashboard`);
 
   return (
     <main className="min-h-screen flex items-center justify-center bg-[#0d1b2a] pt-24 p-6">
-      <header className="absolute top-0 left-0 w-full py-6">
-  <div className="max-w-6xl mx-auto px-6 flex justify-between items-center">
+      <header className="absolute top-0 left-0 w-full z-50">
+  <div className="max-w-7xl mx-auto px-6 py-6 flex justify-between items-center">
 
     <Link href="/">
-  <img
-    src="/logo/sponsorjobs-light.png"
-    alt="SponsorJobs"
-    className="h-8 cursor-pointer"
-  />
-</Link>
+      <Image
+  src="/logo/sponsorjobs-dark.png"
+  alt="SponsorJobs"
+  width={320}
+  height={140}
+  className="mb-2"
+/>
+    </Link>
 
-    <nav className="space-x-6 text-sm opacity-80 text-white">
-  <Link href="/verenigingen">Voor verenigingen</Link>
-  <Link href="/login">Login</Link>
-</nav>
+    <nav className="flex gap-8 text-sm text-white/80">
+      <Link href="/verenigingen" className="hover:text-white">
+        Voor verenigingen
+      </Link>
+      <Link href="/login" className="hover:text-white">
+        Login
+      </Link>
+    </nav>
 
   </div>
-</header> 
+</header>
       <div className="w-full max-w-sm bg-white border border-gray-200 rounded-2xl p-8 shadow-xl space-y-4">
 
 <Link href="/" className="flex justify-center">
