@@ -1,25 +1,33 @@
+import Link from "next/link";
+
 export default function Footer() {
   return (
-    <footer className="border-t border-gray-200 py-8 text-sm text-center text-gray-500">
+    <footer className="border-t border-gray-200 py-8 text-sm text-center text-gray-500 bg-white">
       <div className="flex justify-center gap-6 mb-3 flex-wrap">
-        <a href="/privacy" className="hover:text-gray-900">
+
+        <Link href="/privacy" className="hover:text-gray-900">
           Privacy
-        </a>
+        </Link>
 
-        <a href="/cookies" className="hover:text-gray-900">
+        <Link href="/cookies" className="hover:text-gray-900">
           Cookies
-        </a>
+        </Link>
 
-        <a href="/terms" className="hover:text-gray-900">
+        <Link href="/terms" className="hover:text-gray-900">
           Platformvoorwaarden
-        </a>
+        </Link>
+
+        <Link href="/verenigingen">
+        Verenigingen
+        </Link>
 
         <a href="mailto:info@sponsorjobs.nl" className="hover:text-gray-900">
           Contact
         </a>
+
       </div>
 
-      <div>© {new Date().getFullYear()} Sponsorjobs</div>
+      <div>© {new Date().getFullYear()} SponsorJobs</div>
     </footer>
   );
 }
