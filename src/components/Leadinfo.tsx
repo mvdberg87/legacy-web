@@ -9,17 +9,29 @@ export default function Leadinfo() {
   const pathname = usePathname();
 
   useEffect(() => {
-    const cookieConsent = localStorage.getItem("cookie_consent");
-    if (cookieConsent === "accepted") {
-      setConsent(true);
-    }
+    const checkConsent = () => {
+      const cookieConsent = localStorage.getItem("cookie_consent");
+      if (cookieConsent === "accepted") {
+        setConsent(true);
+      }
+    };
+
+    // check bij laden
+    checkConsent();
+
+    // luister naar accept event vanuit CookieBanner
+    window.addEventListener("cookieConsentAccepted", checkConsent);
+
+    return () => {
+      window.removeEventListener("cookieConsentAccepted", checkConsent);
+    };
   }, []);
 
   // Alleen deze routes tracken
   const isAllowed =
     pathname === "/" ||
-    pathname.startsWith("/signup") ||
-    pathname.startsWith("/verenigingen");
+    pathname?.startsWith("/signup") ||
+    pathname?.startsWith("/verenigingen");
 
   if (!consent || !isAllowed) return null;
 
