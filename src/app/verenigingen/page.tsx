@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Image from "next/image";
 
 export default function VerenigingenPage() {
   return (
@@ -6,9 +7,13 @@ export default function VerenigingenPage() {
 
       {/* HERO */}
       <section className="max-w-6xl mx-auto px-6 py-24 text-center">
-        <h1 className="text-4xl md:text-5xl font-bold">
-          SponsorJobs
-        </h1>
+        <Image
+  src="/logo/sponsorjobs-light.png"
+  alt="SponsorJobs"
+  width={320}
+  height={120}
+  className="mx-auto"
+/>
 
         <p className="mt-6 max-w-2xl mx-auto opacity-80 text-lg">
           Het recruitmentplatform voor sportverenigingen.

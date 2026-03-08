@@ -1,14 +1,21 @@
 // src/app/page.tsx
 
 import Link from "next/link";
+import Image from "next/image";
 
 export default function HomePage() {
   return (
     <main className="min-h-screen bg-[#0d1b2a] text-white">
 
-        <header className="absolute top-0 left-0 w-full py-6">
+        <header className="absolute top-0 left-0 w-full py-6 z-20">
   <div className="max-w-6xl mx-auto px-6 flex justify-between items-center">
-    <div className="font-semibold text-lg">Sponsorjobs</div>
+    <Image
+  src="/logo/sponsorjobs-light.png"
+  alt="SponsorJobs"
+  width={140}
+  height={35}
+  priority
+/>
     <nav className="space-x-6 text-sm opacity-80">
       <Link href="/verenigingen">Voor verenigingen</Link>
       <Link href="/login" target="_blank">Login</Link>
