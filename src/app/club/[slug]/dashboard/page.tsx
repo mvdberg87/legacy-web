@@ -110,12 +110,12 @@ export default function ClubDashboardPage() {
    Pageviews ophalen
 =============================== */
 
-const { data: pageviewsData } = await supabase
+const { count: totalPageviews } = await supabase
   .from("club_page_views")
-  .select("id")
+  .select("*", { count: "exact", head: true })
   .eq("club_id", clubData.id);
 
-const totalPageviews = pageviewsData?.length ?? 0;
+const pageviews = totalPageviews ?? 0;
 
 console.log("PAGEVIEWS COUNT:", totalPageviews);
 
@@ -198,8 +198,8 @@ if (jobIds.length > 0) {
       setAdsCount(ads ?? 0);
 
 const ctr =
-  totalPageviews && totalPageviews > 0
-    ? ((totalClicks / totalPageviews) * 100).toFixed(1)
+  pageviews > 0
+    ? ((totalClicks / pageviews) * 100).toFixed(1)
     : "0.0";
 
       /* ===============================
@@ -210,7 +210,7 @@ const ctr =
   active_jobs: jobIds.length,
   total_ads: ads ?? 0,
   total_clicks: totalClicks,
-  total_pageviews: totalPageviews,
+  total_pageviews: pageviews,
   ctr,
   last_activity_at:
     Object.values(sponsorMap)
