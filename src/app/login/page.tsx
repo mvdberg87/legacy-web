@@ -117,32 +117,36 @@ router.push(`/club/${club.slug}/dashboard`);
   }
 
   return (
-    <main className="min-h-screen flex items-center justify-center bg-[#0d1b2a] p-6">
+    <main className="min-h-screen flex items-center justify-center bg-[#0d1b2a] pt-24 p-6">
       <header className="absolute top-0 left-0 w-full py-6">
   <div className="max-w-6xl mx-auto px-6 flex justify-between items-center">
 
-    <img
-      src="/logo/sponsorjobs-light.png"
-      alt="SponsorJobs"
-      className="h-8"
-    />
+    <Link href="/">
+  <img
+    src="/logo/sponsorjobs-light.png"
+    alt="SponsorJobs"
+    className="h-8 cursor-pointer"
+  />
+</Link>
 
     <nav className="space-x-6 text-sm opacity-80 text-white">
-      <a href="/verenigingen">Voor verenigingen</a>
-      <a href="/login">Login</a>
-    </nav>
+  <Link href="/verenigingen">Voor verenigingen</Link>
+  <Link href="/login">Login</Link>
+</nav>
 
   </div>
 </header> 
-      <div className="w-full max-w-sm bg-white border border-gray-200 rounded-2xl p-8 shadow-xl space-y-5">
+      <div className="w-full max-w-sm bg-white border border-gray-200 rounded-2xl p-8 shadow-xl space-y-4">
 
-<Image
-  src="/logo/sponsorjobs-dark.png"
-  alt="SponsorJobs"
-  width={220}
-  height={100}
-  className="mx-auto mb-4"
-/>
+<Link href="/" className="flex justify-center">
+  <Image
+    src="/logo/sponsorjobs-dark.png"
+    alt="SponsorJobs"
+    width={260}
+    height={120}
+    className="mb-2 cursor-pointer"
+  />
+</Link>
 
         <h1 className="text-xl font-semibold text-center">
           Club Login

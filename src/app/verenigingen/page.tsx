@@ -8,11 +8,13 @@ export default function VerenigingenPage() {
       <header className="absolute top-0 left-0 w-full py-6">
   <div className="max-w-6xl mx-auto px-6 flex justify-between items-center">
 
-    <img
-      src="/logo/sponsorjobs-light.png"
-      alt="SponsorJobs"
-      className="h-8"
-    />
+    <Link href="/">
+  <img
+    src="/logo/sponsorjobs-light.png"
+    alt="SponsorJobs"
+    className="h-8 cursor-pointer"
+  />
+</Link>
 
     <nav className="space-x-6 text-sm opacity-80 text-white">
   <Link href="/verenigingen">Voor verenigingen</Link>
@@ -23,11 +25,11 @@ export default function VerenigingenPage() {
 </header>
 
       {/* HERO */}
-      <section className="max-w-6xl mx-auto px-6 pt-32 pb-24 text-center">
+      <section className="max-w-6xl mx-auto px-6 pt-40 pb-24 text-center">
         <Image
   src="/logo/sponsorjobs-light.png"
   alt="SponsorJobs"
-  width={420}
+  width={400}
   height={160}
   className="mx-auto mb-10"
 />

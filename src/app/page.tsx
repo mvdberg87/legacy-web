@@ -9,13 +9,13 @@ export default function HomePage() {
 
         <header className="absolute top-0 left-0 w-full py-6 z-20">
   <div className="max-w-6xl mx-auto px-6 flex justify-between items-center">
-    <Image
-  src="/logo/sponsorjobs-light.png"
-  alt="SponsorJobs"
-  width={140}
-  height={35}
-  priority
-/>
+    <Link href="/">
+  <img
+    src="/logo/sponsorjobs-light.png"
+    alt="SponsorJobs"
+    className="h-8 cursor-pointer"
+  />
+</Link>
     <nav className="space-x-6 text-sm opacity-80">
       <Link href="/verenigingen">Voor verenigingen</Link>
       <Link href="/login" target="_blank">Login</Link>
