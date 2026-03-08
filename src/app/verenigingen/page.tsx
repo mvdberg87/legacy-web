@@ -22,14 +22,14 @@ export default function VerenigingenPage() {
     />
 
     <h1 className="text-4xl md:text-5xl font-bold leading-tight">
-  Maak vacatures onderdeel van je sponsorpropositie.
-</h1>
+      Maak vacatures onderdeel van je sponsorpropositie.
+    </h1>
 
-<p className="mt-6 text-lg text-white/80 max-w-2xl mx-auto">
-  Het recruitmentplatform voor sportverenigingen.
-  Maak vacatures onderdeel van je sponsorpropositie
-  en creëer een nieuwe structurele inkomstenstroom.
-</p>
+    <p className="mt-6 text-lg text-white/80 max-w-2xl mx-auto">
+      Het recruitmentplatform voor sportverenigingen.
+      Maak vacatures onderdeel van je sponsorpropositie
+      en creëer een nieuwe structurele inkomstenstroom.
+    </p>
 
     <div className="mt-10">
       <Link
@@ -40,26 +40,27 @@ export default function VerenigingenPage() {
       </Link>
     </div>
 
+    {/* TRUST BULLETS */}
+    <div className="mt-8 flex flex-wrap justify-center gap-8 text-sm text-white/70">
+
+      <div className="flex items-center gap-2">
+        <span className="text-green-400">✓</span>
+        Binnen 5 minuten live
+      </div>
+
+      <div className="flex items-center gap-2">
+        <span className="text-green-400">✓</span>
+        Nieuwe structurele sponsorinkomsten
+      </div>
+
+      <div className="flex items-center gap-2">
+        <span className="text-green-400">✓</span>
+        Recruitment via je clubnetwerk
+      </div>
+
+    </div>
+
   </div>
-
-<div className="mt-6 flex flex-wrap justify-center gap-6 text-sm text-white/70">
-
-  <div className="flex items-center gap-2">
-    <span className="text-green-400">✓</span>
-    Binnen 5 minuten live
-  </div>
-
-  <div className="flex items-center gap-2">
-    <span className="text-green-400">✓</span>
-    Nieuwe structurele sponsorinkomsten
-  </div>
-
-  <div className="flex items-center gap-2">
-    <span className="text-green-400">✓</span>
-    Recruitment via je clubnetwerk
-  </div>
-
-</div>
 
 </section>
 
