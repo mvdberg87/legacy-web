@@ -273,10 +273,10 @@ const logo = getCompanyLogo(website, company.logo);
 
             <div className="grid gap-4">
               {ads.map((ad) => {
-                const jobId = ad.id.startsWith("job-")
-                  ? ad.id.replace("job-", "")
-                  : null;
 
+  const jobId = ad.id.startsWith("job-")
+    ? ad.id.replace("job-", "")
+    : ad.id;
 
 
                 return (
@@ -294,14 +294,15 @@ const logo = getCompanyLogo(website, company.logo);
                       hover:shadow-lg
                     "
                   >
-                    <ListingCard
+
+<ListingCard
   href={ad.link_url}
   external
   title={ad.job_title ?? "Sponsor"}
   company={ad.company_name}
   website={ad.link_url}
   cachedLogo={ad.image_url}
-  jobId={ad.id}
+  jobId={jobId}
   clubId={club.id}
   variant="ad"
   onShare={() => trackJobShare(ad.link_url)}
