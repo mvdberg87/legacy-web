@@ -11,6 +11,7 @@ export async function POST(req: NextRequest) {
        1. Input ophalen
        =============================== */
     const body = await req.json();
+console.log("JOB CREATE BODY:", body);
 
     const {
       clubId,

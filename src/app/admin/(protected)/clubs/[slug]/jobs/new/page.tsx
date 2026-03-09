@@ -29,39 +29,24 @@ export default function NewJobPage() {
   const [saving, setSaving] = useState(false);
 
   useEffect(() => {
-    (async () => {
+  (async () => {
 
-      const {
-        data: { user },
-      } = await supabase.auth.getUser();
+    const { data: clubData } = await supabase
+      .from("clubs")
+      .select("id, name, primary_color, secondary_color")
+      .eq("slug", slug)
+      .maybeSingle();
 
-      if (!user) {
-        setLoading(false);
-        return;
-      }
-
-      const { data: profile } = await supabase
-        .from("profiles")
-        .select("club_id")
-        .eq("user_id", user.id)
-        .maybeSingle();
-
-      if (!profile?.club_id) {
-        setLoading(false);
-        return;
-      }
-
-      const { data: clubData } = await supabase
-        .from("clubs")
-        .select("id, name, primary_color, secondary_color")
-        .eq("id", profile.club_id)
-        .maybeSingle();
-
-      setClub(clubData);
-
+    if (!clubData) {
       setLoading(false);
-    })();
-  }, [supabase]);
+      return;
+    }
+
+    setClub(clubData);
+    setLoading(false);
+
+  })();
+}, [supabase, slug]);
 
   async function createJob(e: React.FormEvent) {
     e.preventDefault();
