@@ -83,7 +83,25 @@ export default function ClientPage({
       club_id: club.id,
       source: "public_jobs_page",
     }),
-    keepalive: true,   // 🔥 zorgt dat request niet wordt afgebroken bij navigatie
+    keepalive: true,
+  }).catch(() => {});
+}
+
+/* ===============================
+   TeamApp share tracking
+=============================== */
+
+function trackJobShare(jobUrl: string) {
+  fetch("/api/jobs/track-share", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      job_url: jobUrl,
+      platform: "teamapp",
+    }),
+    keepalive: true,
   }).catch(() => {});
 }
 
@@ -259,6 +277,8 @@ const logo = getCompanyLogo(website, company.logo);
                   ? ad.id.replace("job-", "")
                   : null;
 
+
+
                 return (
                   <div
                     key={ad.id}
@@ -284,6 +304,7 @@ const logo = getCompanyLogo(website, company.logo);
   jobId={ad.id}
   clubId={club.id}
   variant="ad"
+  onShare={() => trackJobShare(ad.link_url)}
 />
                   </div>
                 );
@@ -355,6 +376,7 @@ const logo = getCompanyLogo(website, company.logo);
   cachedLogo={job.company_logo_url}
   jobId={job.id}
   clubId={club.id}
+  onShare={() => trackJobShare(job.apply_url ?? "")}
 />
     </div>
   );

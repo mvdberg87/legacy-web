@@ -20,6 +20,7 @@ type Props = {
   clubId: string;
   external?: boolean;
   variant?: "default" | "ad";
+  onShare?: () => void;
 };
 
 /* ---------- Component ---------- */
@@ -33,6 +34,7 @@ export default function ListingCard({
   jobId,
   clubId,
   external = false,
+  onShare,
 }: Props) {
   const router = useRouter();
 const supabase = getSupabaseBrowser();
@@ -132,35 +134,36 @@ ${href}`;
 <div className="mt-6 flex gap-3">
 
   <button
-  onClick={handlePrimaryClick}
-  disabled={!isValidHref}
-  className="
-    flex-1
-    rounded-xl py-2 text-sm font-semibold transition
-    bg-[#1f9d55] text-white
-    hover:bg-[#15803d]
-    disabled:bg-gray-300 disabled:text-gray-500
-  "
->
-  Meer info &amp; solliciteren
-</button>
+    onClick={handlePrimaryClick}
+    disabled={!isValidHref}
+    className="
+      flex-1
+      rounded-xl py-2 text-sm font-semibold transition
+      bg-[#1f9d55] text-white
+      hover:bg-[#15803d]
+      disabled:bg-gray-300 disabled:text-gray-500
+    "
+  >
+    Meer info &amp; solliciteren
+  </button>
 
   <button
-  onClick={(e) => {
-    e.stopPropagation();
-    shareInTeamApp();
-  }}
-  className="
-    flex-1
-    rounded-xl py-2 text-sm font-semibold
-    border border-[#FFFFFF]
-    text-[#1f9d55]
-    hover:bg-[#1f9d55] hover:text-white
-    transition
-  "
->
-  📲 Deel vacature
-</button>
+    onClick={(e) => {
+      e.stopPropagation();
+      shareInTeamApp();
+      onShare?.();
+    }}
+    className="
+      flex-1
+      rounded-xl py-2 text-sm font-semibold
+      border border-white
+      text-[#1f9d55]
+      hover:bg-[#1f9d55] hover:text-white
+      transition
+    "
+  >
+    Deel vacature
+  </button>
 
 </div>
 
