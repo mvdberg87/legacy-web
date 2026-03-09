@@ -137,7 +137,7 @@ const activeVacancies = jobsData?.length ?? 0;
 // Pageviews (clubniveau, gelijk aan club dashboard)
 const { count: pageviews } = await supabase
   .from("club_page_views")
-  .select("*", { count: "exact", head: true })
+  .select("id", { count: "exact", head: true })
   .eq("club_id", clubData.id);
 
 // Advertenties totaal
@@ -162,11 +162,20 @@ const totalVacancies = jobsData?.length ?? 0;
 const featuredCount =
   jobsData?.filter((j) => j.featured).length ?? 0;
 
-// Totaal clicks
-const { count: totalClicksCount } = await supabase
-  .from("job_clicks")
-  .select("*", { count: "exact", head: true })
-  .in("job_id", jobIds);
+// ===============================
+// Totaal clicks ophalen
+// ===============================
+
+let totalClicksCount = 0;
+
+if (jobIds.length > 0) {
+  const { count } = await supabase
+    .from("job_clicks")
+    .select("id", { count: "exact", head: true })
+    .in("job_id", jobIds);
+
+  totalClicksCount = count ?? 0;
+}
 
   // ===============================
 // Shares ophalen
@@ -174,8 +183,8 @@ const { count: totalClicksCount } = await supabase
 
 const { count: totalSharesCount } = await supabase
   .from("job_shares")
-  .select("*", { count: "exact", head: true })
-  .in("job_id", jobIds);
+  .select("id", { count: "exact", head: true })
+  .eq("club_id", clubData.id);
 
   // ===============================
 // Top vacatures berekenen
