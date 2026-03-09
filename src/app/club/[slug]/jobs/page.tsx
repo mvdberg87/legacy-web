@@ -308,7 +308,112 @@ const totalPageviews = pageviews ?? 0;
           Toon alleen gearchiveerde vacatures
         </label>
 
-        <table className="min-w-full text-sm border-2 rounded-xl overflow-hidden">
+        {/* MOBILE JOB CARDS */}
+<div className="md:hidden space-y-4 mb-6">
+  {visibleJobs.map((job) => (
+    <div
+      key={job.id}
+      className={`border rounded-xl p-4 shadow-sm ${
+        job.featured ? "border-yellow-400 bg-yellow-50" : ""
+      }`}
+    >
+      <div className="font-semibold text-lg">{job.title}</div>
+
+      <div className="text-sm text-gray-500 mb-3">
+        {job.company_name}
+      </div>
+
+      <div className="grid grid-cols-3 text-sm mb-4">
+        <div>
+          <div className="text-gray-400 text-xs">CTR</div>
+          <div>{job.ctr}%</div>
+        </div>
+
+        <div>
+          <div className="text-gray-400 text-xs">Clicks</div>
+          <div>{job.total_clicks}</div>
+        </div>
+
+        <div>
+          <div className="text-gray-400 text-xs">Laatste click</div>
+          <div>
+            {job.last_click
+              ? new Date(job.last_click).toLocaleDateString("nl-NL")
+              : "—"}
+          </div>
+        </div>
+      </div>
+
+      {/* Actions */}
+      <div className="flex flex-wrap gap-2">
+
+        <Link
+          href={`/club/${slug}/jobs/public`}
+          target="_blank"
+          className="flex-1 text-center border rounded-md py-2 text-sm"
+        >
+          Bekijk
+        </Link>
+
+        <button
+          onClick={() =>
+            router.push(`/club/${slug}/jobs/${job.id}/edit`)
+          }
+          className="flex-1 border rounded-md py-2 text-sm"
+        >
+          Bewerken
+        </button>
+
+        <button
+          onClick={() => toggleFeatured(job.id)}
+          disabled={!canUseAds}
+          className={`flex-1 rounded-md py-2 text-sm border flex items-center justify-center gap-2
+          ${
+            job.featured
+              ? "bg-yellow-100 border-yellow-400 text-yellow-800"
+              : ""
+          }`}
+        >
+          <span
+            className={`w-3 h-3 rounded-full ${
+              job.featured ? "bg-yellow-500" : "bg-gray-300"
+            }`}
+          />
+          Advertentie
+        </button>
+
+        <details className="flex-1 relative">
+          <summary className="border rounded-md py-2 text-sm text-center cursor-pointer">
+            ⋯
+          </summary>
+
+          <div className="absolute right-0 mt-2 w-40 bg-white border rounded-lg shadow-lg z-10">
+
+            {!showArchived && (
+              <button
+                onClick={() => archiveJob(job.id)}
+                className="block w-full text-left px-3 py-2 hover:bg-gray-100"
+              >
+                Archiveren
+              </button>
+            )}
+
+            <button
+              onClick={() => deleteJob(job.id)}
+              className="block w-full text-left px-3 py-2 text-red-600 hover:bg-gray-100"
+            >
+              Verwijderen
+            </button>
+
+          </div>
+        </details>
+
+      </div>
+    </div>
+  ))}
+</div>
+
+        <table className="hidden md:table min-w-full text-sm border-2 rounded-xl overflow-hidden">
           <thead className="bg-[#0d1b2a] text-white">
             <tr>
               <th className="px-4 py-3 text-left">Item</th>
@@ -345,76 +450,83 @@ const totalPageviews = pageviews ?? 0;
                     ? new Date(job.last_click).toLocaleDateString("nl-NL")
                     : "—"}
                 </td>
-                <td className="px-4 py-3 text-center space-x-2">
-                  {!showArchived ? (
-                    <>
-                      <Link
-                        href={`/club/${slug}/jobs/public`}
-                        target="_blank"
-                        className="border px-2 py-1 rounded"
-                      >
-                        Bekijk
-                      </Link>
-                      <button
-                        onClick={() =>
-                          router.push(
-                            `/club/${slug}/jobs/${job.id}/edit`
-                          )
-                        }
-                        className="border px-2 py-1 rounded"
-                      >
-                        Bewerken
-                      </button>
-                      <button
-  onClick={() => toggleFeatured(job.id)}
-  disabled={!canUseAds}
-  className={`border px-2 py-1 rounded ${
-    job.featured
-      ? "bg-yellow-200 border-yellow-500 font-semibold"
-      : "hover:bg-gray-100"
-  }`}
->
-  {job.featured ? "Advertentie ✓" : "Advertentie"}
-</button>
-                      <button
-                        onClick={() => archiveJob(job.id)}
-                        className="border px-2 py-1 rounded text-yellow-600"
-                      >
-                        Archiveren
-                      </button>
-                      <button
-                        onClick={() => deleteJob(job.id)}
-                        className="border px-2 py-1 rounded text-red-600"
-                      >
-                        Verwijderen
-                      </button>
-                    </>
-                  ) : (
-                    <>
-                      <button
-                        onClick={() => restoreJob(job.id)}
-                        className="border px-2 py-1 rounded text-green-700"
-                      >
-                        Herstellen
-                      </button>
-                      <button
-                        onClick={() => deleteJob(job.id)}
-                        className="border px-2 py-1 rounded text-red-600"
-                      >
-                        Verwijderen
-                      </button>
-                    </>
-                  )}
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-        {/* ===============================
-            Support balk
-        =============================== */}
-        <ClubSupportBar />
+                <td className="px-4 py-3">
+  <div className="flex flex-wrap items-center justify-center gap-2">
+
+    {/* Bekijk */}
+    <Link
+      href={`/club/${slug}/jobs/public`}
+      target="_blank"
+      className="px-3 py-1 text-sm border rounded-md hover:bg-gray-50"
+    >
+      Bekijk
+    </Link>
+
+    {/* Bewerken */}
+    <button
+      onClick={() =>
+        router.push(`/club/${slug}/jobs/${job.id}/edit`)
+      }
+      className="px-3 py-1 text-sm border rounded-md hover:bg-gray-50"
+    >
+      Bewerken
+    </button>
+
+    {/* Advertentie toggle */}
+    <button
+      onClick={() => toggleFeatured(job.id)}
+      disabled={!canUseAds}
+      className={`px-3 py-1 text-sm rounded-md border flex items-center gap-2
+        ${job.featured
+          ? "bg-yellow-100 border-yellow-400 text-yellow-800"
+          : "hover:bg-gray-50"}
+      `}
+    >
+      <span className={`w-3 h-3 rounded-full ${job.featured ? "bg-yellow-500" : "bg-gray-300"}`} />
+      Advertentie
+    </button>
+
+    {/* Dropdown menu */}
+    <details className="relative">
+      <summary className="px-3 py-1 text-sm border rounded-md cursor-pointer hover:bg-gray-50">
+        ⋯
+      </summary>
+
+      <div className="absolute right-0 mt-2 w-40 bg-white border rounded-lg shadow-lg z-10">
+
+        {!showArchived && (
+          <button
+            onClick={() => archiveJob(job.id)}
+            className="block w-full text-left px-3 py-2 hover:bg-gray-100"
+          >
+            Archiveren
+          </button>
+        )}
+
+        <button
+          onClick={() => deleteJob(job.id)}
+          className="block w-full text-left px-3 py-2 text-red-600 hover:bg-gray-100"
+        >
+          Verwijderen
+        </button>
+
       </div>
-    </main>
+    </details>
+
+  </div>
+</td>
+</tr>
+))}
+</tbody>
+</table>
+
+{/* ===============================
+    Support balk
+=============================== */}
+<ClubSupportBar />
+
+</div>
+</main>
+
   );
 }

@@ -85,7 +85,7 @@ function getComputedStatus(
    Page
    =============================== */
 
-export default function AdminSubscriptionsPage() {
+export default function SubscriptionsTable() {
   const [clubs, setClubs] = useState<Club[]>([]);
   const [loading, setLoading] = useState(true);
   const [statusFilter, setStatusFilter] =

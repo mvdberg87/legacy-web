@@ -4,14 +4,114 @@ import { useEffect, useMemo, useState } from "react";
 import { getSupabaseBrowser } from "@/lib/supabaseBrowser";
 import { useRouter } from "next/navigation";
 
+function StatusBadge({ status }: { status: string | null }) {
+  if (!status) return null;
+
+  const styles: Record<string, string> = {
+    trial: "bg-yellow-100 text-yellow-800",
+    active: "bg-green-100 text-green-800",
+    pending_payment: "bg-orange-100 text-orange-800",
+    blocked: "bg-red-100 text-red-800",
+  };
+
+  return (
+    <span className={`px-2 py-1 rounded text-xs font-medium ${styles[status]}`}>
+      {status}
+    </span>
+  );
+}
+
+function getHealthScore(club: Club) {
+
+  const ctr =
+    club.pageviews > 0
+      ? (club.total_clicks / club.pageviews) * 100
+      : 0;
+
+  if (club.active_jobs === 0) {
+    return { label: "Inactive", color: "text-red-600" };
+  }
+
+  if (ctr > 15) {
+    return { label: "Healthy", color: "text-green-600" };
+  }
+
+  if (ctr > 5) {
+    return { label: "Needs attention", color: "text-yellow-600" };
+  }
+
+  return { label: "Low engagement", color: "text-red-500" };
+}
+
+function getGrowthScore(club: Club) {
+
+  let score = 0;
+
+  const ctr =
+    club.pageviews > 0
+      ? (club.total_clicks / club.pageviews) * 100
+      : 0;
+
+  const shareRate =
+    club.pageviews > 0
+      ? (club.total_shares / club.pageviews) * 100
+      : 0;
+
+  if (club.active_jobs >= 3) score += 2;
+  if (ctr >= 10) score += 2;
+  if (club.total_shares >= 5) score += 2;
+  if (club.pageviews >= 100) score += 2;
+
+  if (score >= 7)
+    return { label: "🚀 High growth", color: "text-green-600" };
+
+  if (score >= 4)
+    return { label: "📈 Growing", color: "text-blue-600" };
+
+  if (score >= 2)
+    return { label: "🟡 Stable", color: "text-yellow-600" };
+
+  return { label: "🔴 Low activity", color: "text-red-600" };
+}
+
+function getClubScore(club: Club) {
+
+  let score = 0;
+
+  const ctr =
+    club.pageviews
+      ? (club.total_clicks / club.pageviews) * 100
+      : 0;
+
+  const shareRate =
+    club.pageviews
+      ? (club.total_shares / club.pageviews) * 100
+      : 0;
+
+  if (club.active_jobs >= 3) score += 20;
+  if (ctr >= 10) score += 20;
+  if (club.total_shares >= 5) score += 20;
+  if (club.pageviews >= 100) score += 20;
+
+  if (ctr >= 15) score += 20;
+
+  return score;
+}
+
 type Club = {
   id: string;
   name: string;
   slug: string;
+
   active_package: string;
-  active_jobs: number;
-  total_clicks: number;
-  pageviews: number;
+  subscription_status: string | null;
+
+  active_jobs: number | null;
+
+  total_clicks: number | null;
+  total_shares: number | null;
+
+  pageviews: number | null;
 };
 
 export default function AdminClubsPage() {
@@ -27,6 +127,13 @@ export default function AdminClubsPage() {
   pageviews: 0,
   ctr: 0,
 });
+const leaderboard = [...clubs]
+  .map((club) => ({
+    ...club,
+    score: getClubScore(club),
+  }))
+  .sort((a, b) => b.score - a.score)
+  .slice(0, 5);
 
   async function load() {
   const { data, error } = await supabase
@@ -84,7 +191,8 @@ export default function AdminClubsPage() {
         Clubs overzicht
       </h1>
 
-      <div className="grid grid-cols-2 md:grid-cols-5 gap-4 mb-6">
+{/* KPI GRID */}
+<div className="grid grid-cols-2 md:grid-cols-5 gap-4 mb-6">
 
   <div className="border rounded-xl p-4 text-center">
     <div className="text-2xl font-semibold">
@@ -133,17 +241,49 @@ export default function AdminClubsPage() {
 
 </div>
 
+{/* TOP CLUBS LEADERBOARD */}
+<div className="bg-gray-50 border rounded-xl p-4 mb-6">
+  <h2 className="font-semibold mb-3">🏆 Top Clubs</h2>
+
+  <div className="space-y-2">
+    {leaderboard.map((club, index) => (
+      <div
+        key={club.id}
+        className="flex justify-between text-sm"
+      >
+        <span>
+          {index === 0 && "🥇 "}
+          {index === 1 && "🥈 "}
+          {index === 2 && "🥉 "}
+          {index > 2 && `${index + 1}. `}
+          {club.name}
+        </span>
+
+        <span className="font-semibold">
+          {club.score}
+        </span>
+      </div>
+    ))}
+  </div>
+</div>
+
       <table className="w-full text-sm">
         <thead className="bg-[#0d1b2a] text-white text-xs uppercase">
   <tr>
-    <th className="px-4 py-3 text-left">Club</th>
-    <th className="px-4 py-3 text-center">Pakket</th>
-    <th className="px-4 py-3 text-center">Vacatures</th>
-    <th className="px-4 py-3 text-center">Clicks</th>
-    <th className="px-4 py-3 text-center">Pageviews</th>
-    <th className="px-4 py-3 text-center">CTR</th>
-    <th className="px-4 py-3 text-center">Actie</th>
-  </tr>
+<th className="px-4 py-3 text-left">Club</th>
+<th className="px-4 py-3 text-center">Pakket</th>
+<th className="px-4 py-3 text-center">Status</th>
+<th className="px-4 py-3 text-center">Health</th>
+<th className="px-4 py-3 text-center">Growth</th>
+<th className="px-4 py-3 text-center">Score</th>
+<th className="px-4 py-3 text-center">Vacatures</th>
+<th className="px-4 py-3 text-center">Pageviews</th>
+<th className="px-4 py-3 text-center">Clicks</th>
+<th className="px-4 py-3 text-center">CTR</th>
+<th className="px-4 py-3 text-center">Shares</th>
+<th className="px-4 py-3 text-center">Share rate</th>
+<th className="px-4 py-3 text-center">Actie</th>
+</tr>
 </thead>
 
         <tbody>
@@ -158,11 +298,45 @@ export default function AdminClubsPage() {
 </td>
 
 <td className="px-4 py-3 text-center">
+  <StatusBadge status={club.subscription_status} />
+</td>
+
+<td className="px-4 py-3 text-center">
+  {(() => {
+    const health = getHealthScore(club);
+    return (
+      <span className={`font-medium ${health.color}`}>
+        {health.label}
+      </span>
+    );
+  })()}
+</td>
+
+<td className="px-4 py-3 text-center">
+  {(() => {
+    const growth = getGrowthScore(club);
+    return (
+      <span className={`font-medium ${growth.color}`}>
+        {growth.label}
+      </span>
+    );
+  })()}
+</td>
+
+<td className="px-4 py-3 text-center font-semibold">
+  {getClubScore(club)} / 100
+</td>
+
+<td className="px-4 py-3 text-center">
   {club.active_jobs ?? 0}
 </td>
 
 <td className="px-4 py-3 text-center">
   {club.total_clicks ?? 0}
+</td>
+
+<td className="px-4 py-3 text-center">
+  {club.total_shares ?? 0}
 </td>
 
 <td className="px-4 py-3 text-center">
@@ -175,16 +349,11 @@ export default function AdminClubsPage() {
     : "0%"}
 </td>
 
-              <td className="px-4 py-3 text-center">
-                <button
-                  onClick={() =>
-                    router.push(`/admin/clubs/${club.slug}`)
-                  }
-                  className="text-blue-600 underline"
-                >
-                  Open
-                </button>
-              </td>
+<td className="px-4 py-3 text-center">
+  {club.pageviews
+    ? ((club.total_shares / club.pageviews) * 100).toFixed(1) + "%"
+    : "0%"}
+</td>
             </tr>
           ))}
         </tbody>

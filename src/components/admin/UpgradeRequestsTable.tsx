@@ -34,7 +34,7 @@ function getClub(clubs: UpgradeRequest["clubs"]): Club | null {
    Page
    =============================== */
 
-export default function AdminUpgradePage() {
+export default function UpgradeRequestsTable() {
   const supabase = getSupabaseBrowser();
 
   const [requests, setRequests] = useState<UpgradeRequest[]>([]);
