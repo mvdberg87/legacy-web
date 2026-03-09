@@ -183,7 +183,8 @@ const { count: totalSharesCount } = await supabase
 
 const { data: shareRows } = await supabase
   .from("job_shares")
-  .select("job_id");
+  .select("job_id")
+  .in("job_id", jobIds);
 
 const shareCounts: Record<string, number> = {};
 
@@ -577,16 +578,14 @@ async function inviteUser() {
                     </button>
 
                     <button
-                      onClick={() =>
-                        router.push(
-                          `/club/${club.slug}/jobs/${job.id}/edit`
-                        )
-                      }
-                      className="border px-2 py-1 rounded"
-                      title="Bewerken"
-                    >
-                      ✏️
-                    </button>
+  onClick={() =>
+    router.push(`/club/${club.slug}/jobs/${job.id}/edit`)
+  }
+  className="border px-2 py-1 rounded"
+  title="Bewerken"
+>
+  ✏️
+</button>
 
                     <button
                       onClick={() =>
