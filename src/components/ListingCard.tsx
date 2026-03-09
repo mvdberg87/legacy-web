@@ -6,6 +6,7 @@ import {
   getCompanyLogo,
   getFaviconFallback,
 } from "@/lib/companyLogo";
+import { getSupabaseBrowser } from "@/lib/supabaseBrowser";
 
 /* ---------- Types ---------- */
 
@@ -15,8 +16,10 @@ type Props = {
   company: string;
   website?: string | null;
   cachedLogo?: string | null;
+  jobId: string;
+  clubId: string;
   external?: boolean;
-  variant?: "default" | "ad";   // 👈 toevoegen
+  variant?: "default" | "ad";
 };
 
 /* ---------- Component ---------- */
@@ -27,9 +30,12 @@ export default function ListingCard({
   company,
   website,
   cachedLogo,
+  jobId,
+  clubId,
   external = false,
 }: Props) {
   const router = useRouter();
+const supabase = getSupabaseBrowser();
   const logoSrc = getCompanyLogo(website, cachedLogo);
 
   const isValidHref =
@@ -48,7 +54,7 @@ export default function ListingCard({
 /* =========================
    WhatsApp share
 ========================= */
-function shareInTeamApp() {
+async function shareInTeamApp() {
   if (!isValidHref) return;
 
   const text = `Vacature bij ${company}
@@ -59,6 +65,20 @@ Bekijk deze vacature via Sponsorjobs:
 ${href}`;
 
   const whatsappUrl = `https://wa.me/?text=${encodeURIComponent(text)}`;
+
+  /* =========================
+     SHARE TRACKING
+  ========================= */
+
+  try {
+    await supabase.from("job_shares").insert({
+  job_id: jobId,
+  club_id: clubId,
+  platform: "whatsapp",
+});
+  } catch (err) {
+    console.error("Share tracking error:", err);
+  }
 
   window.open(whatsappUrl, "_blank");
 }
@@ -139,7 +159,7 @@ ${href}`;
     transition
   "
 >
-  📲 Deel in teamapp
+  📲 Deel vacature
 </button>
 
 </div>

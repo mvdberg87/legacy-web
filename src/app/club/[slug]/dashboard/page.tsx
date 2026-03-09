@@ -41,6 +41,9 @@ type SponsorOverviewRow = {
   sponsor_name: string;
   total_jobs: number;
   total_clicks: number;
+  total_shares: number;
+  ctr: string;
+  share_rate: string;
   last_activity_at: string | null;
 };
 
@@ -114,7 +117,7 @@ export default function ClubDashboardPage() {
 
 const { count: totalPageviews } = await supabase
   .from("club_page_views")
-  .select("*", { count: "exact", head: true })
+  .select("id", { count: "exact", head: true })
   .eq("club_id", clubData.id);
 
 const pageviews = totalPageviews ?? 0;
@@ -133,6 +136,23 @@ console.log("PAGEVIEWS COUNT:", totalPageviews);
 
       const jobIds = jobs?.map((j) => j.id) ?? [];
 
+      // sponsorMap initialiseren
+jobs?.forEach((job) => {
+  if (!sponsorMap[job.company_name]) {
+    sponsorMap[job.company_name] = {
+      sponsor_name: job.company_name,
+      total_jobs: 0,
+      total_clicks: 0,
+      total_shares: 0,
+      ctr: "0.0",
+      share_rate: "0.0",
+      last_activity_at: null,
+    };
+  }
+
+  sponsorMap[job.company_name].total_jobs++;
+});
+
       /* ===============================
          2️⃣ Clicks ophalen (LEIDEND)
       =============================== */
@@ -148,19 +168,6 @@ if (jobIds.length > 0) {
     .in("job_id", jobIds);
 
   totalClicks = clicks?.length ?? 0;
-
-  // vacatures tellen per sponsor
-  jobs?.forEach((job) => {
-    if (!sponsorMap[job.company_name]) {
-      sponsorMap[job.company_name] = {
-        sponsor_name: job.company_name,
-        total_jobs: 0,
-        total_clicks: 0,
-        last_activity_at: null,
-      };
-    }
-    sponsorMap[job.company_name].total_jobs++;
-  });
 
   // clicks tellen per sponsor
   clicks?.forEach((click) => {
@@ -187,12 +194,38 @@ if (jobIds.length > 0) {
    TeamApp shares ophalen
 =============================== */
 
-const { count: totalShares } = await supabase
-  .from("job_shares")
-  .select("*", { count: "exact", head: true })
-  .eq("club_id", clubData.id);
+let sharesData = [];
 
-const shares = totalShares ?? 0;
+if (jobIds.length > 0) {
+  const { data } = await supabase
+    .from("job_shares")
+    .select("job_id, created_at")
+    .in("job_id", jobIds);
+
+  sharesData = data ?? [];
+}
+
+const shares = sharesData.length;
+
+// shares tellen per sponsor
+sharesData?.forEach((share) => {
+  const job = jobs?.find((j) => j.id === share.job_id);
+  if (!job) return;
+
+  const sponsor = sponsorMap[job.company_name];
+
+  if (!sponsor.total_shares) sponsor.total_shares = 0;
+
+  sponsor.total_shares++;
+
+  if (
+    !sponsor.last_activity_at ||
+    new Date(share.created_at) >
+      new Date(sponsor.last_activity_at)
+  ) {
+    sponsor.last_activity_at = share.created_at;
+  }
+});
 
       /* ===============================
          3️⃣ Advertenties tellen
@@ -237,6 +270,22 @@ const ctr =
       .filter(Boolean)
       .sort()
       .pop() ?? null,
+});
+
+Object.values(sponsorMap).forEach((s) => {
+
+  const views = pageviews || 0;
+
+  s.ctr =
+    views > 0
+      ? ((s.total_clicks / views) * 100).toFixed(1)
+      : "0.0";
+
+  s.share_rate =
+    views > 0
+      ? ((s.total_shares / views) * 100).toFixed(1)
+      : "0.0";
+
 });
 
 setSponsors(Object.values(sponsorMap));
@@ -443,7 +492,7 @@ setSponsors(Object.values(sponsorMap));
 />
 
 <InsightCard
-  label="TeamApp shares"
+  label="Social shares"
   value={insights?.total_shares ?? 0}
 />
 
@@ -478,11 +527,20 @@ setSponsors(Object.values(sponsorMap));
                   Vacatures
                 </th>
                 <th className="px-4 py-2 text-center">
-                  Clicks
-                </th>
-                <th className="px-4 py-2 text-center">
-                  Laatste activiteit
-                </th>
+  Clicks
+</th>
+<th className="px-4 py-2 text-center">
+  CTR
+</th>
+<th className="px-4 py-2 text-center">
+  Shares
+</th>
+<th className="px-4 py-2 text-center">
+  Share rate
+</th>
+<th className="px-4 py-2 text-center">
+  Laatste activiteit
+</th>
               </tr>
             </thead>
             <tbody>
@@ -500,6 +558,17 @@ setSponsors(Object.values(sponsorMap));
                   <td className="px-4 py-2 text-center">
                     {s.total_clicks}
                   </td>
+                  <td className="px-4 py-2 text-center">
+  {s.ctr} %
+</td>
+
+<td className="px-4 py-2 text-center">
+  {s.total_shares ?? 0}
+</td>
+
+<td className="px-4 py-2 text-center">
+  {s.share_rate} %
+</td>
                   <td className="px-4 py-2 text-center">
                     {s.last_activity_at
                       ? new Date(

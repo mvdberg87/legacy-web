@@ -281,7 +281,9 @@ const logo = getCompanyLogo(website, company.logo);
   company={ad.company_name}
   website={ad.link_url}
   cachedLogo={ad.image_url}
-  variant="ad"   // 👈 NIEUW
+  jobId={ad.id}
+  clubId={club.id}
+  variant="ad"
 />
                   </div>
                 );
@@ -345,13 +347,15 @@ const logo = getCompanyLogo(website, company.logo);
       )}
 
       <ListingCard
-        href={job.apply_url ?? "#"}
-        external
-        title={job.job_title}
-        company={job.company_name}
-        website={job.company_website || job.apply_url}
-        cachedLogo={job.company_logo_url}
-      />
+  href={job.apply_url ?? "#"}
+  external
+  title={job.job_title}
+  company={job.company_name}
+  website={job.company_website || job.apply_url}
+  cachedLogo={job.company_logo_url}
+  jobId={job.id}
+  clubId={club.id}
+/>
     </div>
   );
 })}
