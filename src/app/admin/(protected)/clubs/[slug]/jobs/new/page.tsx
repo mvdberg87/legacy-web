@@ -104,7 +104,7 @@ if (!res.ok) {
 
       <ClubNavbar slug={slug} />
 
-      <div className="max-w-3xl mx-auto bg-white border-2 border-[#0d1b2a] rounded-2xl p-6 shadow mt-6">
+      <div className="max-w-3xl mx-auto bg-white text-black border-2 border-[#0d1b2a] rounded-2xl p-6 shadow mt-6">
 
         <h1 className="text-2xl font-semibold mb-6 text-[#0d1b2a]">
           Vacature toevoegen
