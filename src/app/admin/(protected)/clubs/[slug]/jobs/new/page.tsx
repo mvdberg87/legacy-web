@@ -29,23 +29,23 @@ export default function NewJobPage() {
   const [saving, setSaving] = useState(false);
 
   useEffect(() => {
-  (async () => {
+(async () => {
 
-    const { data: clubData } = await supabase
-      .from("clubs")
-      .select("id, name, primary_color, secondary_color")
-      .eq("slug", slug)
-      .maybeSingle();
+const { data: clubData } = await supabase
+.from("clubs")
+.select("id, name, primary_color, secondary_color")
+.eq("slug", slug)
+.maybeSingle();
 
-    if (!clubData) {
-      setLoading(false);
-      return;
-    }
+if (!clubData) {
+setLoading(false);
+return;
+}
 
-    setClub(clubData);
-    setLoading(false);
+setClub(clubData);
+setLoading(false);
 
-  })();
+})();
 }, [supabase, slug]);
 
   async function createJob(e: React.FormEvent) {
@@ -60,24 +60,27 @@ export default function NewJobPage() {
 
     setSaving(true);
 
-    const { error } = await supabase
-      .from("jobs")
-      .insert({
-        title: title.trim(),
-        company_name: companyName.trim(),
-        apply_url: applyUrl.trim(),
-        club_id: club.id,
-        featured: false,
-      });
+    const res = await fetch("/api/jobs/create", {
+  method: "POST",
+  headers: {
+    "Content-Type": "application/json",
+  },
+  body: JSON.stringify({
+    clubId: club.id,
+    title,
+    company_name: companyName,
+    apply_url: applyUrl,
+  }),
+});
 
-    setSaving(false);
+setSaving(false);
 
-    if (error) {
-      alert("Fout bij toevoegen vacature");
-      return;
-    }
+if (!res.ok) {
+  alert("Vacature aanmaken mislukt");
+  return;
+}
 
-    router.push(`/club/${slug}/jobs`);
+    router.push(`/admin/clubs/${slug}`)
   }
 
   if (loading) {

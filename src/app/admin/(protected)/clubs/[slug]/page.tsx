@@ -529,9 +529,9 @@ async function inviteUser() {
 
 <div className="flex justify-end mb-4">
   <button
-    onClick={() => router.push(`/club/${club.slug}/jobs/new`)}
-    className="bg-green-600 text-white px-5 py-2 rounded-lg text-sm font-semibold hover:bg-green-700 shadow"
-  >
+  onClick={() => router.push(`/admin/clubs/${club.slug}/jobs/new`)}
+  className="bg-green-600 text-white px-5 py-2 rounded-lg text-sm font-semibold hover:bg-green-700 shadow"
+>
     + Vacature toevoegen
   </button>
 </div>
@@ -588,7 +588,7 @@ async function inviteUser() {
 
                     <button
   onClick={() =>
-    router.push(`/club/${club.slug}/jobs/${job.id}/edit`)
+    router.push(`/admin/clubs/${club.slug}/jobs/${job.id}/edit`)
   }
   className="border px-2 py-1 rounded"
   title="Bewerken"
