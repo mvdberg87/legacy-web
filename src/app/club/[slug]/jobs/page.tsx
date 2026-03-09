@@ -25,6 +25,7 @@ type Job = {
 type JobWithStats = Job & {
   total_clicks: number;
   last_click: string | null;
+  ctr: number;
 };
 
 type Club = {
@@ -87,6 +88,17 @@ export default function ClubJobsPage() {
     if (!clubData) return setLoading(false);
     setClub(clubData);
 
+    /* ===============================
+   Pageviews ophalen
+=============================== */
+
+const { count: pageviews } = await supabase
+  .from("club_page_views")
+  .select("*", { count: "exact", head: true })
+  .eq("club_id", clubData.id);
+
+const totalPageviews = pageviews ?? 0;
+
     const query = supabase
       .from("jobs")
       .select("id, title, company_name, apply_url, created_at, featured")
@@ -125,11 +137,21 @@ export default function ClubJobsPage() {
     });
 
     const mapped =
-      (jobsData ?? []).map((j) => ({
-        ...j,
-        total_clicks: stats[j.id]?.total ?? 0,
-        last_click: stats[j.id]?.last ?? null,
-      })) ?? [];
+  (jobsData ?? []).map((j) => {
+    const clicks = stats[j.id]?.total ?? 0;
+
+    const ctr =
+      totalPageviews > 0
+        ? Number(((clicks / totalPageviews) * 100).toFixed(1))
+        : 0;
+
+    return {
+      ...j,
+      total_clicks: clicks,
+      last_click: stats[j.id]?.last ?? null,
+      ctr,
+    };
+  }) ?? [];
 
     if (showArchived) {
       setArchivedJobs(mapped);
@@ -290,6 +312,7 @@ export default function ClubJobsPage() {
           <thead className="bg-[#0d1b2a] text-white">
             <tr>
               <th className="px-4 py-3 text-left">Item</th>
+              <th className="px-4 py-3 text-center">CTR</th>
               <th className="px-4 py-3 text-center">Clicks</th>
               <th className="px-4 py-3 text-center">Laatste click</th>
               <th className="px-4 py-3 text-center">Beheer</th>
@@ -312,8 +335,11 @@ export default function ClubJobsPage() {
                   </div>
                 </td>
                 <td className="px-4 py-3 text-center">
-                  {job.total_clicks}
-                </td>
+  {job.ctr} %
+</td>
+<td className="px-4 py-3 text-center">
+  {job.total_clicks}
+</td>
                 <td className="px-4 py-3 text-center">
                   {job.last_click
                     ? new Date(job.last_click).toLocaleDateString("nl-NL")

@@ -108,15 +108,17 @@ const adminEmail = adminProfile?.email ?? null;
      =============================== */
   const jobsMapped =
   (jobs ?? []).map((job) => ({
-        id: job.id,
-        job_title: job.title,
-        company_name: job.company_name,
-        created_at: job.created_at,
-        apply_url: job.apply_url,
-        is_featured: job.featured,
-        company_website: job.company_website,
-        company_logo_url: job.company_logo_url,
-      }));
+    id: job.id,
+    job_title: job.title,
+    company_name: job.company_name,
+    created_at: job.created_at,
+    apply_url: job.apply_url,
+    is_featured: job.featured,
+    company_website: job.company_website,
+    company_logo_url: job.company_logo_url,
+    total_clicks: 0,
+    ctr: 0,
+  }));
 
   /* ===============================
      6️⃣ Advertenties combineren

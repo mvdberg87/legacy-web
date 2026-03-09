@@ -1,7 +1,7 @@
 "use client";
 
 import ListingCard from "@/components/ListingCard";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useMemo } from "react";
 import { getCompanyLogo } from "@/lib/companyLogo";
 
 /* ---------- Types ---------- */
@@ -93,9 +93,30 @@ const filteredJobs = companyFilter
   ? jobs.filter((job) => job.company_name === companyFilter)
   : jobs;
 
-const sortedJobs = [...filteredJobs]
-  .filter((job) => !job.is_featured)
-  .sort((a, b) => Number(b.is_featured) - Number(a.is_featured));
+const sortedJobs = useMemo(() => {
+
+  const todaySeed = new Date().toISOString().slice(0, 10);
+
+  function seededRandom(seed: string) {
+    let h = 0;
+    for (let i = 0; i < seed.length; i++) {
+      h = Math.imul(31, h) + seed.charCodeAt(i) | 0;
+    }
+    return () => {
+      h = Math.imul(1664525, h) + 1013904223;
+      return ((h >>> 0) % 1000) / 1000;
+    };
+  }
+
+  const random = seededRandom(todaySeed);
+
+  return [...filteredJobs]
+    .filter((job) => !job.is_featured)
+    .sort(() => random() - 0.5);
+
+}, [filteredJobs]);
+
+const bestJob = sortedJobs.length > 0 ? sortedJobs[0] : null;
 
   /* ===============================
    Bedrijven met vacatures
@@ -104,6 +125,8 @@ const sortedJobs = [...filteredJobs]
 const companies = Array.from(
   new Map(
     [
+
+      
       ...jobs.map((job) => ({
         name: job.company_name,
         logo: job.company_logo_url,
@@ -303,23 +326,35 @@ const logo = getCompanyLogo(website, company.logo);
 </div>
 
             <div className="grid gap-4">
-              {sortedJobs.map((job) => (
-                <div
-                  key={job.id}
-                  onClick={async () => {
-                    await trackJobClick(job.id);
-                  }}
-                >
-                  <ListingCard
-  href={job.apply_url ?? "#"}
-  external
-  title={job.job_title}
-  company={job.company_name}
-  website={job.company_website || job.apply_url}
-  cachedLogo={job.company_logo_url}
-/>
-                </div>
-              ))}
+              {sortedJobs.map((job) => {
+  const isBest = bestJob && job.id === bestJob.id;
+
+  return (
+    <div
+      key={job.id}
+      className="relative"
+      onClick={async () => {
+        await trackJobClick(job.id);
+      }}
+    >
+
+      {isBest && (
+        <div className="absolute -top-2 -left-2 bg-gray-100 text-gray-700 text-xs px-2 py-1 rounded">
+  Meest bekeken
+</div>
+      )}
+
+      <ListingCard
+        href={job.apply_url ?? "#"}
+        external
+        title={job.job_title}
+        company={job.company_name}
+        website={job.company_website || job.apply_url}
+        cachedLogo={job.company_logo_url}
+      />
+    </div>
+  );
+})}
             </div>
           </section>
         )}
