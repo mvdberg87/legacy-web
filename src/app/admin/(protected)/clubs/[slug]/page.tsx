@@ -42,6 +42,10 @@ export default function AdminClubDetailPage() {
   const [jobs, setJobs] = useState<JobWithStats[]>([]);
   const [loading, setLoading] = useState(true);
   const [reports, setReports] = useState<any[]>([]);
+  const [topJobs, setTopJobs] = useState({
+  mostClicked: null as any,
+  mostShared: null as any,
+});
   const [clubUser, setClubUser] = useState<any>(null);
 const [newEmail, setNewEmail] = useState("");
 const [stats, setStats] = useState({
@@ -53,6 +57,8 @@ const [stats, setStats] = useState({
   ctr: 0,
   totalAds: 0,
   activeAds: 0,
+  totalShares: 0,
+  shareRate: 0,
 });
 
 function StatCard({ label, value }: { label: string; value: any }) {
@@ -129,12 +135,10 @@ setReports(reportsData ?? []);
 const activeVacancies = jobsData?.length ?? 0;
 
 // Pageviews (clubniveau, gelijk aan club dashboard)
-const { data: pageviewsData } = await supabase
+const { count: pageviews } = await supabase
   .from("club_page_views")
-  .select("id")
+  .select("*", { count: "exact", head: true })
   .eq("club_id", clubData.id);
-
-const pageviews = pageviewsData?.length ?? 0;
 
 // Advertenties totaal
 const { count: totalAds } = await supabase
@@ -164,6 +168,29 @@ const { count: totalClicksCount } = await supabase
   .select("*", { count: "exact", head: true })
   .in("job_id", jobIds);
 
+  // ===============================
+// Shares ophalen
+// ===============================
+
+const { count: totalSharesCount } = await supabase
+  .from("job_shares")
+  .select("*", { count: "exact", head: true })
+  .in("job_id", jobIds);
+
+  // ===============================
+// Top vacatures berekenen
+// ===============================
+
+const { data: shareRows } = await supabase
+  .from("job_shares")
+  .select("job_id");
+
+const shareCounts: Record<string, number> = {};
+
+(shareRows ?? []).forEach((s) => {
+  shareCounts[s.job_id] = (shareCounts[s.job_id] ?? 0) + 1;
+});
+
 // Clicks deze maand
 const startOfMonth = new Date();
 startOfMonth.setDate(1);
@@ -181,6 +208,11 @@ const ctr =
     ? ((totalClicksCount ?? 0) / pageviews) * 100
     : 0;
 
+    const shareRate =
+  pageviews && pageviews > 0
+    ? ((totalSharesCount ?? 0) / pageviews) * 100
+    : 0;
+
 setStats({
   totalVacancies,
   totalClicks: totalClicksCount ?? 0,
@@ -190,6 +222,8 @@ setStats({
   ctr: Number(ctr.toFixed(1)),
   totalAds: totalAds ?? 0,
   activeAds: activeAds ?? 0,
+  totalShares: totalSharesCount ?? 0,
+  shareRate: Number(shareRate.toFixed(1)),
 });
 
     const { data: clicks } = await supabase
@@ -197,21 +231,51 @@ setStats({
       .select("job_id, created_at")
       .in("job_id", jobIds);
 
-    const stats: Record<string, { total: number; last: string | null }> = {};
+    const clickStats: Record<string, { total: number; last: string | null }> = {};
 
     (clicks ?? []).forEach((c) => {
-      if (!stats[c.job_id]) stats[c.job_id] = { total: 0, last: null };
-      stats[c.job_id].total++;
-      stats[c.job_id].last = c.created_at;
-    });
+  if (!clickStats[c.job_id]) clickStats[c.job_id] = { total: 0, last: null };
+  clickStats[c.job_id].total++;
+  clickStats[c.job_id].last = c.created_at;
+});
+
+// Meest bekeken vacature
+let mostClickedJob = null;
+let maxClicks = 0;
+
+Object.entries(clickStats).forEach(([jobId, stat]) => {
+  if (stat.total > maxClicks) {
+    maxClicks = stat.total;
+    mostClickedJob = jobId;
+  }
+});
+
+// Meest gedeelde vacature
+let mostSharedJob = null;
+let maxShares = 0;
+
+Object.entries(shareCounts).forEach(([jobId, count]) => {
+  if (count > maxShares) {
+    maxShares = count;
+    mostSharedJob = jobId;
+  }
+});
+
+const mostClicked = jobsData?.find((j) => j.id === mostClickedJob);
+const mostShared = jobsData?.find((j) => j.id === mostSharedJob);
+
+setTopJobs({
+  mostClicked,
+  mostShared,
+});
 
     setJobs(
-      (jobsData ?? []).map((j) => ({
-        ...j,
-        total_clicks: stats[j.id]?.total ?? 0,
-        last_click: stats[j.id]?.last ?? null,
-      }))
-    );
+  (jobsData ?? []).map((j) => ({
+    ...j,
+    total_clicks: clickStats[j.id]?.total ?? 0,
+    last_click: clickStats[j.id]?.last ?? null,
+  }))
+);
 
     setLoading(false);
   }
@@ -220,6 +284,8 @@ setStats({
   if (!slug) return;
   load();
 }, [slug]);
+
+
 
   /* ---------- Acties ---------- */
 
@@ -377,24 +443,58 @@ async function inviteUser() {
     </div>
   </div>
 
+  <div className="grid md:grid-cols-2 gap-4 mb-6">
+
+  <div className="border rounded-xl p-4 bg-green-50">
+    <div className="text-sm text-gray-500">🏆 Meest bekeken vacature</div>
+
+    {topJobs.mostClicked ? (
+      <div className="mt-2">
+        <div className="font-semibold">{topJobs.mostClicked.title}</div>
+        <div className="text-xs text-gray-600">
+          {topJobs.mostClicked.company_name}
+        </div>
+      </div>
+    ) : (
+      <div className="text-sm text-gray-400 mt-2">Nog geen data</div>
+    )}
+  </div>
+
+  <div className="border rounded-xl p-4 bg-blue-50">
+    <div className="text-sm text-gray-500">🚀 Meest gedeelde vacature</div>
+
+    {topJobs.mostShared ? (
+      <div className="mt-2">
+        <div className="font-semibold">{topJobs.mostShared.title}</div>
+        <div className="text-xs text-gray-600">
+          {topJobs.mostShared.company_name}
+        </div>
+      </div>
+    ) : (
+      <div className="text-sm text-gray-400 mt-2">Nog geen data</div>
+    )}
+  </div>
+
+</div>
+
   {/* Stat cards */}
-  <div className="grid grid-cols-2 md:grid-cols-6 gap-4">
+  <div className="grid grid-cols-2 md:grid-cols-7 gap-4">
 
   <StatCard label="Pageviews" value={stats.pageviews} />
 
+  <StatCard label="Clicks" value={stats.totalClicks} />
+
   <StatCard label="CTR" value={`${stats.ctr} %`} />
 
-  <StatCard label="Actieve vacatures" value={stats.totalVacancies} />
+  <StatCard label="Shares" value={stats.totalShares} />
+
+  <StatCard label="Share rate" value={`${stats.shareRate} %`} />
+
+  <StatCard label="Vacatures" value={stats.totalVacancies} />
 
   <StatCard label="Advertenties" value={stats.totalAds} />
 
-  <StatCard label="Totaal clicks" value={stats.totalClicks} />
-
-  <StatCard
-    label="Advertenties actief"
-    value={`${stats.activeAds} / ${stats.totalAds}`}
-  />
-  </div>
+</div>
 </motion.div>
       <motion.div
         className="bg-white text-black rounded-2xl shadow p-6"
@@ -417,8 +517,16 @@ async function inviteUser() {
 
         </div>
 
-        {/* Tabel */}
-        <div className="overflow-x-auto">
+<div className="flex justify-end mb-4">
+  <button
+    onClick={() => router.push(`/club/${club.slug}/jobs/new`)}
+    className="bg-green-600 text-white px-5 py-2 rounded-lg text-sm font-semibold hover:bg-green-700 shadow"
+  >
+    + Vacature toevoegen
+  </button>
+</div>
+
+<div className="overflow-x-auto">
           <table className="min-w-full text-sm">
             <thead className="bg-[#0d1b2a] text-white text-xs uppercase">
               <tr>
@@ -434,7 +542,7 @@ async function inviteUser() {
                 <tr
                   key={job.id}
                   className={`border-b last:border-b-0 ${
-                    job.featured ? "bg-yellow-50" : ""
+                    job.featured ? "bg-[#e6dfc8]" : ""
                   }`}
                 >
                   <td className="px-4 py-3">
@@ -460,10 +568,7 @@ async function inviteUser() {
                   <td className="px-4 py-3 text-center space-x-2">
                     <button
                       onClick={() =>
-                        window.open(
-                          `/club/${club.slug}/jobs/public`,
-                          "_blank"
-                        )
+                        window.open(`/${club.slug}`, "_blank")
                       }
                       className="border px-2 py-1 rounded"
                       title="Publieke vacatures bekijken"
