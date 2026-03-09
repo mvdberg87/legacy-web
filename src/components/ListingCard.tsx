@@ -133,7 +133,7 @@ ${href}`;
   className="
     flex-1
     rounded-xl py-2 text-sm font-semibold
-    border border-[#1f9d55]
+    border border-[#0d1b2a]
     text-[#1f9d55]
     hover:bg-[#1f9d55] hover:text-white
     transition

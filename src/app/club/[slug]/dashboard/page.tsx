@@ -32,6 +32,8 @@ type ClubDashboardInsights = {
   total_clicks: number;
   total_pageviews: number;
   ctr: string;
+  total_shares: number;
+  share_rate: string;
   last_activity_at: string | null;
 };
 
@@ -181,6 +183,17 @@ if (jobIds.length > 0) {
   });
 }
 
+/* ===============================
+   TeamApp shares ophalen
+=============================== */
+
+const { count: totalShares } = await supabase
+  .from("job_shares")
+  .select("*", { count: "exact", head: true })
+  .eq("club_id", clubData.id);
+
+const shares = totalShares ?? 0;
+
       /* ===============================
          3️⃣ Advertenties tellen
       =============================== */
@@ -201,7 +214,11 @@ const ctr =
   pageviews > 0
     ? ((totalClicks / pageviews) * 100).toFixed(1)
     : "0.0";
-
+    
+    const shareRate =
+  pageviews > 0
+    ? ((shares / pageviews) * 100).toFixed(1)
+    : "0.0";
       /* ===============================
          4️⃣ KPI samenstellen
       =============================== */
@@ -212,6 +229,8 @@ const ctr =
   total_clicks: totalClicks,
   total_pageviews: pageviews,
   ctr,
+  total_shares: shares,
+  share_rate: shareRate,
   last_activity_at:
     Object.values(sponsorMap)
       .map((s) => s.last_activity_at)
@@ -407,36 +426,42 @@ setSponsors(Object.values(sponsorMap));
 </section>
 
         <section className="grid grid-cols-2 lg:grid-cols-6 gap-4 mb-10">
-          <InsightCard
+
+<InsightCard
   label="Pageviews"
   value={insights?.total_pageviews ?? 0}
+/>
+
+<InsightCard
+  label="Clicks"
+  value={insights?.total_clicks ?? 0}
 />
 
 <InsightCard
   label="CTR"
   value={`${insights?.ctr ?? "0.0"} %`}
 />
-          <InsightCard
-            label="Actieve vacatures"
-            value={insights?.active_jobs ?? 0}
-          />
-          <InsightCard
-            label="Advertenties"
-            value={insights?.total_ads ?? 0}
-          />
-          <InsightCard
-            label="Totaal clicks"
-            value={insights?.total_clicks ?? 0}
-          />
-          <InsightCard
-            label="Advertenties actief"
-            value={`${adsCount} / ${
-              subscription.ads === Infinity
-                ? "∞"
-                : subscription.ads
-            }`}
-          />
-        </section>
+
+<InsightCard
+  label="TeamApp shares"
+  value={insights?.total_shares ?? 0}
+/>
+
+<InsightCard
+  label="Share rate"
+  value={`${insights?.share_rate ?? "0.0"} %`}
+/>
+
+<InsightCard
+  label="Advertenties actief"
+  value={`${adsCount} / ${
+    subscription.ads === Infinity
+      ? "∞"
+      : subscription.ads
+  }`}
+/>
+
+</section>
 
         <section className="mb-12">
           <h2 className="text-lg font-semibold mb-4">
