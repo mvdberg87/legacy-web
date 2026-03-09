@@ -136,6 +136,10 @@ console.log("PAGEVIEWS COUNT:", totalPageviews);
 
       const jobIds = jobs?.map((j) => j.id) ?? [];
 
+      let totalClicks = 0;
+
+const sponsorMap: Record<string, SponsorOverviewRow> = {};
+
       // sponsorMap initialiseren
 jobs?.forEach((job) => {
   if (!sponsorMap[job.company_name]) {
@@ -153,13 +157,11 @@ jobs?.forEach((job) => {
   sponsorMap[job.company_name].total_jobs++;
 });
 
+
+
       /* ===============================
          2️⃣ Clicks ophalen (LEIDEND)
       =============================== */
-
-      let totalClicks = 0;
-
-const sponsorMap: Record<string, SponsorOverviewRow> = {};
 
 if (jobIds.length > 0) {
   const { data: clicks } = await supabase
