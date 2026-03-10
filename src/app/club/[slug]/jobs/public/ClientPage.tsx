@@ -193,17 +193,6 @@ const companies = Array.from(
     Leden, supporters en bedrijven verbinden
   </p>
 
-  {/* Clublogo (alleen tonen als het bestaat) */}
-  {club.logo_url && (
-    <div className="mt-4">
-      <img
-        src={club.logo_url}
-        alt={`${club.name} logo`}
-        className="h-14 w-auto object-contain mx-auto drop-shadow-md"
-      />
-    </div>
-  )}
-
 </div>
 
 <div
