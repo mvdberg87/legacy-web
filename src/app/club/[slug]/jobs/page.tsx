@@ -312,18 +312,20 @@ const totalPageviews = pageviews ?? 0;
 <div className="md:hidden space-y-4 mb-6">
   {visibleJobs.map((job) => (
     <div
-      key={job.id}
-      className={`border rounded-xl p-4 shadow-sm ${
-        job.featured ? "border-yellow-400 bg-yellow-50" : ""
-      }`}
-    >
+  key={job.id}
+  className={`border rounded-xl p-4 shadow-sm hover:shadow-md transition ${
+    job.featured ? "border-yellow-400 bg-yellow-50" : ""
+  }`}
+>
       <div className="font-semibold text-lg">{job.title}</div>
 
       <div className="text-sm text-gray-500 mb-3">
-        {job.company_name}
-      </div>
+  {job.company_name}
+</div>
 
-      <div className="grid grid-cols-3 text-sm mb-4">
+<div className="border-t border-gray-200 my-3"></div>
+
+<div className="grid grid-cols-3 text-sm mb-4">
         <div>
           <div className="text-gray-400 text-xs">CTR</div>
           <div>{job.ctr}%</div>
@@ -413,8 +415,8 @@ const totalPageviews = pageviews ?? 0;
   ))}
 </div>
 
-        <table className="hidden md:table min-w-full text-sm border-2 rounded-xl overflow-hidden">
-          <thead className="bg-[#0d1b2a] text-white">
+        <table className="hidden md:table min-w-full text-sm border-4 border-[#0d1b2a] rounded-xl overflow-hidden">
+          <thead className="bg-[#0d1b2a] text-white border-b-4 border-[#0d1b2a]">
             <tr>
               <th className="px-4 py-3 text-left">Item</th>
               <th className="px-4 py-3 text-center">CTR</th>
@@ -423,11 +425,11 @@ const totalPageviews = pageviews ?? 0;
               <th className="px-4 py-3 text-center">Beheer</th>
             </tr>
           </thead>
-          <tbody>
-            {visibleJobs.map((job) => (
+          <tbody className="[&>tr:nth-child(even)]:bg-gray-50/60">
+  {visibleJobs.map((job) => (
               <tr
   key={job.id}
-  className={`border-t ${
+  className={`border-t border-[#0d1b2a] hover:bg-gray-100 transition ${
     job.featured
       ? "bg-yellow-50 border-l-4 border-yellow-400"
       : ""

@@ -9,6 +9,9 @@ import Leadinfo from "@/components/Leadinfo";
 export const metadata: Metadata = {
   title: "Sponsorjobs Platform",
   description: "Verbind sportclubs, leden en sponsoren — powered by Sponsuls",
+  icons: {
+    icon: "/logo/sponsorjobs-icon.png",
+  },
 };
 
 export const dynamic = "force-dynamic";

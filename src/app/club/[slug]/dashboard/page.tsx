@@ -536,8 +536,8 @@ setSponsors(Object.values(sponsorMap));
             Sponsors & vacatures
           </h2>
 
-          <table className="min-w-full text-sm border-2 rounded-xl overflow-hidden">
-            <thead className="bg-[#0d1b2a] text-white">
+          <table className="min-w-full text-sm border-4 border-[#0d1b2a] rounded-xl overflow-hidden">
+            <thead className="bg-[#0d1b2a] text-white border-b-4 border-[#0d1b2a]">
               <tr>
                 <th className="px-4 py-2 text-left">
                   Sponsor
@@ -562,12 +562,12 @@ setSponsors(Object.values(sponsorMap));
 </th>
               </tr>
             </thead>
-            <tbody>
+            <tbody className="[&>tr:nth-child(even)]:bg-gray-50">
               {sponsors.map((s) => (
                 <tr
-                  key={s.sponsor_name}
-                  className="border-t"
-                >
+  key={s.sponsor_name}
+  className="border-t border-[#0d1b2a] hover:bg-gray-100 transition"
+>
                   <td className="px-4 py-2">
                     {s.sponsor_name}
                   </td>

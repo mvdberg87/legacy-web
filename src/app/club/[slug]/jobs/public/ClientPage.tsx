@@ -2,6 +2,7 @@
 
 import ListingCard from "@/components/ListingCard";
 import { useEffect, useState, useMemo } from "react";
+import { useSearchParams } from "next/navigation";
 import { getCompanyLogo } from "@/lib/companyLogo";
 
 /* ---------- Types ---------- */
@@ -10,6 +11,7 @@ type Club = {
   id: string;
   name: string;
   slug: string;
+  logo_url?: string | null;
   primary_color?: string | null;
   secondary_color?: string | null;
 };
@@ -105,7 +107,10 @@ function trackJobShare(jobUrl: string) {
   }).catch(() => {});
 }
 
-  const [companyFilter, setCompanyFilter] = useState<string | null>(null);
+  const searchParams = useSearchParams();
+const companyParam = searchParams.get("company");
+
+const [companyFilter, setCompanyFilter] = useState<string | null>(companyParam);
 
 const filteredJobs = companyFilter
   ? jobs.filter((job) => job.company_name === companyFilter)
@@ -165,28 +170,41 @@ const companies = Array.from(
       style={{ backgroundColor: "#0d1b2a" }}
     >
       {/* Header */}
-      <div className="h-28 flex flex-col justify-center items-center text-center shadow bg-white">
-        <h1 className="text-2xl sm:text-3xl font-semibold">
-  Vacatures bij sponsoren van {club.name}
-</h1>
-<p className="text-sm text-gray-600">
-  Leden, supporters en bedrijven verbinden
-</p>
-      </div>
+<div className="h-auto py-8 flex flex-col justify-center items-center text-center shadow bg-white">
 
-      <div
-        className="
-          max-w-4xl mx-auto
-          bg-[#0d1b2a]
-          border-2 border-white
-          rounded-2xl
-          p-8
-          shadow
-          mt-8
-          text-white
-        "
-      >
+  <h1 className="text-2xl sm:text-3xl font-semibold">
+    Vacatures bij sponsoren van {club.name}
+  </h1>
 
+  <p className="text-sm text-gray-600 mt-1">
+    Leden, supporters en bedrijven verbinden
+  </p>
+
+  {/* Clublogo (alleen tonen als het bestaat) */}
+  {club.logo_url && (
+    <div className="mt-4">
+      <img
+        src={club.logo_url}
+        alt={`${club.name} logo`}
+        className="h-14 w-auto object-contain mx-auto drop-shadow-md"
+      />
+    </div>
+  )}
+
+</div>
+
+<div
+  className="
+    max-w-4xl mx-auto
+    bg-[#0d1b2a]
+    border-2 border-white
+    rounded-2xl
+    p-8
+    shadow
+    mt-8
+    text-white
+  "
+>
         {/* =========================
             INTROTEKST
         ========================== */}
@@ -216,7 +234,10 @@ const logo = getCompanyLogo(website, company.logo);
           return (
             <div
   key={company.name + index}
-  onClick={() => setCompanyFilter(company.name)}
+  onClick={() => {
+    const encoded = encodeURIComponent(company.name);
+    window.location.href = `/${club.slug}?company=${encoded}`;
+  }}
   className="
     flex items-center justify-center
     bg-white rounded-xl px-6 py-3
@@ -341,7 +362,9 @@ const logo = getCompanyLogo(website, company.logo);
 
   {companyFilter && (
     <button
-      onClick={() => setCompanyFilter(null)}
+      onClick={() => {
+  window.location.href = `/${club.slug}`;
+}}
       className="text-sm text-blue-300 underline"
     >
       Toon alle vacatures
