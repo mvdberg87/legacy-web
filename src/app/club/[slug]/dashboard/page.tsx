@@ -536,7 +536,8 @@ setSponsors(Object.values(sponsorMap));
             Sponsors & vacatures
           </h2>
 
-          <table className="min-w-full text-sm border-4 border-[#0d1b2a] rounded-xl overflow-hidden">
+          <div className="border-4 border-[#0d1b2a] rounded-xl overflow-hidden">
+  <table className="min-w-full text-sm">
             <thead className="bg-[#0d1b2a] text-white border-b-4 border-[#0d1b2a]">
               <tr>
                 <th className="px-4 py-2 text-left">
@@ -601,6 +602,7 @@ setSponsors(Object.values(sponsorMap));
               ))}
             </tbody>
           </table>
+        </div>
         </section>
 
         {/* Abonnement blijft exact zoals je had */}

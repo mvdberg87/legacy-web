@@ -6,6 +6,7 @@ import {
   getCompanyLogo,
   getFaviconFallback,
 } from "@/lib/companyLogo";
+import { FaWhatsapp } from "react-icons/fa";
 import { getSupabaseBrowser } from "@/lib/supabaseBrowser";
 
 /* ---------- Types ---------- */
@@ -148,22 +149,24 @@ ${href}`;
   </button>
 
   <button
-    onClick={(e) => {
-      e.stopPropagation();
-      shareInTeamApp();
-      onShare?.();
-    }}
-    className="
-      flex-1
-      rounded-xl py-2 text-sm font-semibold
-      border border-white
-      text-[#1f9d55]
-      hover:bg-[#1f9d55] hover:text-white
-      transition
-    "
-  >
-    Deel vacature
-  </button>
+  onClick={(e) => {
+    e.stopPropagation();
+    shareInTeamApp();
+    onShare?.();
+  }}
+  className="
+    flex-1
+    flex items-center justify-center gap-2
+    rounded-xl py-2 text-sm font-semibold
+    border border-white
+    text-[#25D366]
+    hover:bg-[#25D366] hover:text-white
+    transition
+  "
+>
+  <FaWhatsapp className="text-lg" />
+  Deel vacature
+</button>
 
 </div>
 

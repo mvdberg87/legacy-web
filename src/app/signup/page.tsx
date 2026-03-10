@@ -6,10 +6,11 @@ import { useState } from "react";
 
 export default function SignupPage() {
   const [form, setForm] = useState({
-    clubName: "",
-    contactName: "",
-    email: "",
-  });
+  clubName: "",
+  contactName: "",
+  email: "",
+  phone: "",
+});
 
   const [status, setStatus] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
@@ -100,6 +101,15 @@ export default function SignupPage() {
             setForm({ ...form, email: e.target.value })
           }
         />
+
+        <input
+  placeholder="Telefoonnummer"
+  className="w-full border rounded-lg px-3 py-2 text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#0d1b2a]"
+  value={form.phone}
+  onChange={(e) =>
+    setForm({ ...form, phone: e.target.value })
+  }
+/>
 
         {/* CTA */}
         <button

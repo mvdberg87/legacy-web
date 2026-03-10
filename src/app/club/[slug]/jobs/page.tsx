@@ -415,7 +415,8 @@ const totalPageviews = pageviews ?? 0;
   ))}
 </div>
 
-        <table className="hidden md:table min-w-full text-sm border-4 border-[#0d1b2a] rounded-xl overflow-hidden">
+        <div className="border-4 border-[#0d1b2a] rounded-xl overflow-hidden">
+  <table className="min-w-full text-sm">
           <thead className="bg-[#0d1b2a] text-white border-b-4 border-[#0d1b2a]">
             <tr>
               <th className="px-4 py-3 text-left">Item</th>
@@ -521,6 +522,7 @@ const totalPageviews = pageviews ?? 0;
 ))}
 </tbody>
 </table>
+</div>
 
 {/* ===============================
     Support balk

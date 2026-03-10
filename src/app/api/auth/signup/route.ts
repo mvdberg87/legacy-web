@@ -11,7 +11,7 @@ export const runtime = "nodejs";
    =============================== */
 export async function POST(req: NextRequest) {
   try {
-    const { clubName, contactName, email } = await req.json();
+    const { clubName, contactName, email, phone } = await req.json();
 
     if (!clubName || !contactName || !email) {
       return NextResponse.json(
@@ -62,11 +62,12 @@ export async function POST(req: NextRequest) {
     const { error: signupError } = await supabaseAdmin
       .from("club_signup_requests")
       .insert({
-        club_name: clubName,
-        email: normalizedEmail,
-        message: contactName,
-        status: "pending",
-      });
+  club_name: clubName,
+  email: normalizedEmail,
+  message: contactName,
+  phone: phone ?? null,
+  status: "pending",
+});
 
     if (signupError) {
       console.error("❌ club signup insert error:", signupError);
@@ -88,15 +89,16 @@ console.log("Sending admin notification email...");
     to: adminEmails,
     subject: "🆕 Nieuwe club aangemeld",
     html: `
-      <h2>Nieuwe club aangemeld</h2>
-      <p><strong>Club:</strong> ${clubName}</p>
-      <p><strong>Contactpersoon:</strong> ${contactName}</p>
-      <p><strong>E-mail:</strong> ${normalizedEmail}</p>
-      <p>
-        <a href="${process.env.NEXT_PUBLIC_SITE_URL}/admin">
-          👉 Ga naar admin dashboard
-        </a>
-      </p>
+  <h2>Nieuwe club aangemeld</h2>
+  <p><strong>Club:</strong> ${clubName}</p>
+  <p><strong>Contactpersoon:</strong> ${contactName}</p>
+  <p><strong>E-mail:</strong> ${normalizedEmail}</p>
+  <p><strong>Telefoon:</strong> ${phone ?? "niet opgegeven"}</p>
+  <p>
+    <a href="${process.env.NEXT_PUBLIC_SITE_URL}/admin">
+      👉 Ga naar admin dashboard
+    </a>
+  </p>
     `,
   });
 }
