@@ -170,11 +170,24 @@ const companies = Array.from(
       style={{ backgroundColor: "#0d1b2a" }}
     >
       {/* Header */}
-<div className="h-auto py-8 flex flex-col justify-center items-center text-center shadow bg-white">
+{/* Header */}
+<div className="py-8 flex flex-col items-center text-center shadow bg-white">
 
-  <h1 className="text-2xl sm:text-3xl font-semibold">
-    Vacatures bij sponsoren van {club.name}
-  </h1>
+  <div className="flex items-center gap-4">
+
+    {club.logo_url && (
+      <img
+        src={club.logo_url}
+        alt={`${club.name} logo`}
+        className="h-12 w-12 object-contain"
+      />
+    )}
+
+    <h1 className="text-2xl sm:text-3xl font-semibold">
+      Vacatures bij sponsoren van {club.name}
+    </h1>
+
+  </div>
 
   <p className="text-sm text-gray-600 mt-1">
     Leden, supporters en bedrijven verbinden

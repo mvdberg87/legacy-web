@@ -229,8 +229,14 @@ console.log("UPDATE RESULT:", updateData, updateError);
           {/* Logo upload */}
           <div>
             <label className="block text-sm font-medium mb-2">
-              Clublogo (PNG of JPG)
-            </label>
+  Clublogo (PNG of JPG)
+</label>
+
+{club.logo_url && (
+  <p className="text-xs text-green-600 mb-2">
+    ✔ Logo geüpload
+  </p>
+)}
 
             <input
               type="file"

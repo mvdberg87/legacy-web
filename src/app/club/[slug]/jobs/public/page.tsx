@@ -25,8 +25,8 @@ export default async function PublicJobsPage({ params }: PageProps) {
   const { data: club } = await supabase
   .from("clubs")
   .select(
-    "id, name, slug, primary_color, secondary_color, jobs_intro_text"
-  )
+  "id, name, slug, logo_url, primary_color, secondary_color, jobs_intro_text"
+)
   .eq("slug", slug)
   .maybeSingle();
 
@@ -134,12 +134,13 @@ const adminEmail = adminProfile?.email ?? null;
   return (
     <ClientPage
   club={{
-    id: club.id,
-    name: club.name,
-    slug: club.slug,
-    primary_color: club.primary_color,
-    secondary_color: club.secondary_color,
-  }}
+  id: club.id,
+  name: club.name,
+  slug: club.slug,
+  logo_url: club.logo_url,
+  primary_color: club.primary_color,
+  secondary_color: club.secondary_color,
+}}
   adminEmail={adminEmail}
   introText={
     club.jobs_intro_text?.trim() ||
