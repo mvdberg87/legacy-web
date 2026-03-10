@@ -10,11 +10,13 @@ export async function POST(req: Request) {
   const { clubId } = await req.json();
 
   const { data: profile } = await supabaseAdmin
-    .from("profiles")
-    .select("user_id, active")
-    .eq("club_id", clubId)
-    .eq("active", true)
-    .maybeSingle();
+  .from("profiles")
+  .select("id, user_id, active")
+  .eq("club_id", clubId)
+  .eq("active", true)
+  .maybeSingle();
+
+  const userId = profile.user_id ?? profile.id;
 
   if (!profile) {
     return NextResponse.json({ user: null });

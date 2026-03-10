@@ -23,13 +23,12 @@ export async function POST(req: Request) {
   =============================== */
 
   await supabaseAdmin
-    .from("profiles")
-    .update({
-      active: false,
-      club_id: null,
-    })
-    .eq("id", userId);
-
+  .from("profiles")
+  .update({
+    active: false,
+    club_id: null,
+  })
+  .eq("user_id", userId);
   /* ===============================
      2️⃣ gebruiker blokkeren in auth
   =============================== */

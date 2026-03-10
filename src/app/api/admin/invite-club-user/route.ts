@@ -1,5 +1,3 @@
-// src/app/api/admin/invite-club-user/route.ts
-
 import { NextResponse } from "next/server";
 import { createClient } from "@supabase/supabase-js";
 
@@ -9,23 +7,45 @@ const supabaseAdmin = createClient(
 );
 
 export async function POST(req: Request) {
+
   const { email, clubId } = await req.json();
 
   if (!email || !clubId) {
-    return NextResponse.json({ error: "Missing data" }, { status: 400 });
+    return NextResponse.json(
+      { error: "Missing data" },
+      { status: 400 }
+    );
   }
 
-  // 1️⃣ Invite sturen
+  // check of user al bestaat
+  const { data: existing } = await supabaseAdmin
+    .from("profiles")
+    .select("id")
+    .eq("email", email)
+    .maybeSingle();
+
+  if (existing) {
+    return NextResponse.json(
+      { error: "User already exists" },
+      { status: 400 }
+    );
+  }
+
+  // invite versturen
   const { data, error } =
     await supabaseAdmin.auth.admin.inviteUserByEmail(email);
 
   if (error) {
-    return NextResponse.json({ error: error.message }, { status: 400 });
+    return NextResponse.json(
+      { error: error.message },
+      { status: 400 }
+    );
   }
 
-  // 2️⃣ profiel aanmaken
+  // profile aanmaken
   await supabaseAdmin.from("profiles").insert({
     id: data.user.id,
+    email: email,
     club_id: clubId,
     role: "club",
     active: true
