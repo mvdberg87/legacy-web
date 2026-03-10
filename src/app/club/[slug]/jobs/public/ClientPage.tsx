@@ -235,8 +235,9 @@ const logo = getCompanyLogo(website, company.logo);
             <div
   key={company.name + index}
   onClick={() => {
-    const encoded = encodeURIComponent(company.name);
-    window.location.href = `/${club.slug}?company=${encoded}`;
+    if (website) {
+      window.open(website, "_blank");
+    }
   }}
   className="
     flex items-center justify-center
