@@ -21,11 +21,10 @@ export async function POST(req: Request) {
      1️⃣ Auth email aanpassen
   =============================== */
 
-  const { error } =
-    await supabaseAdmin.auth.admin.updateUserById(userId, {
-      email,
-      email_confirm: true,
-    });
+  const { data: updatedUser, error } =
+  await supabaseAdmin.auth.admin.updateUserById(userId, {
+    email: email,
+  });
 
   if (error) {
     return NextResponse.json(
@@ -48,7 +47,6 @@ export async function POST(req: Request) {
   =============================== */
 
   return NextResponse.json({
-    success: true,
-    email
-  });
-}
+  success: true,
+  email: updatedUser.user?.email,
+});}

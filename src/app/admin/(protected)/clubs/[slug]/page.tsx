@@ -658,41 +658,37 @@ async function inviteUser() {
         </button>
 
         <button
-          onClick={async () => {
-            const email = prompt("Nieuw e-mailadres:");
-            if (!email) return;
+  onClick={async () => {
 
-            const res = await fetch("/api/admin/change-user-email", {
-  method: "POST",
-  headers: {
-    "Content-Type": "application/json",
-  },
-  body: JSON.stringify({
-    userId: clubUser.id,
-    email,
-  }),
-});
+    const email = prompt("Nieuw e-mailadres:");
+    if (!email) return;
 
-const data = await res.json();
+    const res = await fetch("/api/admin/change-user-email", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        userId: clubUser.id,
+        email,
+      }),
+    });
 
-if (data.success) {
+    const data = await res.json();
 
-  setClubUser({
-    ...clubUser,
-    email: email,
-  });
+    if (!res.ok || !data.success) {
+      alert(data.error || "Email wijzigen mislukt");
+      return;
+    }
 
-  alert("E-mail gewijzigd");
+    setClubUser({
+      ...clubUser,
+      email: data.email,
+    });
 
-} else {
+    alert("E-mail gewijzigd");
 
-  alert(data.error || "Wijzigen mislukt");
-
-}
-
-            alert("E-mail gewijzigd");
-            load();
-          }}
+  }}
           className="bg-blue-600 text-white px-4 py-2 rounded-lg text-sm"
         >
           Wijzig email
