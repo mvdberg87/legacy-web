@@ -1,5 +1,3 @@
-// src/app/api/admin/deactivate-user/route.ts
-
 import { NextResponse } from "next/server";
 import { createClient } from "@supabase/supabase-js";
 
@@ -9,34 +7,40 @@ const supabaseAdmin = createClient(
 );
 
 export async function POST(req: Request) {
-  const { userId } = await req.json();
+  const { userId, email } = await req.json();
 
-  if (!userId) {
+  if (!userId || !email) {
     return NextResponse.json(
-      { error: "Missing userId" },
+      { error: "Missing userId or email" },
       { status: 400 }
     );
   }
 
   /* ===============================
-     1️⃣ profiel loskoppelen van club
+     1️⃣ Auth email aanpassen
+  =============================== */
+
+  const { error } =
+    await supabaseAdmin.auth.admin.updateUserById(userId, {
+      email,
+      email_confirm: true,
+    });
+
+  if (error) {
+    return NextResponse.json(
+      { error: error.message },
+      { status: 500 }
+    );
+  }
+
+  /* ===============================
+     2️⃣ Profile email aanpassen
   =============================== */
 
   await supabaseAdmin
     .from("profiles")
-    .update({
-      active: false,
-      club_id: null,
-    })
+    .update({ email })
     .eq("id", userId);
-
-  /* ===============================
-     2️⃣ gebruiker blokkeren in auth
-  =============================== */
-
-  await supabaseAdmin.auth.admin.updateUserById(userId, {
-    ban_duration: "876000h", // 100 jaar
-  });
 
   return NextResponse.json({ success: true });
 }

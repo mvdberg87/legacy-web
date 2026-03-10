@@ -368,6 +368,8 @@ async function deactivateUser() {
   });
 
   setClubUser(null);
+
+  load(); // 🔥 admin pagina opnieuw laden
 }
 
 async function inviteUser() {
@@ -403,7 +405,7 @@ async function inviteUser() {
   <div className="flex justify-between items-center mb-6">
     <div>
   <h1 className="text-2xl font-semibold">
-    {club.name} – Performance overzicht
+    {club?.name} – Performance overzicht
   </h1>
 
   <p className="text-sm text-gray-500">
@@ -518,7 +520,7 @@ async function inviteUser() {
               className="text-xl font-semibold"
               style={{ color: primary }}
             >
-              {club.name}
+              {club?.name}
             </h1>
             <p className="text-sm text-gray-500">
               Vacatures en advertenties
@@ -642,20 +644,46 @@ async function inviteUser() {
   </h2>
 
   {clubUser ? (
-    <div className="space-y-4">
-      <div>
-        <p className="text-sm text-gray-500">Login e-mail</p>
-        <p className="font-medium">{clubUser.email}</p>
-      </div>
+  <div className="space-y-4">
+    <div>
+      <p className="text-sm text-gray-500">Login e-mail</p>
+      <p className="font-medium">{clubUser.email}</p>
 
-      <button
-        onClick={deactivateUser}
-        className="bg-red-600 text-white px-4 py-2 rounded-lg text-sm"
-      >
-        Deactiveer gebruiker
-      </button>
+      <div className="flex gap-3 mt-3">
+        <button
+          onClick={deactivateUser}
+          className="bg-red-600 text-white px-4 py-2 rounded-lg text-sm"
+        >
+          Deactiveer
+        </button>
+
+        <button
+          onClick={async () => {
+            const email = prompt("Nieuw e-mailadres:");
+            if (!email) return;
+
+            await fetch("/api/admin/change-user-email", {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify({
+                userId: clubUser.id,
+                email,
+              }),
+            });
+
+            alert("E-mail gewijzigd");
+            load();
+          }}
+          className="bg-blue-600 text-white px-4 py-2 rounded-lg text-sm"
+        >
+          Wijzig email
+        </button>
+      </div>
     </div>
-  ) : (
+  </div>
+) : (
     <p className="text-gray-500 mb-4">
       Geen actieve gebruiker gekoppeld.
     </p>

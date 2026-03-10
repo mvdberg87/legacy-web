@@ -332,7 +332,17 @@ const leaderboard = [...clubs]
 </td>
 
 <td className="px-4 py-3 text-center">
+  {club.pageviews ?? 0}
+</td>
+
+<td className="px-4 py-3 text-center">
   {club.total_clicks ?? 0}
+</td>
+
+<td className="px-4 py-3 text-center">
+  {club.pageviews
+    ? ((club.total_clicks / club.pageviews) * 100).toFixed(1) + "%"
+    : "0%"}
 </td>
 
 <td className="px-4 py-3 text-center">
@@ -340,7 +350,9 @@ const leaderboard = [...clubs]
 </td>
 
 <td className="px-4 py-3 text-center">
-  {club.pageviews ?? 0}
+  {club.pageviews
+    ? ((club.total_shares / club.pageviews) * 100).toFixed(1) + "%"
+    : "0%"}
 </td>
 
 <td className="px-4 py-3 text-center">
