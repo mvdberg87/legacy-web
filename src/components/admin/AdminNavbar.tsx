@@ -20,9 +20,8 @@ export default function AdminNavbar() {
      =============================== */
   const links = [
   { label: "📋 Clubs", path: "/admin/clubs" },
-  { label: "🧾 Abonnementen", path: "/admin/subscriptions" },
   { label: "👥 Profielen", path: "/admin/profiles" },
-  { label: "🔐 Upgrades", path: "/admin/upgrades" },
+  { label: "💰 Revenue", path: "/admin/revenue" },
   { label: "📊 Analytics", path: "/admin/analytics" },
 ];
 
