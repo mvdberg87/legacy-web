@@ -356,15 +356,12 @@ const leaderboard = [...clubs]
 </td>
 
 <td className="px-4 py-3 text-center">
-  {club.pageviews
-    ? ((club.total_clicks / club.pageviews) * 100).toFixed(1) + "%"
-    : "0%"}
-</td>
-
-<td className="px-4 py-3 text-center">
-  {club.pageviews
-    ? ((club.total_shares / club.pageviews) * 100).toFixed(1) + "%"
-    : "0%"}
+  <button
+    onClick={() => router.push(`/admin/clubs/${club.slug}`)}
+    className="bg-slate-900 text-white px-3 py-1 rounded text-xs hover:bg-black"
+  >
+    Open
+  </button>
 </td>
             </tr>
           ))}
