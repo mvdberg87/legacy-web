@@ -70,6 +70,26 @@ const adminEmail = adminProfile?.email ?? null;
   .order("created_at", { ascending: false });
 
   /* ===============================
+   2b️⃣ Clicks ophalen
+================================ */
+
+const jobIds = (jobs ?? []).map((j) => j.id);
+
+let clickMap: Record<string, number> = {};
+
+if (jobIds.length > 0) {
+  const { data: clicks } = await supabase
+    .from("job_clicks")
+    .select("job_id")
+    .in("job_id", jobIds);
+
+  clickMap = (clicks ?? []).reduce((acc: any, c) => {
+    acc[c.job_id] = (acc[c.job_id] || 0) + 1;
+    return acc;
+  }, {});
+}
+
+  /* ===============================
      3️⃣ Advertenties uit featured vacatures
      =============================== */
   const featuredJobAds =
@@ -116,7 +136,7 @@ const adminEmail = adminProfile?.email ?? null;
     is_featured: job.featured,
     company_website: job.company_website,
     company_logo_url: job.company_logo_url,
-    total_clicks: 0,
+    total_clicks: clickMap[job.id] ?? 0,
     ctr: 0,
   }));
 

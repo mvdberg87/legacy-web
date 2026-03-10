@@ -25,6 +25,7 @@ type Job = {
   is_featured?: boolean;
   company_website?: string | null;
   company_logo_url?: string | null;
+  total_clicks?: number;
 };
 
 type Ad = {
@@ -139,7 +140,27 @@ const sortedJobs = useMemo(() => {
 
 }, [filteredJobs]);
 
-const bestJob = sortedJobs.length > 0 ? sortedJobs[0] : null;
+const bestJob = useMemo(() => {
+  if (!jobs.length) return null;
+
+  return [...jobs].sort((a, b) => {
+    return (b.total_clicks ?? 0) - (a.total_clicks ?? 0);
+  })[0];
+}, [jobs]);
+
+/* ===============================
+   NIEUWE VACATURE CHECK
+================================ */
+
+function isNewJob(date: string) {
+  const created = new Date(date);
+  const now = new Date();
+
+  const diffDays =
+    (now.getTime() - created.getTime()) / (1000 * 60 * 60 * 24);
+
+  return diffDays <= 7;
+}
 
   /* ===============================
    Bedrijven met vacatures
@@ -389,10 +410,16 @@ const logo = getCompanyLogo(website, company.logo);
     >
 
       {isBest && (
-        <div className="absolute -top-2 -left-2 bg-gray-100 text-gray-700 text-xs px-2 py-1 rounded">
-  Meest bekeken
-</div>
-      )}
+  <div className="absolute -top-2 -left-2 bg-gray-100 text-gray-700 text-xs px-2 py-1 rounded">
+    Meest bekeken
+  </div>
+)}
+
+{!isBest && isNewJob(job.created_at) && (
+  <div className="absolute -top-2 -left-2 bg-green-500 text-white text-xs px-2 py-1 rounded">
+    Nieuw
+  </div>
+)}
 
       <ListingCard
   href={job.apply_url ?? "#"}
