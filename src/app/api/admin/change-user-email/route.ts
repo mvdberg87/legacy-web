@@ -7,6 +7,7 @@ const supabaseAdmin = createClient(
 );
 
 export async function POST(req: Request) {
+
   const { userId, email } = await req.json();
 
   if (!userId || !email) {
@@ -42,5 +43,12 @@ export async function POST(req: Request) {
     .update({ email })
     .eq("id", userId);
 
-  return NextResponse.json({ success: true });
+  /* ===============================
+     3️⃣ Nieuwe email teruggeven
+  =============================== */
+
+  return NextResponse.json({
+    success: true,
+    email
+  });
 }

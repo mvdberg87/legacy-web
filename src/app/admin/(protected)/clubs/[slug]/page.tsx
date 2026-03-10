@@ -662,16 +662,33 @@ async function inviteUser() {
             const email = prompt("Nieuw e-mailadres:");
             if (!email) return;
 
-            await fetch("/api/admin/change-user-email", {
-              method: "POST",
-              headers: {
-                "Content-Type": "application/json",
-              },
-              body: JSON.stringify({
-                userId: clubUser.id,
-                email,
-              }),
-            });
+            const res = await fetch("/api/admin/change-user-email", {
+  method: "POST",
+  headers: {
+    "Content-Type": "application/json",
+  },
+  body: JSON.stringify({
+    userId: clubUser.id,
+    email,
+  }),
+});
+
+const data = await res.json();
+
+if (data.success) {
+
+  setClubUser({
+    ...clubUser,
+    email: email,
+  });
+
+  alert("E-mail gewijzigd");
+
+} else {
+
+  alert(data.error || "Wijzigen mislukt");
+
+}
 
             alert("E-mail gewijzigd");
             load();
