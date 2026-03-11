@@ -169,8 +169,6 @@ function isNewJob(date: string) {
 const companies = Array.from(
   new Map(
     [
-
-      
       ...jobs.map((job) => ({
         name: job.company_name,
         logo: job.company_logo_url,
@@ -181,7 +179,10 @@ const companies = Array.from(
         logo: ad.image_url,
         website: ad.link_url,
       })),
-    ].map((company) => [company.name, company])
+    ].map((company) => [
+      company.name.trim().toLowerCase(),
+      company,
+    ])
   ).values()
 );
 

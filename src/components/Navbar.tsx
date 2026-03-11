@@ -4,9 +4,10 @@ import Image from "next/image";
 export default function Navbar() {
   return (
     <header className="absolute top-0 left-0 w-full z-50">
-      <div className="max-w-7xl mx-auto px-6 py-3 flex justify-between items-center">
+      <div className="max-w-7xl mx-auto px-6 py-5 flex items-center">
 
-        <Link href="/">
+        {/* Logo */}
+        <Link href="/" className="flex-shrink-0">
           <Image
             src="/logo/sponsorjobs-light.png"
             alt="SponsorJobs"
@@ -16,14 +17,23 @@ export default function Navbar() {
           />
         </Link>
 
-        <nav className="flex gap-8 text-sm text-white/80">
-          <Link href="/verenigingen" className="hover:text-white">
-            Voor verenigingen
+        {/* Navigation */}
+        <nav className="flex-1 flex justify-center gap-14 text-white text-lg md:text-xl font-semibold tracking-wide">
+
+          <Link
+            href="/verenigingen"
+            className="hover:opacity-80 transition"
+          >
+            VOOR VERENIGINGEN
           </Link>
 
-          <Link href="/login" className="hover:text-white">
-            Login
+          <Link
+            href="/login"
+            className="hover:opacity-80 transition"
+          >
+            LOGIN
           </Link>
+
         </nav>
 
       </div>

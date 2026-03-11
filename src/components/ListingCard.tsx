@@ -57,33 +57,28 @@ const supabase = getSupabaseBrowser();
 /* =========================
    WhatsApp share
 ========================= */
-async function shareInTeamApp() {
+function shareInTeamApp() {
   if (!isValidHref) return;
 
-  const text = `Vacature bij ${company}
+  const text = `🚀 Vacature bij ${company}
 
 ${title}
 
-Bekijk deze vacature via Sponsorjobs:
+Bekijk deze vacature via ${window.location.host}:
 ${href}`;
 
-  const whatsappUrl = `https://wa.me/?text=${encodeURIComponent(text)}`;
+  const whatsappUrl = `https://api.whatsapp.com/send?text=${encodeURIComponent(text)}`;
 
-  /* =========================
-     SHARE TRACKING
-  ========================= */
+  // tracking async
+  supabase
+    .from("job_shares")
+    .insert({
+      job_id: jobId,
+      club_id: clubId,
+      platform: "whatsapp",
+    });
 
-  try {
-    await supabase.from("job_shares").insert({
-  job_id: jobId,
-  club_id: clubId,
-  platform: "whatsapp",
-});
-  } catch (err) {
-    console.error("Share tracking error:", err);
-  }
-
-  window.open(whatsappUrl, "_blank");
+  window.location.href = whatsappUrl;
 }
 
   return (
@@ -109,23 +104,24 @@ ${href}`;
           }}
         />
 
-        <div className="flex-1 min-w-0">
+        <div className="flex-1">
           <h3
-            className="
-              text-lg font-semibold truncate
-              text-white
-              group-hover:text-[#0d1b2a]
-            "
-          >
+  className="
+    text-base sm:text-lg font-semibold leading-snug
+    text-white
+    group-hover:text-[#0d1b2a]
+    line-clamp-2
+  "
+>
             {title}
           </h3>
           <p
-            className="
-              text-sm truncate
-              text-gray-200
-              group-hover:text-gray-600
-            "
-          >
+  className="
+    text-sm
+    text-gray-200
+    group-hover:text-gray-600
+  "
+>
             {company}
           </p>
         </div>
