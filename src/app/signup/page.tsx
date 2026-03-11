@@ -3,6 +3,7 @@
 "use client";
 
 import { useState } from "react";
+import Navbar from "@/components/Navbar";
 
 export default function SignupPage() {
   const [form, setForm] = useState({
@@ -56,7 +57,10 @@ const [acceptedTerms, setAcceptedTerms] = useState(false);
   }
 
   return (
-    <main className="min-h-screen flex items-center justify-center bg-[#0d1b2a] p-6">
+  <>
+    <Navbar />
+
+    <main className="min-h-screen flex items-center justify-center bg-[#0d1b2a] p-6 pt-32">
       <form
         onSubmit={handleSubmit}
         className="w-full max-w-md bg-white border-2 border-white rounded-2xl p-8 shadow-xl space-y-5"
@@ -137,9 +141,32 @@ const [acceptedTerms, setAcceptedTerms] = useState(false);
 
   <span>
     Ik ga akkoord met de{" "}
-    <a href="/privacy" className="underline">privacyverklaring</a>,{" "}
-    <a href="/cookies" className="underline">cookiebeleid</a> en{" "}
-    <a href="/terms" className="underline">platformvoorwaarden</a>.
+    <a
+  href="/privacy"
+  className="underline"
+  target="_blank"
+  rel="noopener noreferrer"
+>
+  privacyverklaring
+</a>
+
+<a
+  href="/cookies"
+  className="underline"
+  target="_blank"
+  rel="noopener noreferrer"
+>
+  cookiebeleid
+</a>
+
+<a
+  href="/terms"
+  className="underline"
+  target="_blank"
+  rel="noopener noreferrer"
+>
+  platformvoorwaarden
+</a>.
   </span>
 </label>
 
@@ -165,5 +192,6 @@ const [acceptedTerms, setAcceptedTerms] = useState(false);
         )}
       </form>
     </main>
-  );
+</>
+);
 }
