@@ -232,9 +232,9 @@ const companies = Array.from(
         {/* =========================
             INTROTEKST
         ========================== */}
-        <section className="mb-10 rounded-2xl bg-[#0d1b2a] p-6 text-white leading-relaxed whitespace-pre-line">
-          {introText}
-        </section>
+        <section className="mb-10 rounded-2xl bg-[#0d1b2a] p-8 text-white leading-relaxed whitespace-pre-line text-center max-w-3xl mx-auto">
+  {introText}
+</section>
 
         {/* =========================
     BEDRIJVEN MET VACATURES

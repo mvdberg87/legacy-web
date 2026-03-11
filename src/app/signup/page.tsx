@@ -12,12 +12,19 @@ export default function SignupPage() {
   phone: "",
 });
 
+const [acceptedTerms, setAcceptedTerms] = useState(false);
   const [status, setStatus] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
 
   async function handleSubmit(e: React.FormEvent) {
-    e.preventDefault();
-    if (loading) return;
+  e.preventDefault();
+
+  if (!acceptedTerms) {
+    setStatus("Je moet akkoord gaan met de voorwaarden.");
+    return;
+  }
+
+  if (loading) return;
 
     setLoading(true);
     setStatus("Aanmelding verwerken...");
@@ -38,8 +45,8 @@ export default function SignupPage() {
       }
 
       setStatus(
-        "Bedankt voor je aanmelding. Check je mailbox voor de vervolgstappen."
-      );
+  "Bedankt voor je aanmelding. We beoordelen je aanvraag en nemen snel contact op voor de activatie van jullie club."
+);
       setLoading(false);
     } catch (err) {
       console.error(err);
@@ -65,9 +72,17 @@ export default function SignupPage() {
           </h1>
 
           <p className="text-sm text-gray-600">
-            Meld je club aan en verbind sponsoren, vacatures en talent
-            binnen jullie netwerk.
-          </p>
+  Meld je club aan en verbind sponsoren, vacatures en talent
+  binnen jullie netwerk.
+</p>
+
+<p className="text-xs text-gray-500">
+  Aanmelden duurt minder dan 1 minuut.
+</p>
+
+<p className="text-xs text-gray-500">
+  Na je aanmelding nemen we persoonlijk contact op om jullie club te activeren.
+</p>
         </div>
 
         {/* Inputs */}
@@ -111,6 +126,23 @@ export default function SignupPage() {
   }
 />
 
+<label className="flex items-start gap-2 text-sm text-gray-600">
+  <input
+  type="checkbox"
+  required
+  checked={acceptedTerms}
+  onChange={(e) => setAcceptedTerms(e.target.checked)}
+  className="mt-1"
+/>
+
+  <span>
+    Ik ga akkoord met de{" "}
+    <a href="/privacy" className="underline">privacyverklaring</a>,{" "}
+    <a href="/cookies" className="underline">cookiebeleid</a> en{" "}
+    <a href="/voorwaarden" className="underline">platformvoorwaarden</a>.
+  </span>
+</label>
+
         {/* CTA */}
         <button
           type="submit"
@@ -124,6 +156,11 @@ export default function SignupPage() {
         >
           {loading ? "Bezig…" : "Club aanmelden"}
         </button>
+
+        <p className="text-xs text-center text-gray-500">
+  Door een account aan te maken ga je akkoord met onze{" "}
+  <a href="/voorwaarden" className="underline">platformvoorwaarden, privacyverklaring en cookiebeleid.</a>.
+</p>
 
         {/* Status */}
         {status && (
