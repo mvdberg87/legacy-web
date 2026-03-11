@@ -249,7 +249,7 @@ const companies = Array.from(
     <div className="overflow-hidden py-4 px-6">
       <div className="flex gap-8 animate-scroll w-max">
 
-        {[...companies, ...companies].map((company, index) => {
+        {[...companies, ...companies, ...companies].map((company, index) => {
 
   const website = company.website ?? jobs.find(j => j.company_name === company.name)?.apply_url;
 

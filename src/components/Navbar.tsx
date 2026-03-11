@@ -21,16 +21,16 @@ export default function Navbar() {
         <nav className="flex-1 flex justify-center gap-14 text-white text-lg md:text-xl font-semibold tracking-wide">
 
           <Link
-            href="/verenigingen"
-            className="hover:opacity-80 transition"
-          >
+  href="/verenigingen"
+  className="text-white hover:opacity-80 transition"
+>
             VOOR VERENIGINGEN
           </Link>
 
           <Link
-            href="/login"
-            className="hover:opacity-80 transition"
-          >
+  href="/login"
+  className="text-white hover:opacity-80 transition"
+>
             LOGIN
           </Link>
 
