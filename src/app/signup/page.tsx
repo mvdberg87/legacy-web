@@ -139,7 +139,7 @@ const [acceptedTerms, setAcceptedTerms] = useState(false);
     Ik ga akkoord met de{" "}
     <a href="/privacy" className="underline">privacyverklaring</a>,{" "}
     <a href="/cookies" className="underline">cookiebeleid</a> en{" "}
-    <a href="/voorwaarden" className="underline">platformvoorwaarden</a>.
+    <a href="/terms" className="underline">platformvoorwaarden</a>.
   </span>
 </label>
 

@@ -632,7 +632,7 @@ setSponsors(Object.values(sponsorMap));
             </strong>
           </p>
 
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-4 items-stretch">
             {(Object.keys(
               SUBSCRIPTIONS
             ) as PackageKey[]).map((key) => {
@@ -647,13 +647,13 @@ const canUpgrade = isHigher;
 
               return (
                 <div
-                  key={key}
-                  className={`border-2 rounded-xl p-4 text-center ${
-                    isCurrent
-                      ? "bg-gray-100"
-                      : "bg-white"
-                  }`}
-                >
+  key={key}
+  className={`border-2 rounded-xl p-4 text-center flex flex-col h-full ${
+    isCurrent
+  ? "bg-gray-100 border-4 border-green-600"
+  : "bg-white"
+  }`}
+>
                   <h3 className="font-semibold text-lg">
                     {SUBSCRIPTIONS[key].label}
                   </h3>
@@ -677,11 +677,11 @@ const canUpgrade = isHigher;
 </p>
 
                   <button
-disabled={!canUpgrade || isBillingBlocked}
+  disabled={!canUpgrade || isBillingBlocked}
   onClick={() =>
-  canUpgrade && goToCheckout(key)
-}
-  className={`w-full py-2 rounded-lg text-sm font-medium ${
+    canUpgrade && goToCheckout(key)
+  }
+  className={`mt-auto w-full py-2 rounded-lg text-sm font-medium ${
     isCurrent
       ? "bg-gray-300 text-gray-600"
       : isHigher
