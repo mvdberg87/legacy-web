@@ -157,11 +157,6 @@ const [acceptedTerms, setAcceptedTerms] = useState(false);
           {loading ? "Bezig…" : "Club aanmelden"}
         </button>
 
-        <p className="text-xs text-center text-gray-500">
-  Door een account aan te maken ga je akkoord met onze{" "}
-  <a href="/voorwaarden" className="underline">platformvoorwaarden, privacyverklaring en cookiebeleid.</a>.
-</p>
-
         {/* Status */}
         {status && (
           <p className="text-sm text-center text-gray-600">
