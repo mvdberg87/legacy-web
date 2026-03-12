@@ -4,7 +4,7 @@ import Navbar from "@/components/Navbar";
 
 export default function VerenigingenPage() {
   return (
-    <main className="min-h-screen bg-[#0d1b2a] text-white">
+    <main className="min-h-screen bg-[#0d1b2a] text-white pt-28">
 
       <Navbar />
 

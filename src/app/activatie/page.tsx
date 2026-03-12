@@ -3,7 +3,7 @@ import Link from "next/link";
 
 export default function ActivatiePage() {
   return (
-    <main className="min-h-screen bg-[#0d1b2a] text-white">
+    <main className="min-h-screen bg-[#0d1b2a] text-white pt-28">
 
       <Navbar />
 
