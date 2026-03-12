@@ -6,17 +6,9 @@ export default function VerenigingenPage() {
     <main className="min-h-screen bg-[#0d1b2a] text-white">
 
       {/* HERO */}
-<section className="relative flex items-center justify-center min-h-[50vh] text-center px-6 pt-32 pb-16">
+<section className="relative flex items-center justify-center min-h-[50vh] text-center px-6 py-20">
 
   <div className="max-w-4xl mx-auto pt-12">
-
-    <Image
-      src="/logo/sponsorjobs-light.png"
-      alt="SponsorJobs"
-      width={520}
-      height={200}
-      className="mx-auto mb-8"
-    />
 
     <h1 className="text-4xl md:text-5xl font-bold leading-tight">
       Maak vacatures onderdeel van je sponsorpropositie.

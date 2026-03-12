@@ -117,7 +117,7 @@ router.push(`/club/${club.slug}/dashboard`);
   }
 
   return (
-    <main className="min-h-screen bg-[#0d1b2a] flex items-center justify-center px-6 pb-16">
+    <main className="min-h-screen bg-[#0d1b2a] flex justify-center px-6 pt-16 pb-16">
 
 <div className="w-full max-w-sm bg-white border border-gray-200 rounded-2xl p-6 shadow-xl space-y-2">
 
