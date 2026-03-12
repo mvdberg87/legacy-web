@@ -8,8 +8,8 @@ export default function Navbar() {
   const [menuOpen, setMenuOpen] = useState(false);
 
   return (
-    <header className="fixed top-0 left-0 w-full z-50 bg-[#0d1b2a]/80 backdrop-blur-md">
-      <div className="max-w-7xl mx-auto px-6 py-5 flex items-center justify-between">
+    <header className="fixed top-0 left-0 w-full z-50 bg-[#0d1b2a]/80 backdrop-blur-lg border-b border-white/10">
+      <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
 
         {/* Logo */}
         <Link href="/">

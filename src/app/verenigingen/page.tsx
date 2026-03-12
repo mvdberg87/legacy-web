@@ -9,7 +9,7 @@ export default function VerenigingenPage() {
       <Navbar />
 
       {/* HERO */}
-<section className="relative flex items-center justify-center min-h-[60vh] text-center px-6 pt-32 pb-16">
+<section className="relative flex items-center justify-center min-h-[50vh] text-center px-6 pt-32 pb-16">
 
   <div className="max-w-4xl mx-auto pt-12">
 
