@@ -86,7 +86,7 @@ body {
    Links
    =============================== */
 a {
-  color: #93c5fd;
+  color: inherit;
   text-decoration: none;
 }
 

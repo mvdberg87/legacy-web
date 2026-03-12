@@ -2,13 +2,10 @@
 
 import Link from "next/link";
 import Image from "next/image";
-import Navbar from "@/components/Navbar";
 
 export default function HomePage() {
   return (
     <main className="min-h-screen bg-[#0d1b2a] text-white">
-
-         <Navbar />
 
       {/* HERO */}
       <section className="max-w-6xl mx-auto px-6 pt-32 md:pt-40 pb-24 text-center">

@@ -4,7 +4,6 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
-import Navbar from "@/components/Navbar";
 import { getSupabaseBrowser } from "@/lib/supabaseBrowser";
 
 export default function ClubLoginPage() {
@@ -118,8 +117,7 @@ router.push(`/club/${club.slug}/dashboard`);
   }
 
   return (
-    <main className="min-h-screen bg-[#0d1b2a] flex items-center justify-center px-6 pt-32 pb-16">
-      <Navbar />
+    <main className="min-h-screen bg-[#0d1b2a] flex items-center justify-center px-6 pb-16">
 
 <div className="w-full max-w-sm bg-white border border-gray-200 rounded-2xl p-6 shadow-xl space-y-2">
 

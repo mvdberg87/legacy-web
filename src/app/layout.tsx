@@ -1,6 +1,9 @@
 // src/app/layout.tsx
+
 import "./globals.css";
 import type { Metadata } from "next";
+
+import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import CookieBanner from "@/components/CookieBanner";
 import GoogleAnalytics from "@/components/GoogleAnalytics";
@@ -23,9 +26,11 @@ export default function RootLayout({
 }) {
   return (
     <html lang="nl" suppressHydrationWarning>
-      <body className="antialiased bg-white text-gray-900 flex flex-col min-h-screen pt-24">
-        
-        <main className="flex-1">
+      <body className="antialiased flex flex-col min-h-screen">
+
+        <Navbar />
+
+        <main className="flex-1 pt-24">
           {children}
         </main>
 

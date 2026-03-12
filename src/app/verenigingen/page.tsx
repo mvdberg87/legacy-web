@@ -1,12 +1,9 @@
 import Link from "next/link";
 import Image from "next/image";
-import Navbar from "@/components/Navbar";
 
 export default function VerenigingenPage() {
   return (
-    <main className="min-h-screen bg-[#0d1b2a] text-white pt-28">
-
-      <Navbar />
+    <main className="min-h-screen bg-[#0d1b2a] text-white">
 
       {/* HERO */}
 <section className="relative flex items-center justify-center min-h-[50vh] text-center px-6 pt-32 pb-16">
