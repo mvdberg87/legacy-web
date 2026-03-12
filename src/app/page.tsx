@@ -11,7 +11,7 @@ export default function HomePage() {
          <Navbar />
 
       {/* HERO */}
-      <section className="max-w-6xl mx-auto px-6 pt-40 pb-24 text-center">
+      <section className="max-w-6xl mx-auto px-6 pt-32 md:pt-40 pb-24 text-center">
         <h1 className="text-4xl md:text-5xl font-bold leading-tight">
   Recruitment via sportclubs.
   <br />

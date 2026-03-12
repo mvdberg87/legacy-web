@@ -1,15 +1,11 @@
 import { getSupabaseServer } from "@/lib/supabase.server";
 import ClientPage from "./ClientPage";
 import { supabaseAdmin } from "@/lib/supabaseAdmin";
+import { DEFAULT_PUBLIC_JOBS_INTRO } from "@/lib/defaultTexts";
 
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
 export const fetchCache = "force-no-store";
-
-
-const DEFAULT_PUBLIC_JOBS_INTRO = `
-Onze club is meer dan sport alleen. Samen met onze sponsoren bouwen we aan een sterk netwerk waarin sport, werk en talent samenkomen.
-`;
 
 type PageProps = {
   params: { slug: string };
@@ -17,7 +13,7 @@ type PageProps = {
 
 export default async function PublicJobsPage({ params }: PageProps) {
   const supabase = await getSupabaseServer();
-  const { slug } = await params;
+  const { slug } = params;
 
   /* ===============================
      1️⃣ Club ophalen
@@ -30,6 +26,10 @@ export default async function PublicJobsPage({ params }: PageProps) {
   .eq("slug", slug)
   .maybeSingle();
 
+   if (!club) {
+    return <p className="p-8">Club niet gevonden</p>;
+  }
+
   // Admin e-mail ophalen
 const { data: adminProfile } = await supabase
   .from("profiles")
@@ -37,10 +37,6 @@ const { data: adminProfile } = await supabase
   .eq("club_id", club?.id)
   .limit(1)
   .maybeSingle();
-
-  if (!club) {
-    return <p className="p-8">Club niet gevonden</p>;
-  }
 
 const adminEmail = adminProfile?.email ?? null;
 
@@ -83,7 +79,7 @@ if (jobIds.length > 0) {
     .select("job_id")
     .in("job_id", jobIds);
 
-  clickMap = (clicks ?? []).reduce((acc: any, c) => {
+  clickMap = (clicks ?? []).reduce((acc: Record<string, number>, c) => {
     acc[c.job_id] = (acc[c.job_id] || 0) + 1;
     return acc;
   }, {});

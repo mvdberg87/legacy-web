@@ -9,7 +9,7 @@ export default function VerenigingenPage() {
       <Navbar />
 
       {/* HERO */}
-<section className="relative flex items-center justify-center min-h-[60vh] text-center px-6 pb-16">
+<section className="relative flex items-center justify-center min-h-[60vh] text-center px-6 pt-32 pb-16">
 
   <div className="max-w-4xl mx-auto pt-12">
 
@@ -358,162 +358,25 @@ export default function VerenigingenPage() {
   >
     Start Unlimited
   </Link>
+
 </div>
       </div>
 
     </div>
 
+    <p className="mt-12 text-white/70">
+Wil je vacatures van sponsoren ook actief promoten via social media en recruitmentcampagnes?
+</p>
+
+<Link
+href="/activatie"
+className="text-[#1f9d55] font-semibold hover:underline"
+>
+Bekijk activatie mogelijkheden →
+</Link>
+
   </div>
-</section>
 
-      {/* ACTIVATIE PAKKETTEN */}
-<section className="py-24 bg-[#0f2233]">
-  <div className="max-w-7xl mx-auto px-6 text-center">
-
-    <h2 className="text-3xl font-bold text-white">
-      Activatie Pakketten
-    </h2>
-
-    <p className="mt-6 text-white/70 max-w-2xl mx-auto">
-      Voor verenigingen die méér uit hun sponsoren willen halen.
-      Wij verzorgen de content, activatie en recruitmentversterking.
-    </p>
-
-    <div className="mt-16 grid md:grid-cols-4 gap-8 text-left">
-
-      {/* ACTIVATE */}
-      <div className="bg-white rounded-2xl p-8 flex flex-col h-full shadow-xl">
-        <h3 className="text-green-600 font-semibold text-lg">
-          ACTIVATE
-        </h3>
-
-        <p className="mt-4 text-4xl font-bold text-black">€300</p>
-        <p className="text-sm text-gray-500">per maand</p>
-
-        <ul className="mt-6 space-y-3 text-sm text-gray-700">
-          <li>✓ 1 post per maand</li>
-          <li>✓ LinkedIn, Instagram & Facebook</li>
-          <li>✓ Vacature in the spotlight</li>
-          <li>✓ Standaard template visuals</li>
-          <li>✓ Korte maandupdate</li>
-        </ul>
-
-        <p className="mt-6 text-xs text-gray-500">
-          Voor zichtbaarheid op social media.
-        </p>
-
-        <div className="mt-auto pt-12">
-  <Link
-  href="/contact?pakket=activate"
-    className="block bg-green-600 text-white py-3 rounded-xl text-center font-medium hover:bg-green-700 transition"
-  >
-    Start Activate
-  </Link>
-</div>
-      </div>
-
-
-      {/* GROWTH */}
-      <div className="bg-white rounded-2xl p-8 flex flex-col h-full border-2 border-yellow-400 shadow-xl relative">
-
-        <div className="absolute -top-3 left-1/2 -translate-x-1/2 bg-yellow-400 text-black text-xs px-3 py-1 rounded-full">
-          Meest gekozen
-        </div>
-
-        <h3 className="text-yellow-500 font-semibold text-lg">
-          GROWTH
-        </h3>
-
-        <p className="mt-4 text-4xl font-bold text-black">€750</p>
-        <p className="text-sm text-gray-500">per maand</p>
-
-        <ul className="mt-6 space-y-3 text-sm text-gray-700">
-          <li>✓ 2 posts per maand</li>
-          <li>✓ LinkedIn, Instagram & Facebook</li>
-          <li>✓ 1 maandelijkse meeting</li>
-          <li>✓ Vacature-campagne op maat</li>
-          <li>✓ Vacature in the spotlight</li>
-        </ul>
-
-        <p className="mt-6 text-xs text-gray-500">
-          Voor clubs die recruitment serieus nemen.
-        </p>
-
-        <div className="mt-auto pt-12">
-  <Link
-  href="/contact?pakket=growth"
-    className="block bg-yellow-400 text-black py-3 rounded-xl text-center font-medium hover:bg-yellow-300 transition"
-  >
-    Start Growth
-  </Link>
-</div>
-      </div>
-
-
-      {/* PREMIUM */}
-      <div className="bg-white rounded-2xl p-8 flex flex-col h-full shadow-xl">
-        <h3 className="text-blue-600 font-semibold text-lg">
-          PREMIUM
-        </h3>
-
-        <p className="mt-4 text-4xl font-bold text-black">€1.350</p>
-        <p className="text-sm text-gray-500">per maand</p>
-
-        <ul className="mt-6 space-y-3 text-sm text-gray-700">
-          <li>✓ Alles van Growth</li>
-          <li>✓ 1 vacaturevideo per maand (op locatie)</li>
-          <li>✓ Uitgelichte advertentiecampagne</li>
-          <li>✓ Maandelijkse strategische sessie</li>
-        </ul>
-
-        <p className="mt-6 text-xs text-gray-500">
-          Dit is waar je écht impact maakt.
-        </p>
-
-        <div className="mt-auto pt-12">
-  <Link
-  href="/contact?pakket=premium"
-    className="block bg-blue-600 text-white py-3 rounded-xl text-center font-medium hover:bg-blue-700 transition"
-  >
-    Start Premium
-  </Link>
-</div>
-      </div>
-
-
-      {/* ELITE */}
-      <div className="bg-white rounded-2xl p-8 flex flex-col h-full shadow-xl">
-        <h3 className="text-purple-600 font-semibold text-lg">
-          ELITE
-        </h3>
-
-        <p className="mt-4 text-4xl font-bold text-black">€1.750</p>
-        <p className="text-sm text-gray-500">per maand</p>
-
-        <ul className="mt-6 space-y-3 text-sm text-gray-700">
-          <li>✓ Alles van Premium</li>
-          <li>✓ Maandelijks 2 vacaturevideo's</li>
-          <li>✓ Dedicated social media manager</li>
-          <li>✓ Rapportage op maat</li>
-          <li>✓ Extra offline campagne</li>
-        </ul>
-
-        <p className="mt-6 text-xs text-gray-500">
-          High-end sponsoractivatie.
-        </p>
-
-        <div className="mt-auto pt-12">
-  <Link
-  href="/contact?pakket=elite"
-    className="block bg-gradient-to-r from-purple-500 to-pink-500 text-white py-3 rounded-xl text-center font-medium hover:opacity-90 transition"
-  >
-    Start Elite
-  </Link>
-</div>
-      </div>
-
-    </div>
-  </div>
 </section>
 
     </main>

@@ -3,8 +3,8 @@ import Image from "next/image";
 
 export default function Navbar() {
   return (
-    <header className="absolute top-0 left-0 w-full z-50">
-      <div className="max-w-7xl mx-auto px-6 py-5 flex items-center">
+    <header className="fixed top-0 left-0 w-full z-50 bg-[#0d1b2a]">
+      <div className="max-w-7xl mx-auto px-6 py-5 flex items-center justify-between">
 
         {/* Logo */}
         <Link href="/" className="flex-shrink-0">
@@ -18,21 +18,26 @@ export default function Navbar() {
         </Link>
 
         {/* Navigation */}
-        <nav className="flex-1 flex justify-center gap-14 text-lg md:text-xl font-semibold tracking-wide text-white">
+        <nav className="flex gap-6 md:gap-12 text-sm md:text-lg font-semibold tracking-wide text-white">
 
           <Link
-  href="/verenigingen"
-  className="!text-white hover:opacity-80 transition"
->
-  VOOR VERENIGINGEN
+            href="/verenigingen"
+            className="hover:opacity-80 transition"
+          >
+            VERENIGINGEN
+          </Link>
+
+          <Link href="/activatie" className="hover:opacity-80 transition">
+ACTIVATIE
 </Link>
 
-<Link
-  href="/login"
-  className="!text-white hover:opacity-80 transition"
->
-  LOGIN
-</Link>
+
+          <Link
+            href="/login"
+            className="hover:opacity-80 transition"
+          >
+            LOGIN
+          </Link>
 
         </nav>
 
