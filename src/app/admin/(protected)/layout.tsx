@@ -6,7 +6,7 @@ import localFont from "next/font/local";
 const adminFont = localFont({
   src: [
     {
-      path: "../../../public/fonts/Arena.woff",
+      path: "../../../fonts/Arena.woff",
       weight: "400",
       style: "normal",
     },

@@ -11,12 +11,12 @@ export default function LayoutWrapper({
 }) {
   const pathname = usePathname();
 
-  // ❌ Geen navbar op admin
   const isAdmin = pathname.startsWith("/admin");
 
-  // ❌ Geen navbar op clubpagina's (slug-based zoals /fc-sgravenzande)
   const isClubPage =
-    pathname.split("/").length === 2 && pathname !== "/";
+    !pathname.startsWith("/admin") &&
+    pathname.split("/").length === 2 &&
+    pathname !== "/";
 
   const hideNavbar = isAdmin || isClubPage;
 
