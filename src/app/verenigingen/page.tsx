@@ -293,7 +293,7 @@ export default function VerenigingenPage() {
         <div className="mt-auto pt-12">
   <Link
     href="/signup"
-    className="block bg-[#1f9d55] text-white py-3 rounded-xl text-center font-medium hover:bg-[#15803d] transition"
+    className="block bg-yellow-400 text-black py-3 rounded-xl text-center font-medium hover:bg-yellow-300 transition"
   >
     Start Plus
   </Link>
@@ -317,7 +317,7 @@ export default function VerenigingenPage() {
         <div className="mt-auto pt-12">
   <Link
     href="/signup"
-    className="block bg-[#2563eb] text-white py-3 rounded-xl text-center font-medium hover:bg-[#1d4ed8] transition"
+    className="block bg-blue-600 text-white py-3 rounded-xl text-center font-medium hover:bg-blue-700 transition"
   >
     Start Pro
   </Link>
@@ -343,7 +343,7 @@ export default function VerenigingenPage() {
         <div className="mt-auto pt-12">
   <Link
     href="/signup"
-    className="block bg-yellow-400 text-black py-3 rounded-xl text-center font-medium hover:bg-yellow-300 transition"
+    className="block bg-gradient-to-r from-purple-500 to-pink-500 text-white py-3 rounded-xl text-center font-medium hover:opacity-90 transition"
   >
     Start Unlimited
   </Link>

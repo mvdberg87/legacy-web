@@ -3,8 +3,7 @@
 import "./globals.css";
 import type { Metadata } from "next";
 
-import Navbar from "@/components/Navbar";
-import Footer from "@/components/Footer";
+import LayoutWrapper from "@/components/LayoutWrapper";
 import CookieBanner from "@/components/CookieBanner";
 import GoogleAnalytics from "@/components/GoogleAnalytics";
 import Leadinfo from "@/components/Leadinfo";
@@ -28,18 +27,12 @@ export default function RootLayout({
     <html lang="nl" suppressHydrationWarning>
       <body className="antialiased flex flex-col min-h-screen">
 
-        <Navbar />
-
-        <main className="flex-1 pt-24">
+        <LayoutWrapper>
           {children}
-        </main>
-
-        <Footer />
+        </LayoutWrapper>
 
         <CookieBanner />
-
         <GoogleAnalytics />
-
         <Leadinfo />
 
       </body>

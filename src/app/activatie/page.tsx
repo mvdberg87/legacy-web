@@ -148,7 +148,7 @@ export default function ActivatiePage() {
                 ACTIVATE
               </h3>
 
-              <p className="mt-4 text-4xl font-bold text-black">€300</p>
+              <p className="mt-4 text-4xl font-bold text-black">€150</p>
               <p className="text-sm text-gray-500">per maand</p>
 
               <ul className="mt-6 space-y-3 text-sm text-gray-700">
@@ -186,7 +186,7 @@ export default function ActivatiePage() {
                 GROWTH
               </h3>
 
-              <p className="mt-4 text-4xl font-bold text-black">€750</p>
+              <p className="mt-4 text-4xl font-bold text-black">€450</p>
               <p className="text-sm text-gray-500">per maand</p>
 
               <ul className="mt-6 space-y-3 text-sm text-gray-700">
@@ -220,7 +220,7 @@ export default function ActivatiePage() {
                 PREMIUM
               </h3>
 
-              <p className="mt-4 text-4xl font-bold text-black">€1.350</p>
+              <p className="mt-4 text-4xl font-bold text-black">€750</p>
               <p className="text-sm text-gray-500">per maand</p>
 
               <ul className="mt-6 space-y-3 text-sm text-gray-700">
@@ -255,7 +255,7 @@ export default function ActivatiePage() {
                 ELITE
               </h3>
 
-              <p className="mt-4 text-4xl font-bold text-black">€1.750</p>
+              <p className="mt-4 text-4xl font-bold text-black">€1.250</p>
               <p className="text-sm text-gray-500">per maand</p>
 
               <ul className="mt-6 space-y-3 text-sm text-gray-700">
