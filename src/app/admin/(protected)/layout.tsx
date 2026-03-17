@@ -4,9 +4,13 @@ import AdminNavbar from "@/components/admin/AdminNavbar";
 import localFont from "next/font/local";
 
 const adminFont = localFont({
-  src: "/fonts/Arena.ttf",
-  weight: "400",
-  style: "normal",
+  src: [
+    {
+      path: "/fonts/Arena.woff",
+      weight: "400",
+      style: "normal",
+    },
+  ],
   display: "swap",
 });
 
