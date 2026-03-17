@@ -14,9 +14,8 @@ export default function LayoutWrapper({
   // ❌ Geen navbar op admin
   const isAdmin = pathname.startsWith("/admin");
 
-  // ❌ Geen navbar op clubpagina's (slug-based)
+  // ❌ Geen navbar op clubpagina's (slug-based zoals /fc-sgravenzande)
   const isClubPage =
-    pathname.startsWith("/club") ||
     pathname.split("/").length === 2 && pathname !== "/";
 
   const hideNavbar = isAdmin || isClubPage;
@@ -25,7 +24,7 @@ export default function LayoutWrapper({
     <>
       {!hideNavbar && <Navbar />}
 
-      <main className={`flex-1 ${!hideNavbar ? "pt-24" : ""}`}>
+      <main className={`flex-1 w-full ${!hideNavbar ? "pt-24" : ""}`}>
         {children}
       </main>
 
