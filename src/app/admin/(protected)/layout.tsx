@@ -1,6 +1,14 @@
 // src/app/admin/(protected)/layout.tsx
 
 import AdminNavbar from "@/components/admin/AdminNavbar";
+import localFont from "next/font/local";
+
+const adminFont = localFont({
+  src: "/fonts/Arena.ttf",
+  weight: "400",
+  style: "normal",
+  display: "swap",
+});
 
 export default function AdminLayout({
   children,
@@ -8,7 +16,7 @@ export default function AdminLayout({
   children: React.ReactNode;
 }) {
   return (
-    <div className="min-h-screen bg-[#0d1b2a] text-white">
+    <div className={`${adminFont.className} min-h-screen bg-[#0d1b2a] text-white`}>
       <AdminNavbar />
 
       <main className="py-10">
