@@ -1,11 +1,8 @@
-import Navbar from "@/components/Navbar";
 import Link from "next/link";
 
 export default function ActivatiePage() {
   return (
-    <main className="min-h-screen bg-[#0d1b2a] text-white pt-28">
-
-      <Navbar />
+    <main className="min-h-screen bg-[#0d1b2a] text-white">
 
       {/* HERO */}
       <section className="max-w-6xl mx-auto px-6 pt-32 pb-24 text-center">
@@ -155,10 +152,10 @@ export default function ActivatiePage() {
               <p className="text-sm text-gray-500">per maand</p>
 
               <ul className="mt-6 space-y-3 text-sm text-gray-700">
-                <li>✓ 1 post per maand</li>
-                <li>✓ LinkedIn, Instagram & Facebook</li>
+                <li>✓ Club plaatst zelf de vacatures op platform</li>
+                <li>✓ Club maakt zelf de visuals voor Social Media</li>
+                <li>✓ 1 post per maand op LinkedIn, Instagram & Facebook</li>
                 <li>✓ Vacature in the spotlight</li>
-                <li>✓ Standaard template visuals</li>
                 <li>✓ Korte maandupdate</li>
               </ul>
 
@@ -193,11 +190,11 @@ export default function ActivatiePage() {
               <p className="text-sm text-gray-500">per maand</p>
 
               <ul className="mt-6 space-y-3 text-sm text-gray-700">
-                <li>✓ 2 posts per maand</li>
-                <li>✓ LinkedIn, Instagram & Facebook</li>
-                <li>✓ 1 maandelijkse meeting</li>
-                <li>✓ Vacature-campagne op maat</li>
+                <li>✓ Wij plaatsen alle vacatures op het platform</li>
+                <li>✓ Wij leveren standaard templates voor LinkedIn, Instagram & Facebook</li>
+                <li>✓ 2 posts per maand op LinkedIn, Instagram & Facebook</li>
                 <li>✓ Vacature in the spotlight</li>
+                <li>✓ 2 evaluatie meetings per Seizoen</li>
               </ul>
 
               <p className="mt-6 text-xs text-gray-500">
@@ -227,10 +224,12 @@ export default function ActivatiePage() {
               <p className="text-sm text-gray-500">per maand</p>
 
               <ul className="mt-6 space-y-3 text-sm text-gray-700">
-                <li>✓ Alles van Growth</li>
-                <li>✓ 1 vacaturevideo per maand (op locatie)</li>
-                <li>✓ Uitgelichte advertentiecampagne</li>
-                <li>✓ Maandelijkse strategische sessie</li>
+                <li>✓ Wij plaatsen alle vacatures op het platform</li>
+                <li>✓ Wij leveren standaard templates voor LinkedIn, Instagram & Facebook</li>
+                <li>✓ 1 post per week op LinkedIn, Instagram & Facebook</li>
+                <li>✓ Vacature in the spotlight</li>
+                <li>✓ Vacaturecampagne op maat</li>
+                <li>✓ 2 evaluatie meetings per Seizoen</li>
               </ul>
 
               <p className="mt-6 text-xs text-gray-500">
@@ -261,10 +260,11 @@ export default function ActivatiePage() {
 
               <ul className="mt-6 space-y-3 text-sm text-gray-700">
                 <li>✓ Alles van Premium</li>
-                <li>✓ Maandelijks 2 vacaturevideo's</li>
+                <li>✓ Maandelijks 1 vacaturevideo op locatie</li>
                 <li>✓ Dedicated social media manager</li>
                 <li>✓ Rapportage op maat</li>
                 <li>✓ Extra offline campagne</li>
+                <li>✓ 1 evaluatie meeting per kwartaal</li>
               </ul>
 
               <p className="mt-6 text-xs text-gray-500">

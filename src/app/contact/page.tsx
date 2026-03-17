@@ -50,8 +50,8 @@ export default function ContactPage() {
   }
 
   return (
-    <main className="min-h-screen bg-[#0d1b2a] text-white py-24">
-      <div className="max-w-2xl mx-auto px-6">
+    <main className="min-h-screen bg-[#0d1b2a] flex justify-center px-6 pt-32 pb-16">
+      <div className="w-full max-w-2xl">
 
         <div className="bg-[#0f2233] rounded-2xl p-10 shadow-xl">
 

@@ -262,7 +262,7 @@ export default function VerenigingenPage() {
        <div className="mt-auto pt-12">
   <Link
     href="/signup"
-    className="block bg-white text-black py-3 rounded-xl text-center font-medium"
+    className="block bg-[#1f9d55] text-white py-3 rounded-xl text-center font-medium hover:bg-[#15803d] transition"
   >
     Start Basic
   </Link>
@@ -317,7 +317,7 @@ export default function VerenigingenPage() {
         <div className="mt-auto pt-12">
   <Link
     href="/signup"
-    className="block bg-white text-black py-3 rounded-xl text-center font-medium"
+    className="block bg-[#2563eb] text-white py-3 rounded-xl text-center font-medium hover:bg-[#1d4ed8] transition"
   >
     Start Pro
   </Link>
