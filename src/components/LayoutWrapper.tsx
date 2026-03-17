@@ -11,24 +11,22 @@ export default function LayoutWrapper({
 }) {
   const pathname = usePathname();
 
-  const isAdmin = pathname.startsWith("/admin");
-
-  const isClubPage =
-    !pathname.startsWith("/admin") &&
-    pathname.split("/").length === 2 &&
-    pathname !== "/";
-
-  const hideNavbar = isAdmin || isClubPage;
+  const showNavbar =
+    pathname === "/" ||
+    pathname.startsWith("/verenigingen") ||
+    pathname.startsWith("/activatie") ||
+    pathname.startsWith("/login") ||
+    pathname.startsWith("/signup");
 
   return (
     <>
-      {!hideNavbar && <Navbar />}
+      {showNavbar && <Navbar />}
 
-      <main className={`flex-1 w-full ${!hideNavbar ? "pt-24" : ""}`}>
+      <main className={`flex-1 w-full ${showNavbar ? "pt-24" : ""}`}>
         {children}
       </main>
 
-      {!hideNavbar && <Footer />}
+      {showNavbar && <Footer />}
     </>
   );
 }
