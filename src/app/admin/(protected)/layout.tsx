@@ -1,6 +1,5 @@
 // src/app/admin/(protected)/layout.tsx
 
-import { usePathname } from "next/navigation";
 import AdminNavbar from "@/components/admin/AdminNavbar";
 
 export default function AdminLayout({
