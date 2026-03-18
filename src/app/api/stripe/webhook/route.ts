@@ -64,9 +64,16 @@ if (existing) {
     =============================== */
 
     if (event.type === "checkout.session.completed") {
-  const session = event.data.object as Stripe.Checkout.Session;
+  console.log("🔥 EVENT:", event.type);
+
+const session = event.data.object as Stripe.Checkout.Session;
+
+console.log("🔥 SESSION:", session);
+console.log("🔥 METADATA:", session.metadata);
 
   const clubId = session.metadata?.club_id;
+
+console.log("🔥 CLUB ID:", clubId);
   if (!clubId) return NextResponse.json({ received: true });
 
   const subscriptionId =
@@ -83,6 +90,8 @@ if (existing) {
   if (!item) return NextResponse.json({ received: true });
 
   const packageKey = session.metadata?.package_key;
+
+console.log("🔥 PACKAGE KEY:", packageKey);
 
 if (!packageKey) {
   throw new Error("Missing package_key in metadata");
