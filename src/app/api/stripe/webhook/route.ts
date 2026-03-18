@@ -82,15 +82,11 @@ if (existing) {
   const item = subscription.items.data[0];
   if (!item) return NextResponse.json({ received: true });
 
-  const priceId = item.price.id;
+  const packageKey = session.metadata?.package_key;
 
-  const PRICE_TO_PACKAGE_MAP: Record<string, string> = {
-    [process.env.STRIPE_PRICE_PLUS!]: "plus",
-    [process.env.STRIPE_PRICE_PRO!]: "pro",
-    [process.env.STRIPE_PRICE_UNLIMITED!]: "unlimited",
-  };
-
-  const packageKey = PRICE_TO_PACKAGE_MAP[priceId];
+if (!packageKey) {
+  throw new Error("Missing package_key in metadata");
+}
 
   if (!packageKey) throw new Error("Unknown Stripe price ID");
 
