@@ -75,11 +75,17 @@ export default function ClubDashboardPage() {
 
 useEffect(() => {
   if (searchParams.get("upgrade") === "success") {
+    // 🔥 verwijder query param uit URL
+    const url = new URL(window.location.href);
+    url.searchParams.delete("upgrade");
+    window.history.replaceState({}, "", url.toString());
+
+    // 🔥 reload 1x (zonder loop)
     setTimeout(() => {
       window.location.reload();
-    }, 1000); // geeft webhook tijd om DB te updaten
+    }, 500);
   }
-}, []);
+}, [searchParams]);
 
   useEffect(() => {
     (async () => {
