@@ -3,7 +3,7 @@
 import ClubSupportBar from "@/components/ClubSupportBar";
 import { useEffect, useMemo, useState } from "react";
 import { motion } from "framer-motion";
-import { useParams } from "next/navigation";
+import { useParams, useSearchParams } from "next/navigation";
 import { getSupabaseBrowser } from "@/lib/supabaseBrowser";
 import ClubNavbar from "@/components/club/ClubNavbar";
 import {
@@ -58,6 +58,7 @@ export default function ClubDashboardPage() {
   console.log("DASHBOARD COMPONENT RENDERED");
   const supabase = useMemo(() => getSupabaseBrowser(), []);
   const { slug } = useParams<{ slug: string }>();
+  const searchParams = useSearchParams();
 
   const [club, setClub] = useState<Club | null>(null);
   const [insights, setInsights] =
@@ -71,6 +72,14 @@ export default function ClubDashboardPage() {
   /* =====================================================
      DATA OPHALEN
   ===================================================== */
+
+useEffect(() => {
+  if (searchParams.get("upgrade") === "success") {
+    setTimeout(() => {
+      window.location.reload();
+    }, 1000); // geeft webhook tijd om DB te updaten
+  }
+}, []);
 
   useEffect(() => {
     (async () => {
