@@ -89,15 +89,14 @@ console.log("🔥 CLUB ID:", clubId);
   const item = subscription.items.data[0];
   if (!item) return NextResponse.json({ received: true });
 
-  const packageKey = session.metadata?.package_key;
+const packageKey = session.metadata?.package_key;
 
 console.log("🔥 PACKAGE KEY:", packageKey);
 
 if (!packageKey) {
-  throw new Error("Missing package_key in metadata");
+  console.error("❌ Missing package_key in metadata");
+  return NextResponse.json({ received: true });
 }
-
-  if (!packageKey) throw new Error("Unknown Stripe price ID");
 
   await supabaseAdmin
   .from("clubs")
