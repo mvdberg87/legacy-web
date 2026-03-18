@@ -363,36 +363,61 @@ setSponsors(Object.values(sponsorMap));
             =============================== */
       
        async function goToCheckout(targetPackage: PackageKey) {
-        if (!club) return;
-      
-        try {
-          const res = await fetch("/api/billing/create-checkout-session", {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify({
-              clubId: club.id,
-              packageKey: targetPackage,
-            }),
-          });
-      
-          const data = await res.json();
-      
-          if (!res.ok) {
-            alert(data.error || "Checkout mislukt");
-            return;
-          }
-      
-          if (data.url) {
-            window.location.href = data.url;
-          }
-      
-        } catch (err) {
-          console.error("Checkout error:", err);
-          alert("Server fout bij checkout.");
-        }
-      }
+  if (!club) return;
+
+  try {
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
+
+    const email = user?.email;
+
+    const priceMap = {
+      basic: process.env.NEXT_PUBLIC_STRIPE_PRICE_BASIC,
+      plus: process.env.NEXT_PUBLIC_STRIPE_PRICE_PLUS,
+      pro: process.env.NEXT_PUBLIC_STRIPE_PRICE_PRO,
+      unlimited: process.env.NEXT_PUBLIC_STRIPE_PRICE_UNLIMITED,
+    };
+
+    const priceId = priceMap[targetPackage];
+
+    if (!priceId) {
+      alert("Geen priceId gevonden");
+      return;
+    }
+
+    const res = await fetch("/api/stripe/checkout", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        clubId: club.id,
+        clubSlug: slug,
+        packageKey: targetPackage,
+        priceId,
+        email,
+      }),
+    });
+
+    const data = await res.json();
+
+    if (!res.ok) {
+      alert(data.error || "Checkout mislukt");
+      return;
+    }
+
+    if (data.url) {
+      window.location.href = data.url;
+    } else {
+      alert("Geen Stripe checkout URL ontvangen");
+    }
+
+  } catch (err) {
+    console.error("Checkout error:", err);
+    alert("Server fout bij checkout.");
+  }
+}
       
   /* ===============================
      RENDER
