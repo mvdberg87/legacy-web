@@ -38,7 +38,8 @@ die zichtbaar worden binnen het clubnetwerk en via de clubkanalen.
   href="/signup"
   target="_blank"
   rel="noopener noreferrer"
-  className="border border-white px-6 py-3 rounded-xl font-semibold hover:bg-white hover:text-black transition"
+  className="border border-white px-6 py-3 rounded-xl font-semibold 
+           hover:bg-white hover:text-[#0d1b2a] transition duration-200"
 >
   Meld je club aan
 </Link>
