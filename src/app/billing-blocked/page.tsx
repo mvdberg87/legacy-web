@@ -24,6 +24,11 @@ export default function BillingBlockedPage() {
   const supabase = useMemo(() => getSupabaseBrowser(), []);
 
   const [insights, setInsights] = useState<Insights | null>(null);
+  const [clubData, setClubData] = useState<{
+  id: string;
+  slug: string;
+  email: string;
+} | null>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -49,6 +54,18 @@ export default function BillingBlockedPage() {
       }
 
       const clubId = profile.club_id;
+
+      const { data: club } = await supabase
+  .from("clubs")
+  .select("id, slug")
+  .eq("id", clubId)
+  .single();
+
+setClubData({
+  id: club.id,
+  slug: club.slug,
+  email: user.email!,
+});
 
       const { data: jobs } = await supabase
         .from("jobs")
@@ -85,20 +102,32 @@ export default function BillingBlockedPage() {
   }, []);
 
   async function goToCheckout(targetPackage: PackageKey) {
-    const res = await fetch("/api/billing/create-checkout-session", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ packageKey: targetPackage }),
-    });
+  if (!clubData) return;
 
-    const data = await res.json();
+  const pkg = SUBSCRIPTIONS[targetPackage];
 
-    if (data.url) {
-      window.location.href = data.url;
-    }
+  const res = await fetch("/api/stripe/checkout", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      clubId: clubData.id,
+      clubSlug: clubData.slug,
+      packageKey: targetPackage,
+      priceId: pkg.priceId,
+      email: clubData.email,
+    }),
+  });
+
+  const data = await res.json();
+
+  if (data.url) {
+    window.location.href = data.url;
+  } else {
+    console.error("❌ Checkout error", data);
   }
+}
 
   if (loading) {
     return (

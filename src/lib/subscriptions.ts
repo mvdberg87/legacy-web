@@ -9,6 +9,7 @@ export const SUBSCRIPTIONS: Record<
     vacancies: number;
     pricePerMonth: number;
     upgradeOnly: boolean;
+    priceId?: string; // 👈 TOEVOEGEN (optioneel voor basic)
   }
 > = {
   basic: {
@@ -21,29 +22,32 @@ export const SUBSCRIPTIONS: Record<
   },
 
   plus: {
-    label: "Plus",
-    durationMonths: 12,
-    ads: 1,                // ✅ 1 advertentie
-    vacancies: 5,
-    pricePerMonth: 49,
-    upgradeOnly: true,
-  },
+  label: "Plus",
+  durationMonths: 12,
+  ads: 1,
+  vacancies: 5,
+  pricePerMonth: 49,
+  upgradeOnly: true,
+  priceId: "price_1TCb6s1wwCgXLwCDtmGRVw1y", // 👈 HIER
+},
 
   pro: {
-    label: "Pro",
-    durationMonths: 12,
-    ads: 3,                // ✅ 3 advertenties
-    vacancies: 15,
-    pricePerMonth: 79,
-    upgradeOnly: true,
-  },
+  label: "Pro",
+  durationMonths: 12,
+  ads: 3,
+  vacancies: 15,
+  pricePerMonth: 79,
+  upgradeOnly: true,
+  priceId: "price_1TCb7E1wwCgXLwCDA4vQFvOL",
+},
 
   unlimited: {
-    label: "Unlimited",
-    durationMonths: 12,
-    ads: Number.POSITIVE_INFINITY,  // ✅ Ongelimiteerd (veiliger dan Infinity)
-    vacancies: Number.POSITIVE_INFINITY,
-    pricePerMonth: 99,
-    upgradeOnly: true,
-  },
+  label: "Unlimited",
+  durationMonths: 12,
+  ads: Number.POSITIVE_INFINITY,
+  vacancies: Number.POSITIVE_INFINITY,
+  pricePerMonth: 99,
+  upgradeOnly: true,
+  priceId: "price_1TCb7U1wwCgXLwCDxMyW2usK",
+},
 };
