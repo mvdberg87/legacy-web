@@ -3,26 +3,26 @@ import { stripe } from "@/lib/stripe";
 export async function POST(req: Request) {
   const { clubId, clubSlug, packageKey, priceId, email } = await req.json();
 
-  // 🔥 HIER TOEVOEGEN
-  console.log("CHECKOUT BODY:", {
-    clubId,
-    clubSlug,
-    packageKey,
-    priceId,
+  /* ===============================
+     1️⃣ Maak customer aan
+  =============================== */
+
+  const customer = await stripe.customers.create({
     email,
+    metadata: {
+      club_id: String(clubId),
+    },
   });
 
-  // 🔥 EXTRA VEILIG (voorkomt 500)
-  if (!priceId) {
-    return Response.json(
-      { error: "Missing priceId" },
-      { status: 400 }
-    );
-  }
+  /* ===============================
+     2️⃣ Checkout session
+  =============================== */
 
   const session = await stripe.checkout.sessions.create({
     mode: "subscription",
-    customer_email: email,
+
+    customer: customer.id, // 👈 VERPLICHT
+
     line_items: [{ price: priceId, quantity: 1 }],
 
     metadata: {
