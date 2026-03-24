@@ -331,9 +331,11 @@ const logo = getCompanyLogo(website, company.logo);
                 return (
                   <div
                     key={ad.id}
-                    onClick={async () => {
-                      if (jobId) await trackJobClick(jobId);
-                    }}
+                    onClick={async (e) => {
+  if ((e.target as HTMLElement).closest("button")) return;
+
+  if (jobId) await trackJobClick(jobId);
+}}
                     className="
                       rounded-2xl
                       border-2 border-white
@@ -408,9 +410,12 @@ const logo = getCompanyLogo(website, company.logo);
     <div
       key={job.id}
       className="relative"
-      onClick={async () => {
-        await trackJobClick(job.id);
-      }}
+      onClick={async (e) => {
+  // ❌ NIET triggeren als klik van knop komt
+  if ((e.target as HTMLElement).closest("button")) return;
+
+  await trackJobClick(job.id);
+}}
     >
 
       {isBest && (

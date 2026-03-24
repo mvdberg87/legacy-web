@@ -135,13 +135,14 @@ ${href}`;
 
   <button
   onClick={(e) => {
+  e.preventDefault();
   e.stopPropagation();
 
-  onShare?.(); // 🔥 eerst tracking
+  onShare?.();
 
   setTimeout(() => {
-    shareInTeamApp(); // 🔥 daarna pas openen
-  }, 200); // iets ruimer voor zekerheid
+    shareInTeamApp();
+  }, 200);
 }}
   className="
     flex-1
