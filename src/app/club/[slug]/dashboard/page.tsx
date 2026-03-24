@@ -383,9 +383,14 @@ setSponsors(Object.values(sponsorMap));
   club.subscription_status === "past_due" ||
   club.subscription_status === "cancelled";
 
+const isPaid = club.active_package !== "basic";
+
 const needsUpdate =
-  !club.agreement_version ||
-  club.agreement_version !== AGREEMENT_VERSION;
+  isPaid &&
+  (
+    !club.agreement_version ||
+    club.agreement_version !== AGREEMENT_VERSION
+  );
 
   const changes = AGREEMENT_CHANGES[AGREEMENT_VERSION] || [];
 
