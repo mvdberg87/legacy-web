@@ -223,14 +223,12 @@ if (jobIds.length > 0) {
 
 let sharesData = [];
 
-if (jobIds.length > 0) {
-  const { data } = await supabase
-    .from("job_shares")
-    .select("job_id, created_at")
-    .in("job_id", jobIds);
+const { data } = await supabase
+  .from("job_shares")
+  .select("job_id, created_at")
+  .eq("club_id", clubData.id);
 
-  sharesData = data ?? [];
-}
+sharesData = data ?? [];
 
 const shares = sharesData.length;
 
