@@ -812,14 +812,8 @@ const canUpgrade = isHigher;
           checked={accepted}
           onChange={(e) => setAccepted(e.target.checked)}
         />
-        Ik ga akkoord met de{" "}
-<a
-  href="/voorwaarden"
-  target="_blank"
-  className="underline text-blue-600"
->
-  samenwerkingsovereenkomst
-</a>
+        Ik ga akkoord met de samenwerkingsovereenkomst{" "}
+
       </label>
 
       <div className="flex justify-end gap-2">
