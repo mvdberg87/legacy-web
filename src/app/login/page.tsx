@@ -83,7 +83,6 @@ export default function ClubLoginPage() {
       return;
     }
 
-    // 🔥 user ophalen
     const { data: sessionData } = await supabase.auth.getSession();
     const user = sessionData?.session?.user;
 
@@ -93,7 +92,6 @@ export default function ClubLoginPage() {
       return;
     }
 
-    // 🔥 profiel
     const { data: profile } = await supabase
       .from("profiles")
       .select("club_id")
@@ -106,7 +104,6 @@ export default function ClubLoginPage() {
       return;
     }
 
-    // 🔥 club slug
     const { data: club } = await supabase
       .from("clubs")
       .select("slug")
@@ -119,7 +116,6 @@ export default function ClubLoginPage() {
       return;
     }
 
-    // 🔥 redirect
     router.push(`/club/${club.slug}/dashboard`);
   }
 
@@ -129,36 +125,40 @@ export default function ClubLoginPage() {
   return (
     <main className="min-h-screen bg-[#0d1b2a] flex justify-center px-6 pt-[140px] pb-16">
 
-      {/* LOGIN BOX */}
-      <div className="w-full max-w-sm bg-white border border-gray-200 rounded-2xl p-6 shadow-xl space-y-2">
+      <div className="w-full max-w-sm bg-white border border-gray-200 rounded-2xl p-6 shadow-xl space-y-4">
 
+        {/* Logo */}
         <Link href="/" className="flex justify-center">
           <Image
             src="/logo/sponsorjobs-dark.png"
             alt="SponsorJobs"
-            width={300}
-            height={140}
-            className="cursor-pointer mb-0"
+            width={260}
+            height={120}
+            className="cursor-pointer"
           />
         </Link>
 
+        {/* Headline */}
         <h1 className="text-xl font-semibold text-center">
-          Club Login
+          Inloggen bij Sponsorjobs
         </h1>
 
-        <h2 className="text-lg font-bold text-center text-[#0d1b2a]">
-          WELKOM BIJ SPONSORJOBS
-        </h2>
-
         <p className="text-sm text-gray-600 text-center">
-          Log in met het e-mailadres dat gekoppeld is aan je clubaccount.
+          Haal meer waarde uit je sponsoren met vacatures & zichtbaarheid
         </p>
+
+        {/* USP BLOCK */}
+        <div className="bg-gray-50 border rounded-lg p-3 text-xs text-gray-600 space-y-1">
+          <p>✔ Nieuwe sponsorinkomsten</p>
+          <p>✔ Vacatures zichtbaar voor je netwerk</p>
+          <p>✔ Binnen 10 minuten live</p>
+        </div>
 
         {/* ===============================
             STAP 1 – EMAIL
         =============================== */}
         {step === "email" && (
-          <form onSubmit={handleSendCode} className="space-y-4">
+          <form onSubmit={handleSendCode} className="space-y-3">
 
             <input
               type="email"
@@ -169,12 +169,16 @@ export default function ClubLoginPage() {
               className="w-full rounded-lg border-2 border-gray-300 px-3 py-2 text-sm text-[#0d1b2a] placeholder:text-gray-400 focus:outline-none focus:border-[#0d1b2a]"
             />
 
+            <p className="text-xs text-gray-400">
+              We sturen een veilige eenmalige login code (geen wachtwoord nodig)
+            </p>
+
             <button
               type="submit"
               disabled={loading}
               className="w-full rounded-xl px-4 py-2 text-sm font-semibold transition bg-[#1f9d55] text-white hover:bg-[#15803d] disabled:opacity-60"
             >
-              {loading ? "Versturen…" : "Verstuur inlogcode"}
+              {loading ? "Bezig…" : "Ontvang login code"}
             </button>
 
           </form>
@@ -184,7 +188,7 @@ export default function ClubLoginPage() {
             STAP 2 – CODE
         =============================== */}
         {step === "code" && (
-          <form onSubmit={handleVerifyCode} className="space-y-4">
+          <form onSubmit={handleVerifyCode} className="space-y-3">
 
             <input
               type="text"
@@ -226,17 +230,30 @@ export default function ClubLoginPage() {
           </p>
         )}
 
-        <div className="pt-4 border-t border-gray-200 text-center">
+        {/* SIGNUP CTA */}
+        <div className="pt-4 border-t border-gray-200 text-center space-y-2">
+
           <p className="text-sm text-gray-600">
             Nog geen clubaccount?
           </p>
+
           <Link
             href="/signup"
-            className="text-sm font-semibold text-[#0d1b2a] hover:underline"
+            className="block w-full py-2 rounded-xl bg-[#1f9d55] text-white font-semibold hover:bg-[#15803d] transition"
           >
-            Meld je club aan
+            🚀 Start gratis (2 maanden)
           </Link>
+
+          <p className="text-xs text-gray-500">
+            Binnen 1 minuut aangemeld
+          </p>
+
         </div>
+
+        {/* SOCIAL PROOF */}
+        <p className="text-xs text-gray-400 text-center">
+          Al meerdere clubs gebruiken Sponsorjobs om sponsorwaarde te verhogen
+        </p>
 
       </div>
 
@@ -252,7 +269,9 @@ export default function ClubLoginPage() {
             <p className="text-sm text-gray-600 mb-4">
               Jullie club is succesvol aangemeld 🚀
               <br /><br />
-              Jullie krijgen <strong>2 maanden gratis toegang</strong> tot Sponsorjobs.
+              Jullie krijgen <strong>2 maanden gratis toegang</strong>.
+              <br />
+              Start direct met het activeren van sponsoren.
             </p>
 
             <button

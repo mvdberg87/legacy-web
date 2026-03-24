@@ -1,5 +1,3 @@
-// src/app/signup/page.tsx
-
 "use client";
 
 import { useState } from "react";
@@ -7,25 +5,25 @@ import Navbar from "@/components/Navbar";
 
 export default function SignupPage() {
   const [form, setForm] = useState({
-  clubName: "",
-  contactName: "",
-  email: "",
-  phone: "",
-});
+    clubName: "",
+    contactName: "",
+    email: "",
+    phone: "",
+  });
 
-const [acceptedTerms, setAcceptedTerms] = useState(false);
+  const [acceptedTerms, setAcceptedTerms] = useState(false);
   const [status, setStatus] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
 
   async function handleSubmit(e: React.FormEvent) {
-  e.preventDefault();
+    e.preventDefault();
 
-  if (!acceptedTerms) {
-    setStatus("Je moet akkoord gaan met de voorwaarden.");
-    return;
-  }
+    if (!acceptedTerms) {
+      setStatus("Je moet akkoord gaan met de voorwaarden.");
+      return;
+    }
 
-  if (loading) return;
+    if (loading) return;
 
     setLoading(true);
     setStatus("Aanmelding verwerken...");
@@ -45,16 +43,13 @@ const [acceptedTerms, setAcceptedTerms] = useState(false);
         return;
       }
 
-      setStatus(
-  "Bedankt voor je aanmelding. We sturen je direct door..."
-);
+      setStatus("Gelukt! Je wordt doorgestuurd...");
 
-// 🔥 kleine delay voor UX
-setTimeout(() => {
-  window.location.href = "/login?welcome=true";
-}, 1000);
+      setTimeout(() => {
+        window.location.href = "/login?welcome=true";
+      }, 1000);
 
-setLoading(false);
+      setLoading(false);
     } catch (err) {
       console.error(err);
       setStatus("Er ging iets mis. Probeer het later opnieuw.");
@@ -63,141 +58,146 @@ setLoading(false);
   }
 
   return (
-  <>
-    <Navbar />
+    <>
+      <Navbar />
 
-    <main className="min-h-screen flex items-center justify-center bg-[#0d1b2a] p-6 pt-32">
-      <form
-        onSubmit={handleSubmit}
-        className="w-full max-w-md bg-white border-2 border-white rounded-2xl p-8 shadow-xl space-y-5"
-      >
-        {/* Header */}
-        <div className="text-center space-y-2">
-          <h2 className="text-lg font-bold text-[#0d1b2a]">
-            WELKOM BIJ SPONSORJOBS
-          </h2>
+      <main className="min-h-screen flex items-center justify-center bg-[#0d1b2a] p-6 pt-32">
+        <form
+          onSubmit={handleSubmit}
+          className="w-full max-w-md bg-white rounded-2xl p-8 shadow-xl space-y-5"
+        >
 
-          <h1 className="text-xl font-semibold">
-            Club aanmelden
-          </h1>
+          {/* HEADLINE */}
+          <div className="text-center space-y-2">
+            <h1 className="text-xl font-semibold">
+              Start met Sponsorjobs
+            </h1>
 
-          <p className="text-sm text-gray-600">
-  Meld je club aan en verbind sponsoren, vacatures en talent
-  binnen jullie netwerk.
-</p>
+            <p className="text-sm text-gray-600">
+              Genereer nieuwe sponsorinkomsten met vacatures
+            </p>
 
-<p className="text-xs text-gray-500">
-  Aanmelden duurt minder dan 1 minuut.
-</p>
+            <p className="text-sm font-semibold text-[#1f9d55]">
+              🚀 2 maanden gratis toegang
+            </p>
+          </div>
 
-<p className="text-xs text-gray-500">
-  Na je aanmelding nemen we persoonlijk contact op om jullie club te activeren.
-</p>
-        </div>
+          {/* USP BLOCK */}
+          <div className="bg-gray-50 border rounded-lg p-3 text-xs text-gray-600 space-y-1">
+            <p>✔ Nieuwe sponsorpropositie voor je club</p>
+            <p>✔ Vacatures zichtbaar voor je netwerk</p>
+            <p>✔ Binnen 10 minuten live</p>
+          </div>
 
-        {/* Inputs */}
-        <input
-          required
-          placeholder="Clubnaam"
-          className="w-full border rounded-lg px-3 py-2 text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#0d1b2a]"
-          value={form.clubName}
-          onChange={(e) =>
-            setForm({ ...form, clubName: e.target.value })
-          }
-        />
+          {/* INPUTS */}
+          <input
+            required
+            placeholder="Clubnaam"
+            className="w-full border rounded-lg px-3 py-2 text-sm"
+            value={form.clubName}
+            onChange={(e) =>
+              setForm({ ...form, clubName: e.target.value })
+            }
+          />
 
-        <input
-          required
-          placeholder="Naam contactpersoon"
-          className="w-full border rounded-lg px-3 py-2 text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#0d1b2a]"
-          value={form.contactName}
-          onChange={(e) =>
-            setForm({ ...form, contactName: e.target.value })
-          }
-        />
+          <input
+            required
+            placeholder="Naam contactpersoon"
+            className="w-full border rounded-lg px-3 py-2 text-sm"
+            value={form.contactName}
+            onChange={(e) =>
+              setForm({ ...form, contactName: e.target.value })
+            }
+          />
 
-        <input
-          type="email"
-          required
-          placeholder="E-mailadres"
-          className="w-full border rounded-lg px-3 py-2 text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#0d1b2a]"
-          value={form.email}
-          onChange={(e) =>
-            setForm({ ...form, email: e.target.value })
-          }
-        />
+          <input
+            type="email"
+            required
+            placeholder="E-mailadres"
+            className="w-full border rounded-lg px-3 py-2 text-sm"
+            value={form.email}
+            onChange={(e) =>
+              setForm({ ...form, email: e.target.value })
+            }
+          />
 
-        <input
-  placeholder="Telefoonnummer"
-  className="w-full border rounded-lg px-3 py-2 text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#0d1b2a]"
-  value={form.phone}
-  onChange={(e) =>
-    setForm({ ...form, phone: e.target.value })
-  }
-/>
+          <input
+            placeholder="Telefoonnummer"
+            className="w-full border rounded-lg px-3 py-2 text-sm"
+            value={form.phone}
+            onChange={(e) =>
+              setForm({ ...form, phone: e.target.value })
+            }
+          />
 
-<label className="flex items-start gap-2 text-sm text-gray-600">
-  <input
-  type="checkbox"
-  required
-  checked={acceptedTerms}
-  onChange={(e) => setAcceptedTerms(e.target.checked)}
-  className="mt-1"
-/>
+          {/* TRUST TEXT */}
+          <p className="text-xs text-gray-400 text-center">
+            Geen verplichtingen • Direct toegang • Persoonlijke onboarding
+          </p>
 
-  <span>
-    Ik ga akkoord met de{" "}
-    <a
-  href="/privacy"
-  className="underline"
-  target="_blank"
-  rel="noopener noreferrer"
->
-  privacyverklaring
-</a>
+          {/* TERMS */}
+          <label className="flex items-start gap-2 text-sm text-gray-600">
+            <input
+              type="checkbox"
+              required
+              checked={acceptedTerms}
+              onChange={(e) => setAcceptedTerms(e.target.checked)}
+              className="mt-1"
+            />
 
-<a
-  href="/cookies"
-  className="underline"
-  target="_blank"
-  rel="noopener noreferrer"
->
-  cookiebeleid
-</a>
+            <span>
+              Ik ga akkoord met de{" "}
+              <a href="/privacy" className="underline" target="_blank">
+                privacyverklaring
+              </a>,{" "}
+              <a href="/cookies" className="underline" target="_blank">
+                cookiebeleid
+              </a>{" "}
+              en{" "}
+              <a href="/terms" className="underline" target="_blank">
+                platformvoorwaarden
+              </a>.
+            </span>
+          </label>
 
-<a
-  href="/terms"
-  className="underline"
-  target="_blank"
-  rel="noopener noreferrer"
->
-  platformvoorwaarden
-</a>.
-  </span>
-</label>
-
-        {/* CTA */}
-        <button
-          type="submit"
-          disabled={loading}
-          className={`w-full py-2 rounded-lg font-semibold text-white transition
-            ${
+          {/* CTA */}
+          <button
+            type="submit"
+            disabled={loading}
+            className={`w-full py-3 rounded-xl font-semibold text-white transition ${
               loading
-                ? "bg-gray-400 cursor-not-allowed"
+                ? "bg-gray-400"
                 : "bg-[#1f9d55] hover:bg-[#15803d]"
             }`}
-        >
-          {loading ? "Bezig…" : "Club aanmelden"}
-        </button>
+          >
+            {loading
+              ? "Bezig…"
+              : "🚀 Start gratis (2 maanden)"}
+          </button>
 
-        {/* Status */}
-        {status && (
-          <p className="text-sm text-center text-gray-600">
-            {status}
-          </p>
-        )}
-      </form>
-    </main>
-</>
-);
+          {/* STATUS */}
+          {status && (
+            <p className="text-sm text-center text-gray-600">
+              {status}
+            </p>
+          )}
+
+          {/* LOGIN LINK */}
+          <div className="pt-4 border-t text-center">
+            <p className="text-sm text-gray-600">
+              Heb je al een account?
+            </p>
+
+            <a
+              href="/login"
+              className="text-sm font-semibold text-[#0d1b2a] underline"
+            >
+              Log hier in
+            </a>
+          </div>
+
+        </form>
+      </main>
+    </>
+  );
 }
