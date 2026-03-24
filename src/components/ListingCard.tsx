@@ -38,7 +38,6 @@ export default function ListingCard({
   onShare,
 }: Props) {
   const router = useRouter();
-const supabase = getSupabaseBrowser();
   const logoSrc = getCompanyLogo(website, cachedLogo);
 
   const isValidHref =
@@ -60,7 +59,7 @@ const supabase = getSupabaseBrowser();
 function shareInTeamApp() {
   if (!isValidHref) return;
 
-  const text = `🚀 Vacature bij ${company}
+  const text = `Vacature bij ${company}
 
 ${title}
 
@@ -68,15 +67,6 @@ Bekijk deze vacature via ${window.location.host}:
 ${href}`;
 
   const whatsappUrl = `https://api.whatsapp.com/send?text=${encodeURIComponent(text)}`;
-
-  // tracking async
-  supabase
-    .from("job_shares")
-    .insert({
-      job_id: jobId,
-      club_id: clubId,
-      platform: "whatsapp",
-    });
 
   window.location.href = whatsappUrl;
 }
@@ -147,8 +137,8 @@ ${href}`;
   <button
   onClick={(e) => {
     e.stopPropagation();
-    shareInTeamApp();
-    onShare?.();
+    onShare?.();        // 🔥 eerst
+    shareInTeamApp();   // daarna
   }}
   className="
     flex-1

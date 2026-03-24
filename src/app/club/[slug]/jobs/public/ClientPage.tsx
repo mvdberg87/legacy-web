@@ -95,6 +95,8 @@ export default function ClientPage({
 =============================== */
 
 function trackJobShare(jobId: string) {
+  if (!club?.id) return;
+
   fetch("/api/jobs/track-share", {
     method: "POST",
     headers: {
@@ -102,7 +104,8 @@ function trackJobShare(jobId: string) {
     },
     body: JSON.stringify({
       job_id: jobId,
-      platform: "teamapp",
+      club_id: club.id,
+      source: "public_jobs_page",
     }),
     keepalive: true,
   }).catch(() => {});
@@ -351,7 +354,7 @@ const logo = getCompanyLogo(website, company.logo);
   jobId={jobId}
   clubId={club.id}
   variant="ad"
-  onShare={() => trackJobShare(ad.link_url)}
+  onShare={() => trackJobShare(jobId)}
 />
                   </div>
                 );
