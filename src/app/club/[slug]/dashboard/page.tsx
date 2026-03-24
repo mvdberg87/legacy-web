@@ -785,12 +785,26 @@ const canUpgrade = isHigher;
         Bevestig upgrade
       </h2>
 
-      <p className="text-sm text-gray-600 mb-4">
-        Door verder te gaan ga je akkoord met de{" "}
-        <a href="/voorwaarden" target="_blank" className="underline">
-          samenwerkingsovereenkomst
-        </a>.
-      </p>
+      <p className="text-sm text-gray-600 mb-3">
+  Door verder te gaan ga je akkoord met de samenwerkingsovereenkomst.
+</p>
+
+<a
+  href="/voorwaarden"
+  target="_blank"
+  className="
+    inline-flex items-center gap-2
+    text-sm font-medium
+    text-blue-600 underline
+    mb-4
+  "
+>
+  Bekijk de volledige overeenkomst →
+</a>
+
+<div className="text-xs text-gray-500 mb-2">
+  De overeenkomst opent in een nieuw tabblad, zodat je deze eerst kunt lezen.
+</div>
 
       <label className="flex items-center gap-2 mb-4 text-sm">
         <input
@@ -798,7 +812,14 @@ const canUpgrade = isHigher;
           checked={accepted}
           onChange={(e) => setAccepted(e.target.checked)}
         />
-        Ik ga akkoord met de overeenkomst
+        Ik ga akkoord met de{" "}
+<a
+  href="/voorwaarden"
+  target="_blank"
+  className="underline text-blue-600"
+>
+  samenwerkingsovereenkomst
+</a>
       </label>
 
       <div className="flex justify-end gap-2">
