@@ -1,7 +1,7 @@
 "use client";
 
-import { useState } from "react";
-import { useRouter } from "next/navigation";
+import { useState, useEffect } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
 import { getSupabaseBrowser } from "@/lib/supabaseBrowser";
@@ -9,12 +9,24 @@ import { getSupabaseBrowser } from "@/lib/supabaseBrowser";
 export default function ClubLoginPage() {
   const supabase = getSupabaseBrowser();
   const router = useRouter();
+  const searchParams = useSearchParams();
 
   const [email, setEmail] = useState("");
   const [code, setCode] = useState("");
   const [step, setStep] = useState<"email" | "code">("email");
   const [status, setStatus] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
+
+  const [showWelcome, setShowWelcome] = useState(false);
+
+  /* ===============================
+     WELCOME POPUP
+  =============================== */
+  useEffect(() => {
+    if (searchParams.get("welcome") === "true") {
+      setShowWelcome(true);
+    }
+  }, [searchParams]);
 
   /* ===============================
      STAP 1 – CODE VERSTUREN
@@ -27,11 +39,11 @@ export default function ClubLoginPage() {
     setStatus("Versturen van inlogcode…");
 
     const { error } = await supabase.auth.signInWithOtp({
-  email: email.toLowerCase().trim(),
-  options: {
-    shouldCreateUser: false,
-  },
-});
+      email: email.toLowerCase().trim(),
+      options: {
+        shouldCreateUser: false,
+      },
+    });
 
     if (error) {
       console.error(error.message);
@@ -59,77 +71,76 @@ export default function ClubLoginPage() {
     setStatus("Controleren van code…");
 
     const { error } = await supabase.auth.verifyOtp({
-  email: email.toLowerCase().trim(),
-  token: code.trim(),
-  type: "email",
-});
+      email: email.toLowerCase().trim(),
+      token: code.trim(),
+      type: "email",
+    });
 
-if (error) {
-  console.error(error.message);
-  setStatus("Ongeldige of verlopen code.");
-  setLoading(false);
-  return;
-}
+    if (error) {
+      console.error(error.message);
+      setStatus("Ongeldige of verlopen code.");
+      setLoading(false);
+      return;
+    }
 
-console.log("OTP verified");
+    // 🔥 user ophalen
+    const { data: sessionData } = await supabase.auth.getSession();
+    const user = sessionData?.session?.user;
 
-// 🔥 1️⃣ Ingelogde user ophalen
-const { data: sessionData } = await supabase.auth.getSession();
-const user = sessionData?.session?.user;
+    if (!user) {
+      setStatus("Kon gebruiker niet ophalen.");
+      setLoading(false);
+      return;
+    }
 
-console.log("USER:", user);
+    // 🔥 profiel
+    const { data: profile } = await supabase
+      .from("profiles")
+      .select("club_id")
+      .eq("user_id", user.id)
+      .maybeSingle();
 
-if (!user) {
-  setStatus("Kon gebruiker niet ophalen.");
-  setLoading(false);
-  return;
-}
+    if (!profile?.club_id) {
+      setStatus("Geen club gekoppeld aan dit account.");
+      setLoading(false);
+      return;
+    }
 
-// 🔥 2️⃣ Profiel ophalen
-const { data: profile } = await supabase
-  .from("profiles")
-  .select("club_id")
-  .eq("user_id", user.id)
-  .maybeSingle();
-  
+    // 🔥 club slug
+    const { data: club } = await supabase
+      .from("clubs")
+      .select("slug")
+      .eq("id", profile.club_id)
+      .maybeSingle();
 
-if (!profile?.club_id) {
-  setStatus("Geen club gekoppeld aan dit account.");
-  setLoading(false);
-  return;
-}
+    if (!club?.slug) {
+      setStatus("Club niet gevonden.");
+      setLoading(false);
+      return;
+    }
 
-// 🔥 3️⃣ Club slug ophalen
-const { data: club } = await supabase
-  .from("clubs")
-  .select("slug")
-  .eq("id", profile.club_id)
-  .maybeSingle();
-
-if (!club?.slug) {
-  setStatus("Club niet gevonden.");
-  setLoading(false);
-  return;
-}
-
-// 🔥 4️⃣ Redirect naar juiste dashboard
-router.push(`/club/${club.slug}/dashboard`);
+    // 🔥 redirect
+    router.push(`/club/${club.slug}/dashboard`);
   }
 
+  /* ===============================
+     UI
+  =============================== */
   return (
     <main className="min-h-screen bg-[#0d1b2a] flex justify-center px-6 pt-[140px] pb-16">
 
-<div className="w-full max-w-sm bg-white border border-gray-200 rounded-2xl p-6 shadow-xl space-y-2">
+      {/* LOGIN BOX */}
+      <div className="w-full max-w-sm bg-white border border-gray-200 rounded-2xl p-6 shadow-xl space-y-2">
 
-<Link href="/" className="flex justify-center">
-  <Image
-  src="/logo/sponsorjobs-dark.png"
-  alt="SponsorJobs"
-  width={300}
-  height={140}
-  className="cursor-pointer mb-0"
-/>
-</Link>
+        <Link href="/" className="flex justify-center">
+          <Image
+            src="/logo/sponsorjobs-dark.png"
+            alt="SponsorJobs"
+            width={300}
+            height={140}
+            className="cursor-pointer mb-0"
+          />
+        </Link>
 
         <h1 className="text-xl font-semibold text-center">
           Club Login
@@ -155,22 +166,13 @@ router.push(`/club/${club.slug}/dashboard`);
               placeholder="bijv. contact@club.nl"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              className="
-                w-full rounded-lg border-2 border-gray-300 px-3 py-2 text-sm
-                text-[#0d1b2a] placeholder:text-gray-400
-                focus:outline-none focus:border-[#0d1b2a]
-              "
+              className="w-full rounded-lg border-2 border-gray-300 px-3 py-2 text-sm text-[#0d1b2a] placeholder:text-gray-400 focus:outline-none focus:border-[#0d1b2a]"
             />
 
             <button
               type="submit"
               disabled={loading}
-              className="
-                w-full rounded-xl px-4 py-2 text-sm font-semibold transition
-                bg-[#1f9d55] text-white
-                hover:bg-[#15803d]
-                disabled:opacity-60
-              "
+              className="w-full rounded-xl px-4 py-2 text-sm font-semibold transition bg-[#1f9d55] text-white hover:bg-[#15803d] disabled:opacity-60"
             >
               {loading ? "Versturen…" : "Verstuur inlogcode"}
             </button>
@@ -192,23 +194,13 @@ router.push(`/club/${club.slug}/dashboard`);
               placeholder="Voer 6-cijferige code in"
               value={code}
               onChange={(e) => setCode(e.target.value)}
-              className="
-                w-full rounded-lg border-2 border-gray-300 px-3 py-2 text-sm
-                text-center tracking-widest
-                text-[#0d1b2a]
-                focus:outline-none focus:border-[#0d1b2a]
-              "
+              className="w-full rounded-lg border-2 border-gray-300 px-3 py-2 text-sm text-center tracking-widest text-[#0d1b2a] focus:outline-none focus:border-[#0d1b2a]"
             />
 
             <button
               type="submit"
               disabled={loading}
-              className="
-                w-full rounded-xl px-4 py-2 text-sm font-semibold transition
-                bg-[#0d1b2a] text-white
-                hover:bg-[#132a44]
-                disabled:opacity-60
-              "
+              className="w-full rounded-xl px-4 py-2 text-sm font-semibold transition bg-[#0d1b2a] text-white hover:bg-[#132a44] disabled:opacity-60"
             >
               {loading ? "Controleren…" : "Inloggen"}
             </button>
@@ -247,6 +239,33 @@ router.push(`/club/${club.slug}/dashboard`);
         </div>
 
       </div>
+
+      {/* 🔥 WELCOME POPUP */}
+      {showWelcome && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
+          <div className="bg-white rounded-xl p-6 max-w-md w-full shadow-xl text-center">
+
+            <h2 className="text-xl font-semibold mb-3">
+              🎉 Gefeliciteerd!
+            </h2>
+
+            <p className="text-sm text-gray-600 mb-4">
+              Jullie club is succesvol aangemeld 🚀
+              <br /><br />
+              Jullie krijgen <strong>2 maanden gratis toegang</strong> tot Sponsorjobs.
+            </p>
+
+            <button
+              onClick={() => setShowWelcome(false)}
+              className="px-4 py-2 bg-[#0d1b2a] text-white rounded-lg"
+            >
+              Verder
+            </button>
+
+          </div>
+        </div>
+      )}
+
     </main>
   );
 }

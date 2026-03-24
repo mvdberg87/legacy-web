@@ -46,9 +46,15 @@ const [acceptedTerms, setAcceptedTerms] = useState(false);
       }
 
       setStatus(
-  "Bedankt voor je aanmelding. We beoordelen je aanvraag en nemen snel contact op voor de activatie van jullie club."
+  "Bedankt voor je aanmelding. We sturen je direct door..."
 );
-      setLoading(false);
+
+// 🔥 kleine delay voor UX
+setTimeout(() => {
+  window.location.href = "/login?welcome=true";
+}, 1000);
+
+setLoading(false);
     } catch (err) {
       console.error(err);
       setStatus("Er ging iets mis. Probeer het later opnieuw.");
