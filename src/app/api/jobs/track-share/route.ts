@@ -21,10 +21,10 @@ export async function POST(req: NextRequest) {
     const { error } = await supabaseAdmin
       .from("job_shares") // ✅ JUISTE TABEL
       .insert({
-        job_id,
-        club_id,
-        source: source ?? "unknown",
-      });
+  job_id,
+  club_id,
+  platform: "whatsapp",
+});
 
     if (error) {
       console.error("❌ job_share insert error FULL:", JSON.stringify(error, null, 2));
