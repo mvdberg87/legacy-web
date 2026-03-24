@@ -94,14 +94,14 @@ export default function ClientPage({
    TeamApp share tracking
 =============================== */
 
-function trackJobShare(jobUrl: string) {
+function trackJobShare(jobId: string) {
   fetch("/api/jobs/track-share", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
     },
     body: JSON.stringify({
-      job_url: jobUrl,
+      job_id: jobId,
       platform: "teamapp",
     }),
     keepalive: true,
@@ -431,7 +431,7 @@ const logo = getCompanyLogo(website, company.logo);
   cachedLogo={job.company_logo_url}
   jobId={job.id}
   clubId={club.id}
-  onShare={() => trackJobShare(job.apply_url ?? "")}
+  onShare={() => trackJobShare(job.id)}
 />
     </div>
   );
