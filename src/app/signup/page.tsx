@@ -90,45 +90,74 @@ export default function SignupPage() {
           </div>
 
           {/* INPUTS */}
-          <input
-            required
-            placeholder="Clubnaam"
-            className="w-full border rounded-lg px-3 py-2 text-sm"
-            value={form.clubName}
-            onChange={(e) =>
-              setForm({ ...form, clubName: e.target.value })
-            }
-          />
 
-          <input
-            required
-            placeholder="Naam contactpersoon"
-            className="w-full border rounded-lg px-3 py-2 text-sm"
-            value={form.contactName}
-            onChange={(e) =>
-              setForm({ ...form, contactName: e.target.value })
-            }
-          />
+<div className="space-y-3">
 
-          <input
-            type="email"
-            required
-            placeholder="E-mailadres"
-            className="w-full border rounded-lg px-3 py-2 text-sm"
-            value={form.email}
-            onChange={(e) =>
-              setForm({ ...form, email: e.target.value })
-            }
-          />
+  {/* Clubnaam */}
+  <div className="space-y-1">
+    <label className="text-xs text-gray-500">
+      Clubnaam
+    </label>
+    <input
+      required
+      placeholder="Bijv. FC 's-Gravenzande"
+      className="w-full border-2 border-gray-300 rounded-lg px-3 py-2 text-sm bg-white focus:outline-none focus:ring-2 focus:ring-[#0d1b2a]"
+      value={form.clubName}
+      onChange={(e) =>
+        setForm({ ...form, clubName: e.target.value })
+      }
+    />
+  </div>
 
-          <input
-            placeholder="Telefoonnummer"
-            className="w-full border rounded-lg px-3 py-2 text-sm"
-            value={form.phone}
-            onChange={(e) =>
-              setForm({ ...form, phone: e.target.value })
-            }
-          />
+  {/* Contactpersoon */}
+  <div className="space-y-1">
+    <label className="text-xs text-gray-500">
+      Naam contactpersoon
+    </label>
+    <input
+      required
+      placeholder="Bijv. Jan de Vries"
+      className="w-full border-2 border-gray-300 rounded-lg px-3 py-2 text-sm bg-white"
+      value={form.contactName}
+      onChange={(e) =>
+        setForm({ ...form, contactName: e.target.value })
+      }
+    />
+  </div>
+
+  {/* Email */}
+  <div className="space-y-1">
+    <label className="text-xs text-gray-500">
+      E-mailadres
+    </label>
+    <input
+      type="email"
+      required
+      placeholder="contact@club.nl"
+      className="w-full border-2 border-gray-300 rounded-lg px-3 py-2 text-sm bg-white"
+      value={form.email}
+      onChange={(e) =>
+        setForm({ ...form, email: e.target.value })
+      }
+    />
+  </div>
+
+  {/* Telefoon */}
+  <div className="space-y-1">
+    <label className="text-xs text-gray-500">
+      Telefoonnummer (optioneel)
+    </label>
+    <input
+      placeholder="06 12345678"
+      className="w-full border-2 border-gray-300 rounded-lg px-3 py-2 text-sm bg-white"
+      value={form.phone}
+      onChange={(e) =>
+        setForm({ ...form, phone: e.target.value })
+      }
+    />
+  </div>
+
+</div>
 
           {/* TRUST TEXT */}
           <p className="text-xs text-gray-400 text-center">
@@ -183,18 +212,21 @@ export default function SignupPage() {
           )}
 
           {/* LOGIN LINK */}
-          <div className="pt-4 border-t text-center">
-            <p className="text-sm text-gray-600">
-              Heb je al een account?
-            </p>
 
-            <a
-              href="/login"
-              className="text-sm font-semibold text-[#0d1b2a] underline"
-            >
-              Log hier in
-            </a>
-          </div>
+            <div className="pt-4 border-t border-gray-200 text-center space-y-2">
+
+  <p className="text-sm text-gray-600">
+    Heb je al een account?
+  </p>
+
+  <a
+    href="/login"
+    className="block w-full py-2 rounded-xl bg-[#0d1b2a] text-white font-semibold hover:bg-[#132a44] transition"
+  >
+    🔐 Ga naar login
+  </a>
+
+</div>
 
         </form>
       </main>
