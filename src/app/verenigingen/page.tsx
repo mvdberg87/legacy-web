@@ -335,7 +335,7 @@ export default function VerenigingenPage() {
         <p className="text-sm opacity-60">per maand</p>
 
         <ul className="mt-6 space-y-3 text-sm opacity-80">
-          <li>✓ Ongelimiteerd highlight advertenties</li>
+          <li>✓ 5 highlight advertenties</li>
           <li>✓ Maandelijkse mailrapportage</li>
           <li>✓ Sponsor dashboard</li>
         </ul>

@@ -609,11 +609,7 @@ const needsUpdate =
 
 <InsightCard
   label="Advertenties actief"
-  value={`${adsCount} / ${
-    subscription.ads === Infinity
-      ? "∞"
-      : subscription.ads
-  }`}
+  value={`${adsCount} / ${subscription.ads}`}
 />
 
 </section>
@@ -754,13 +750,11 @@ const canUpgrade = isHigher;
 </p>
 
 <p className="text-sm font-medium text-[#0d1b2a] mb-3">
-  {SUBSCRIPTIONS[key].ads === Infinity
-    ? "Onbeperkte advertenties"
-    : `${SUBSCRIPTIONS[key].ads} ${
-        SUBSCRIPTIONS[key].ads === 1
-          ? "advertentie"
-          : "advertenties"
-      }`}
+  {`${SUBSCRIPTIONS[key].ads} ${
+  SUBSCRIPTIONS[key].ads === 1
+    ? "advertentie"
+    : "advertenties"
+}`}
 </p>
 
                   <button

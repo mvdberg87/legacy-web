@@ -207,14 +207,11 @@ export async function POST(
         error: "Advertentielimiet bereikt",
         reason: "upgrade_required",
         currentAds,
-        maxAds:
-          maxAds === Number.POSITIVE_INFINITY
-            ? null
-            : maxAds,
+        maxAds,
         message:
           maxAds === 0
             ? "Dit pakket bevat geen advertenties. Upgrade om advertenties te plaatsen."
-            : "Je hebt het maximale aantal advertenties bereikt. Verwijder een advertentie of upgrade je pakket.",
+            : "Je hebt het ${maxAds} aantal advertenties bereikt. Verwijder een advertentie of upgrade je pakket.",
       },
       { status: 403 }
     );
@@ -253,10 +250,7 @@ export async function POST(
     {
       ad,
       adsCountAfter: newCount,
-      maxAds:
-        maxAds === Number.POSITIVE_INFINITY
-          ? null
-          : maxAds,
+      maxAds,
     },
     { status: 201 }
   );

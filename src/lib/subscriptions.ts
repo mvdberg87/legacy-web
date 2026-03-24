@@ -44,10 +44,9 @@ export const SUBSCRIPTIONS: Record<
   unlimited: {
   label: "Unlimited",
   durationMonths: 12,
-  ads: Number.POSITIVE_INFINITY,
-  vacancies: Number.POSITIVE_INFINITY,
+  ads: 5, // 🔥 VAN Infinity → 5
+  vacancies: Infinity,
   pricePerMonth: 99,
   upgradeOnly: true,
-  priceId: "price_1TCb7U1wwCgXLwCDxMyW2usK",
 },
 };
