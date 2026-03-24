@@ -149,6 +149,7 @@ if (isClubRoute) {
    Agreement check + versioning
 =============================== */
 const isPaid = club.active_package !== "basic";
+const isAgreementPage = pathname.startsWith("/club/agreement-required");
 
 const needsAgreement =
   isPaid &&
@@ -157,7 +158,7 @@ const needsAgreement =
     club.agreement_version !== AGREEMENT_VERSION
   );
 
-if (needsAgreement) {
+if (needsAgreement && !isAgreementPage) {
   return NextResponse.redirect(
     new URL("/club/agreement-required", origin)
   );

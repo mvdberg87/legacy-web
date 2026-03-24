@@ -18,6 +18,7 @@ export default function AgreementRequiredPage() {
   const [submitting, setSubmitting] = useState(false);
 
   const changes = AGREEMENT_CHANGES[AGREEMENT_VERSION] || [];
+const versionLabel = AGREEMENT_VERSION;// 👈 HIER toevoegen [];
 
   /* ===============================
      Club ophalen
@@ -89,6 +90,10 @@ export default function AgreementRequiredPage() {
         <h1 className="text-xl font-semibold mb-3 text-center">
           Bevestig samenwerkingsovereenkomst
         </h1>
+
+        <p className="text-xs text-gray-500 mb-4 text-center">
+  Versie: {versionLabel}
+</p>
 
         <p className="text-sm text-gray-600 mb-4 text-center">
           Om Sponsorjobs te blijven gebruiken dien je akkoord te gaan met de
