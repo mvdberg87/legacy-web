@@ -254,23 +254,6 @@ sharesData?.forEach((share) => {
   }
 });
 
-/* ===============================
-   Ads shares toevoegen
-=============================== */
-
-const { data: adShares } = await supabase
-  .from("job_shares")
-  .select("job_id, created_at")
-  .eq("club_id", clubData.id);
-
-if (adShares) {
-  adShares.forEach((share) => {
-    if (!sharesData.find((s) => s.job_id === share.job_id)) {
-      sharesData.push(share);
-    }
-  });
-}
-
       /* ===============================
          3️⃣ Advertenties tellen
       =============================== */
