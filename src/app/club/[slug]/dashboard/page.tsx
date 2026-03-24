@@ -6,6 +6,7 @@ import { motion } from "framer-motion";
 import { useParams, useSearchParams } from "next/navigation";
 import { getSupabaseBrowser } from "@/lib/supabaseBrowser";
 import ClubNavbar from "@/components/club/ClubNavbar";
+import { AGREEMENT_VERSION, AGREEMENT_CHANGES } from "@/lib/constants";
 import {
   SUBSCRIPTIONS,
   type PackageKey,
@@ -24,6 +25,10 @@ type Club = {
   subscription_end?: string | null;
   subscription_status?: string | null;
   subscription_cancelled_at?: string | null;
+
+  // 👇 NIEUW
+  agreement_accepted?: boolean | null;
+  agreement_version?: string | null;
 };
 
 type ClubDashboardInsights = {
@@ -68,6 +73,9 @@ export default function ClubDashboardPage() {
 
   const [adsCount, setAdsCount] = useState(0);
   const [loading, setLoading] = useState(true);
+  const [showAgreement, setShowAgreement] = useState(false);
+const [selectedPackage, setSelectedPackage] = useState<PackageKey | null>(null);
+const [accepted, setAccepted] = useState(false);
 
   /* =====================================================
      DATA OPHALEN
@@ -108,15 +116,17 @@ useEffect(() => {
       const { data: clubData } = await supabase
         .from("clubs")
         .select(`
-          id,
-          name,
-          active_package,
-          primary_color,
-          subscription_start,
-          subscription_end,
-          subscription_status,
-          subscription_cancelled_at
-        `)
+  id,
+  name,
+  active_package,
+  primary_color,
+  subscription_start,
+  subscription_end,
+  subscription_status,
+  subscription_cancelled_at,
+  agreement_accepted,
+  agreement_version
+`)
         .eq("slug", slug)
         .maybeSingle();
 
@@ -373,6 +383,12 @@ setSponsors(Object.values(sponsorMap));
   club.subscription_status === "past_due" ||
   club.subscription_status === "cancelled";
 
+const needsUpdate =
+  !club.agreement_version ||
+  club.agreement_version !== AGREEMENT_VERSION;
+
+  const changes = AGREEMENT_CHANGES[AGREEMENT_VERSION] || [];
+
   /* ===============================
                5️⃣ Upgrade status
             =============================== */
@@ -407,12 +423,13 @@ setSponsors(Object.values(sponsorMap));
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        clubId: club.id,
-        clubSlug: slug,
-        packageKey: targetPackage,
-        priceId,
-        email,
-      }),
+  clubId: club.id,
+  clubSlug: slug,
+  packageKey: targetPackage,
+  priceId,
+  email,
+  agreementAccepted: true, // 🔥 TOEVOEGEN
+}),
     });
 
     const data = await res.json();
@@ -450,6 +467,36 @@ setSponsors(Object.values(sponsorMap));
         <h1 className="text-2xl font-semibold mb-6">
   Dashboard – {club.name}
 </h1>
+
+  {needsUpdate && (
+  <div className="mb-6 p-5 rounded-xl bg-yellow-50 border border-yellow-300 text-yellow-900 text-sm">
+
+    <div className="font-semibold mb-2">
+      ⚠️ De samenwerkingsovereenkomst is bijgewerkt
+    </div>
+
+    <p className="mb-3">
+      Om Sponsorjobs te blijven gebruiken dien je opnieuw akkoord te gaan.
+    </p>
+
+    {changes.length > 0 && (
+      <ul className="list-disc pl-5 mb-4 space-y-1">
+        {changes.map((change, i) => (
+          <li key={i}>{change}</li>
+        ))}
+      </ul>
+    )}
+
+    <button
+      onClick={() =>
+        (window.location.href = `/club/${slug}/agreement-required`)
+      }
+      className="px-4 py-2 bg-[#0d1b2a] text-white rounded-lg text-sm"
+    >
+      Bekijk overeenkomst
+    </button>
+  </div>
+)}
 
 {club.subscription_status === "past_due" && (
   <div className="mb-6 p-4 rounded-lg bg-red-100 border border-red-300 text-red-700 text-sm">
@@ -718,9 +765,12 @@ const canUpgrade = isHigher;
 
                   <button
   disabled={!canUpgrade || isBillingBlocked}
-  onClick={() =>
-    canUpgrade && goToCheckout(key)
-  }
+  onClick={() => {
+  if (!canUpgrade) return;
+
+  setSelectedPackage(key);
+  setShowAgreement(true);
+}}
   className={`mt-auto w-full py-2 rounded-lg text-sm font-medium ${
     isCurrent
       ? "bg-gray-300 text-gray-600"
@@ -747,6 +797,55 @@ const canUpgrade = isHigher;
         =============================== */}
         <ClubSupportBar />
       </motion.div>
+      {showAgreement && (
+  <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
+    <div className="bg-white rounded-xl p-6 max-w-lg w-full shadow-xl">
+
+      <h2 className="text-lg font-semibold mb-3">
+        Bevestig upgrade
+      </h2>
+
+      <p className="text-sm text-gray-600 mb-4">
+        Door verder te gaan ga je akkoord met de{" "}
+        <a href="/voorwaarden" target="_blank" className="underline">
+          samenwerkingsovereenkomst
+        </a>.
+      </p>
+
+      <label className="flex items-center gap-2 mb-4 text-sm">
+        <input
+          type="checkbox"
+          checked={accepted}
+          onChange={(e) => setAccepted(e.target.checked)}
+        />
+        Ik ga akkoord met de overeenkomst
+      </label>
+
+      <div className="flex justify-end gap-2">
+        <button
+          onClick={() => {
+            setShowAgreement(false);
+            setAccepted(false);
+          }}
+          className="px-4 py-2 text-sm bg-gray-100 rounded-lg"
+        >
+          Annuleren
+        </button>
+
+        <button
+          disabled={!accepted || !selectedPackage}
+          onClick={() => {
+            if (!selectedPackage) return;
+            goToCheckout(selectedPackage);
+          }}
+          className="px-4 py-2 text-sm bg-[#0d1b2a] text-white rounded-lg disabled:opacity-50"
+        >
+          Doorgaan naar betaling
+        </button>
+      </div>
+    </div>
+  </div>
+)}
     </main>
   );
 }

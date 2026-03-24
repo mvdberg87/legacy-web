@@ -1,23 +1,52 @@
 import { stripe } from "@/lib/stripe";
 import { supabaseAdmin } from "@/lib/supabaseAdmin";
+import { AGREEMENT_VERSION } from "@/lib/constants";
 
 export async function POST(req: Request) {
-  const { clubId, clubSlug, packageKey, priceId, email } = await req.json();
+  const {
+    clubId,
+    clubSlug,
+    packageKey,
+    priceId,
+    email,
+    agreementAccepted, // 👈 NIEUW
+  } = await req.json();
 
   /* ===============================
-     1️⃣ Haal bestaande customer op
+     ❌ 0️⃣ Check agreement (CRUCIAAL)
+  =============================== */
+
+  if (!agreementAccepted) {
+    return new Response("Agreement required", { status: 400 });
+  }
+
+  /* ===============================
+     1️⃣ Haal club + customer op
   =============================== */
 
   const { data: club } = await supabaseAdmin
     .from("clubs")
-    .select("stripe_customer_id")
+    .select("stripe_customer_id, agreement_accepted")
     .eq("id", clubId)
-    .maybeSingle(); // 👈 belangrijk!
+    .maybeSingle();
 
   let customerId = club?.stripe_customer_id;
 
   /* ===============================
-     2️⃣ Maak customer als niet bestaat
+     2️⃣ Agreement opslaan
+  =============================== */
+
+  await supabaseAdmin
+    .from("clubs")
+    .update({
+      agreement_accepted: true,
+      agreement_accepted_at: new Date().toISOString(),
+      agreement_version: AGREEMENT_VERSION,
+    })
+    .eq("id", clubId);
+
+  /* ===============================
+     3️⃣ Maak customer als niet bestaat
   =============================== */
 
   if (!customerId) {
@@ -37,24 +66,28 @@ export async function POST(req: Request) {
   }
 
   /* ===============================
-     3️⃣ Checkout session
+     4️⃣ Checkout session
   =============================== */
 
   const session = await stripe.checkout.sessions.create({
     mode: "subscription",
-    customer: customerId, // 👈 dit is key
+    customer: customerId,
 
     line_items: [{ price: priceId, quantity: 1 }],
 
     metadata: {
       club_id: String(clubId),
       package_key: String(packageKey),
+      agreement_accepted: "true", // 👈 EXTRA
+      agreement_version: AGREEMENT_VERSION,
     },
 
     subscription_data: {
       metadata: {
         club_id: String(clubId),
         package_key: String(packageKey),
+        agreement_accepted: "true",
+        agreement_version: AGREEMENT_VERSION,
       },
     },
 

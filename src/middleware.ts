@@ -2,6 +2,7 @@
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 import { createServerClient } from "@supabase/ssr";
+import { AGREEMENT_VERSION } from "@/lib/constants";
 
 const GRACE_DAYS = 7;
 
@@ -124,7 +125,9 @@ if (isClubRoute) {
   basic_end,
   billing_status,
   billing_override,
-  payment_failed_at
+  payment_failed_at,
+  agreement_accepted,
+  agreement_version
 `)
     .eq("id", profile.club_id)
     .maybeSingle();
@@ -141,6 +144,24 @@ if (isClubRoute) {
   if (club.billing_override) {
     return res;
   }
+
+  /* ===============================
+   Agreement check + versioning
+=============================== */
+const isPaid = club.active_package !== "basic";
+
+const needsAgreement =
+  isPaid &&
+  (
+    !club.agreement_accepted ||
+    club.agreement_version !== AGREEMENT_VERSION
+  );
+
+if (needsAgreement) {
+  return NextResponse.redirect(
+    new URL("/club/agreement-required", origin)
+  );
+}
 
   /* ===============================
    BASIC VERLOPEN CHECK
