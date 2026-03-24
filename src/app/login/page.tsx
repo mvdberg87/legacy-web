@@ -241,7 +241,7 @@ export default function ClubLoginPage() {
             href="/signup"
             className="block w-full py-2 rounded-xl bg-[#1f9d55] text-white font-semibold hover:bg-[#15803d] transition"
           >
-            🚀 Start gratis (2 maanden)
+            Start gratis (2 maanden)
           </Link>
 
           <p className="text-xs text-gray-500">
@@ -263,16 +263,17 @@ export default function ClubLoginPage() {
           <div className="bg-white rounded-xl p-6 max-w-md w-full shadow-xl text-center">
 
             <h2 className="text-xl font-semibold mb-3">
-              🎉 Gefeliciteerd!
-            </h2>
+  Aanmelding ontvangen
+</h2>
 
-            <p className="text-sm text-gray-600 mb-4">
-              Jullie club is succesvol aangemeld 🚀
-              <br /><br />
-              Jullie krijgen <strong>2 maanden gratis toegang</strong>.
-              <br />
-              Start direct met het activeren van sponsoren.
-            </p>
+<p className="text-sm text-gray-600 mb-4">
+  Jullie club is succesvol aangemeld.
+  <br /><br />
+  We controleren de aanvraag en nemen deze snel in behandeling.
+  <br /><br />
+  Na goedkeuring ontvangen jullie een e-mail
+  waarmee je direct kunt inloggen en starten.
+</p>
 
             <button
               onClick={() => setShowWelcome(false)}
