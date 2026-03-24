@@ -7,7 +7,6 @@ import {
   getFaviconFallback,
 } from "@/lib/companyLogo";
 import { FaWhatsapp } from "react-icons/fa";
-import { getSupabaseBrowser } from "@/lib/supabaseBrowser";
 
 /* ---------- Types ---------- */
 
@@ -68,7 +67,7 @@ ${href}`;
 
   const whatsappUrl = `https://api.whatsapp.com/send?text=${encodeURIComponent(text)}`;
 
-  window.location.href = whatsappUrl;
+  window.open(whatsappUrl, "_blank", "noopener,noreferrer");
 }
 
   return (
@@ -136,10 +135,14 @@ ${href}`;
 
   <button
   onClick={(e) => {
-    e.stopPropagation();
-    onShare?.();        // 🔥 eerst
-    shareInTeamApp();   // daarna
-  }}
+  e.stopPropagation();
+
+  onShare?.(); // 🔥 eerst tracking
+
+  setTimeout(() => {
+    shareInTeamApp(); // 🔥 daarna pas openen
+  }, 200); // iets ruimer voor zekerheid
+}}
   className="
     flex-1
     flex items-center justify-center gap-2
