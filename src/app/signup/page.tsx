@@ -101,7 +101,7 @@ export default function SignupPage() {
     <input
       required
       placeholder="Bijv. FC 's-Gravenzande"
-      className="w-full border-2 border-gray-300 rounded-lg px-3 py-2 text-sm bg-white focus:outline-none focus:ring-2 focus:ring-[#0d1b2a]"
+      className="w-full border-2 border-gray-300 rounded-lg px-3 py-2 text-sm bg-white text-[#0d1b2a] placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-[#0d1b2a]"
       value={form.clubName}
       onChange={(e) =>
         setForm({ ...form, clubName: e.target.value })
@@ -117,7 +117,7 @@ export default function SignupPage() {
     <input
       required
       placeholder="Bijv. Jan de Vries"
-      className="w-full border-2 border-gray-300 rounded-lg px-3 py-2 text-sm bg-white"
+      className="w-full border-2 border-gray-300 rounded-lg px-3 py-2 text-sm bg-white text-[#0d1b2a] placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-[#0d1b2a]"
       value={form.contactName}
       onChange={(e) =>
         setForm({ ...form, contactName: e.target.value })
@@ -134,7 +134,7 @@ export default function SignupPage() {
       type="email"
       required
       placeholder="contact@club.nl"
-      className="w-full border-2 border-gray-300 rounded-lg px-3 py-2 text-sm bg-white"
+      className="w-full border-2 border-gray-300 rounded-lg px-3 py-2 text-sm bg-white text-[#0d1b2a] placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-[#0d1b2a]"
       value={form.email}
       onChange={(e) =>
         setForm({ ...form, email: e.target.value })
@@ -149,7 +149,7 @@ export default function SignupPage() {
     </label>
     <input
       placeholder="06 12345678"
-      className="w-full border-2 border-gray-300 rounded-lg px-3 py-2 text-sm bg-white"
+      className="w-full border-2 border-gray-300 rounded-lg px-3 py-2 text-sm bg-white text-[#0d1b2a] placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-[#0d1b2a]"
       value={form.phone}
       onChange={(e) =>
         setForm({ ...form, phone: e.target.value })
@@ -201,7 +201,7 @@ export default function SignupPage() {
           >
             {loading
               ? "Bezig…"
-              : "🚀 Start gratis (2 maanden)"}
+              : "Start gratis (2 maanden)"}
           </button>
 
           {/* STATUS */}
@@ -223,7 +223,7 @@ export default function SignupPage() {
     href="/login"
     className="block w-full py-2 rounded-xl bg-[#0d1b2a] text-white font-semibold hover:bg-[#132a44] transition"
   >
-    🔐 Ga naar login
+    Ga naar login
   </a>
 
 </div>
