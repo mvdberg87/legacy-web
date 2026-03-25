@@ -16,10 +16,8 @@ export default function Leadinfo() {
       }
     };
 
-    // check bij laden
     checkConsent();
 
-    // luister naar accept event vanuit CookieBanner
     window.addEventListener("cookieConsentAccepted", checkConsent);
 
     return () => {
@@ -27,7 +25,7 @@ export default function Leadinfo() {
     };
   }, []);
 
-  // Alleen deze routes tracken
+  // Alleen marketing routes
   const isAllowed =
     pathname === "/" ||
     pathname?.startsWith("/signup") ||
@@ -37,7 +35,7 @@ export default function Leadinfo() {
 
   return (
     <Script
-      id="leadinfo"
+      id="leadinfo-script"
       strategy="afterInteractive"
       dangerouslySetInnerHTML={{
         __html: `
@@ -50,10 +48,10 @@ l[i].t=l[i].t||n;
 f=e.createElement(a);
 o=e.getElementsByTagName(a)[0];
 f.async=1;
-f.src=d;
+f.src='https://cdn.leadinfo.net/ping.js';
 o.parentNode.insertBefore(f,o);
 }
-}(window,document,'script','https://tracking.leadinfo.com/track.js','leadinfo','LI-69ADD5BB8FEE0'));
+}(window,document,'script','https://cdn.leadinfo.net/ping.js','leadinfo','LI-69ADD5BB8FEE0'));
         `,
       }}
     />
