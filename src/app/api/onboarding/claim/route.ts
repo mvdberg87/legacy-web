@@ -64,23 +64,26 @@ export async function POST(req: NextRequest) {
    2. Club activeren
 =============================== */
 const now = new Date();
-const basicEnd = new Date();
-basicEnd.setMonth(basicEnd.getMonth() + 2);
+
+const trialEnd = new Date();
+trialEnd.setMonth(trialEnd.getMonth() + 2);
 
 const clubUpdate = await supabaseAdmin
   .from("clubs")
   .update({
-    activated_at: now.toISOString(),
+  activated_at: now.toISOString(),
 
-    // Iedereen start in Basic
-    active_package: "basic",
+  // 👇 pakket
+  active_package: "basic",
 
-    // Basic is 2 maanden geldig
-    basic_end: basicEnd.toISOString(),
+  // 👇 NIEUWE STRUCTUUR (BELANGRIJK)
+  subscription_status: "trial",
+  subscription_start: now.toISOString(),
+  trial_end: trialEnd.toISOString(),
 
-    // Billing actief (nog geen Stripe)
-    billing_status: "active",
-  })
+  // 👇 optioneel (mag blijven)
+  billing_status: "active",
+})
   .eq("id", signup.club_id);
 
     /* ===============================

@@ -26,9 +26,10 @@ type Club = {
   subscription_status?: string | null;
   subscription_cancelled_at?: string | null;
 
-  // 👇 NIEUW
   agreement_accepted?: boolean | null;
   agreement_version?: string | null;
+
+  trial_end?: string | null; // 👈 deze toevoegen
 };
 
 type ClubDashboardInsights = {
@@ -125,7 +126,8 @@ useEffect(() => {
   subscription_status,
   subscription_cancelled_at,
   agreement_accepted,
-  agreement_version
+  agreement_version,
+  trial_end
 `)
         .eq("slug", slug)
         .maybeSingle();
@@ -344,10 +346,24 @@ setSponsors(Object.values(sponsorMap));
   const subscription =
     SUBSCRIPTIONS[activePackage];
 
-  const formatDate = (d?: string | null) =>
-    d
-      ? new Date(d).toLocaleDateString("nl-NL")
-      : "Nog niet ingesteld";
+  const getStartDate = () => {
+  if (club.active_package === "basic") {
+    return club.subscription_start ?? null;
+  }
+  return club.subscription_start;
+};
+
+const getEndDate = () => {
+  if (club.active_package === "basic") {
+    return club.trial_end ?? null; // 🔥 belangrijk
+  }
+  return club.subscription_end;
+};
+
+const formatDate = (d?: string | null) =>
+  d
+    ? new Date(d).toLocaleDateString("nl-NL")
+    : "Niet beschikbaar";
 
   const statusLabel =
   club.subscription_status === "active"
@@ -687,19 +703,22 @@ const needsUpdate =
             <strong>{subscription.label}</strong>
             <br />
             Ingangsdatum:{" "}
-            <strong>
-              {formatDate(
-                club.subscription_start
-              )}
-            </strong>
-            <br />
-            Einddatum:{" "}
-            <strong>
-              {formatDate(
-                club.subscription_end
-              )}
-            </strong>
+<strong>{formatDate(getStartDate())}</strong>
+
+<br />
+
+Einddatum:{" "}
+<strong>{formatDate(getEndDate())}</strong>
           </p>
+
+          {club.active_package === "basic" && club.trial_end && (
+  <div className="text-sm text-orange-600 mb-4">
+    ⏳ Je proefperiode loopt tot{" "}
+    <strong>
+      {new Date(club.trial_end).toLocaleDateString("nl-NL")}
+    </strong>
+  </div>
+)}
 
           <div className="grid grid-cols-1 md:grid-cols-4 gap-4 items-stretch">
             {(Object.keys(
