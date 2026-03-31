@@ -4,6 +4,7 @@ import ClubSupportBar from "@/components/ClubSupportBar";
 import { useEffect, useMemo, useState } from "react";
 import { useRouter, useParams } from "next/navigation";
 import { getSupabaseBrowser } from "@/lib/supabaseBrowser";
+import { SUBSCRIPTIONS } from "@/lib/subscriptions";
 import ClubNavbar from "@/components/club/ClubNavbar";
 import Link from "next/link";
 
@@ -169,6 +170,12 @@ const totalPageviews = pageviews ?? 0;
   if (loading) return <p className="p-6">Laden…</p>;
   if (!club) return <p className="p-6">Club niet gevonden</p>;
 
+  const maxVacancies =
+  SUBSCRIPTIONS[club.active_package].vacancies;
+
+const currentVacancies = jobs.length;
+const isLimitReached = currentVacancies >= maxVacancies;
+
   const canUseAds =
     club.admin_override || club.active_package !== "basic";
 
@@ -270,6 +277,19 @@ const totalPageviews = pageviews ?? 0;
       <div className="max-w-5xl mx-auto bg-white border-2 rounded-2xl p-6 shadow mt-6">
         <h1 className="text-2xl font-semibold mb-4">Vacatures</h1>
 
+        <div className="mb-4 text-sm">
+  Vacatures:{" "}
+  <strong>
+    {currentVacancies} / {maxVacancies}
+  </strong>
+
+  {isLimitReached && (
+    <span className="text-red-600 ml-2">
+      ⚠️ Limiet bereikt
+    </span>
+  )}
+</div>
+
         {!showArchived && (
           <form onSubmit={addJob} className="grid gap-3 mb-6">
             <input
@@ -293,9 +313,24 @@ const totalPageviews = pageviews ?? 0;
               className="border-2 rounded-lg px-3 py-2"
               required
             />
-            <button className="bg-green-600 text-white rounded-xl py-3 font-semibold">
-              Vacature toevoegen
-            </button>
+            <button
+  disabled={isLimitReached}
+  className={`rounded-xl py-3 font-semibold ${
+    isLimitReached
+      ? "bg-gray-300 text-gray-500 cursor-not-allowed"
+      : "bg-green-600 text-white"
+  }`}
+>
+  {isLimitReached
+    ? "Limiet bereikt"
+    : "Vacature toevoegen"}
+</button>
+
+{isLimitReached && (
+  <div className="text-sm text-orange-600 mt-2">
+    Upgrade je pakket om meer vacatures te plaatsen
+  </div>
+)}
           </form>
         )}
 

@@ -2,6 +2,7 @@
 
 import { NextRequest, NextResponse } from "next/server";
 import { supabaseAdmin } from "@/lib/supabaseAdmin";
+import { SUBSCRIPTIONS } from "@/lib/subscriptions"; // bovenin file toevoegen!
 
 export const runtime = "nodejs";
 
@@ -62,6 +63,32 @@ console.log("JOB CREATE BODY:", body);
         { status: 403 }
       );
     }
+
+    /* ===============================
+   3.5 🔒 Vacature limiet check
+=============================== */
+
+const { data: existingJobs } = await supabaseAdmin
+  .from("jobs")
+  .select("id")
+  .eq("club_id", club.id)
+  .is("archived_at", null);
+
+const currentVacancies = existingJobs?.length ?? 0;
+const maxVacancies =
+  SUBSCRIPTIONS[club.active_package].vacancies;
+
+if (currentVacancies >= maxVacancies) {
+  return NextResponse.json(
+    {
+      error: "Maximaal aantal vacatures bereikt",
+      reason: "limit_reached",
+      current: currentVacancies,
+      max: maxVacancies,
+    },
+    { status: 403 }
+  );
+}
 
     /* ===============================
        4. Vacature aanmaken

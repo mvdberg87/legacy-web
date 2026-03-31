@@ -30,6 +30,7 @@ type Club = {
   agreement_version?: string | null;
 
   trial_end?: string | null; // 👈 deze toevoegen
+  extra_ads?: number | null;
 };
 
 type ClubDashboardInsights = {
@@ -115,22 +116,23 @@ useEffect(() => {
       if (!profile?.club_id) return setLoading(false);
 
       const { data: clubData } = await supabase
-        .from("clubs")
-        .select(`
-  id,
-  name,
-  active_package,
-  primary_color,
-  subscription_start,
-  subscription_end,
-  subscription_status,
-  subscription_cancelled_at,
-  agreement_accepted,
-  agreement_version,
-  trial_end
-`)
-        .eq("slug", slug)
-        .maybeSingle();
+  .from("clubs") // 🔥 DEZE ONTBRAK
+  .select(`
+    id,
+    name,
+    active_package,
+    primary_color,
+    subscription_start,
+    subscription_end,
+    subscription_status,
+    subscription_cancelled_at,
+    agreement_accepted,
+    agreement_version,
+    trial_end,
+    extra_ads
+  `)
+  .eq("slug", slug)
+  .maybeSingle();
 
       if (!clubData) return setLoading(false);
       console.log("DASHBOARD CLUB ID:", clubData.id);
@@ -346,6 +348,10 @@ setSponsors(Object.values(sponsorMap));
   const subscription =
     SUBSCRIPTIONS[activePackage];
 
+    const extraAds = club.extra_ads ?? 0;
+const totalAdsAllowed = subscription.ads + extraAds;
+const canBuyMore = totalAdsAllowed < 10;
+
   const getStartDate = () => {
   if (club.active_package === "basic") {
     return club.subscription_start ?? null;
@@ -450,6 +456,38 @@ const needsUpdate =
   } catch (err) {
     console.error("Checkout error:", err);
     alert("Server fout bij checkout.");
+  }
+}
+
+async function buyExtraAds(quantity: number) {
+  if (!club) return;
+
+  try {
+    const res = await fetch("/api/stripe/add-extra-ads", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        clubId: club.id,
+        quantity,
+      }),
+    });
+
+    const data = await res.json();
+
+    if (!res.ok) {
+      alert(data.error || "Fout bij aankoop");
+      return;
+    }
+
+    if (data.url) {
+      window.location.href = data.url;
+    }
+
+  } catch (err) {
+    console.error(err);
+    alert("Server fout");
   }
 }
       
@@ -611,7 +649,7 @@ const needsUpdate =
 
 <InsightCard
   label="Advertenties actief"
-  value={`${adsCount} / ${subscription.ads}`}
+  value={`${adsCount} / ${totalAdsAllowed}`}
 />
 
 </section>
@@ -790,6 +828,66 @@ const canUpgrade = isHigher;
               );
             })}
           </div>
+
+          {adsCount >= totalAdsAllowed * 0.8 && (
+  <div className="text-sm text-orange-600 mt-4">
+    Je advertentielimiet is bereikt — koop extra om zichtbaar te blijven
+  </div>
+)}
+
+{club.active_package !== "basic" && (
+  <div className="mt-6 border-t pt-6">
+
+    <h3 className="font-semibold text-lg mb-2">
+      Extra advertenties
+    </h3>
+
+    <p className="text-sm text-gray-700 mb-2">
+      Je gebruikt <strong>{adsCount}</strong> van{" "}
+      <strong>{totalAdsAllowed}</strong> advertenties
+    </p>
+
+    <p className="text-sm text-gray-500 mb-4">
+      Maximaal 10 extra advertenties mogelijk
+    </p>
+
+    <div className="flex gap-3 flex-wrap">
+
+      {/* +1 */}
+      <button
+        disabled={!canBuyMore}
+        onClick={() => buyExtraAds(1)}
+        className={`px-4 py-2 rounded-lg text-sm ${
+          canBuyMore
+            ? "bg-[#0d1b2a] text-white"
+            : "bg-gray-300 text-gray-500 cursor-not-allowed"
+        }`}
+      >
+        +1 advertentie (€25)
+      </button>
+
+      {/* +3 */}
+      <button
+        disabled={!canBuyMore}
+        onClick={() => buyExtraAds(3)}
+        className={`px-4 py-2 rounded-lg text-sm font-semibold relative ${
+          canBuyMore
+            ? "bg-green-600 hover:bg-green-700 text-white"
+            : "bg-gray-300 text-gray-500 cursor-not-allowed"
+        }`}
+      >
+        +3 advertenties (€75)
+
+        {canBuyMore && (
+          <span className="absolute -top-2 -right-2 bg-yellow-400 text-black text-xs px-2 py-0.5 rounded-full">
+            Populair
+          </span>
+        )}
+      </button>
+
+    </div>
+  </div>
+)}
         </section>
         {/* ===============================
             Support balk

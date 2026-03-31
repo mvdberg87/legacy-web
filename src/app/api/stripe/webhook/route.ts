@@ -68,10 +68,99 @@ if (existing) {
 
 const session = event.data.object as Stripe.Checkout.Session;
 
-console.log("🔥 SESSION:", session);
-console.log("🔥 METADATA:", session.metadata);
+/* ===============================
+   🔥 EXTRA ADS CHECK
+=============================== */
 
+const extraAdsPriceId = process.env.NEXT_PUBLIC_STRIPE_PRICE_AD_EXTRA;
+
+const lineItems = await stripe.checkout.sessions.listLineItems(
+  session.id
+);
+
+let extraAdsPurchased = 0;
+
+lineItems.data.forEach((item) => {
+  if (item.price?.id === extraAdsPriceId) {
+    extraAdsPurchased += item.quantity ?? 0;
+  }
+});
+
+if (extraAdsPurchased > 0) {
   const clubId = session.metadata?.club_id;
+
+  if (!clubId) {
+    console.error("❌ Missing club_id for extra ads");
+
+    await supabaseAdmin.from("stripe_events").upsert({
+      id: event.id,
+      type: event.type,
+      payload: event,
+    });
+
+    return NextResponse.json({ received: true });
+  }
+
+  console.log("🔥 EXTRA ADS GEKOCHT:", extraAdsPurchased);
+
+  /* ===============================
+     HUIDIGE ADS OPHALEN
+  =============================== */
+
+  const { data: clubData } = await supabaseAdmin
+    .from("clubs")
+    .select("extra_ads")
+    .eq("id", clubId)
+    .single();
+
+  const currentExtraAds = clubData?.extra_ads ?? 0;
+
+  /* ===============================
+     🔒 MAX 10 CHECK (HIER!)
+  =============================== */
+
+  const newTotal = currentExtraAds + extraAdsPurchased;
+
+  if (newTotal > 10) {
+    console.log("⚠️ Max ads overschreden");
+
+    await supabaseAdmin.from("stripe_events").upsert({
+      id: event.id,
+      type: event.type,
+      payload: event,
+    });
+
+    return NextResponse.json({ received: true });
+  }
+
+  /* ===============================
+     UPDATE
+  =============================== */
+
+  await supabaseAdmin
+    .from("clubs")
+    .update({
+      extra_ads: newTotal,
+    })
+    .eq("id", clubId);
+
+  /* ===============================
+     IDEMPOTENCY SAVE
+  =============================== */
+
+  await supabaseAdmin.from("stripe_events").upsert({
+    id: event.id,
+    type: event.type,
+    payload: event,
+  });
+
+  return NextResponse.json({ received: true });
+}
+
+const clubId = session.metadata?.club_id;
+
+console.log("🔥 CLUB ID:", clubId);
+console.log("🔥 METADATA:", session.metadata);
 
 console.log("🔥 CLUB ID:", clubId);
   if (!clubId) return NextResponse.json({ received: true });
