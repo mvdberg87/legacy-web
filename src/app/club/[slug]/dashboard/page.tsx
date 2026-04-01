@@ -459,39 +459,38 @@ const needsUpdate =
   }
 }
 
-async function buyExtraAds(quantity: number) {
+async function updateExtraAds(newQuantity: number) {
   if (!club) return;
 
+  if (newQuantity < 0) return;
+  if (newQuantity > 10) {
+    alert("Maximaal 10 extra advertenties");
+    return;
+  }
+
   try {
-    const {
-      data: { user },
-    } = await supabase.auth.getUser();
-
-    const email = user?.email;
-
-    const res = await fetch("/api/stripe/add-extra-ads", {
+    const res = await fetch("/api/stripe/update-extra-ads", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
         clubId: club.id,
-        slug,
-        quantity,
-        email, // 🔥 DEZE TOEVOEGEN
+        quantity: newQuantity,
       }),
     });
 
     const data = await res.json();
 
     if (!res.ok) {
-      alert(data.error || "Fout bij aankoop");
+      alert(data.error || "Fout bij aanpassen");
       return;
     }
 
-    if (data.url) {
-      window.location.href = data.url;
-    }
+    // 🔥 direct UI update (sneller dan reload)
+    setClub((prev) =>
+      prev ? { ...prev, extra_ads: newQuantity } : prev
+    );
 
   } catch (err) {
     console.error(err);
@@ -846,55 +845,50 @@ const canUpgrade = isHigher;
 {club.active_package !== "basic" && (
   <div className="mt-6 border-t pt-6">
 
-    <h3 className="font-semibold text-lg mb-2">
-      Extra advertenties
-    </h3>
+  <h3 className="font-semibold text-lg mb-2">
+    Extra advertenties
+  </h3>
 
-    <p className="text-sm text-gray-700 mb-2">
-      Je gebruikt <strong>{adsCount}</strong> van{" "}
-      <strong>{totalAdsAllowed}</strong> advertenties
-    </p>
+  <p className="text-sm text-gray-700 mb-2">
+    Je gebruikt <strong>{adsCount}</strong> van{" "}
+    <strong>{totalAdsAllowed}</strong> advertenties
+  </p>
 
-    <p className="text-sm text-gray-500 mb-4">
-      Maximaal 10 extra advertenties mogelijk
-    </p>
+  <p className="text-sm text-gray-500 mb-4">
+    Maximaal 10 extra advertenties mogelijk
+  </p>
 
-    <div className="flex gap-3 flex-wrap">
+  <div className="flex flex-col items-start gap-2">
 
-      {/* +1 */}
+    <div className="flex items-center gap-4">
       <button
-        disabled={!canBuyMore}
-        onClick={() => buyExtraAds(1)}
-        className={`px-4 py-2 rounded-lg text-sm ${
-          canBuyMore
-            ? "bg-[#0d1b2a] text-white"
-            : "bg-gray-300 text-gray-500 cursor-not-allowed"
-        }`}
+        onClick={() => updateExtraAds(extraAds - 1)}
+        disabled={extraAds <= 0}
+        className="px-3 py-2 bg-gray-200 rounded-lg"
       >
-        +1 advertentie (€25)
+        −
       </button>
 
-      {/* +3 */}
+      <div className="text-lg font-semibold">
+        {extraAds}
+      </div>
+
       <button
-        disabled={!canBuyMore}
-        onClick={() => buyExtraAds(3)}
-        className={`px-4 py-2 rounded-lg text-sm font-semibold relative ${
-          canBuyMore
-            ? "bg-green-600 hover:bg-green-700 text-white"
-            : "bg-gray-300 text-gray-500 cursor-not-allowed"
-        }`}
+        onClick={() => updateExtraAds(extraAds + 1)}
+        disabled={extraAds >= 10}
+        className="px-3 py-2 bg-[#0d1b2a] text-white rounded-lg"
       >
-        +3 advertenties (€75)
-
-        {canBuyMore && (
-          <span className="absolute -top-2 -right-2 bg-yellow-400 text-black text-xs px-2 py-0.5 rounded-full">
-            Populair
-          </span>
-        )}
+        +
       </button>
-
     </div>
+
+    <p className="text-sm text-gray-500">
+      €{extraAds * 25} per maand
+    </p>
+
   </div>
+
+</div>
 )}
         </section>
         {/* ===============================
