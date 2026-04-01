@@ -86,26 +86,19 @@ lineItems.data.forEach((item) => {
   }
 });
 
+/* ===============================
+   EXTRA ADS FLOW
+=============================== */
+
 if (extraAdsPurchased > 0) {
   const clubId = session.metadata?.club_id;
 
   if (!clubId) {
     console.error("❌ Missing club_id for extra ads");
-
-    await supabaseAdmin.from("stripe_events").upsert({
-      id: event.id,
-      type: event.type,
-      payload: event,
-    });
-
     return NextResponse.json({ received: true });
   }
 
   console.log("🔥 EXTRA ADS GEKOCHT:", extraAdsPurchased);
-
-  /* ===============================
-     HUIDIGE ADS OPHALEN
-  =============================== */
 
   const { data: clubData } = await supabaseAdmin
     .from("clubs")
@@ -114,28 +107,12 @@ if (extraAdsPurchased > 0) {
     .single();
 
   const currentExtraAds = clubData?.extra_ads ?? 0;
-
-  /* ===============================
-     🔒 MAX 10 CHECK (HIER!)
-  =============================== */
-
   const newTotal = currentExtraAds + extraAdsPurchased;
 
   if (newTotal > 10) {
     console.log("⚠️ Max ads overschreden");
-
-    await supabaseAdmin.from("stripe_events").upsert({
-      id: event.id,
-      type: event.type,
-      payload: event,
-    });
-
     return NextResponse.json({ received: true });
   }
-
-  /* ===============================
-     UPDATE
-  =============================== */
 
   await supabaseAdmin
     .from("clubs")
@@ -144,16 +121,7 @@ if (extraAdsPurchased > 0) {
     })
     .eq("id", clubId);
 
-  /* ===============================
-     IDEMPOTENCY SAVE
-  =============================== */
-
-  await supabaseAdmin.from("stripe_events").upsert({
-    id: event.id,
-    type: event.type,
-    payload: event,
-  });
-
+  // 🔥 STOP → NIET door naar abonnement flow
   return NextResponse.json({ received: true });
 }
 
@@ -162,7 +130,6 @@ const clubId = session.metadata?.club_id;
 console.log("🔥 CLUB ID:", clubId);
 console.log("🔥 METADATA:", session.metadata);
 
-console.log("🔥 CLUB ID:", clubId);
   if (!clubId) return NextResponse.json({ received: true });
 
   const subscriptionId =
