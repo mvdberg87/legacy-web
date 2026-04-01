@@ -11,15 +11,13 @@ export async function POST(req: NextRequest) {
   try {
     const { clubId, quantity, email, slug } = await req.json();
 
-    if (!clubId || !quantity) {
-      return NextResponse.json(
-        { error: "Missing data" },
-        { status: 400 }
-      );
-    }
+    if (!clubId || !quantity || !email || !slug) {
+  return NextResponse.json(
+    { error: "Missing data" },
+    { status: 400 }
+  );
+}
 
-    console.log("STRIPE KEY:", process.env.STRIPE_SECRET_KEY?.slice(0, 10));
-console.log("PRICE:", process.env.STRIPE_PRICE_AD_EXTRA);
 
     const session = await stripe.checkout.sessions.create({
   mode: "subscription", // 🔥 FIX
