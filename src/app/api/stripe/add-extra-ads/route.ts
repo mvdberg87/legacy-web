@@ -9,7 +9,7 @@ const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
 
 export async function POST(req: NextRequest) {
   try {
-    const { clubId, quantity, email } = await req.json();
+    const { clubId, quantity, email, slug } = await req.json();
 
     if (!clubId || !quantity) {
       return NextResponse.json(
@@ -19,7 +19,7 @@ export async function POST(req: NextRequest) {
     }
 
     const session = await stripe.checkout.sessions.create({
-      mode: "subscription",
+  mode: "payment", // 🔥 FIX
 
       customer_email: email,
 
@@ -29,13 +29,13 @@ export async function POST(req: NextRequest) {
 
       line_items: [
         {
-          price: process.env.NEXT_PUBLIC_STRIPE_PRICE_AD_EXTRA!,
+          price: process.env.STRIPE_PRICE_AD_EXTRA!,
           quantity,
         },
       ],
 
-      success_url: `${process.env.NEXT_PUBLIC_SITE_URL}/club/${clubId}/dashboard?extra_ads=success`,
-      cancel_url: `${process.env.NEXT_PUBLIC_SITE_URL}/club/${clubId}/dashboard`,
+      success_url: `${process.env.NEXT_PUBLIC_SITE_URL}/club/${slug}/dashboard?extra_ads=success`,
+cancel_url: `${process.env.NEXT_PUBLIC_SITE_URL}/club/${slug}/dashboard`,
     });
 
     return NextResponse.json({ url: session.url });

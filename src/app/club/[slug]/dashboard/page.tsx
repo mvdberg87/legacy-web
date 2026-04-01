@@ -469,9 +469,10 @@ async function buyExtraAds(quantity: number) {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        clubId: club.id,
-        quantity,
-      }),
+  clubId: club.id,
+  slug,          // 🔥 TOEVOEGEN
+  quantity,
+}),
     });
 
     const data = await res.json();

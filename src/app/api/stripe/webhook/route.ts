@@ -72,7 +72,7 @@ const session = event.data.object as Stripe.Checkout.Session;
    🔥 EXTRA ADS CHECK
 =============================== */
 
-const extraAdsPriceId = process.env.NEXT_PUBLIC_STRIPE_PRICE_AD_EXTRA;
+const extraAdsPriceId = process.env.STRIPE_PRICE_AD_EXTRA;
 
 const lineItems = await stripe.checkout.sessions.listLineItems(
   session.id
