@@ -18,6 +18,9 @@ export async function POST(req: NextRequest) {
       );
     }
 
+    console.log("STRIPE KEY:", process.env.STRIPE_SECRET_KEY?.slice(0, 10));
+console.log("PRICE:", process.env.STRIPE_PRICE_AD_EXTRA);
+
     const session = await stripe.checkout.sessions.create({
   mode: "subscription", // 🔥 FIX
 
