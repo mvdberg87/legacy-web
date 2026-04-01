@@ -463,16 +463,23 @@ async function buyExtraAds(quantity: number) {
   if (!club) return;
 
   try {
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
+
+    const email = user?.email;
+
     const res = await fetch("/api/stripe/add-extra-ads", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-  clubId: club.id,
-  slug,          // 🔥 TOEVOEGEN
-  quantity,
-}),
+        clubId: club.id,
+        slug,
+        quantity,
+        email, // 🔥 DEZE TOEVOEGEN
+      }),
     });
 
     const data = await res.json();
