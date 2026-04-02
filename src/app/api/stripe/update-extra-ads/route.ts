@@ -40,15 +40,17 @@ export async function POST(req: NextRequest) {
     if (existingItem) {
       // update quantity
       await stripe.subscriptionItems.update(existingItem.id, {
-        quantity,
-      });
+  quantity,
+  proration_behavior: "none", // 🔥 CRUCIAAL
+});
     } else {
       // toevoegen als nieuw item
       await stripe.subscriptionItems.create({
-        subscription: subscription.id,
-        price: extraAdsPrice,
-        quantity,
-      });
+  subscription: subscription.id,
+  price: extraAdsPrice,
+  quantity,
+  proration_behavior: "none", // 🔥 CRUCIAAL
+});
     }
 
     // 4. Supabase sync

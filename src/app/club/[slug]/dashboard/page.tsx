@@ -349,6 +349,9 @@ setSponsors(Object.values(sponsorMap));
     SUBSCRIPTIONS[activePackage];
 
     const extraAds = club.extra_ads ?? 0;
+
+    const totalPrice =
+  subscription.pricePerMonth + extraAds * 25;
 const totalAdsAllowed = subscription.ads + extraAds;
 const canBuyMore = totalAdsAllowed < 10;
 
@@ -741,6 +744,40 @@ async function updateExtraAds(newQuantity: number) {
             Abonnement
           </h2>
 
+          <div className="mb-4 p-4 bg-green-50 border border-green-300 rounded-lg">
+  <p className="text-xs text-gray-600 uppercase tracking-wide">
+    Totaal per maand
+  </p>
+
+  <p className="text-3xl font-bold text-green-700">
+    €{totalPrice}
+  </p>
+
+  <p className="text-xs text-gray-500 mt-1">
+  Wordt gefactureerd op{" "}
+  <strong>{formatDate(getEndDate())}</strong>
+</p>
+
+<p className="text-xs text-gray-400">
+  Automatische incasso via Stripe
+</p>
+
+</div> {/* ✅ sluit groene box hier */}
+
+  <div className="mb-4 border-t pt-3 text-sm text-gray-600">
+  <div className="flex justify-between">
+    <span>{subscription.label}</span>
+    <span>€{subscription.pricePerMonth}</span>
+  </div>
+
+  {extraAds > 0 && (
+    <div className="flex justify-between">
+      <span>Extra advertenties ({extraAds})</span>
+      <span>€{extraAds * 25}</span>
+    </div>
+  )}
+</div>
+
           <p className="text-sm mb-4">
             Status: <strong>{statusLabel}</strong>
             <br />
@@ -882,9 +919,13 @@ const canUpgrade = isHigher;
       </button>
     </div>
 
-    <p className="text-sm text-gray-500">
-      €{extraAds * 25} per maand
-    </p>
+      <div className="text-sm text-gray-600">
+  {extraAds} × €25 = <strong>€{extraAds * 25}</strong> / maand
+</div>
+
+    <p className="text-xs text-gray-500 mt-2">
+  Wijzigingen gaan in per volgende factuurperiode
+</p>
 
   </div>
 
