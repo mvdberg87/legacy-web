@@ -27,23 +27,23 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "Missing signature" }, { status: 400 });
   }
 
-  const body = await req.arrayBuffer();
-const buf = Buffer.from(body);
+  const rawBody = await req.text(); // 🔥 BELANGRIJK
 
 let event: Stripe.Event;
 
 try {
   event = stripe.webhooks.constructEvent(
-    buf,
+    rawBody,
     signature,
     process.env.STRIPE_WEBHOOK_SECRET!
   );
 } catch (err) {
-    return NextResponse.json(
-      { error: "Webhook verification failed" },
-      { status: 400 }
-    );
-  }
+  console.error("❌ Webhook signature error:", err);
+  return NextResponse.json(
+    { error: "Webhook verification failed" },
+    { status: 400 }
+  );
+}
 
   try {
 
