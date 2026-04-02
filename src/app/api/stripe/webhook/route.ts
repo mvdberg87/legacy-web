@@ -5,6 +5,7 @@ import Stripe from "stripe";
 import { supabaseAdmin } from "@/lib/supabaseAdmin";
 
 export const runtime = "nodejs";
+export const dynamic = "force-dynamic"; // 🔥 TOEVOEGEN
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
   apiVersion: "2025-12-15.clover",
@@ -26,17 +27,18 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "Missing signature" }, { status: 400 });
   }
 
-  const body = await req.text();
+  const body = await req.arrayBuffer();
+const buf = Buffer.from(body);
 
-  let event: Stripe.Event;
+let event: Stripe.Event;
 
-  try {
-    event = stripe.webhooks.constructEvent(
-      body,
-      signature,
-      process.env.STRIPE_WEBHOOK_SECRET!
-    );
-  } catch (err) {
+try {
+  event = stripe.webhooks.constructEvent(
+    buf,
+    signature,
+    process.env.STRIPE_WEBHOOK_SECRET!
+  );
+} catch (err) {
     return NextResponse.json(
       { error: "Webhook verification failed" },
       { status: 400 }
