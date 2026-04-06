@@ -844,6 +844,14 @@ const canUpgrade = isHigher;
 }`}
 </p>
 
+<p className="text-sm text-gray-600">
+  {`${SUBSCRIPTIONS[key].vacancies} ${
+    SUBSCRIPTIONS[key].vacancies === 1
+      ? "vacature"
+      : "vacatures"
+  }`}
+</p>
+
                   <button
   disabled={!canUpgrade || isBillingBlocked}
   onClick={() => {
