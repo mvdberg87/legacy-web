@@ -194,9 +194,10 @@ jobs?.forEach((job) => {
 
 if (jobIds.length > 0) {
   const { data: clicks } = await supabase
-    .from("job_clicks")
-    .select("job_id, created_at, ip_address")
-    .in("job_id", jobIds);
+  .from("job_clicks")
+  .select("job_id, created_at")
+  .eq("club_id", clubData.id) // 👈 toevoegen
+  .in("job_id", jobIds);
 
   totalClicks = clicks?.length ?? 0;
 
