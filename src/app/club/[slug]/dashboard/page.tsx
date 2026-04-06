@@ -838,13 +838,13 @@ const canUpgrade = isHigher;
 
 <p className="text-sm font-medium text-[#0d1b2a] mb-3">
   {`${SUBSCRIPTIONS[key].ads} ${
-  SUBSCRIPTIONS[key].ads === 1
-    ? "advertentie"
-    : "advertenties"
-}`}
+    SUBSCRIPTIONS[key].ads === 1
+      ? "advertentie"
+      : "advertenties"
+  }`}
 </p>
 
-<p className="text-sm text-gray-600">
+<p className="text-sm font-medium text-[#0d1b2a] mb-3">
   {`${SUBSCRIPTIONS[key].vacancies} ${
     SUBSCRIPTIONS[key].vacancies === 1
       ? "vacature"
@@ -860,7 +860,7 @@ const canUpgrade = isHigher;
   setSelectedPackage(key);
   setShowAgreement(true);
 }}
-  className={`mt-auto w-full py-2 rounded-lg text-sm font-medium ${
+  className={`mt-4 w-full py-2 rounded-lg text-sm font-medium ${
     isCurrent
       ? "bg-gray-300 text-gray-600"
       : isHigher
