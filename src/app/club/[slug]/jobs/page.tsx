@@ -25,8 +25,10 @@ type Job = {
 
 type JobWithStats = Job & {
   total_clicks: number;
+  total_shares: number; // 👈 toevoegen
   last_click: string | null;
   ctr: number;
+  share_rate: number; // 👈 toevoegen
 };
 
 type Club = {
@@ -120,9 +122,26 @@ const totalPageviews = pageviews ?? 0;
     const { data: jobClicks } = await supabase
       .from("job_clicks")
       .select("job_id, created_at")
-      .in("job_id", jobIds);
+      if (jobIds.length === 0) {
+  setJobs([]);
+  setLoading(false);
+  return;
+}
 
     const stats: Record<string, { total: number; last: string | null }> = {};
+
+    // 👇 NIEUW: shares ophalen
+const { data: jobShares } = await supabase
+  .from("job_shares")
+  .select("job_id, created_at")
+  .in("job_id", jobIds);
+
+// 👇 NIEUW: shares groeperen
+const shareStats: Record<string, number> = {};
+
+(jobShares ?? []).forEach((s) => {
+  shareStats[s.job_id] = (shareStats[s.job_id] || 0) + 1;
+});
 
     (jobClicks ?? []).forEach((c) => {
       if (!stats[c.job_id]) {
@@ -140,17 +159,25 @@ const totalPageviews = pageviews ?? 0;
     const mapped =
   (jobsData ?? []).map((j) => {
     const clicks = stats[j.id]?.total ?? 0;
+    const shares = shareStats[j.id] ?? 0;
 
     const ctr =
       totalPageviews > 0
         ? Number(((clicks / totalPageviews) * 100).toFixed(1))
         : 0;
 
+    const share_rate =
+      totalPageviews > 0
+        ? Number(((shares / totalPageviews) * 100).toFixed(1))
+        : 0;
+
     return {
       ...j,
       total_clicks: clicks,
+      total_shares: shares,
       last_click: stats[j.id]?.last ?? null,
       ctr,
+      share_rate,
     };
   }) ?? [];
 
@@ -360,26 +387,39 @@ const isLimitReached = currentVacancies >= maxVacancies;
 
 <div className="border-t border-gray-200 my-3"></div>
 
-<div className="grid grid-cols-3 text-sm mb-4">
-        <div>
-          <div className="text-gray-400 text-xs">CTR</div>
-          <div>{job.ctr}%</div>
-        </div>
+<div className="grid grid-cols-5 text-sm mb-4">
 
-        <div>
-          <div className="text-gray-400 text-xs">Clicks</div>
-          <div>{job.total_clicks}</div>
-        </div>
+  <div>
+    <div className="text-gray-400 text-xs">CTR</div>
+    <div>{job.ctr}%</div>
+  </div>
 
-        <div>
-          <div className="text-gray-400 text-xs">Laatste click</div>
-          <div>
-            {job.last_click
-              ? new Date(job.last_click).toLocaleDateString("nl-NL")
-              : "—"}
-          </div>
-        </div>
-      </div>
+  <div>
+    <div className="text-gray-400 text-xs">Clicks</div>
+    <div>{job.total_clicks}</div>
+  </div>
+
+  {/* 👇 HIER TOEVOEGEN */}
+  <div>
+    <div className="text-gray-400 text-xs">Shares</div>
+    <div>{job.total_shares ?? 0}</div>
+  </div>
+
+  <div>
+    <div className="text-gray-400 text-xs">Share rate</div>
+    <div>{job.share_rate}%</div>
+  </div>
+
+  <div>
+    <div className="text-gray-400 text-xs">Laatste click</div>
+    <div>
+      {job.last_click
+        ? new Date(job.last_click).toLocaleDateString("nl-NL")
+        : "—"}
+    </div>
+  </div>
+
+</div>
 
       {/* Actions */}
       <div className="flex flex-wrap gap-2">
@@ -454,12 +494,14 @@ const isLimitReached = currentVacancies >= maxVacancies;
   <table className="min-w-full text-sm">
           <thead className="bg-[#0d1b2a] text-white border-b-4 border-[#0d1b2a]">
             <tr>
-              <th className="px-4 py-3 text-left">Item</th>
-              <th className="px-4 py-3 text-center">CTR</th>
-              <th className="px-4 py-3 text-center">Clicks</th>
-              <th className="px-4 py-3 text-center">Laatste click</th>
-              <th className="px-4 py-3 text-center">Beheer</th>
-            </tr>
+  <th className="px-4 py-3 text-left">Item</th>
+  <th className="px-4 py-3 text-center">CTR</th>
+  <th className="px-4 py-3 text-center">Clicks</th>
+  <th className="px-4 py-3 text-center">Shares</th>
+  <th className="px-4 py-3 text-center">Share rate</th>
+  <th className="px-4 py-3 text-center">Laatste click</th>
+  <th className="px-4 py-3 text-center">Beheer</th>
+</tr>
           </thead>
           <tbody className="[&>tr:nth-child(even)]:bg-gray-50/60">
   {visibleJobs.map((job) => (
@@ -482,6 +524,13 @@ const isLimitReached = currentVacancies >= maxVacancies;
 </td>
 <td className="px-4 py-3 text-center">
   {job.total_clicks}
+</td>
+<td className="px-4 py-3 text-center">
+  {job.total_shares ?? 0}
+</td>
+
+<td className="px-4 py-3 text-center">
+  {job.share_rate} %
 </td>
                 <td className="px-4 py-3 text-center">
                   {job.last_click
