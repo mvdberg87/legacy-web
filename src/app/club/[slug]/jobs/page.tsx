@@ -503,8 +503,8 @@ const isLimitReached = currentVacancies >= maxVacancies;
           <thead className="bg-[#0d1b2a] text-white border-b-4 border-[#0d1b2a]">
             <tr>
   <th className="px-4 py-3 text-left">Item</th>
-  <th className="px-4 py-3 text-center">CTR</th>
   <th className="px-4 py-3 text-center">Clicks</th>
+  <th className="px-4 py-3 text-center">CTR</th>
   <th className="px-4 py-3 text-center">Shares</th>
   <th className="px-4 py-3 text-center">Share rate</th>
   <th className="px-4 py-3 text-center">Laatste click</th>
@@ -527,11 +527,12 @@ const isLimitReached = currentVacancies >= maxVacancies;
                     {job.company_name}
                   </div>
                 </td>
-                <td className="px-4 py-3 text-center">
-  {job.ctr} %
-</td>
+                
 <td className="px-4 py-3 text-center">
   {job.total_clicks}
+</td>
+<td className="px-4 py-3 text-center">
+  {job.ctr} %
 </td>
 <td className="px-4 py-3 text-center">
   {job.total_shares ?? 0}
