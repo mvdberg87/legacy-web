@@ -396,14 +396,15 @@ const isLimitReached = currentVacancies >= maxVacancies;
 
 <div className="grid grid-cols-5 text-sm mb-4">
 
-  <div>
-    <div className="text-gray-400 text-xs">CTR</div>
-    <div>{job.ctr}%</div>
-  </div>
 
   <div>
     <div className="text-gray-400 text-xs">Clicks</div>
     <div>{job.total_clicks}</div>
+  </div>
+
+  <div>
+    <div className="text-gray-400 text-xs">CTR</div>
+    <div>{job.ctr}%</div>
   </div>
 
   {/* 👇 HIER TOEVOEGEN */}

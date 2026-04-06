@@ -329,24 +329,7 @@ const logo = getCompanyLogo(website, company.logo);
 
 
                 return (
-                  <div
-                    key={ad.id}
-                    onClick={async (e) => {
-  if ((e.target as HTMLElement).closest("button")) return;
-
-  if (jobId) await trackJobClick(jobId);
-}}
-                    className="
-                      rounded-2xl
-                      border-2 border-white
-                      transition-all duration-200
-                      bg-[#e6dfc8]        /* 🟡 Goud */
-                      hover:bg-white
-                      hover:shadow-lg
-                    "
-                  >
-
-<ListingCard
+                  <ListingCard
   href={ad.link_url}
   external
   title={ad.job_title ?? "Sponsor"}
@@ -356,9 +339,9 @@ const logo = getCompanyLogo(website, company.logo);
   jobId={jobId}
   clubId={club.id}
   variant="ad"
+  onClick={() => jobId && trackJobClick(jobId)}   // 🔥 FIX
   onShare={() => trackJobShare(jobId)}
 />
-                  </div>
                 );
               })}
             </div>
@@ -407,40 +390,32 @@ const logo = getCompanyLogo(website, company.logo);
   const isBest = bestJob && job.id === bestJob.id;
 
   return (
-    <div
-      key={job.id}
-      className="relative"
-      onClick={async (e) => {
-  // ❌ NIET triggeren als klik van knop komt
-  if ((e.target as HTMLElement).closest("button")) return;
-
-  await trackJobClick(job.id);
-}}
-    >
+    <div key={job.id} className="relative">
 
       {isBest && (
-  <div className="absolute -top-2 -left-2 bg-gray-100 text-gray-700 text-xs px-2 py-1 rounded">
-    Meest bekeken
-  </div>
-)}
+        <div className="absolute -top-2 -left-2 bg-gray-100 text-gray-700 text-xs px-2 py-1 rounded">
+          Meest bekeken
+        </div>
+      )}
 
-{!isBest && isNewJob(job.created_at) && (
-  <div className="absolute -top-2 -left-2 bg-green-500 text-white text-xs px-2 py-1 rounded">
-    Nieuw
-  </div>
-)}
+      {!isBest && isNewJob(job.created_at) && (
+        <div className="absolute -top-2 -left-2 bg-green-500 text-white text-xs px-2 py-1 rounded">
+          Nieuw
+        </div>
+      )}
 
       <ListingCard
-  href={job.apply_url ?? "#"}
-  external
-  title={job.job_title}
-  company={job.company_name}
-  website={job.company_website || job.apply_url}
-  cachedLogo={job.company_logo_url}
-  jobId={job.id}
-  clubId={club.id}
-  onShare={() => trackJobShare(job.id)}
-/>
+        href={job.apply_url ?? "#"}
+        external
+        title={job.job_title}
+        company={job.company_name}
+        website={job.company_website || job.apply_url}
+        cachedLogo={job.company_logo_url}
+        jobId={job.id}
+        clubId={club.id}
+        onClick={() => trackJobClick(job.id)}   // ✅ GOED
+        onShare={() => trackJobShare(job.id)}
+      />
     </div>
   );
 })}

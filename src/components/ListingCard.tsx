@@ -21,6 +21,7 @@ type Props = {
   external?: boolean;
   variant?: "default" | "ad";
   onShare?: () => void;
+  onClick?: () => void; // 🔥 TOEVOEGEN
 };
 
 /* ---------- Component ---------- */
@@ -35,6 +36,7 @@ export default function ListingCard({
   clubId,
   external = false,
   onShare,
+  onClick, // 🔥 TOEVOEGEN
 }: Props) {
   const router = useRouter();
   const logoSrc = getCompanyLogo(website, cachedLogo);
@@ -45,11 +47,15 @@ export default function ListingCard({
   function handlePrimaryClick() {
   if (!isValidHref) return;
 
-  if (external) {
-    window.open(href, "_blank", "noopener,noreferrer");
-  } else {
-    router.push(href);
-  }
+  onClick?.();
+
+  setTimeout(() => {
+    if (external) {
+      window.open(href, "_blank", "noopener,noreferrer");
+    } else {
+      router.push(href);
+    }
+  }, 100);
 }
 
 /* =========================
