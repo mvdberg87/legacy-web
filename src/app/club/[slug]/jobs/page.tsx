@@ -117,16 +117,23 @@ const totalPageviews = pageviews ?? 0;
       .order("featured", { ascending: false })
       .order("created_at", { ascending: false });
 
+      console.log("JOBS:", jobsData);
+
     const jobIds = (jobsData ?? []).map((j) => j.id);
 
-    const { data: jobClicks } = await supabase
-      .from("job_clicks")
-      .select("job_id, created_at")
-      if (jobIds.length === 0) {
+// 🔥 eerst checken!
+if (jobIds.length === 0) {
   setJobs([]);
+  setArchivedJobs([]);
   setLoading(false);
   return;
 }
+
+// 🔥 clicks ophalen (GEFILTERD)
+const { data: jobClicks } = await supabase
+  .from("job_clicks")
+  .select("job_id, created_at")
+  .in("job_id", jobIds);
 
     const stats: Record<string, { total: number; last: string | null }> = {};
 

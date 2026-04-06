@@ -192,20 +192,19 @@ jobs?.forEach((job) => {
          2️⃣ Clicks ophalen (LEIDEND)
       =============================== */
 
-if (jobIds.length > 0) {
+// 🔥 eerst check
+if (jobIds.length === 0) {
+  totalClicks = 0;
+} else {
   const { data: clicks } = await supabase
-  .from("job_clicks")
-  .select("job_id, created_at")
-  .eq("club_id", clubData.id) // 👈 toevoegen
-  .in("job_id", jobIds);
+    .from("job_clicks")
+    .select("job_id, created_at")
+    .in("job_id", jobIds); // ✅ ENIGE juiste filter
 
   totalClicks = clicks?.length ?? 0;
 
-  // clicks tellen per sponsor
   clicks?.forEach((click) => {
-    const job = jobs?.find(
-      (j) => j.id === click.job_id
-    );
+    const job = jobs?.find((j) => j.id === click.job_id);
     if (!job) return;
 
     const sponsor = sponsorMap[job.company_name];
