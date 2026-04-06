@@ -375,7 +375,9 @@ const formatDate = (d?: string | null) =>
     : "Niet beschikbaar";
 
   const statusLabel =
-  club.subscription_status === "active"
+  club.subscription_cancelled_at
+    ? "Wordt beëindigd"
+    : club.subscription_status === "active"
     ? "Actief"
     : club.subscription_status === "past_due"
     ? "Betaling mislukt"
@@ -530,6 +532,37 @@ async function cancelSubscription() {
     }
 
     alert("Je abonnement is opgezegd en loopt door tot het einde van de periode.");
+
+    window.location.reload();
+
+  } catch (err) {
+    console.error(err);
+    alert("Server fout");
+  }
+}
+
+async function reactivateSubscription() {
+  if (!club) return;
+
+  try {
+    const res = await fetch("/api/stripe/reactivate-subscription", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        clubId: club.id,
+      }),
+    });
+
+    const data = await res.json();
+
+    if (!res.ok) {
+      alert(data.error || "Reactiveren mislukt");
+      return;
+    }
+
+    alert("Je opzegging is geannuleerd 🙌");
 
     window.location.reload();
 
@@ -975,7 +1008,7 @@ const canUpgrade = isHigher;
 
   </div>
 
-  {club.subscription_status === "active" && (
+  {club.subscription_status === "active" && !club.subscription_cancelled_at && (
   <div className="mt-6 pt-6 border-t text-sm text-gray-500">
 
     <button
@@ -988,9 +1021,7 @@ const canUpgrade = isHigher;
     <p className="mt-1 text-xs text-gray-400">
   Je abonnement stopt per{" "}
   <strong>
-    {formatDate(
-      club.subscription_cancelled_at || getEndDate()
-    )}
+    {formatDate(getEndDate())}
   </strong>
 </p>
 
@@ -998,6 +1029,24 @@ const canUpgrade = isHigher;
 )}
 
 </div>
+)}
+
+{club.subscription_cancelled_at && (
+  <div className="mt-6 pt-6 border-t text-sm">
+
+    <button
+      onClick={reactivateSubscription}
+      className="underline text-green-600 hover:text-green-700 transition"
+    >
+      Opzegging annuleren
+    </button>
+
+    <p className="mt-1 text-xs text-gray-400">
+      Je abonnement blijft actief na{" "}
+      <strong>{formatDate(getEndDate())}</strong>
+    </p>
+
+  </div>
 )}
 
         </section>
