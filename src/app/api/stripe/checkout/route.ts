@@ -26,11 +26,20 @@ export async function POST(req: Request) {
 
   const { data: club } = await supabaseAdmin
     .from("clubs")
-    .select("stripe_customer_id, agreement_accepted")
+    .select("stripe_customer_id, stripe_subscription_id, agreement_accepted")
     .eq("id", clubId)
     .maybeSingle();
 
+    if (club?.stripe_subscription_id) {
+  return new Response("Subscription already exists", { status: 400 });
+}
+
   let customerId = club?.stripe_customer_id;
+
+  // 🔥 voorkom dubbele subscriptions
+if (club?.stripe_subscription_id) {
+  return new Response("Subscription already exists", { status: 400 });
+}
 
   /* ===============================
      2️⃣ Agreement opslaan
@@ -51,7 +60,7 @@ export async function POST(req: Request) {
 
   if (!customerId) {
     const customer = await stripe.customers.create({
-      email,
+      email: email || undefined,
       metadata: {
         club_id: String(clubId),
       },
@@ -74,6 +83,8 @@ export async function POST(req: Request) {
     customer: customerId,
 
     line_items: [{ price: priceId, quantity: 1 }],
+
+    allow_promotion_codes: true,
 
     metadata: {
       club_id: String(clubId),

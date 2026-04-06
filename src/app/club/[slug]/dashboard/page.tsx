@@ -463,6 +463,7 @@ const needsUpdate =
 }
 
 async function updateExtraAds(newQuantity: number) {
+
   if (!club) return;
 
   if (newQuantity < 0) return;
@@ -494,6 +495,43 @@ async function updateExtraAds(newQuantity: number) {
     setClub((prev) =>
       prev ? { ...prev, extra_ads: newQuantity } : prev
     );
+
+  } catch (err) {
+    console.error(err);
+    alert("Server fout");
+  }
+}
+
+async function cancelSubscription() {
+  if (!club) return;
+
+  const confirmCancel = confirm(
+    "Weet je zeker dat je wilt opzeggen?\n\nJe abonnement stopt aan het einde van de factuurperiode."
+  );
+
+  if (!confirmCancel) return;
+
+  try {
+    const res = await fetch("/api/stripe/cancel-subscription", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        clubId: club.id,
+      }),
+    });
+
+    const data = await res.json();
+
+    if (!res.ok) {
+      alert(data.error || "Opzeggen mislukt");
+      return;
+    }
+
+    alert("Je abonnement is opgezegd en loopt door tot het einde van de periode.");
+
+    window.location.reload();
 
   } catch (err) {
     console.error(err);
@@ -937,9 +975,33 @@ const canUpgrade = isHigher;
 
   </div>
 
+  {club.subscription_status === "active" && (
+  <div className="mt-6 pt-6 border-t text-sm text-gray-500">
+
+    <button
+      onClick={cancelSubscription}
+      className="underline hover:text-red-600 transition"
+    >
+      Abonnement opzeggen
+    </button>
+
+    <p className="mt-1 text-xs text-gray-400">
+  Je abonnement stopt per{" "}
+  <strong>
+    {formatDate(
+      club.subscription_cancelled_at || getEndDate()
+    )}
+  </strong>
+</p>
+
+  </div>
+)}
+
 </div>
 )}
+
         </section>
+
         {/* ===============================
             Support balk
         =============================== */}

@@ -237,6 +237,10 @@ if (!packageKey) {
   const item = subscription.items.data[0];
   if (!item) return NextResponse.json({ received: true });
 
+  const cancelDate = subscription.cancel_at
+    ? new Date(subscription.cancel_at * 1000).toISOString()
+    : null;
+
   await supabaseAdmin
     .from("clubs")
     .update({
@@ -251,6 +255,9 @@ if (!packageKey) {
       subscription_end: new Date(
         item.current_period_end * 1000
       ).toISOString(),
+
+      // 🔥 NIEUW
+      subscription_cancelled_at: cancelDate,
     })
     .eq("stripe_subscription_id", subscription.id);
 }
