@@ -4,7 +4,7 @@ import { supabaseAdmin } from "@/lib/supabaseAdmin";
 const resend = new Resend(process.env.RESEND_API_KEY!);
 
 export async function POST(req: Request) {
-  const { type, clubId, endDate } = await req.json();
+  const { type, clubId, endDate, clubEmail, reason } = await req.json();;
 
   // 🔥 club ophalen
   const { data: club } = await supabaseAdmin
@@ -19,10 +19,10 @@ export async function POST(req: Request) {
      CLUB MAIL
   =============================== */
 
-  if (type === "subscription_cancelled") {
+  if (type === "subscription_cancelled" && clubEmail) {
     await resend.emails.send({
       from: "Sponsorjobs <info@sponsorjobs.nl>",
-      to: "EMAIL_VAN_CLUB", // 🔥 straks dynamisch maken
+      to: clubEmail,
       subject: "Je opzegging is ontvangen",
       html: `
         <p>Hi ${clubName},</p>
@@ -32,6 +32,8 @@ export async function POST(req: Request) {
         <p>
           Je abonnement loopt nog door tot <strong>${new Date(endDate).toLocaleDateString("nl-NL")}</strong>.
         </p>
+
+        ${reason ? `<p>Reden van opzegging: ${reason}</p>` : ""}
 
         <p>
           – Je kunt je opzegging altijd annuleren<br/>

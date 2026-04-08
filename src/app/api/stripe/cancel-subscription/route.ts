@@ -31,35 +31,42 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    // 🔥 cancel op einde periode (NIET direct!)
     const subscription = await stripe.subscriptions.update(
-      club.stripe_subscription_id,
-      {
-        cancel_at_period_end: true,
-      }
-    );
+  club.stripe_subscription_id,
+  {
+    cancel_at_period_end: true,
+  }
+) as unknown as Stripe.Subscription;
 
-    // 🔥 sla einddatum op
-    const sub = subscription as any;
+const currentPeriodEnd =
+  subscription.items.data[0]?.current_period_end;
 
-const cancelDate = sub.current_period_end
-  ? new Date(sub.current_period_end * 1000).toISOString()
+const cancelDate = currentPeriodEnd
+  ? new Date(currentPeriodEnd * 1000).toISOString()
   : null;
 
-    await supabaseAdmin
+// 👇 daarna blijft alles hetzelfde
+await supabaseAdmin
   .from("clubs")
   .update({
     subscription_cancelled_at: cancelDate,
-    cancel_reason: reason, // 👈 toevoegen
+    cancel_reason: reason,
   })
   .eq("id", clubId);
 
-  // 🔥 club info ophalen voor mails
+  // 🔥 club info + email ophalen
 const { data: clubInfo } = await supabaseAdmin
   .from("clubs")
-  .select("name, email")
+  .select(`
+    name,
+    profiles (
+      email
+    )
+  `)
   .eq("id", clubId)
   .single();
+
+const clubEmail = clubInfo?.profiles?.[0]?.email;
 
       // 📩 MAILS VERSTUREN (veilig)
 try {
@@ -72,7 +79,7 @@ try {
       type: "subscription_cancelled",
       clubId,
       clubName: clubInfo?.name,
-      clubEmail: clubInfo?.email,
+      clubEmail,
       endDate: cancelDate,
       reason,
     }),
