@@ -106,6 +106,24 @@ export async function GET() {
       const totalPageviewsMonthBefore =
         pageviewsMonthBefore?.length ?? 0;
 
+        /* ===============================
+   Shares vorige maand
+=============================== */
+
+const { data: sharesLastMonth } = await supabaseAdmin
+  .from("job_shares")
+  .select("job_id, created_at")
+  .eq("club_id", club.id)
+  .gte("created_at", firstDayLastMonth.toISOString())
+  .lt("created_at", firstDayCurrentMonth.toISOString());
+
+const totalSharesLastMonth = sharesLastMonth?.length ?? 0;
+
+const shareRate =
+  totalPageviewsLastMonth > 0
+    ? (totalSharesLastMonth / totalPageviewsLastMonth) * 100
+    : 0;
+
       /* ===============================
          Click groei
       =============================== */
@@ -253,6 +271,26 @@ export async function GET() {
         SUBSCRIPTIONS[club.active_package]?.ads ??
         0;
 
+        /* ===============================
+   Slimme aanbeveling
+=============================== */
+
+let recommendation = "";
+
+if (zeroClickJobs?.length > 0) {
+  recommendation =
+    "Je hebt vacatures zonder clicks. Overweeg een uitgelichte plaatsing of extra zichtbaarheid via TeamApp.";
+} else if (adsCount === maxAds && maxAds !== Infinity) {
+  recommendation =
+    "Je advertentieruimte is volledig benut. Upgrade je pakket om nog meer zichtbaarheid te creëren.";
+} else if (ctrLastMonth < 1) {
+  recommendation =
+    "De click-through rate is laag. Probeer pakkendere functietitels of deel vacatures vaker binnen je netwerk.";
+} else {
+  recommendation =
+    "Sterke prestaties deze maand. Blijf vacatures actief delen om dit momentum vast te houden.";
+}
+
       const monthName =
         firstDayLastMonth.toLocaleDateString(
           "nl-NL",
@@ -279,6 +317,9 @@ export async function GET() {
           totalPageviewsLastMonth,
           ctrLastMonth: ctrLastMonth.toFixed(1),
           ctrGrowth,
+          totalSharesLastMonth,
+shareRate: shareRate.toFixed(1),
+recommendation,
           growth,
           sponsors,
           topJobs,
@@ -320,13 +361,25 @@ function generateHtml(data: any) {
       </p>
 
       <h2 style="color:${navy};">Overzicht</h2>
-      <p><strong>Bedrijven actief:</strong> ${data.totalCompanies}</p>
-      <p><strong>Vacatures actief:</strong> ${data.totalVacancies}</p>
-      <p><strong>Pageviews afgelopen maand:</strong> ${data.totalPageviewsLastMonth}</p>
-      <p><strong>Clicks afgelopen maand:</strong> ${data.totalClicksLastMonth}</p>
-      <p><strong>Click-through rate:</strong> ${data.ctrLastMonth}%</p>
-      <p><strong>CTR groei t.o.v vorige maand:</strong> ${data.ctrGrowth}%</p>
-      <p><strong>Click groei t.o.v vorige maand:</strong> ${data.growth}%</p>
+
+<p><strong>Bedrijven actief:</strong> ${data.totalCompanies}</p>
+<p><strong>Vacatures actief:</strong> ${data.totalVacancies}</p>
+
+<br/>
+
+<p><strong>Pageviews:</strong> ${data.totalPageviewsLastMonth}</p>
+<p><strong>Clicks:</strong> ${data.totalClicksLastMonth}</p>
+<p><strong>CTR:</strong> ${data.ctrLastMonth}%</p>
+
+<br/>
+
+<p><strong>Social shares:</strong> ${data.totalSharesLastMonth}</p>
+<p><strong>Share rate:</strong> ${data.shareRate}%</p>
+
+<br/>
+
+<p><strong>CTR groei:</strong> ${data.ctrGrowth}%</p>
+<p><strong>Click groei:</strong> ${data.growth}%</p>
 
       <hr style="margin:30px 0;" />
 
@@ -386,6 +439,14 @@ function generateHtml(data: any) {
              </p>`
           : ""
       }
+
+      <hr style="margin:30px 0;" />
+
+<h2 style="color:${navy};">💡 Aanbeveling</h2>
+
+<p style="font-size:14px; line-height:1.6;">
+  ${data.recommendation}
+</p>
 
     </div>
   </div>
