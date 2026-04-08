@@ -1019,11 +1019,19 @@ const canUpgrade = isHigher;
     </button>
 
     <p className="mt-1 text-xs text-gray-400">
-  Je abonnement stopt per{" "}
-  <strong>
-    {formatDate(getEndDate())}
-  </strong>
+  Je abonnement is maandelijks opzegbaar
 </p>
+
+<p className="text-xs text-gray-400">
+  De huidige periode loopt tot{" "}
+  <strong>{formatDate(getEndDate())}</strong>
+</p>
+
+{club.subscription_cancelled_at && (
+  <p className="text-xs text-orange-500 mt-1">
+    Opzegging gepland — stopt automatisch na deze periode
+  </p>
+)}
 
   </div>
 )}
@@ -1042,8 +1050,16 @@ const canUpgrade = isHigher;
     </button>
 
     <p className="mt-1 text-xs text-gray-400">
-      Je abonnement blijft actief na{" "}
+      Je abonnement is maandelijks opzegbaar
+    </p>
+
+    <p className="text-xs text-gray-400">
+      De huidige periode loopt tot{" "}
       <strong>{formatDate(getEndDate())}</strong>
+    </p>
+
+    <p className="text-xs text-orange-500 mt-1">
+      Opzegging gepland — stopt automatisch na deze periode
     </p>
 
   </div>
