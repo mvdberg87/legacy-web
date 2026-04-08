@@ -18,6 +18,9 @@ type Profile = {
   club_slug: string | null;
   club_status: string | null;
   club_package: string | null;
+  subscription_status?: string | null;
+subscription_cancelled_at?: string | null;
+subscription_end?: string | null;
 
   signup_request_id: string | null;
   signup_request_status: "pending" | "approved" | "rejected" | null;
@@ -219,9 +222,17 @@ async function resendActivationLink(requestId: string) {
 >
   {club.name}
 </Link>
-                            <span className="text-xs text-gray-500">
-                              {club.status}
-                            </span>
+                            <span className="text-xs">
+  {p.subscription_cancelled_at ? (
+    <span className="text-orange-600">
+      Opgezegd (tot {new Date(p.subscription_cancelled_at).toLocaleDateString("nl-NL")})
+    </span>
+  ) : p.subscription_status === "active" ? (
+    <span className="text-green-600">Actief</span>
+  ) : (
+    <span className="text-gray-500">{club.status}</span>
+  )}
+</span>
                           </div>
                         ) : (
                           <span className="italic text-gray-400">

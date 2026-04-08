@@ -22,6 +22,7 @@ type Club = {
   subscription_status: string | null;
   subscription_start: string | null;
   subscription_end: string | null;
+  subscription_cancelled_at?: string | null; // 👈 toevoegen
 };
 
 export default function AdminDashboardPage() {
@@ -34,8 +35,8 @@ export default function AdminDashboardPage() {
       const { data } = await supabase
         .from("clubs")
         .select(
-          "id, active_package, subscription_status, subscription_start, subscription_end"
-        );
+  "id, active_package, subscription_status, subscription_start, subscription_end, subscription_cancelled_at"
+);
 
       setClubs(data ?? []);
       setLoading(false);
@@ -55,10 +56,11 @@ export default function AdminDashboardPage() {
   =============================== */
 
   const paidClubs = clubs.filter(
-    (c) =>
-      c.subscription_status === "active" &&
-      c.active_package !== "basic"
-  );
+  (c) =>
+    c.active_package !== "basic" &&
+    c.subscription_status === "active" &&
+    !c.subscription_cancelled_at
+);
 
   const basicClubs = clubs.filter(
     (c) => c.active_package === "basic"
@@ -82,8 +84,8 @@ export default function AdminDashboardPage() {
   =============================== */
 
   const cancelledClubs = clubs.filter(
-    (c) => c.subscription_status === "cancelled"
-  );
+  (c) => c.subscription_cancelled_at
+);
 
   const totalPaidCustomers =
   paidClubs.length + cancelledClubs.length;
@@ -92,6 +94,10 @@ const churnRate =
   totalPaidCustomers > 0
     ? (cancelledClubs.length / totalPaidCustomers) * 100
     : 0;
+
+    const pendingCancellation = clubs.filter(
+  (c) => c.subscription_cancelled_at
+).length;
 
   const expansionRevenue = 0; // (vereenvoudigd – geen upgrade history)
   const revenueLost = cancelledClubs.reduce(
@@ -236,6 +242,7 @@ const clubGrowthData = Object.entries(clubGrowth).map(
           <Kpi label="NRR %" value={`${nrr.toFixed(1)}%`} />
           <Kpi label="LTV" value={`€${ltv}`} />
           <Kpi label="Conversion %" value={`${conversionRate}%`} />
+          <Kpi label="Opgezegd (loopt nog)" value={pendingCancellation} />
         </div>
 
         {/* FUNNEL */}
