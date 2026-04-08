@@ -275,8 +275,9 @@ if (!packageKey) {
   .update({
     active_package: "basic",
     subscription_status: "cancelled",
-    billing_status: "canceled",  // 👈
+    billing_status: "canceled",
     stripe_subscription_id: null,
+    deleted_at: new Date().toISOString(), // 🔥 TOEVOEGEN
   })
   .eq("stripe_subscription_id", subscription.id);
     }

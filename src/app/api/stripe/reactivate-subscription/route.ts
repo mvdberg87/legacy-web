@@ -19,9 +19,17 @@ export async function POST(req: NextRequest) {
 
     const { data: club } = await supabaseAdmin
       .from("clubs")
-      .select("stripe_subscription_id")
+      .select("stripe_subscription_id, subscription_cancelled_at")
       .eq("id", clubId)
       .single();
+
+      // ❗ check: is er überhaupt een opzegging?
+if (!club?.subscription_cancelled_at) {
+  return NextResponse.json(
+    { error: "Abonnement is niet opgezegd" },
+    { status: 400 }
+  );
+}
 
     if (!club?.stripe_subscription_id) {
       return NextResponse.json(
@@ -38,13 +46,14 @@ export async function POST(req: NextRequest) {
       }
     );
 
-    // 🔥 DB reset
     await supabaseAdmin
-      .from("clubs")
-      .update({
-        subscription_cancelled_at: null,
-      })
-      .eq("id", clubId);
+  .from("clubs")
+  .update({
+    subscription_cancelled_at: null,
+    deleted_at: null, // 🔥 HEEL BELANGRIJK
+    subscription_status: "active", // 👈 extra zekerheid
+  })
+  .eq("id", clubId);
 
     return NextResponse.json({ success: true });
 

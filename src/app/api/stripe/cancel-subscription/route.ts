@@ -8,7 +8,7 @@ const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
 
 export async function POST(req: NextRequest) {
   try {
-    const { clubId } = await req.json();
+    const { clubId, reason } = await req.json();
 
     if (!clubId) {
       return NextResponse.json(
@@ -50,8 +50,51 @@ const cancelDate = sub.current_period_end
   .from("clubs")
   .update({
     subscription_cancelled_at: cancelDate,
+    cancel_reason: reason, // 👈 toevoegen
   })
-      .eq("id", clubId);
+  .eq("id", clubId);
+
+  // 🔥 club info ophalen voor mails
+const { data: clubInfo } = await supabaseAdmin
+  .from("clubs")
+  .select("name, email")
+  .eq("id", clubId)
+  .single();
+
+      // 📩 MAILS VERSTUREN (veilig)
+try {
+  await fetch(`${process.env.NEXT_PUBLIC_SITE_URL}/api/send-email`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      type: "subscription_cancelled",
+      clubId,
+      clubName: clubInfo?.name,
+      clubEmail: clubInfo?.email,
+      endDate: cancelDate,
+      reason,
+    }),
+  });
+
+  await fetch(`${process.env.NEXT_PUBLIC_SITE_URL}/api/send-email`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      type: "admin_subscription_cancelled",
+      clubId,
+      clubName: clubInfo?.name,
+      endDate: cancelDate,
+      reason,
+    }),
+  });
+
+} catch (mailErr) {
+  console.error("Mail error:", mailErr);
+}
 
     return NextResponse.json({ success: true });
 

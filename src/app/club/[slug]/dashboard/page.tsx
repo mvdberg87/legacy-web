@@ -25,7 +25,7 @@ type Club = {
   subscription_end?: string | null;
   subscription_status?: string | null;
   subscription_cancelled_at?: string | null;
-
+deleted_at?: string | null;
   agreement_accepted?: boolean | null;
   agreement_version?: string | null;
 
@@ -335,13 +335,31 @@ setSponsors(Object.values(sponsorMap));
     );
   }
 
-  if (!club) {
+ if (!club) {
+  return (
+    <main className="min-h-screen flex items-center justify-center">
+      Club niet gevonden
+    </main>
+  );
+}
+
+// 🔒 check grace period (PAS NA null check)
+if (club.deleted_at) {
+  const deletedAt = new Date(club.deleted_at);
+  const now = new Date();
+
+  const diffDays =
+    (now.getTime() - deletedAt.getTime()) /
+    (1000 * 60 * 60 * 24);
+
+  if (diffDays > 30) {
     return (
       <main className="min-h-screen flex items-center justify-center">
-        Club niet gevonden
+        Je account is verlopen. Neem contact op om te herstellen.
       </main>
     );
   }
+}
 
   const activePackage =
     club.active_package ?? "basic";
@@ -376,7 +394,7 @@ const formatDate = (d?: string | null) =>
 
   const statusLabel =
   club.subscription_cancelled_at
-    ? "Wordt beëindigd"
+    ? "Opgezegd (loopt nog)"
     : club.subscription_status === "active"
     ? "Actief"
     : club.subscription_status === "past_due"
@@ -392,6 +410,16 @@ const formatDate = (d?: string | null) =>
   club.subscription_status === "cancelled";
 
 const isPaid = club.active_package !== "basic";
+
+const isCancelled = !!club.subscription_cancelled_at;
+
+const canReactivate =
+  club.subscription_status === "active" &&
+  isCancelled;
+
+const canCancel =
+  club.subscription_status === "active" &&
+  !isCancelled;
 
 const needsUpdate =
   isPaid &&
@@ -1008,7 +1036,7 @@ const canUpgrade = isHigher;
 
   </div>
 
-  {club.subscription_status === "active" && !club.subscription_cancelled_at && (
+  {canCancel && (
   <div className="mt-6 pt-6 border-t text-sm text-gray-500">
 
     <button
@@ -1027,7 +1055,7 @@ const canUpgrade = isHigher;
   <strong>{formatDate(getEndDate())}</strong>
 </p>
 
-{club.subscription_cancelled_at && (
+{canReactivate && (
   <p className="text-xs text-orange-500 mt-1">
     Opzegging gepland — stopt automatisch na deze periode
   </p>
@@ -1039,7 +1067,7 @@ const canUpgrade = isHigher;
 </div>
 )}
 
-{club.subscription_cancelled_at && (
+{canReactivate && (
   <div className="mt-6 pt-6 border-t text-sm">
 
     <button
