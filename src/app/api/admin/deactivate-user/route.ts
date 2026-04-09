@@ -18,24 +18,13 @@ export async function POST(req: Request) {
     );
   }
 
-  /* ===============================
-     1️⃣ profiel loskoppelen van club
-  =============================== */
-
   await supabaseAdmin
-  .from("profiles")
-  .update({
-    active: false,
-    club_id: null,
-  })
-  .eq("user_id", userId);
-  /* ===============================
-     2️⃣ gebruiker blokkeren in auth
-  =============================== */
-
-  await supabaseAdmin.auth.admin.updateUserById(userId, {
-    ban_duration: "876000h", // 100 jaar
-  });
+    .from("profiles")
+    .update({
+      active: false,
+      club_id: null,
+    })
+    .eq("user_id", userId);
 
   return NextResponse.json({ success: true });
 }

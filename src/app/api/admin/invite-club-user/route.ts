@@ -25,11 +25,11 @@ export async function POST(req: Request) {
     .maybeSingle();
 
   if (existing) {
-    return NextResponse.json(
-      { error: "User already exists" },
-      { status: 400 }
-    );
-  }
+  return NextResponse.json(
+    { error: "Gebruiker bestaat al en is al gekoppeld" },
+    { status: 400 }
+  );
+}
 
   // invite versturen
   const { data, error } =

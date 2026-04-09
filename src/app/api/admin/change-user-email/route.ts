@@ -40,7 +40,7 @@ export async function POST(req: Request) {
   await supabaseAdmin
     .from("profiles")
     .update({ email })
-    .eq("id", userId);
+    .eq("user_id", userId);
 
   /* ===============================
      3️⃣ Nieuwe email teruggeven
