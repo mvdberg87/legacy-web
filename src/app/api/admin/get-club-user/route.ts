@@ -7,29 +7,45 @@ const supabaseAdmin = createClient(
 );
 
 export async function POST(req: Request) {
-  const { clubId } = await req.json();
+  try {
+    const { clubId } = await req.json();
 
-  const { data: profile } = await supabaseAdmin
-  .from("profiles")
-  .select("id, user_id, active")
-  .eq("club_id", clubId)
-  .eq("active", true)
-  .maybeSingle();
+    const { data: profile, error } = await supabaseAdmin
+      .from("profiles")
+      .select("id, user_id, active")
+      .eq("club_id", clubId)
+      .eq("active", true)
+      .maybeSingle();
 
-  const userId = profile.user_id ?? profile.id;
+    // ✅ eerst checken
+    if (!profile || error) {
+      return NextResponse.json({ user: null });
+    }
 
-  if (!profile) {
-    return NextResponse.json({ user: null });
+    // ✅ daarna pas gebruiken
+    const userId = profile.user_id;
+
+    const { data: user, error: userError } =
+      await supabaseAdmin.auth.admin.getUserById(userId);
+
+    if (userError) {
+      return NextResponse.json({ user: null });
+    }
+
+    return NextResponse.json({
+      user: {
+        id: userId,
+        email: user.user?.email ?? null,
+        active: profile.active,
+      },
+    });
+
+  } catch (err) {
+    console.error("GET CLUB USER ERROR:", err);
+
+    return NextResponse.json({
+      user: null,
+      error: "Failed to fetch user",
+    });
   }
-
-  const { data: user } =
-    await supabaseAdmin.auth.admin.getUserById(profile.user_id);
-
-  return NextResponse.json({
-    user: {
-      id: profile.user_id,
-      email: user.user?.email,
-      active: profile.active,
-    },
-  });
 }
