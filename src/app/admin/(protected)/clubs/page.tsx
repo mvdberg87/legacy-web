@@ -4,18 +4,20 @@ import { useEffect, useMemo, useState } from "react";
 import { getSupabaseBrowser } from "@/lib/supabaseBrowser";
 import { useRouter } from "next/navigation";
 
-function StatusBadge({ status }: { status: string | null }) {
-  if (!status) return null;
-
+function ClubStatusBadge({ status }: { status?: string }) {
   const styles: Record<string, string> = {
-    trial: "bg-yellow-100 text-yellow-800",
     active: "bg-green-100 text-green-800",
-    pending_payment: "bg-orange-100 text-orange-800",
-    blocked: "bg-red-100 text-red-800",
+    inactive: "bg-red-100 text-red-800",
   };
 
+  if (!status) return null;
+
   return (
-    <span className={`px-2 py-1 rounded text-xs font-medium ${styles[status]}`}>
+    <span
+      className={`px-2 py-1 rounded text-xs font-medium ${
+        styles[status] ?? "bg-gray-100 text-gray-600"
+      }`}
+    >
       {status}
     </span>
   );
@@ -106,11 +108,11 @@ type Club = {
   active_package: string;
   subscription_status: string | null;
 
-  active_jobs: number | null;
+  status: string; // 🔥 TOEVOEGEN
 
+  active_jobs: number | null;
   total_clicks: number | null;
   total_shares: number | null;
-
   pageviews: number | null;
 };
 
@@ -298,7 +300,7 @@ const leaderboard = [...clubs]
 </td>
 
 <td className="px-4 py-3 text-center">
-  <StatusBadge status={club.subscription_status} />
+  <ClubStatusBadge status={club.status} />
 </td>
 
 <td className="px-4 py-3 text-center">
@@ -355,18 +357,59 @@ const leaderboard = [...clubs]
     : "0%"}
 </td>
 
-<td className="px-4 py-3 text-center">
+<td className="px-4 py-3 text-center space-x-2">
+  
   <button
-    onClick={() => router.push(`/admin/clubs/${club.slug}`)}
-    className="bg-slate-900 text-white px-3 py-1 rounded text-xs hover:bg-black"
-  >
-    Open
-  </button>
+  disabled={club.status !== "active"}
+  onClick={() => router.push(`/admin/clubs/${club.slug}`)}
+  className={`px-3 py-1 rounded text-xs ${
+    club.status === "active"
+      ? "bg-slate-900 text-white hover:bg-black"
+      : "bg-gray-300 text-gray-600 cursor-not-allowed"
+  }`}
+>
+  Open
+</button>
+
+  {club.status === "active" ? (
+    <button
+      onClick={async () => {
+        if (!confirm("Club deactiveren?")) return;
+
+        await supabase
+          .from("clubs")
+          .update({ status: "inactive" })
+          .eq("id", club.id);
+
+        load();
+      }}
+      className="bg-red-600 text-white px-3 py-1 rounded text-xs"
+    >
+      Deactivate
+    </button>
+  ) : (
+    <button
+      onClick={async () => {
+        if (!confirm("Club opnieuw activeren?")) return;
+
+        await supabase
+          .from("clubs")
+          .update({ status: "active" })
+          .eq("id", club.id);
+
+        load();
+      }}
+      className="bg-green-600 text-white px-3 py-1 rounded text-xs"
+    >
+      Reactivate
+    </button>
+  )}
+
 </td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
-    </div>
-  );
-}
+</tr>
+))}
+
+</tbody>
+</table>
+
+</div>)}
