@@ -44,7 +44,10 @@ export async function GET(req: Request) {
       .eq("monthly_report_enabled", true);
 
     for (const club of clubs ?? []) {
-      if (!club.email) continue;
+      if (!club.email) {
+  console.log("SKIP: no email");
+  continue;
+}
 
       const monthKey = firstDayLastMonth.toISOString();
 
@@ -55,7 +58,10 @@ const { data: existing } = await supabaseAdmin
   .eq("month", monthKey)
   .maybeSingle();
 
-if (existing) continue;
+if (existing) {
+  console.log("SKIP: already has report");
+  continue;
+}
 
       /* ===============================
          2️⃣ Actieve vacatures
@@ -68,7 +74,10 @@ if (existing) continue;
         .is("archived_at", null);
 
       const jobIds = jobs?.map((j) => j.id) ?? [];
-      if (jobIds.length === 0) continue;
+      if (jobIds.length === 0) {
+  console.log("SKIP: no jobs");
+  continue;
+}
 
       const jobMap = Object.fromEntries(
         jobs!.map((j) => [j.id, j])
@@ -98,6 +107,9 @@ if (existing) continue;
       const totalClicksMonthBefore =
         clicksMonthBefore?.length ?? 0;
 
+        console.log("Clicks last month:", totalClicksLastMonth);
+console.log("Clicks month before:", totalClicksMonthBefore);
+
       /* ===============================
          Pageviews vorige maand
       =============================== */
@@ -121,6 +133,9 @@ if (existing) continue;
 
       const totalPageviewsMonthBefore =
         pageviewsMonthBefore?.length ?? 0;
+
+        console.log("Pageviews last month:", totalPageviewsLastMonth);
+console.log("Pageviews month before:", totalPageviewsMonthBefore);
 
         /* ===============================
    Shares vorige maand
