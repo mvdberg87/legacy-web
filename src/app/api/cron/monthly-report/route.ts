@@ -5,8 +5,13 @@ import { Resend } from "resend";
 
 const resend = new Resend(process.env.RESEND_API_KEY!);
 
-export async function GET() {
+export async function GET(req: Request) {
   try {
+    const authHeader = req.headers.get("authorization");
+
+    if (authHeader !== `Bearer ${process.env.CRON_SECRET}`) {
+      return new Response("Unauthorized", { status: 401 });
+    }
     const now = new Date();
 
     const firstDayCurrentMonth = new Date(
@@ -40,6 +45,17 @@ export async function GET() {
 
     for (const club of clubs ?? []) {
       if (!club.report_email) continue;
+
+      const monthKey = firstDayLastMonth.toISOString();
+
+const { data: existing } = await supabaseAdmin
+  .from("monthly_reports")
+  .select("id")
+  .eq("club_id", club.id)
+  .eq("month", monthKey)
+  .maybeSingle();
+
+if (existing) continue;
 
       /* ===============================
          2️⃣ Actieve vacatures
@@ -144,6 +160,15 @@ const shareRate =
         );
       }
 
+      const growthText =
+  growth > 0
+    ? `+${growth}% meer clicks dan vorige maand 🚀`
+    : growth < 0
+    ? `${growth}% minder clicks dan vorige maand`
+    : `Evenveel clicks als vorige maand`;
+
+const ctaUrl = `https://www.sponsorjobs.nl/${club.slug}/dashboard`;
+
       /* ===============================
          CTR berekening
       =============================== */
@@ -227,6 +252,13 @@ const shareRate =
         }))
         .sort((a, b) => b.clicks - a.clicks);
 
+        const topSponsor = sponsors.length > 0
+  ? {
+      name: sponsors[0].sponsor,
+      clicks: sponsors[0].clicks,
+    }
+  : null;
+
       /* ===============================
          5️⃣ Vacature statistieken
       =============================== */
@@ -244,9 +276,9 @@ const shareRate =
         };
       });
 
-      const topJobs = jobStats
-        ?.sort((a, b) => b.clicks - a.clicks)
-        .slice(0, 3);
+      const topJobs = [...(jobStats ?? [])]
+  .sort((a, b) => b.clicks - a.clicks)
+  .slice(0, 3);
 
       const zeroClickJobs = jobStats?.filter(
         (j) => j.clicks === 0
@@ -305,29 +337,44 @@ if (zeroClickJobs?.length > 0) {
       =============================== */
 
       await resend.emails.send({
-        from: "Sponsorjobs <no-reply@sponsorjobs.nl>",
-        to: club.report_email,
-        subject: `Maandrapport vacatures – ${monthName}`,
-        html: generateHtml({
-          club,
-          monthName,
-          totalCompanies: Object.keys(sponsorMap).length,
-          totalVacancies: jobs?.length ?? 0,
-          totalClicksLastMonth,
-          totalPageviewsLastMonth,
-          ctrLastMonth: ctrLastMonth.toFixed(1),
-          ctrGrowth,
-          totalSharesLastMonth,
-shareRate: shareRate.toFixed(1),
-recommendation,
-          growth,
-          sponsors,
-          topJobs,
-          zeroClickJobs,
-          adsCount: adsCount ?? 0,
-          maxAds,
-        }),
-      });
+  from: "Sponsorjobs <no-reply@sponsorjobs.nl>",
+  to: club.report_email,
+  subject: `📊 ${club.name}: +${growth}% meer clicks in ${monthName}`,
+  html: generateHtml({
+    club,
+    monthName,
+    totalCompanies: Object.keys(sponsorMap).length,
+    totalVacancies: jobs?.length ?? 0,
+    totalClicksLastMonth,
+    totalPageviewsLastMonth,
+    ctrLastMonth: ctrLastMonth.toFixed(1),
+    ctrGrowth,
+    totalSharesLastMonth,
+    shareRate: shareRate.toFixed(1),
+    recommendation,
+    growth,
+    sponsors,
+    topJobs,
+    zeroClickJobs,
+    adsCount: adsCount ?? 0,
+    maxAds,
+
+    // 👇 NIEUW
+    growthText,
+    topSponsor,
+    ctaUrl,
+  }),
+});
+
+await supabaseAdmin.from("monthly_reports").insert({
+  club_id: club.id,
+  month: firstDayLastMonth.toISOString(),
+  total_clicks: totalClicksLastMonth,
+  total_pageviews: totalPageviewsLastMonth,
+  growth,
+  status: "sent",
+  sent_at: new Date(),
+});
     }
 
     return NextResponse.json({ success: true });
@@ -354,11 +401,31 @@ function generateHtml(data: any) {
     <div style="max-width:800px;margin:auto;background:white;padding:40px;border-radius:12px;">
       
       <h1 style="color:${navy}; margin-bottom:8px;">
-        Maandrapport Vacatures
-      </h1>
-      <p style="color:#666;margin-bottom:30px;">
-        ${data.monthName} – ${data.club.name}
-      </p>
+  Maandrapport Vacatures
+</h1>
+
+<p style="color:#666;margin-bottom:20px;">
+  ${data.monthName} – ${data.club.name}
+</p>
+
+<h2 style="color:#2f9e44; margin-bottom:10px;">
+  ${data.growthText}
+</h2>
+
+${
+  data.topSponsor
+    ? `
+<p style="font-size:16px; margin-bottom:10px;">
+  🏆 Top sponsor: <strong>${data.topSponsor.name}</strong> (${data.topSponsor.clicks} clicks)
+</p>
+`
+    : ""
+}
+
+<a href="${data.ctaUrl}"
+   style="display:inline-block;margin-bottom:25px;padding:12px 20px;background:#1f9d55;color:white;text-decoration:none;border-radius:6px;font-weight:bold;">
+  Boost je vacature
+</a>
 
       <h2 style="color:${navy};">Overzicht</h2>
 

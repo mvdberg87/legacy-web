@@ -1,5 +1,5 @@
 {
-  "crons": [
+  "cron": [
     {
       "path": "/api/cron/basic-monitor",
       "schedule": "0 9 * * *"
@@ -11,6 +11,10 @@
     {
       "path": "/api/cron/renew-subscriptions",
       "schedule": "0 9 * * *"
+    },
+    {
+      "path": "/api/cron/monthly-report",
+      "schedule": "0 6 1 * *"
     }
   ]
 }
