@@ -44,6 +44,7 @@ export async function GET(req: Request) {
       .eq("monthly_report_enabled", true);
 
     for (const club of clubs ?? []) {
+  console.log("PROCESSING CLUB:", club.name, club.id);
       if (!club.email) {
   console.log("SKIP: no email");
   continue;
