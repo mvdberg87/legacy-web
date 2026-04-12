@@ -39,12 +39,12 @@ export async function GET(req: Request) {
     const { data: clubs } = await supabaseAdmin
       .from("clubs")
       .select(
-        "id, name, slug, report_email, active_package, monthly_report_enabled"
+        "id, name, slug, email, active_package, monthly_report_enabled"
       )
       .eq("monthly_report_enabled", true);
 
     for (const club of clubs ?? []) {
-      if (!club.report_email) continue;
+      if (!club.email) continue;
 
       const monthKey = firstDayLastMonth.toISOString();
 
@@ -338,7 +338,7 @@ if (zeroClickJobs?.length > 0) {
 
       await resend.emails.send({
   from: "Sponsorjobs <no-reply@sponsorjobs.nl>",
-  to: club.report_email,
+  to: club.email,
   subject: `📊 ${club.name}: +${growth}% meer clicks in ${monthName}`,
   html: generateHtml({
     club,
