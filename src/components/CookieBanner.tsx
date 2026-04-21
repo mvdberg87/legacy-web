@@ -31,14 +31,14 @@ export default function CookieBanner() {
   if (!visible) return null;
 
   return (
-    <div className="fixed bottom-0 left-0 right-0 z-50 bg-white border-t border-gray-200 shadow-xl">
-  <div className="max-w-6xl mx-auto p-4 flex flex-col md:flex-row items-center gap-4 justify-between">
+    <div className="fixed bottom-0 left-0 right-0 z-50 bg-white text-gray-800 border-t border-gray-200 shadow-xl">
+  <div className="max-w-6xl mx-auto p-4 flex flex-col md:flex-row items-center gap-4 md:gap-6 justify-between">
 
-    <p className="text-sm text-gray-700">
-      SponsorJobs gebruikt functionele cookies...
+    <p className="text-sm w-full md:w-auto text-center md:text-left">
+      Sponsorjobs gebruikt functionele cookies...
     </p>
 
-    <div className="flex gap-3">
+    <div className="flex gap-3 w-full md:w-auto justify-center md:justify-end">
 
       <button
         onClick={rejectCookies}
