@@ -609,12 +609,18 @@ async function reactivateSubscription() {
       <ClubNavbar slug={slug} />
 
       <motion.div
-        className="max-w-5xl mx-auto bg-white border-2 rounded-2xl p-8 shadow-md mt-6"
+        className="max-w-5xl mx-auto bg-white border-2 rounded-2xl p-5 sm:p-8 shadow-md mt-6"
         initial={{ opacity: 0, y: 12 }}
         animate={{ opacity: 1, y: 0 }}
       >
-        <h1 className="text-2xl font-semibold mb-6">
-  Dashboard – {club.name}
+        <h1 className="text-2xl sm:text-3xl font-semibold mb-6 leading-tight">
+  <span className="block">
+    Dashboard
+  </span>
+
+  <span className="block text-base sm:text-2xl font-normal text-gray-600 mt-1">
+    {club.name}
+  </span>
 </h1>
 
   {needsUpdate && (
@@ -764,78 +770,86 @@ async function reactivateSubscription() {
 </section>
 
         <section className="mb-12">
-          <h2 className="text-lg font-semibold mb-4">
-            Sponsors & vacatures
-          </h2>
+  <h2 className="text-lg font-semibold mb-4">
+    Sponsors & vacatures
+  </h2>
 
-          <div className="border-4 border-[#0d1b2a] rounded-xl overflow-hidden">
-  <table className="min-w-full text-sm">
-            <thead className="bg-[#0d1b2a] text-white border-b-4 border-[#0d1b2a]">
-              <tr>
-                <th className="px-4 py-2 text-left">
-                  Sponsor
-                </th>
-                <th className="px-4 py-2 text-center">
-                  Vacatures
-                </th>
-                <th className="px-4 py-2 text-center">
-  Clicks
-</th>
-<th className="px-4 py-2 text-center">
-  CTR
-</th>
-<th className="px-4 py-2 text-center">
-  Shares
-</th>
-<th className="px-4 py-2 text-center">
-  Share rate
-</th>
-<th className="px-4 py-2 text-center">
-  Laatste activiteit
-</th>
-              </tr>
-            </thead>
-            <tbody className="[&>tr:nth-child(even)]:bg-gray-50">
-              {sponsors.map((s) => (
-                <tr
-  key={s.sponsor_name}
-  className="border-t border-[#0d1b2a] hover:bg-gray-100 transition"
->
-                  <td className="px-4 py-2">
-                    {s.sponsor_name}
-                  </td>
-                  <td className="px-4 py-2 text-center">
-                    {s.total_jobs}
-                  </td>
-                  <td className="px-4 py-2 text-center">
-                    {s.total_clicks}
-                  </td>
-                  <td className="px-4 py-2 text-center">
-  {s.ctr} %
-</td>
+  {/* 💻 Desktop tabel */}
+  <div className="hidden md:block border-4 border-[#0d1b2a] rounded-xl overflow-hidden">
+    <table className="min-w-full text-sm">
+      <thead className="bg-[#0d1b2a] text-white border-b-4 border-[#0d1b2a]">
+        <tr>
+          <th className="px-4 py-2 text-left">Sponsor</th>
+          <th className="px-4 py-2 text-center">Vacatures</th>
+          <th className="px-4 py-2 text-center">Clicks</th>
+          <th className="px-4 py-2 text-center">CTR</th>
+          <th className="px-4 py-2 text-center">Shares</th>
+          <th className="px-4 py-2 text-center">Share rate</th>
+          <th className="px-4 py-2 text-center">Laatste activiteit</th>
+        </tr>
+      </thead>
 
-<td className="px-4 py-2 text-center">
-  {s.total_shares ?? 0}
-</td>
+      <tbody className="[&>tr:nth-child(even)]:bg-gray-50">
+        {sponsors.map((s) => (
+          <tr
+            key={s.sponsor_name}
+            className="border-t border-[#0d1b2a] hover:bg-gray-100 transition"
+          >
+            <td className="px-4 py-2">{s.sponsor_name}</td>
+            <td className="px-4 py-2 text-center">{s.total_jobs}</td>
+            <td className="px-4 py-2 text-center">{s.total_clicks}</td>
+            <td className="px-4 py-2 text-center">{s.ctr} %</td>
+            <td className="px-4 py-2 text-center">{s.total_shares ?? 0}</td>
+            <td className="px-4 py-2 text-center">{s.share_rate} %</td>
+            <td className="px-4 py-2 text-center">
+              {s.last_activity_at
+                ? new Date(s.last_activity_at).toLocaleDateString("nl-NL")
+                : "–"}
+            </td>
+          </tr>
+        ))}
+      </tbody>
+    </table>
+  </div>
 
-<td className="px-4 py-2 text-center">
-  {s.share_rate} %
-</td>
-                  <td className="px-4 py-2 text-center">
-                    {s.last_activity_at
-                      ? new Date(
-                          s.last_activity_at
-                        ).toLocaleDateString(
-                          "nl-NL"
-                        )
-                      : "–"}
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
+  {/* 📱 Mobiel cards */}
+  <div className="md:hidden space-y-3 pb-4">
+    {sponsors.map((s) => (
+      <div
+        key={s.sponsor_name}
+        className="bg-white border-2 border-[#0d1b2a] rounded-xl p-4"
+      >
+        <div className="font-semibold text-base mb-2 break-words">
+          {s.sponsor_name}
         </div>
-        </section>
+
+        <div className="grid grid-cols-2 gap-y-2 text-sm">
+          <div className="text-gray-500">Vacatures</div>
+          <div className="text-right font-medium">{s.total_jobs}</div>
+
+          <div className="text-gray-500">Clicks</div>
+          <div className="text-right font-medium">{s.total_clicks}</div>
+
+          <div className="text-gray-500">CTR</div>
+          <div className="text-right font-medium">{s.ctr} %</div>
+
+          <div className="text-gray-500">Shares</div>
+          <div className="text-right font-medium">{s.total_shares ?? 0}</div>
+
+          <div className="text-gray-500">Share rate</div>
+          <div className="text-right font-medium">{s.share_rate} %</div>
+
+          <div className="text-gray-500">Laatste activiteit</div>
+          <div className="text-right font-medium">
+            {s.last_activity_at
+              ? new Date(s.last_activity_at).toLocaleDateString("nl-NL")
+              : "–"}
+          </div>
+        </div>
+      </div>
+    ))}
+  </div>
+</section>
 
         {/* Abonnement blijft exact zoals je had */}
         <section className="border-2 rounded-xl p-6 bg-gray-50">
