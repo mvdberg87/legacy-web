@@ -64,6 +64,7 @@ if (existingUser && existingUser.id !== userId) {
   const { data: updatedUser, error } =
     await supabaseAdmin.auth.admin.updateUserById(userId, {
       email: normalizedEmail,
+      email_confirm: true,
     });
 
   if (error) {
