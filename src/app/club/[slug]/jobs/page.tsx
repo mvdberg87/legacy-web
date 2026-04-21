@@ -394,37 +394,25 @@ const isLimitReached = currentVacancies >= maxVacancies;
 
 <div className="border-t border-gray-200 my-3"></div>
 
-<div className="grid grid-cols-5 text-sm mb-4">
+<div className="grid grid-cols-2 gap-y-2 text-sm mb-4">
 
+  <div className="text-gray-500">Clicks</div>
+  <div className="text-right font-medium">{job.total_clicks}</div>
 
-  <div>
-    <div className="text-gray-400 text-xs">Clicks</div>
-    <div>{job.total_clicks}</div>
-  </div>
+  <div className="text-gray-500">CTR</div>
+  <div className="text-right font-medium">{job.ctr}%</div>
 
-  <div>
-    <div className="text-gray-400 text-xs">CTR</div>
-    <div>{job.ctr}%</div>
-  </div>
+  <div className="text-gray-500">Shares</div>
+  <div className="text-right font-medium">{job.total_shares ?? 0}</div>
 
-  {/* 👇 HIER TOEVOEGEN */}
-  <div>
-    <div className="text-gray-400 text-xs">Shares</div>
-    <div>{job.total_shares ?? 0}</div>
-  </div>
+  <div className="text-gray-500">Share rate</div>
+  <div className="text-right font-medium">{job.share_rate}%</div>
 
-  <div>
-    <div className="text-gray-400 text-xs">Share rate</div>
-    <div>{job.share_rate}%</div>
-  </div>
-
-  <div>
-    <div className="text-gray-400 text-xs">Laatste click</div>
-    <div>
-      {job.last_click
-        ? new Date(job.last_click).toLocaleDateString("nl-NL")
-        : "—"}
-    </div>
+  <div className="text-gray-500">Laatste click</div>
+  <div className="text-right font-medium">
+    {job.last_click
+      ? new Date(job.last_click).toLocaleDateString("nl-NL")
+      : "—"}
   </div>
 
 </div>
@@ -498,7 +486,7 @@ const isLimitReached = currentVacancies >= maxVacancies;
   ))}
 </div>
 
-        <div className="border-4 border-[#0d1b2a] rounded-xl overflow-hidden">
+        <div className="hidden md:block border-4 border-[#0d1b2a] rounded-xl overflow-hidden">
   <table className="min-w-full text-sm">
           <thead className="bg-[#0d1b2a] text-white border-b-4 border-[#0d1b2a]">
             <tr>

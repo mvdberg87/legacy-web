@@ -196,9 +196,9 @@ const companies = Array.from(
     >
       {/* Header */}
 {/* Header */}
-<div className="py-8 flex flex-col items-center text-center shadow bg-white">
+<div className="py-6 sm:py-8 px-4 flex flex-col items-center text-center shadow bg-white">
 
-  <div className="flex items-center gap-4">
+  <div className="flex flex-col sm:flex-row items-center gap-3 sm:gap-4">
 
     {club.logo_url && (
       <img
@@ -208,7 +208,7 @@ const companies = Array.from(
       />
     )}
 
-    <h1 className="text-2xl sm:text-3xl font-semibold">
+    <h1 className="text-xl sm:text-2xl md:text-3xl font-semibold leading-tight max-w-[90%]">
       Vacatures bij sponsoren van {club.name}
     </h1>
 
@@ -222,11 +222,10 @@ const companies = Array.from(
 
 <div
   className="
-    max-w-4xl mx-auto
+    max-w-4xl mx-auto p-4 sm:p-8
     bg-[#0d1b2a]
     border-2 border-white
     rounded-2xl
-    p-8
     shadow
     mt-8
     text-white
@@ -235,7 +234,7 @@ const companies = Array.from(
         {/* =========================
             INTROTEKST
         ========================== */}
-        <section className="mb-10 rounded-2xl bg-[#0d1b2a] p-8 text-white leading-relaxed whitespace-pre-line text-center max-w-3xl mx-auto">
+        <section className="mb-8 sm:mb-10 rounded-2xl bg-[#0d1b2a] p-5 sm:p-8 text-white leading-relaxed whitespace-pre-line text-center max-w-2xl mx-auto text-sm sm:text-base">
   {introText}
 </section>
 
@@ -249,7 +248,7 @@ const companies = Array.from(
       Werken bij onze sponsoren
     </h2>
 
-    <div className="overflow-hidden py-4 px-6">
+    <div className="overflow-hidden py-4 px-2 sm:px-6">
       <div className="flex gap-8 animate-scroll w-max">
 
         {[...companies, ...companies, ...companies].map((company, index) => {
@@ -320,7 +319,7 @@ const logo = getCompanyLogo(website, company.logo);
               Uitgelichte kansen
             </h2>
 
-            <div className="grid gap-4">
+            <div className="grid gap-3 sm:gap-4">
               {ads.map((ad) => {
 
   const jobId = ad.id.startsWith("job-")
@@ -368,24 +367,30 @@ const logo = getCompanyLogo(website, company.logo);
           </p>
         ) : (
           <section>
-            <div className="flex items-center justify-between mb-4">
-  <h2 className="text-lg font-semibold text-white">
+            <div className="flex items-center justify-between mb-2 sm:mb-4">
+  <h2 className="text-base sm:text-lg font-semibold text-white">
     Vacatures
   </h2>
 
   {companyFilter && (
     <button
       onClick={() => {
-  window.location.href = `/${club.slug}`;
-}}
-      className="text-sm text-blue-300 underline"
+        window.location.href = `/${club.slug}`;
+      }}
+      className="text-xs sm:text-sm text-blue-300 underline"
     >
       Toon alle vacatures
     </button>
   )}
 </div>
 
-            <div className="grid gap-4">
+{/* 👇 NIEUW */}
+<p className="text-xs sm:text-sm text-white/60 mb-3">
+  Klik op een vacature om direct te solliciteren
+</p>
+
+{/* 👇 iets compacter op mobiel */}
+<div className="grid gap-3 sm:gap-4">
               {sortedJobs.map((job) => {
   const isBest = bestJob && job.id === bestJob.id;
 
