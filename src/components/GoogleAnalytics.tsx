@@ -1,14 +1,31 @@
 "use client";
 
 import Script from "next/script";
+import { useEffect, useState } from "react";
 
 const GA_ID = "G-4W0DLDRY34";
 
 export default function GoogleAnalytics() {
-  if (typeof window === "undefined") return null;
+  const [consent, setConsent] = useState(false);
 
-  const consent = localStorage.getItem("cookie_consent");
-  if (consent !== "accepted") return null;
+  useEffect(() => {
+    const checkConsent = () => {
+      const cookieConsent = localStorage.getItem("cookie_consent");
+      if (cookieConsent === "accepted") {
+        setConsent(true);
+      }
+    };
+
+    checkConsent();
+
+    window.addEventListener("cookieConsentAccepted", checkConsent);
+
+    return () => {
+      window.removeEventListener("cookieConsentAccepted", checkConsent);
+    };
+  }, []);
+
+  if (!consent) return null;
 
   return (
     <>
@@ -21,7 +38,9 @@ export default function GoogleAnalytics() {
           window.dataLayer = window.dataLayer || [];
           function gtag(){dataLayer.push(arguments);}
           gtag('js', new Date());
-          gtag('config', '${GA_ID}');
+          gtag('config', '${GA_ID}', {
+            anonymize_ip: true
+          });
         `}
       </Script>
     </>
