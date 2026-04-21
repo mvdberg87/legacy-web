@@ -47,7 +47,6 @@ export default function AdminClubDetailPage() {
   mostShared: null as any,
 });
   const [clubUser, setClubUser] = useState<any>(null);
-const [newEmail, setNewEmail] = useState("");
 const [stats, setStats] = useState({
   totalVacancies: 0,
   totalClicks: 0,
@@ -356,39 +355,6 @@ setTopJobs({
     alert("Opnieuw versturen mislukt.");
   }
 }
-
-async function deactivateUser() {
-  if (!clubUser) return;
-  if (!confirm("Weet je zeker dat je deze gebruiker wilt deactiveren?")) return;
-
-  await fetch("/api/admin/deactivate-user", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ userId: clubUser.id }),
-  });
-
-  setClubUser(null);
-
-  load(); // 🔥 admin pagina opnieuw laden
-}
-
-async function inviteUser() {
-  if (!newEmail) return;
-
-  await fetch("/api/admin/invite-club-user", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({
-      email: newEmail,
-      clubId: club?.id,
-    }),
-  });
-
-  alert("Uitnodiging verzonden");
-  setNewEmail("");
-  load();
-}
-
   /* ---------- Render ---------- */
 
   return (
@@ -644,85 +610,63 @@ async function inviteUser() {
   </h2>
 
   {clubUser ? (
-  <div className="space-y-4">
-    <div>
-      <p className="text-sm text-gray-500">Login e-mail</p>
-      <p className="font-medium">{clubUser.email}</p>
+    <div className="space-y-4">
 
-      <div className="flex gap-3 mt-3">
+      <div>
+        <p className="text-sm text-gray-500">Login e-mail</p>
+        <p className="font-medium">{clubUser.email}</p>
+      </div>
+
+      {/* 🔥 Uitleg */}
+      <p className="text-sm text-gray-500">
+        Deze gebruiker heeft toegang tot het clubdashboard
+      </p>
+
+      {/* 🔥 Actie */}
+      <div className="flex gap-3">
         <button
-          onClick={deactivateUser}
-          className="bg-red-600 text-white px-4 py-2 rounded-lg text-sm"
-        >
-          Deactiveer
-        </button>
+          onClick={async () => {
+            const email = prompt("Nieuw e-mailadres:");
+            if (!email) return;
 
-        <button
-  onClick={async () => {
+            const res = await fetch("/api/admin/change-user-email", {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify({
+                userId: clubUser.id,
+                email,
+              }),
+            });
 
-    const email = prompt("Nieuw e-mailadres:");
-    if (!email) return;
+            const data = await res.json();
 
-    const res = await fetch("/api/admin/change-user-email", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        userId: clubUser.id,
-        email,
-      }),
-    });
+            if (!res.ok || !data.success) {
+              alert(data.error || "Email wijzigen mislukt");
+              return;
+            }
 
-    const data = await res.json();
+            setClubUser({
+              ...clubUser,
+              email: data.email,
+            });
 
-    if (!res.ok || !data.success) {
-      alert(data.error || "Email wijzigen mislukt");
-      return;
-    }
-
-    setClubUser({
-      ...clubUser,
-      email: data.email,
-    });
-
-    alert("E-mail gewijzigd");
-
-  }}
+            alert("E-mail gewijzigd");
+          }}
           className="bg-blue-600 text-white px-4 py-2 rounded-lg text-sm"
         >
-          Wijzig email
+          Wijzig login e-mail
         </button>
       </div>
+
     </div>
-  </div>
-) : (
-    <p className="text-gray-500 mb-4">
-      Geen actieve gebruiker gekoppeld.
+  ) : (
+    <p className="text-gray-500">
+      Geen gebruiker gekoppeld.
     </p>
   )}
-
-  <div className="mt-6 border-t pt-6 space-y-3">
-    <p className="text-sm font-medium">
-      Nieuwe gebruiker uitnodigen
-    </p>
-
-    <input
-      type="email"
-      value={newEmail}
-      onChange={(e) => setNewEmail(e.target.value)}
-      placeholder="email@club.nl"
-      className="w-full border px-3 py-2 rounded-lg text-sm"
-    />
-
-    <button
-      onClick={inviteUser}
-      className="bg-black text-white px-4 py-2 rounded-lg text-sm"
-    >
-      Verstuur uitnodiging
-    </button>
-  </div>
-</motion.div>   
+</motion.div>
 
       {/* ===============================
           Maandrapport geschiedenis
