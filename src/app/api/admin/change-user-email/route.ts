@@ -62,10 +62,11 @@ if (existingUser && existingUser.id !== userId) {
   =============================== */
 
   const { data: updatedUser, error } =
-    await supabaseAdmin.auth.admin.updateUserById(userId, {
-      email: normalizedEmail,
-      email_confirm: true,
-    });
+  await supabaseAdmin.auth.admin.updateUserById(userId, {
+    email: normalizedEmail,
+    email_confirm: true,     // mag
+    ban_duration: "none",    // 🔥 ESSENTIEEL
+  });
 
   if (error) {
     console.error("EMAIL UPDATE ERROR:", error);
