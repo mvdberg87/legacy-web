@@ -139,7 +139,7 @@ export default function ClubNavbar({ slug }: { slug: string }) {
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -8 }}
             transition={{ duration: 0.2 }}
-            className="md:hidden px-4 pb-4 space-y-2 border-t-4"
+            className="md:hidden px-4 pt-4 pb-4 space-y-3 border-t-4 mt-1"
             style={{
               backgroundColor: PRIMARY,
               borderColor: BORDER,

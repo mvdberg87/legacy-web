@@ -208,9 +208,15 @@ const companies = Array.from(
       />
     )}
 
-    <h1 className="text-xl sm:text-2xl md:text-3xl font-semibold leading-tight max-w-[90%]">
-      Vacatures bij sponsoren van {club.name}
-    </h1>
+    <div className="flex flex-col items-center text-center">
+  <h1 className="text-xl sm:text-2xl md:text-3xl font-semibold leading-tight">
+    Vacatures bij sponsoren van
+  </h1>
+
+  <span className="text-lg sm:text-xl font-semibold mt-1">
+    {club.name}
+  </span>
+</div>
 
   </div>
 
