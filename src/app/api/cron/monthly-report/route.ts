@@ -12,60 +12,64 @@ export async function GET(req: Request) {
     if (authHeader !== `Bearer ${process.env.CRON_SECRET}`) {
       return new Response("Unauthorized", { status: 401 });
     }
+
     const now = new Date();
 
-    const firstDayCurrentMonth = new Date(
-      now.getFullYear(),
-      now.getMonth(),
-      1
-    );
-
-    const firstDayLastMonth = new Date(
-      now.getFullYear(),
-      now.getMonth() - 1,
-      1
-    );
-
-    const firstDayMonthBefore = new Date(
-      now.getFullYear(),
-      now.getMonth() - 2,
-      1
-    );
-
-    /* ===============================
-       1️⃣ Clubs ophalen
-    =============================== */
+    const firstDayCurrentMonth = new Date(now.getFullYear(), now.getMonth(), 1);
+    const firstDayLastMonth = new Date(now.getFullYear(), now.getMonth() - 1, 1);
+    const firstDayMonthBefore = new Date(now.getFullYear(), now.getMonth() - 2, 1);
 
     const { data: clubs } = await supabaseAdmin
       .from("clubs")
-      .select(
-        "id, name, slug, email, active_package, monthly_report_enabled"
-      )
+      .select("id, name, slug, email, active_package, monthly_report_enabled")
       .eq("monthly_report_enabled", true);
 
     for (const club of clubs ?? []) {
-  console.log("PROCESSING CLUB:", club.name, club.id);
-      if (!club.email) {
-  console.log("SKIP: no email");
-  continue;
-}
+      console.log("PROCESSING CLUB:", club.name);
+
+      /* ===============================
+         Email fallback (club → profile)
+      =============================== */
+
+      let email = club.email;
+
+      if (!email) {
+        const { data: profile } = await supabaseAdmin
+          .from("profiles")
+          .select("email")
+          .eq("club_id", club.id)
+          .eq("active", true)
+          .limit(1)
+          .maybeSingle();
+
+        email = profile?.email;
+      }
+
+      if (!email || !email.includes("@")) {
+        console.log("SKIP: invalid email");
+        continue;
+      }
+
+      /* ===============================
+         Duplicate check
+      =============================== */
 
       const monthKey = firstDayLastMonth.toISOString();
 
-const { data: existing } = await supabaseAdmin
-  .from("monthly_reports")
-  .select("id")
-  .eq("club_id", club.id)
-  .eq("month", monthKey)
-  .maybeSingle();
+      const { data: existing } = await supabaseAdmin
+        .from("monthly_reports")
+        .select("id")
+        .eq("club_id", club.id)
+        .eq("month", monthKey)
+        .maybeSingle();
 
-if (existing) {
-  console.log("SKIP: already has report");
-  continue;
-}
+      if (existing) {
+        console.log("SKIP: already has report");
+        continue;
+      }
 
       /* ===============================
-         2️⃣ Actieve vacatures
+         Jobs ophalen
       =============================== */
 
       const { data: jobs } = await supabaseAdmin
@@ -75,17 +79,16 @@ if (existing) {
         .is("archived_at", null);
 
       const jobIds = jobs?.map((j) => j.id) ?? [];
-      if (jobIds.length === 0) {
-  console.log("SKIP: no jobs");
-  continue;
-}
 
-      const jobMap = Object.fromEntries(
-        jobs!.map((j) => [j.id, j])
-      );
+      if (jobIds.length === 0) {
+        console.log("SKIP: no jobs");
+        continue;
+      }
+
+      const jobMap = Object.fromEntries(jobs!.map((j) => [j.id, j]));
 
       /* ===============================
-         3️⃣ Clicks vorige maand
+         Clicks
       =============================== */
 
       const { data: clicksLastMonth } = await supabaseAdmin
@@ -102,17 +105,11 @@ if (existing) {
         .gte("created_at", firstDayMonthBefore.toISOString())
         .lt("created_at", firstDayLastMonth.toISOString());
 
-      const totalClicksLastMonth =
-        clicksLastMonth?.length ?? 0;
-
-      const totalClicksMonthBefore =
-        clicksMonthBefore?.length ?? 0;
-
-        console.log("Clicks last month:", totalClicksLastMonth);
-console.log("Clicks month before:", totalClicksMonthBefore);
+      const totalClicksLastMonth = clicksLastMonth?.length ?? 0;
+      const totalClicksMonthBefore = clicksMonthBefore?.length ?? 0;
 
       /* ===============================
-         Pageviews vorige maand
+         Pageviews
       =============================== */
 
       const { data: pageviewsLastMonth } = await supabaseAdmin
@@ -129,409 +126,213 @@ console.log("Clicks month before:", totalClicksMonthBefore);
         .gte("created_at", firstDayMonthBefore.toISOString())
         .lt("created_at", firstDayLastMonth.toISOString());
 
-      const totalPageviewsLastMonth =
-        pageviewsLastMonth?.length ?? 0;
-
-      const totalPageviewsMonthBefore =
-        pageviewsMonthBefore?.length ?? 0;
-
-        console.log("Pageviews last month:", totalPageviewsLastMonth);
-console.log("Pageviews month before:", totalPageviewsMonthBefore);
-
-        /* ===============================
-   Shares vorige maand
-=============================== */
-
-const { data: sharesLastMonth } = await supabaseAdmin
-  .from("job_shares")
-  .select("job_id, created_at")
-  .eq("club_id", club.id)
-  .gte("created_at", firstDayLastMonth.toISOString())
-  .lt("created_at", firstDayCurrentMonth.toISOString());
-
-const totalSharesLastMonth = sharesLastMonth?.length ?? 0;
-
-const shareRate =
-  totalPageviewsLastMonth > 0
-    ? (totalSharesLastMonth / totalPageviewsLastMonth) * 100
-    : 0;
+      const totalPageviewsLastMonth = pageviewsLastMonth?.length ?? 0;
+      const totalPageviewsMonthBefore = pageviewsMonthBefore?.length ?? 0;
 
       /* ===============================
-         Click groei
+         Shares
       =============================== */
+
+      const { data: sharesLastMonth } = await supabaseAdmin
+        .from("job_shares")
+        .select("job_id")
+        .eq("club_id", club.id)
+        .gte("created_at", firstDayLastMonth.toISOString())
+        .lt("created_at", firstDayCurrentMonth.toISOString());
+
+      const totalSharesLastMonth = sharesLastMonth?.length ?? 0;
+
+      /* ===============================
+         Metrics
+      =============================== */
+
+      const ctrLastMonth =
+        totalPageviewsLastMonth > 0
+          ? (totalClicksLastMonth / totalPageviewsLastMonth) * 100
+          : 0;
+
+      const ctrMonthBefore =
+        totalPageviewsMonthBefore > 0
+          ? (totalClicksMonthBefore / totalPageviewsMonthBefore) * 100
+          : 0;
+
+      const shareRate =
+        totalPageviewsLastMonth > 0
+          ? (totalSharesLastMonth / totalPageviewsLastMonth) * 100
+          : 0;
 
       let growth = 0;
 
-      if (
-        totalClicksMonthBefore === 0 &&
-        totalClicksLastMonth > 0
-      ) {
+      if (totalClicksMonthBefore === 0 && totalClicksLastMonth > 0) {
         growth = 100;
       } else if (totalClicksMonthBefore > 0) {
         growth = Math.round(
-          ((totalClicksLastMonth -
-            totalClicksMonthBefore) /
+          ((totalClicksLastMonth - totalClicksMonthBefore) /
             totalClicksMonthBefore) *
             100
         );
       }
 
-      const growthText =
-  growth > 0
-    ? `+${growth}% meer clicks dan vorige maand 🚀`
-    : growth < 0
-    ? `${growth}% minder clicks dan vorige maand`
-    : `Evenveel clicks als vorige maand`;
-
-const ctaUrl = `https://www.sponsorjobs.nl/${club.slug}/dashboard`;
-
-      /* ===============================
-         CTR berekening
-      =============================== */
-
-      const ctrLastMonth =
-        totalPageviewsLastMonth > 0
-          ? (totalClicksLastMonth /
-              totalPageviewsLastMonth) *
-            100
-          : 0;
-
-      const ctrMonthBefore =
-        totalPageviewsMonthBefore > 0
-          ? (totalClicksMonthBefore /
-              totalPageviewsMonthBefore) *
-            100
-          : 0;
-
       let ctrGrowth = 0;
 
-      if (
-        ctrMonthBefore === 0 &&
-        ctrLastMonth > 0
-      ) {
+      if (ctrMonthBefore === 0 && ctrLastMonth > 0) {
         ctrGrowth = 100;
       } else if (ctrMonthBefore > 0) {
         ctrGrowth = Math.round(
-          ((ctrLastMonth - ctrMonthBefore) /
-            ctrMonthBefore) *
-            100
+          ((ctrLastMonth - ctrMonthBefore) / ctrMonthBefore) * 100
         );
       }
 
       /* ===============================
-         4️⃣ Sponsor statistieken
+         Sponsor stats
       =============================== */
 
-      const sponsorMap: Record<
-        string,
-        {
-          vacancies: number;
-          clicks: number;
-          last_activity: string | null;
-        }
-      > = {};
+      const sponsorMap: Record<string, any> = {};
 
       jobs?.forEach((job) => {
         if (!sponsorMap[job.company_name]) {
-          sponsorMap[job.company_name] = {
-            vacancies: 0,
-            clicks: 0,
-            last_activity: null,
-          };
+          sponsorMap[job.company_name] = { clicks: 0 };
         }
-        sponsorMap[job.company_name].vacancies++;
       });
 
-      clicksLastMonth?.forEach((click) => {
-        const job = jobMap[click.job_id];
+      clicksLastMonth?.forEach((c) => {
+        const job = jobMap[c.job_id];
         if (!job) return;
-
-        const sponsor =
-          sponsorMap[job.company_name];
-
-        sponsor.clicks++;
-
-        if (
-          !sponsor.last_activity ||
-          new Date(click.created_at) >
-            new Date(sponsor.last_activity)
-        ) {
-          sponsor.last_activity =
-            click.created_at;
-        }
+        sponsorMap[job.company_name].clicks++;
       });
 
       const sponsors = Object.entries(sponsorMap)
-        .map(([name, data]) => ({
+        .map(([name, data]: any) => ({
           sponsor: name,
-          ...data,
+          clicks: data.clicks,
         }))
         .sort((a, b) => b.clicks - a.clicks);
 
-        const topSponsor = sponsors.length > 0
-  ? {
-      name: sponsors[0].sponsor,
-      clicks: sponsors[0].clicks,
-    }
-  : null;
+      const topSponsor = sponsors[0] ?? null;
 
       /* ===============================
-         5️⃣ Vacature statistieken
+         Jobs stats
       =============================== */
 
-      const jobStats = jobs?.map((job) => {
-        const clicks =
-          clicksLastMonth?.filter(
-            (c) => c.job_id === job.id
-          ).length ?? 0;
-
-        return {
+      const jobStats =
+        jobs?.map((job) => ({
           title: job.title,
           company: job.company_name,
-          clicks,
-        };
-      });
+          clicks:
+            clicksLastMonth?.filter((c) => c.job_id === job.id).length ?? 0,
+        })) ?? [];
 
-      const topJobs = [...(jobStats ?? [])]
-  .sort((a, b) => b.clicks - a.clicks)
-  .slice(0, 3);
+      const topJobs = [...jobStats]
+        .sort((a, b) => b.clicks - a.clicks)
+        .slice(0, 3);
 
-      const zeroClickJobs = jobStats?.filter(
-        (j) => j.clicks === 0
-      );
+      const zeroClickJobs = jobStats.filter((j) => j.clicks === 0);
 
       /* ===============================
-         6️⃣ Advertentiegebruik
+         Ads
       =============================== */
 
-      const { count: adsCount } =
-        await supabaseAdmin
-          .from("jobs")
-          .select("id", {
-            count: "exact",
-            head: true,
-          })
-          .eq("club_id", club.id)
-          .eq("featured", true)
-          .is("archived_at", null);
+      const { count: adsCount } = await supabaseAdmin
+        .from("jobs")
+        .select("id", { count: "exact", head: true })
+        .eq("club_id", club.id)
+        .eq("featured", true)
+        .is("archived_at", null);
 
       const maxAds =
-        SUBSCRIPTIONS[club.active_package]?.ads ??
-        0;
-
-        /* ===============================
-   Slimme aanbeveling
-=============================== */
-
-let recommendation = "";
-
-if (zeroClickJobs?.length > 0) {
-  recommendation =
-    "Je hebt vacatures zonder clicks. Overweeg een uitgelichte plaatsing of extra zichtbaarheid via TeamApp.";
-} else if (adsCount === maxAds && maxAds !== Infinity) {
-  recommendation =
-    "Je advertentieruimte is volledig benut. Upgrade je pakket om nog meer zichtbaarheid te creëren.";
-} else if (ctrLastMonth < 1) {
-  recommendation =
-    "De click-through rate is laag. Probeer pakkendere functietitels of deel vacatures vaker binnen je netwerk.";
-} else {
-  recommendation =
-    "Sterke prestaties deze maand. Blijf vacatures actief delen om dit momentum vast te houden.";
-}
-
-      const monthName =
-        firstDayLastMonth.toLocaleDateString(
-          "nl-NL",
-          {
-            month: "long",
-            year: "numeric",
-          }
-        );
+        SUBSCRIPTIONS[club.active_package]?.ads ?? 0;
 
       /* ===============================
-         7️⃣ Mail versturen
+         Recommendation
       =============================== */
 
-      await resend.emails.send({
-  from: "Sponsorjobs <no-reply@sponsorjobs.nl>",
-  to: club.email,
-  subject: `📊 ${club.name}: +${growth}% meer clicks in ${monthName}`,
-  html: generateHtml({
-    club,
-    monthName,
-    totalCompanies: Object.keys(sponsorMap).length,
-    totalVacancies: jobs?.length ?? 0,
-    totalClicksLastMonth,
-    totalPageviewsLastMonth,
-    ctrLastMonth: ctrLastMonth.toFixed(1),
-    ctrGrowth,
-    totalSharesLastMonth,
-    shareRate: shareRate.toFixed(1),
-    recommendation,
-    growth,
-    sponsors,
-    topJobs,
-    zeroClickJobs,
-    adsCount: adsCount ?? 0,
-    maxAds,
+      let recommendation = "";
 
-    // 👇 NIEUW
-    growthText,
-    topSponsor,
-    ctaUrl,
-  }),
-});
+      if (zeroClickJobs.length > 0) {
+        recommendation = "Je hebt vacatures zonder clicks.";
+      } else if (adsCount === maxAds && maxAds !== Infinity) {
+        recommendation = "Je advertentieruimte is volledig benut.";
+      } else if (ctrLastMonth < 1) {
+        recommendation = "Je CTR is laag.";
+      } else {
+        recommendation = "Sterke prestaties.";
+      }
 
-await supabaseAdmin.from("monthly_reports").insert({
-  club_id: club.id,
-  month: firstDayLastMonth.toISOString(),
-  total_clicks: totalClicksLastMonth,
-  total_pageviews: totalPageviewsLastMonth,
-  growth,
-  status: "sent",
-  sent_at: new Date(),
-});
+      const monthName = firstDayLastMonth.toLocaleDateString("nl-NL", {
+        month: "long",
+        year: "numeric",
+      });
+
+      const subject = `📊 ${club.name}: ${growth}% groei in ${monthName}`;
+
+      /* ===============================
+         SEND MAIL
+      =============================== */
+
+      const { error: mailError } = await resend.emails.send({
+        from: "Sponsorjobs <no-reply@sponsorjobs.nl>",
+        to: email.toLowerCase(),
+        subject,
+        html: generateHtml({
+          club,
+          monthName,
+          totalClicksLastMonth,
+          totalPageviewsLastMonth,
+          ctrLastMonth,
+          totalSharesLastMonth,
+          shareRate,
+          growth,
+          sponsors,
+          topJobs,
+          recommendation,
+        }),
+      });
+
+      if (mailError) {
+        console.error(mailError);
+
+        await supabaseAdmin.from("monthly_reports").insert({
+          club_id: club.id,
+          month: monthKey,
+          status: "failed",
+        });
+
+        continue;
+      }
+
+      await supabaseAdmin.from("monthly_reports").insert({
+        club_id: club.id,
+        month: monthKey,
+        total_clicks: totalClicksLastMonth,
+        total_pageviews: totalPageviewsLastMonth,
+        total_shares: totalSharesLastMonth,
+        ctr: Number(ctrLastMonth.toFixed(1)),
+        share_rate: Number(shareRate.toFixed(1)),
+        growth,
+        status: "sent",
+        sent_at: new Date(),
+      });
     }
 
     return NextResponse.json({ success: true });
 
   } catch (err) {
-    console.error("CRON ERROR:", err);
-    return NextResponse.json(
-      { error: "Cron failed" },
-      { status: 500 }
-    );
+    console.error(err);
+    return NextResponse.json({ error: "Cron failed" }, { status: 500 });
   }
 }
 
 /* ===============================
-   HTML TEMPLATE
+   TEMPLATE
 =============================== */
 
 function generateHtml(data: any) {
-  const navy = "#0d1b2a";
-  const green = "#2f9e44";
-
   return `
-  <div style="font-family: Arial, sans-serif; background:#f5f5f5; padding:40px;">
-    <div style="max-width:800px;margin:auto;background:white;padding:40px;border-radius:12px;">
-      
-      <h1 style="color:${navy}; margin-bottom:8px;">
-  Maandrapport Vacatures
-</h1>
-
-<p style="color:#666;margin-bottom:20px;">
-  ${data.monthName} – ${data.club.name}
-</p>
-
-<h2 style="color:#2f9e44; margin-bottom:10px;">
-  ${data.growthText}
-</h2>
-
-${
-  data.topSponsor
-    ? `
-<p style="font-size:16px; margin-bottom:10px;">
-  🏆 Top sponsor: <strong>${data.topSponsor.name}</strong> (${data.topSponsor.clicks} clicks)
-</p>
-`
-    : ""
-}
-
-<a href="${data.ctaUrl}"
-   style="display:inline-block;margin-bottom:25px;padding:12px 20px;background:#1f9d55;color:white;text-decoration:none;border-radius:6px;font-weight:bold;">
-  Boost je vacature
-</a>
-
-      <h2 style="color:${navy};">Overzicht</h2>
-
-<p><strong>Bedrijven actief:</strong> ${data.totalCompanies}</p>
-<p><strong>Vacatures actief:</strong> ${data.totalVacancies}</p>
-
-<br/>
-
-<p><strong>Pageviews:</strong> ${data.totalPageviewsLastMonth}</p>
-<p><strong>Clicks:</strong> ${data.totalClicksLastMonth}</p>
-<p><strong>CTR:</strong> ${data.ctrLastMonth}%</p>
-
-<br/>
-
-<p><strong>Social shares:</strong> ${data.totalSharesLastMonth}</p>
-<p><strong>Share rate:</strong> ${data.shareRate}%</p>
-
-<br/>
-
-<p><strong>CTR groei:</strong> ${data.ctrGrowth}%</p>
-<p><strong>Click groei:</strong> ${data.growth}%</p>
-
-      <hr style="margin:30px 0;" />
-
-      <h2 style="color:${navy};">Top 3 sponsoren</h2>
-      <ul>
-        ${data.sponsors
-          .slice(0, 3)
-          .map(
-            (s: any) =>
-              `<li>${s.sponsor} – ${s.clicks} clicks</li>`
-          )
-          .join("")}
-      </ul>
-
-      <h2 style="color:${navy};">Top 3 vacatures</h2>
-      <ul>
-        ${data.topJobs
-          ?.map(
-            (j: any) =>
-              `<li>${j.title} (${j.company}) – ${j.clicks} clicks</li>`
-          )
-          .join("")}
-      </ul>
-
-      ${
-        data.zeroClickJobs?.length
-          ? `
-      <h2 style="color:${navy};">Vacatures zonder clicks</h2>
-      <ul>
-        ${data.zeroClickJobs
-          .map(
-            (j: any) =>
-              `<li>${j.title} (${j.company})</li>`
-          )
-          .join("")}
-      </ul>
-      `
-          : ""
-      }
-
-      <hr style="margin:30px 0;" />
-
-      <h2 style="color:${navy};">Advertentiegebruik</h2>
-      <p>
-        ${data.adsCount} / ${
-    data.maxAds === Infinity
-      ? "∞"
-      : data.maxAds
-  }
-      </p>
-
-      ${
-        data.maxAds !== Infinity &&
-        data.adsCount >= data.maxAds
-          ? `<p style="color:${green};font-weight:bold;">
-              Upgrade naar volgend pakket voor meer zichtbaarheid.
-             </p>`
-          : ""
-      }
-
-      <hr style="margin:30px 0;" />
-
-<h2 style="color:${navy};">💡 Aanbeveling</h2>
-
-<p style="font-size:14px; line-height:1.6;">
-  ${data.recommendation}
-</p>
-
-    </div>
-  </div>
+    <h1>${data.club.name}</h1>
+    <p>${data.monthName}</p>
+    <p>Clicks: ${data.totalClicksLastMonth}</p>
+    <p>CTR: ${data.ctrLastMonth.toFixed(1)}%</p>
+    <p>Shares: ${data.totalSharesLastMonth}</p>
+    <p>Aanbeveling: ${data.recommendation}</p>
   `;
 }

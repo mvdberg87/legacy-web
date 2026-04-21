@@ -19,22 +19,43 @@ export async function POST(req: Request) {
   const normalizedEmail = email.toLowerCase();
 
   /* ===============================
-     0️⃣ Check of email al bestaat
-  =============================== */
+   0️⃣ Check of email al bestaat (AUTH)
+=============================== */
 
-  const { data: existing } = await supabaseAdmin
-    .from("profiles")
-    .select("id")
-    .eq("email", normalizedEmail)
-    .neq("user_id", userId)
-    .maybeSingle();
+const { data: usersData, error: listError } =
+  await supabaseAdmin.auth.admin.listUsers();
 
-  if (existing) {
-    return NextResponse.json(
-      { error: "Email is al in gebruik" },
-      { status: 400 }
-    );
-  }
+if (listError) {
+  console.error("LIST USERS ERROR:", listError);
+  return NextResponse.json(
+    { error: "User check failed" },
+    { status: 500 }
+  );
+}
+
+type AuthUser = {
+  id: string;
+  email?: string;
+};
+
+const existingUser = (usersData?.users as AuthUser[])?.find(
+  (u) => u.email?.toLowerCase() === normalizedEmail
+);
+
+if (!usersData?.users) {
+  return NextResponse.json(
+    { error: "Users ophalen mislukt" },
+    { status: 500 }
+  );
+}
+
+// 👉 bestaat EN is niet dezelfde user
+if (existingUser && existingUser.id !== userId) {
+  return NextResponse.json(
+    { error: "Email is al in gebruik" },
+    { status: 400 }
+  );
+}
 
   /* ===============================
      1️⃣ Auth email aanpassen
