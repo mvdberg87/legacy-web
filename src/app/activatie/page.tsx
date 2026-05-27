@@ -1,6 +1,69 @@
+"use client";
+
 import Link from "next/link";
+import { useEffect, useMemo, useState } from "react";
+import { getSupabaseBrowser } from "@/lib/supabaseBrowser";
+
+const supabase = getSupabaseBrowser();
+
+type Club = {
+  id: string;
+  name: string;
+  slug: string;
+  primary_color?: string;
+};
 
 export default function ActivatiePage() {
+
+  const [clubs, setClubs] = useState<Club[]>([]);
+
+  const [selectedClubs, setSelectedClubs] = useState<string[]>([]);
+const [selectedPackage, setSelectedPackage] = useState<
+  "partner" | "spotlight" | "premium" | null
+>(null);
+
+useEffect(() => {
+  fetchClubs();
+}, []);
+
+const fetchClubs = async () => {
+
+  const { data, error } = await supabase
+    .from("clubs")
+    .select("id, name, slug, primary_color")
+    .order("name");
+
+  if (error) {
+    console.error(error);
+    return;
+  }
+
+  setClubs(data || []);
+};
+
+const packagePrices = {
+  partner: 350,
+  spotlight: 750,
+  premium: 1250,
+};
+
+const totalPrice = useMemo(() => {
+  if (!selectedPackage) return 0;
+
+  return (
+    selectedClubs.length *
+    packagePrices[selectedPackage]
+  );
+}, [selectedClubs, selectedPackage]);
+
+const toggleClub = (clubId: string) => {
+  setSelectedClubs((prev) =>
+    prev.includes(clubId)
+      ? prev.filter((id) => id !== clubId)
+      : [...prev, clubId]
+  );
+};
+
   return (
     <main className="min-h-screen bg-[#0d1b2a] text-white">
 
@@ -122,6 +185,76 @@ export default function ActivatiePage() {
 
       </section>
 
+      {/* CLUB SELECTIE */}
+<section className="py-24 bg-[#10263a]">
+
+  <div className="max-w-7xl mx-auto px-6">
+
+    <div className="text-center">
+
+      <h2 className="text-3xl font-bold">
+        Kies jouw verenigingen
+      </h2>
+
+      <p className="mt-4 text-white/70">
+        Selecteer één of meerdere verenigingen
+        waar jouw vacatures zichtbaar mogen worden.
+      </p>
+
+    </div>
+
+    <div className="mt-14 grid md:grid-cols-3 gap-6">
+
+      {clubs.map((club) => {
+
+        const selected = selectedClubs.includes(club.id);
+
+        return (
+          <button
+            key={club.id}
+            onClick={() => toggleClub(club.id)}
+            className={`
+              rounded-2xl border p-6 text-left transition
+              ${
+                selected
+                  ? "border-green-500 bg-green-500/10"
+                  : "border-white/10 bg-white/5 hover:bg-white/10"
+              }
+            `}
+          >
+
+            <div className="flex items-center justify-between">
+
+              <div>
+                <h3 className="text-xl font-semibold">
+                  {club.name}
+                </h3>
+
+              </div>
+
+              <div
+                className={`
+                  w-6 h-6 rounded-full border-2
+                  ${
+                    selected
+                      ? "bg-green-500 border-green-500"
+                      : "border-white/30"
+                  }
+                `}
+              />
+
+            </div>
+
+          </button>
+        );
+      })}
+
+    </div>
+
+  </div>
+
+</section>
+
 
       {/* ACTIVATIE PAKKETTEN */}
       <section className="py-24 bg-[#0f2233]">
@@ -138,156 +271,166 @@ export default function ActivatiePage() {
           </p>
 
 
-          <div className="mt-16 grid md:grid-cols-4 gap-8 text-left">
+<div className="mt-16 grid md:grid-cols-3 gap-8 text-left">
 
 
-            {/* ACTIVATE */}
-            <div className="bg-white rounded-2xl p-8 flex flex-col h-full shadow-xl">
+  {/* PARTNER */}
+  <button
+    onClick={() => setSelectedPackage("partner")}
+    className={`
+      rounded-2xl p-8 flex flex-col h-full shadow-xl transition
+      ${
+        selectedPackage === "partner"
+          ? "bg-green-500 text-black"
+          : "bg-white text-black hover:scale-[1.02]"
+      }
+    `}
+  >
 
-              <h3 className="text-green-600 font-semibold text-lg">
-                ACTIVATE
-              </h3>
+    <h3 className="font-semibold text-lg">
+      Recruitment Partner
+    </h3>
 
-              <p className="mt-4 text-4xl font-bold text-black">€150</p>
-              <p className="text-sm text-gray-500">per maand</p>
+    <p className="mt-4 text-4xl font-bold">
+      €350
+    </p>
 
-              <ul className="mt-6 space-y-3 text-sm text-gray-700">
-                <li>✓ Club plaatst zelf de vacatures op platform</li>
-                <li>✓ Club maakt zelf de visuals voor Social Media</li>
-                <li>✓ 1 post per maand op LinkedIn, Instagram & Facebook</li>
-                <li>✓ Vacature in the spotlight</li>
-                <li>✓ Korte maandupdate</li>
-              </ul>
+    <p className="text-sm opacity-70">
+      per vereniging / seizoen
+    </p>
 
-              <p className="mt-6 text-xs text-gray-500">
-                Voor zichtbaarheid op social media.
-              </p>
+    <ul className="mt-6 space-y-3 text-sm">
+      <li>✓ Vacature zichtbaar op SponsorJobs</li>
+      <li>✓ Zichtbaarheid binnen clubnetwerk</li>
+      <li>✓ Sponsorlogo zichtbaar</li>
+      <li>✓ Dashboard & statistieken</li>
+    </ul>
 
-              <div className="mt-auto pt-12">
-                <Link
-                  href="/contact?pakket=activate"
-                  className="block bg-green-600 text-white py-3 rounded-xl text-center font-medium hover:bg-green-700 transition"
-                >
-                  Start Activate
-                </Link>
-              </div>
-
-            </div>
-
-
-            {/* GROWTH */}
-            <div className="bg-white rounded-2xl p-8 flex flex-col h-full border-2 border-yellow-400 shadow-xl relative">
-
-              <div className="absolute -top-3 left-1/2 -translate-x-1/2 bg-yellow-400 text-black text-xs px-3 py-1 rounded-full">
-                Meest gekozen
-              </div>
-
-              <h3 className="text-yellow-500 font-semibold text-lg">
-                GROWTH
-              </h3>
-
-              <p className="mt-4 text-4xl font-bold text-black">€450</p>
-              <p className="text-sm text-gray-500">per maand</p>
-
-              <ul className="mt-6 space-y-3 text-sm text-gray-700">
-                <li>✓ Wij plaatsen alle vacatures op het platform</li>
-                <li>✓ Wij leveren standaard templates voor LinkedIn, Instagram & Facebook</li>
-                <li>✓ 2 posts per maand op LinkedIn, Instagram & Facebook</li>
-                <li>✓ Vacature in the spotlight</li>
-                <li>✓ 2 evaluatie meetings per Seizoen</li>
-              </ul>
-
-              <p className="mt-6 text-xs text-gray-500">
-                Voor clubs die recruitment serieus nemen.
-              </p>
-
-              <div className="mt-auto pt-12">
-                <Link
-                  href="/contact?pakket=growth"
-                  className="block bg-yellow-400 text-black py-3 rounded-xl text-center font-medium hover:bg-yellow-300 transition"
-                >
-                  Start Growth
-                </Link>
-              </div>
-
-            </div>
+  </button>
 
 
-            {/* PREMIUM */}
-            <div className="bg-white rounded-2xl p-8 flex flex-col h-full shadow-xl">
+  {/* SPOTLIGHT */}
+  <button
+    onClick={() => setSelectedPackage("spotlight")}
+    className={`
+      rounded-2xl p-8 flex flex-col h-full shadow-xl transition relative
+      ${
+        selectedPackage === "spotlight"
+          ? "bg-yellow-400 text-black"
+          : "bg-white text-black hover:scale-[1.02]"
+      }
+    `}
+  >
 
-              <h3 className="text-blue-600 font-semibold text-lg">
-                PREMIUM
-              </h3>
+    <div className="absolute -top-3 left-1/2 -translate-x-1/2 bg-black text-white text-xs px-3 py-1 rounded-full">
+      Meest gekozen
+    </div>
 
-              <p className="mt-4 text-4xl font-bold text-black">€750</p>
-              <p className="text-sm text-gray-500">per maand</p>
+    <h3 className="font-semibold text-lg">
+      Recruitment Spotlight
+    </h3>
 
-              <ul className="mt-6 space-y-3 text-sm text-gray-700">
-                <li>✓ Wij plaatsen alle vacatures op het platform</li>
-                <li>✓ Wij leveren standaard templates voor LinkedIn, Instagram & Facebook</li>
-                <li>✓ 1 post per week op LinkedIn, Instagram & Facebook</li>
-                <li>✓ Vacature in the spotlight</li>
-                <li>✓ Vacaturecampagne op maat</li>
-                <li>✓ 2 evaluatie meetings per Seizoen</li>
-              </ul>
+    <p className="mt-4 text-4xl font-bold">
+      €750
+    </p>
 
-              <p className="mt-6 text-xs text-gray-500">
-                Dit is waar je écht impact maakt.
-              </p>
+    <p className="text-sm opacity-70">
+      per vereniging / seizoen
+    </p>
 
-              <div className="mt-auto pt-12">
-                <Link
-                  href="/contact?pakket=premium"
-                  className="block bg-blue-600 text-white py-3 rounded-xl text-center font-medium hover:bg-blue-700 transition"
-                >
-                  Start Premium
-                </Link>
-              </div>
+    <ul className="mt-6 space-y-3 text-sm">
+      <li>✓ Alles uit Partner</li>
+      <li>✓ Vacature in the Spotlight</li>
+      <li>✓ Social media post via clubkanalen</li>
+      <li>✓ Extra zichtbaarheid binnen campagnes</li>
+    </ul>
 
-            </div>
+  </button>
 
 
-            {/* ELITE */}
-            <div className="bg-white rounded-2xl p-8 flex flex-col h-full shadow-xl">
+  {/* PREMIUM */}
+  <button
+    onClick={() => setSelectedPackage("premium")}
+    className={`
+      rounded-2xl p-8 flex flex-col h-full shadow-xl transition
+      ${
+        selectedPackage === "premium"
+          ? "bg-blue-600 text-white"
+          : "bg-white text-black hover:scale-[1.02]"
+      }
+    `}
+  >
 
-              <h3 className="text-purple-600 font-semibold text-lg">
-                ELITE
-              </h3>
+    <h3 className="font-semibold text-lg">
+      Recruitment Premium
+    </h3>
 
-              <p className="mt-4 text-4xl font-bold text-black">€1.250</p>
-              <p className="text-sm text-gray-500">per maand</p>
+    <p className="mt-4 text-4xl font-bold">
+      €1.250
+    </p>
 
-              <ul className="mt-6 space-y-3 text-sm text-gray-700">
-                <li>✓ Alles van Premium</li>
-                <li>✓ Maandelijks 1 vacaturevideo op locatie</li>
-                <li>✓ Dedicated social media manager</li>
-                <li>✓ Rapportage op maat</li>
-                <li>✓ Extra offline campagne</li>
-                <li>✓ 1 evaluatie meeting per kwartaal</li>
-              </ul>
+    <p className="text-sm opacity-70">
+      per vereniging / seizoen
+    </p>
 
-              <p className="mt-6 text-xs text-gray-500">
-                High-end sponsoractivatie.
-              </p>
+    <ul className="mt-6 space-y-3 text-sm">
+      <li>✓ Alles uit Spotlight</li>
+      <li>✓ Narrowcasting binnen vereniging</li>
+      <li>✓ Vacatures aanpasbaar gedurende seizoen</li>
+      <li>✓ Extra activatiemomenten</li>
+    </ul>
 
-              <div className="mt-auto pt-12">
-                <Link
-                  href="/contact?pakket=elite"
-                  className="block bg-gradient-to-r from-purple-500 to-pink-500 text-white py-3 rounded-xl text-center font-medium hover:opacity-90 transition"
-                >
-                  Start Elite
-                </Link>
-              </div>
+  </button>
 
-            </div>
+</div>
 
-          </div>
+<div className="mt-16 text-center">
 
-        </div>
+  <p className="text-white/60 uppercase tracking-widest text-sm">
+    Totale investering
+  </p>
 
-      </section>
+  <h3 className="mt-4 text-5xl font-bold text-white">
+    €{totalPrice}
+  </h3>
 
+  <p className="mt-3 text-white/60">
+    excl. BTW per seizoen
+  </p>
+
+  <p className="mt-6 text-sm text-white/50">
+    {selectedClubs.length} vereniging(en) geselecteerd
+  </p>
+
+</div>
+
+<div className="mt-10 text-center">
+
+  <button
+    disabled={
+      !selectedPackage ||
+      selectedClubs.length === 0
+    }
+    className="
+      bg-[#1f9d55]
+      px-10
+      py-4
+      rounded-2xl
+      font-semibold
+      hover:bg-[#15803d]
+      transition
+      disabled:opacity-40
+      disabled:cursor-not-allowed
+    "
+  >
+    Start activatie
+  </button>
+
+</div>
+
+</div>
+
+</section>
 
       {/* CTA */}
       <section className="py-24 text-center">
@@ -307,7 +450,7 @@ export default function ActivatiePage() {
             href="/signup"
             className="bg-[#1f9d55] px-8 py-4 rounded-2xl font-semibold hover:bg-[#15803d] transition"
           >
-            Start met Sponsorjobs
+            Start jouw recruitment activatie
           </Link>
 
         </div>
