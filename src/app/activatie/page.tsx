@@ -14,7 +14,7 @@ export default function ActivatiePage() {
         </h1>
 
         <p className="mt-6 text-lg text-white/80 max-w-3xl mx-auto leading-relaxed">
-          SponsorJobs en Sponsuls helpen verenigingen om vacatures van sponsoren
+          Sponsorjobs en Sponsuls helpen verenigingen om vacatures van sponsoren
           actief zichtbaar te maken binnen het netwerk van de club via social media,
           recruitmentcampagnes en sponsoractivatie.
         </p>
@@ -67,12 +67,12 @@ export default function ActivatiePage() {
             </h2>
 
             <p className="mt-6 text-black/70 leading-relaxed">
-              Met SponsorJobs en Sponsuls worden vacatures actief gepromoot via:
+              Met Sponsorjobs en Sponsuls worden vacatures actief gepromoot via:
             </p>
 
             <ul className="mt-6 space-y-4 text-black/80">
 
-              <li>✓ SponsorJobs vacatureplatform</li>
+              <li>✓ Sponsorjobs vacatureplatform</li>
               <li>✓ Social media van de vereniging</li>
               <li>✓ Recruitmentcampagnes</li>
               <li>✓ Vacature in the Spotlight</li>
@@ -98,7 +98,7 @@ export default function ActivatiePage() {
           </h2>
 
           <p className="mt-6 text-white/70 max-w-2xl mx-auto">
-            SponsorJobs verzorgt het platform. Sponsuls ondersteunt
+            Sponsorjobs verzorgt het platform. Sponsuls ondersteunt
             verenigingen met de commerciële activatie en uitvoering.
           </p>
 
@@ -114,7 +114,7 @@ export default function ActivatiePage() {
               </h3>
 
               <p className="mt-3 text-white/70 text-sm leading-relaxed">
-                De vereniging gebruikt SponsorJobs als recruitmentplatform
+                De vereniging gebruikt Sponsorjobs als recruitmentplatform
                 voor sponsoren en vacatures.
               </p>
             </div>
@@ -259,7 +259,7 @@ export default function ActivatiePage() {
 
 
       {/* VERDIENMODEL */}
-      <section className="py-24">
+      <section className="py-24 bg-white text-black">
 
         <div className="max-w-5xl mx-auto px-6 text-center">
 
@@ -267,7 +267,7 @@ export default function ActivatiePage() {
             Transparant verdienmodel
           </h2>
 
-          <p className="mt-6 text-white/70 max-w-3xl mx-auto leading-relaxed">
+          <p className="mt-6 text-black/70 max-w-3xl mx-auto leading-relaxed">
             Van iedere recruitment activatie gaat:
           </p>
 
@@ -279,7 +279,7 @@ export default function ActivatiePage() {
                 70%
               </div>
 
-              <h3 className="mt-4 text-2xl font-bold">
+              <h3 className="mt-4 text-2xl font-bold text-black">
                 Naar de vereniging
               </h3>
 
@@ -296,7 +296,7 @@ export default function ActivatiePage() {
                 30%
               </div>
 
-              <h3 className="mt-4 text-2xl font-bold">
+              <h3 className="mt-4 text-2xl font-bold text-black">
                 Naar Sponsuls
               </h3>
 
@@ -309,73 +309,13 @@ export default function ActivatiePage() {
 
           </div>
 
-          <p className="mt-10 text-white/50 text-sm">
-            Het SponsorJobs platformabonnement staat los van de activatievergoeding.
+          <p className="mt-10 text-black/50 text-sm">
+            Het Sponsorjobs platformabonnement staat los van de activatievergoeding.
           </p>
 
         </div>
 
       </section>
-
-
-      {/* VOOR WIE */}
-      <section className="bg-white text-black py-24">
-
-        <div className="max-w-6xl mx-auto px-6 text-center">
-
-          <h2 className="text-4xl font-bold">
-            Voor welke verenigingen?
-          </h2>
-
-          <p className="mt-6 text-black/70 max-w-2xl mx-auto">
-            Recruitment activatie is interessant voor verenigingen
-            met een actief sponsornetwerk en commerciële ambitie.
-          </p>
-
-          <div className="mt-16 grid md:grid-cols-3 gap-8 text-left">
-
-            <div className="bg-[#f5f7fa] rounded-2xl p-8">
-              <h3 className="font-semibold text-lg">
-                Voetbalverenigingen
-              </h3>
-            </div>
-
-            <div className="bg-[#f5f7fa] rounded-2xl p-8">
-              <h3 className="font-semibold text-lg">
-                Handbalverenigingen
-              </h3>
-            </div>
-
-            <div className="bg-[#f5f7fa] rounded-2xl p-8">
-              <h3 className="font-semibold text-lg">
-                Basketbalclubs
-              </h3>
-            </div>
-
-            <div className="bg-[#f5f7fa] rounded-2xl p-8">
-              <h3 className="font-semibold text-lg">
-                Business Clubs
-              </h3>
-            </div>
-
-            <div className="bg-[#f5f7fa] rounded-2xl p-8">
-              <h3 className="font-semibold text-lg">
-                Topsportorganisaties
-              </h3>
-            </div>
-
-            <div className="bg-[#f5f7fa] rounded-2xl p-8">
-              <h3 className="font-semibold text-lg">
-                Verenigingen met sponsorambitie
-              </h3>
-            </div>
-
-          </div>
-
-        </div>
-
-      </section>
-
 
       {/* CTA */}
       <section className="py-28 text-center">

@@ -12,11 +12,12 @@ export default function LayoutWrapper({
   const pathname = usePathname();
 
   const showNavbar =
-    pathname === "/" ||
-    pathname.startsWith("/verenigingen") ||
-    pathname.startsWith("/activatie") ||
-    pathname.startsWith("/login") ||
-    pathname.startsWith("/signup");
+  pathname === "/" ||
+  pathname.startsWith("/verenigingen") ||
+  pathname.startsWith("/activatie") ||
+  pathname.startsWith("/bedrijven") ||
+  pathname.startsWith("/login") ||
+  pathname.startsWith("/signup");
 
   return (
     <>
