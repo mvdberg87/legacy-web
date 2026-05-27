@@ -1,122 +1,86 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useMemo, useState } from "react";
-import { getSupabaseBrowser } from "@/lib/supabaseBrowser";
-
-const supabase = getSupabaseBrowser();
-
-type Club = {
-  id: string;
-  name: string;
-  slug: string;
-  primary_color?: string;
-};
 
 export default function ActivatiePage() {
-
-  const [clubs, setClubs] = useState<Club[]>([]);
-
-  const [selectedClubs, setSelectedClubs] = useState<string[]>([]);
-const [selectedPackage, setSelectedPackage] = useState<
-  "partner" | "spotlight" | "premium" | null
->(null);
-
-useEffect(() => {
-  fetchClubs();
-}, []);
-
-const fetchClubs = async () => {
-
-  const { data, error } = await supabase
-    .from("clubs")
-    .select("id, name, slug, primary_color")
-    .order("name");
-
-  if (error) {
-    console.error(error);
-    return;
-  }
-
-  setClubs(data || []);
-};
-
-const packagePrices = {
-  partner: 350,
-  spotlight: 750,
-  premium: 1250,
-};
-
-const totalPrice = useMemo(() => {
-  if (!selectedPackage) return 0;
-
-  return (
-    selectedClubs.length *
-    packagePrices[selectedPackage]
-  );
-}, [selectedClubs, selectedPackage]);
-
-const toggleClub = (clubId: string) => {
-  setSelectedClubs((prev) =>
-    prev.includes(clubId)
-      ? prev.filter((id) => id !== clubId)
-      : [...prev, clubId]
-  );
-};
-
   return (
     <main className="min-h-screen bg-[#0d1b2a] text-white">
 
       {/* HERO */}
       <section className="max-w-6xl mx-auto px-6 pt-32 pb-24 text-center">
 
-        <h1 className="text-4xl md:text-5xl font-bold leading-tight">
-          Sponsoractivatie die recruitment oplevert.
+        <h1 className="text-4xl md:text-6xl font-bold leading-tight">
+          Meer waarde uit sponsoren via recruitment activatie.
         </h1>
 
-        <p className="mt-6 text-lg text-white/80 max-w-2xl mx-auto">
-          Vacatures van sponsoren zichtbaar maken is stap één.
-          Maar echte impact ontstaat wanneer je deze vacatures
-          actief promoot binnen het clubnetwerk.
+        <p className="mt-6 text-lg text-white/80 max-w-3xl mx-auto leading-relaxed">
+          SponsorJobs en Sponsuls helpen verenigingen om vacatures van sponsoren
+          actief zichtbaar te maken binnen het netwerk van de club via social media,
+          recruitmentcampagnes en sponsoractivatie.
         </p>
 
-        <p className="mt-4 text-white/70 max-w-2xl mx-auto">
-          Met de activatiepakketten van Sponsorjobs helpen we
-          sportverenigingen om vacatures van sponsoren te promoten
-          via social media, content en recruitmentcampagnes.
+        <p className="mt-6 text-white/60 max-w-2xl mx-auto">
+          Zo ontstaat extra sponsorwaarde, meer zichtbaarheid voor bedrijven
+          én een nieuw verdienmodel voor de vereniging.
         </p>
+
+        <div className="mt-10">
+          <Link
+            href="/contact"
+            className="bg-[#1f9d55] px-8 py-4 rounded-2xl font-semibold hover:bg-[#15803d] transition"
+          >
+            Plan een activatiegesprek
+          </Link>
+        </div>
 
       </section>
 
 
       {/* PROBLEEM / OPLOSSING */}
-      <section className="bg-white text-black py-20">
+      <section className="bg-white text-black py-24">
 
-        <div className="max-w-6xl mx-auto px-6 grid md:grid-cols-2 gap-12">
+        <div className="max-w-7xl mx-auto px-6 grid md:grid-cols-2 gap-16">
 
           <div>
-            <h2 className="text-2xl font-bold">
-              Veel vacatures van sponsoren blijven onzichtbaar.
+
+            <h2 className="text-3xl font-bold leading-tight">
+              Veel sponsorvacatures blijven onzichtbaar.
             </h2>
 
-            <p className="mt-4 opacity-70">
-              Sponsors hebben vacatures, maar deze bereiken vaak
-              niet het netwerk van de club. Daardoor blijft een
-              belangrijk onderdeel van sponsoractivatie onbenut.
+            <p className="mt-6 text-black/70 leading-relaxed">
+              Veel sponsoren binnen sportverenigingen zijn actief op zoek naar personeel,
+              maar vacatures bereiken vaak niet het netwerk van de club. Daardoor blijft
+              een belangrijk onderdeel van sponsoractivatie onbenut.
             </p>
+
+            <p className="mt-4 text-black/70 leading-relaxed">
+              Tegelijkertijd zoeken verenigingen continu naar manieren om sponsoren
+              meer waarde te bieden én nieuwe commerciële inkomsten te genereren.
+            </p>
+
           </div>
 
           <div>
-            <h2 className="text-2xl font-bold text-[#0d1b2a]">
-              Activatie maakt sponsoring meetbaar.
+
+            <h2 className="text-3xl font-bold text-[#0d1b2a] leading-tight">
+              Recruitment wordt onderdeel van sponsoring.
             </h2>
 
-            <p className="mt-4 opacity-70">
-              Door vacatures actief te promoten via social media,
-              content en campagnes ontstaat extra zichtbaarheid
-              voor sponsoren én een waardevolle recruitmentkans
-              binnen de clubcommunity.
+            <p className="mt-6 text-black/70 leading-relaxed">
+              Met SponsorJobs en Sponsuls worden vacatures actief gepromoot via:
             </p>
+
+            <ul className="mt-6 space-y-4 text-black/80">
+
+              <li>✓ SponsorJobs vacatureplatform</li>
+              <li>✓ Social media van de vereniging</li>
+              <li>✓ Recruitmentcampagnes</li>
+              <li>✓ Vacature in the Spotlight</li>
+              <li>✓ Narrowcasting in sporthal of kantine</li>
+              <li>✓ Content & employer branding</li>
+
+            </ul>
+
           </div>
 
         </div>
@@ -127,55 +91,91 @@ const toggleClub = (clubId: string) => {
       {/* HOE HET WERKT */}
       <section className="py-24">
 
-        <div className="max-w-6xl mx-auto px-6 text-center">
+        <div className="max-w-7xl mx-auto px-6 text-center">
 
-          <h2 className="text-3xl font-bold">
-            Hoe werkt sponsoractivatie?
+          <h2 className="text-4xl font-bold">
+            Hoe werkt recruitment activatie?
           </h2>
 
-          <div className="mt-16 grid md:grid-cols-4 gap-10">
+          <p className="mt-6 text-white/70 max-w-2xl mx-auto">
+            SponsorJobs verzorgt het platform. Sponsuls ondersteunt
+            verenigingen met de commerciële activatie en uitvoering.
+          </p>
+
+          <div className="mt-20 grid md:grid-cols-5 gap-10 text-left">
 
             <div>
-              <div className="text-4xl font-bold text-[#1f9d55]">01</div>
+              <div className="text-4xl font-bold text-[#1f9d55]">
+                01
+              </div>
+
               <h3 className="mt-4 font-semibold text-lg">
-                Vacature van sponsor
+                Vereniging sluit aan
               </h3>
-              <p className="mt-2 opacity-80 text-sm">
-                De sponsor levert een vacature aan
-                die binnen het clubnetwerk zichtbaar wordt.
+
+              <p className="mt-3 text-white/70 text-sm leading-relaxed">
+                De vereniging gebruikt SponsorJobs als recruitmentplatform
+                voor sponsoren en vacatures.
               </p>
             </div>
 
             <div>
-              <div className="text-4xl font-bold text-[#1f9d55]">02</div>
+              <div className="text-4xl font-bold text-[#1f9d55]">
+                02
+              </div>
+
               <h3 className="mt-4 font-semibold text-lg">
-                Content en promotie
+                Sponsuls activeert
               </h3>
-              <p className="mt-2 opacity-80 text-sm">
-                Vacatures worden gepromoot via social media,
-                visuals en campagnes.
+
+              <p className="mt-3 text-white/70 text-sm leading-relaxed">
+                Sponsuls ondersteunt bij sponsorverkoop,
+                contentcreatie en recruitment activatie.
               </p>
             </div>
 
             <div>
-              <div className="text-4xl font-bold text-[#1f9d55]">03</div>
+              <div className="text-4xl font-bold text-[#1f9d55]">
+                03
+              </div>
+
               <h3 className="mt-4 font-semibold text-lg">
-                Bereik binnen community
+                Bedrijven kiezen pakket
               </h3>
-              <p className="mt-2 opacity-80 text-sm">
-                Clubleden, supporters en netwerkpartners
-                zien de vacatures via clubkanalen.
+
+              <p className="mt-3 text-white/70 text-sm leading-relaxed">
+                Sponsoren kiezen een recruitmentpakket
+                passend bij hun zichtbaarheid en doelstellingen.
               </p>
             </div>
 
             <div>
-              <div className="text-4xl font-bold text-[#1f9d55]">04</div>
+              <div className="text-4xl font-bold text-[#1f9d55]">
+                04
+              </div>
+
               <h3 className="mt-4 font-semibold text-lg">
-                Extra sponsorwaarde
+                Vacatures worden geactiveerd
               </h3>
-              <p className="mt-2 opacity-80 text-sm">
-                Sponsoring wordt meetbaar en
-                recruitment wordt onderdeel van de activatie.
+
+              <p className="mt-3 text-white/70 text-sm leading-relaxed">
+                Vacatures worden zichtbaar via het clubnetwerk,
+                social media en recruitmentcampagnes.
+              </p>
+            </div>
+
+            <div>
+              <div className="text-4xl font-bold text-[#1f9d55]">
+                05
+              </div>
+
+              <h3 className="mt-4 font-semibold text-lg">
+                Meetbare sponsorwaarde
+              </h3>
+
+              <p className="mt-3 text-white/70 text-sm leading-relaxed">
+                Verenigingen creëren extra sponsorwaarde,
+                bereik en nieuwe inkomsten.
               </p>
             </div>
 
@@ -185,278 +185,222 @@ const toggleClub = (clubId: string) => {
 
       </section>
 
-      {/* CLUB SELECTIE */}
-<section className="py-24 bg-[#10263a]">
 
-  <div className="max-w-7xl mx-auto px-6">
+      {/* DIENSTVERLENING */}
+      <section className="bg-[#10263a] py-24">
 
-    <div className="text-center">
+        <div className="max-w-7xl mx-auto px-6">
 
-      <h2 className="text-3xl font-bold">
-        Kies jouw verenigingen
-      </h2>
+          <div className="text-center">
 
-      <p className="mt-4 text-white/70">
-        Selecteer één of meerdere verenigingen
-        waar jouw vacatures zichtbaar mogen worden.
-      </p>
+            <h2 className="text-4xl font-bold">
+              Wat verzorgt Sponsuls?
+            </h2>
 
-    </div>
+            <p className="mt-6 text-white/70 max-w-3xl mx-auto">
+              Sponsuls ondersteunt verenigingen volledig bij de activatie
+              van recruitmentcampagnes en sponsorvacatures.
+            </p>
 
-    <div className="mt-14 grid md:grid-cols-3 gap-6">
+          </div>
 
-      {clubs.map((club) => {
+          <div className="mt-20 grid md:grid-cols-3 gap-8">
 
-        const selected = selectedClubs.includes(club.id);
+            <div className="bg-white/5 rounded-2xl p-8 border border-white/10">
 
-        return (
-          <button
-            key={club.id}
-            onClick={() => toggleClub(club.id)}
-            className={`
-              rounded-2xl border p-6 text-left transition
-              ${
-                selected
-                  ? "border-green-500 bg-green-500/10"
-                  : "border-white/10 bg-white/5 hover:bg-white/10"
-              }
-            `}
-          >
+              <h3 className="text-xl font-semibold">
+                Commerciële activatie
+              </h3>
 
-            <div className="flex items-center justify-between">
-
-              <div>
-                <h3 className="text-xl font-semibold">
-                  {club.name}
-                </h3>
-
-              </div>
-
-              <div
-                className={`
-                  w-6 h-6 rounded-full border-2
-                  ${
-                    selected
-                      ? "bg-green-500 border-green-500"
-                      : "border-white/30"
-                  }
-                `}
-              />
+              <ul className="mt-6 space-y-3 text-white/70 text-sm">
+                <li>✓ Sponsorverkoop</li>
+                <li>✓ Recruitmentpropositie</li>
+                <li>✓ Activatie gesprekken</li>
+                <li>✓ Sponsoropvolging</li>
+              </ul>
 
             </div>
 
-          </button>
-        );
-      })}
+            <div className="bg-white/5 rounded-2xl p-8 border border-white/10">
 
-    </div>
+              <h3 className="text-xl font-semibold">
+                Content & zichtbaarheid
+              </h3>
 
-  </div>
+              <ul className="mt-6 space-y-3 text-white/70 text-sm">
+                <li>✓ Social media content</li>
+                <li>✓ Vacaturecampagnes</li>
+                <li>✓ Spotlight vacatures</li>
+                <li>✓ Narrowcasting</li>
+              </ul>
 
-</section>
+            </div>
 
+            <div className="bg-white/5 rounded-2xl p-8 border border-white/10">
 
-      {/* ACTIVATIE PAKKETTEN */}
-      <section className="py-24 bg-[#0f2233]">
+              <h3 className="text-xl font-semibold">
+                Recruitment ondersteuning
+              </h3>
 
-        <div className="max-w-7xl mx-auto px-6 text-center">
+              <ul className="mt-6 space-y-3 text-white/70 text-sm">
+                <li>✓ Dashboard & statistieken</li>
+                <li>✓ Evaluatiemomenten</li>
+                <li>✓ Vacature opvolging</li>
+                <li>✓ Recruitment optimalisatie</li>
+              </ul>
 
-          <h2 className="text-3xl font-bold text-white">
-            Activatie Pakketten
-          </h2>
+            </div>
 
-          <p className="mt-6 text-white/70 max-w-2xl mx-auto">
-            Voor verenigingen die méér uit hun sponsoren willen halen.
-            Wij verzorgen de content, activatie en recruitmentversterking.
-          </p>
-
-
-<div className="mt-16 grid md:grid-cols-3 gap-8 text-left">
-
-
-  {/* PARTNER */}
-  <button
-    onClick={() => setSelectedPackage("partner")}
-    className={`
-      rounded-2xl p-8 flex flex-col h-full shadow-xl transition
-      ${
-        selectedPackage === "partner"
-          ? "bg-green-500 text-black"
-          : "bg-white text-black hover:scale-[1.02]"
-      }
-    `}
-  >
-
-    <h3 className="font-semibold text-lg">
-      Recruitment Partner
-    </h3>
-
-    <p className="mt-4 text-4xl font-bold">
-      €350
-    </p>
-
-    <p className="text-sm opacity-70">
-      per vereniging / seizoen
-    </p>
-
-    <ul className="mt-6 space-y-3 text-sm">
-      <li>✓ Vacature zichtbaar op SponsorJobs</li>
-      <li>✓ Zichtbaarheid binnen clubnetwerk</li>
-      <li>✓ Sponsorlogo zichtbaar</li>
-      <li>✓ Dashboard & statistieken</li>
-    </ul>
-
-  </button>
-
-
-  {/* SPOTLIGHT */}
-  <button
-    onClick={() => setSelectedPackage("spotlight")}
-    className={`
-      rounded-2xl p-8 flex flex-col h-full shadow-xl transition relative
-      ${
-        selectedPackage === "spotlight"
-          ? "bg-yellow-400 text-black"
-          : "bg-white text-black hover:scale-[1.02]"
-      }
-    `}
-  >
-
-    <div className="absolute -top-3 left-1/2 -translate-x-1/2 bg-black text-white text-xs px-3 py-1 rounded-full">
-      Meest gekozen
-    </div>
-
-    <h3 className="font-semibold text-lg">
-      Recruitment Spotlight
-    </h3>
-
-    <p className="mt-4 text-4xl font-bold">
-      €750
-    </p>
-
-    <p className="text-sm opacity-70">
-      per vereniging / seizoen
-    </p>
-
-    <ul className="mt-6 space-y-3 text-sm">
-      <li>✓ Alles uit Partner</li>
-      <li>✓ Vacature in the Spotlight</li>
-      <li>✓ Social media post via clubkanalen</li>
-      <li>✓ Extra zichtbaarheid binnen campagnes</li>
-    </ul>
-
-  </button>
-
-
-  {/* PREMIUM */}
-  <button
-    onClick={() => setSelectedPackage("premium")}
-    className={`
-      rounded-2xl p-8 flex flex-col h-full shadow-xl transition
-      ${
-        selectedPackage === "premium"
-          ? "bg-blue-600 text-white"
-          : "bg-white text-black hover:scale-[1.02]"
-      }
-    `}
-  >
-
-    <h3 className="font-semibold text-lg">
-      Recruitment Premium
-    </h3>
-
-    <p className="mt-4 text-4xl font-bold">
-      €1.250
-    </p>
-
-    <p className="text-sm opacity-70">
-      per vereniging / seizoen
-    </p>
-
-    <ul className="mt-6 space-y-3 text-sm">
-      <li>✓ Alles uit Spotlight</li>
-      <li>✓ Narrowcasting binnen vereniging</li>
-      <li>✓ Vacatures aanpasbaar gedurende seizoen</li>
-      <li>✓ Extra activatiemomenten</li>
-    </ul>
-
-  </button>
-
-</div>
-
-<div className="mt-16 text-center">
-
-  <p className="text-white/60 uppercase tracking-widest text-sm">
-    Totale investering
-  </p>
-
-  <h3 className="mt-4 text-5xl font-bold text-white">
-    €{totalPrice}
-  </h3>
-
-  <p className="mt-3 text-white/60">
-    excl. BTW per seizoen
-  </p>
-
-  <p className="mt-6 text-sm text-white/50">
-    {selectedClubs.length} vereniging(en) geselecteerd
-  </p>
-
-</div>
-
-<div className="mt-10 text-center">
-
-  <button
-    disabled={
-      !selectedPackage ||
-      selectedClubs.length === 0
-    }
-    className="
-      bg-[#1f9d55]
-      px-10
-      py-4
-      rounded-2xl
-      font-semibold
-      hover:bg-[#15803d]
-      transition
-      disabled:opacity-40
-      disabled:cursor-not-allowed
-    "
-  >
-    Start activatie
-  </button>
-
-</div>
-
-</div>
-
-</section>
-
-      {/* CTA */}
-      <section className="py-24 text-center">
-
-        <h2 className="text-3xl font-bold">
-          Wil je meer halen uit je sponsoren?
-        </h2>
-
-        <p className="mt-6 text-white/70 max-w-xl mx-auto">
-          Ontdek hoe sponsoractivatie en recruitment samen
-          nieuwe waarde kunnen creëren voor jouw vereniging.
-        </p>
-
-        <div className="mt-10">
-
-          <Link
-            href="/signup"
-            className="bg-[#1f9d55] px-8 py-4 rounded-2xl font-semibold hover:bg-[#15803d] transition"
-          >
-            Start jouw recruitment activatie
-          </Link>
+          </div>
 
         </div>
 
       </section>
 
+
+      {/* VERDIENMODEL */}
+      <section className="py-24">
+
+        <div className="max-w-5xl mx-auto px-6 text-center">
+
+          <h2 className="text-4xl font-bold">
+            Transparant verdienmodel
+          </h2>
+
+          <p className="mt-6 text-white/70 max-w-3xl mx-auto leading-relaxed">
+            Van iedere recruitment activatie gaat:
+          </p>
+
+          <div className="mt-16 grid md:grid-cols-2 gap-8">
+
+            <div className="bg-green-500 rounded-3xl p-10 text-black">
+
+              <div className="text-6xl font-bold">
+                70%
+              </div>
+
+              <h3 className="mt-4 text-2xl font-bold">
+                Naar de vereniging
+              </h3>
+
+              <p className="mt-4 opacity-80 leading-relaxed">
+                De vereniging ontvangt het grootste deel van de omzet
+                uit recruitment activaties en sponsorvacatures.
+              </p>
+
+            </div>
+
+            <div className="bg-white rounded-3xl p-10 text-black">
+
+              <div className="text-6xl font-bold">
+                30%
+              </div>
+
+              <h3 className="mt-4 text-2xl font-bold">
+                Naar Sponsuls
+              </h3>
+
+              <p className="mt-4 opacity-80 leading-relaxed">
+                Sponsuls verzorgt de commerciële activatie,
+                contentcreatie, recruitmentcampagnes en sponsorbegeleiding.
+              </p>
+
+            </div>
+
+          </div>
+
+          <p className="mt-10 text-white/50 text-sm">
+            Het SponsorJobs platformabonnement staat los van de activatievergoeding.
+          </p>
+
+        </div>
+
+      </section>
+
+
+      {/* VOOR WIE */}
+      <section className="bg-white text-black py-24">
+
+        <div className="max-w-6xl mx-auto px-6 text-center">
+
+          <h2 className="text-4xl font-bold">
+            Voor welke verenigingen?
+          </h2>
+
+          <p className="mt-6 text-black/70 max-w-2xl mx-auto">
+            Recruitment activatie is interessant voor verenigingen
+            met een actief sponsornetwerk en commerciële ambitie.
+          </p>
+
+          <div className="mt-16 grid md:grid-cols-3 gap-8 text-left">
+
+            <div className="bg-[#f5f7fa] rounded-2xl p-8">
+              <h3 className="font-semibold text-lg">
+                Voetbalverenigingen
+              </h3>
+            </div>
+
+            <div className="bg-[#f5f7fa] rounded-2xl p-8">
+              <h3 className="font-semibold text-lg">
+                Handbalverenigingen
+              </h3>
+            </div>
+
+            <div className="bg-[#f5f7fa] rounded-2xl p-8">
+              <h3 className="font-semibold text-lg">
+                Basketbalclubs
+              </h3>
+            </div>
+
+            <div className="bg-[#f5f7fa] rounded-2xl p-8">
+              <h3 className="font-semibold text-lg">
+                Business Clubs
+              </h3>
+            </div>
+
+            <div className="bg-[#f5f7fa] rounded-2xl p-8">
+              <h3 className="font-semibold text-lg">
+                Topsportorganisaties
+              </h3>
+            </div>
+
+            <div className="bg-[#f5f7fa] rounded-2xl p-8">
+              <h3 className="font-semibold text-lg">
+                Verenigingen met sponsorambitie
+              </h3>
+            </div>
+
+          </div>
+
+        </div>
+
+      </section>
+
+
+      {/* CTA */}
+      <section className="py-28 text-center">
+
+        <h2 className="text-4xl font-bold leading-tight">
+          Wil jouw vereniging ook meer halen uit sponsoren?
+        </h2>
+
+        <p className="mt-6 text-white/70 max-w-2xl mx-auto leading-relaxed">
+          Ontdek hoe recruitment activatie extra sponsorwaarde,
+          zichtbaarheid en inkomsten kan creëren voor jouw vereniging.
+        </p>
+
+        <div className="mt-10">
+
+          <Link
+            href="/contact"
+            className="bg-[#1f9d55] px-10 py-5 rounded-2xl font-semibold hover:bg-[#15803d] transition"
+          >
+            Vraag een activatiegesprek aan
+          </Link>
+
+        </div>
+
+      </section>
 
     </main>
   );

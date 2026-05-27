@@ -22,37 +22,44 @@ export default function Navbar() {
         </Link>
 
         {/* Desktop menu */}
-        <nav className="hidden md:flex items-center gap-10 text-lg font-semibold">
+        <nav className="hidden md:flex items-center gap-8 text-lg font-semibold">
 
-          <Link
-            href="/verenigingen"
-            className="text-white hover:opacity-80 transition"
-          >
-            VERENIGINGEN
-          </Link>
+  <Link
+    href="/verenigingen"
+    className="text-white hover:opacity-80 transition"
+  >
+    VERENIGINGEN
+  </Link>
 
-          <Link
-            href="/activatie"
-            className="text-white hover:opacity-80 transition"
-          >
-            ACTIVATIE
-          </Link>
+  <Link
+    href="/activatie"
+    className="text-white hover:opacity-80 transition"
+  >
+    ACTIVATIE
+  </Link>
 
-          <Link
-            href="/login"
-            className="text-white hover:opacity-80 transition"
-          >
-            LOGIN
-          </Link>
+  <Link
+    href="/bedrijven"
+    className="text-white hover:opacity-80 transition"
+  >
+    BEDRIJVEN
+  </Link>
 
-          <Link
-            href="/signup"
-            className="bg-[#1f9d55] text-white px-5 py-2 rounded-xl hover:bg-[#15803d] transition"
-          >
-            START GRATIS
-          </Link>
+  <Link
+    href="/login"
+    className="text-white/80 hover:text-white transition"
+  >
+    LOGIN
+  </Link>
 
-        </nav>
+  <Link
+    href="/signup"
+    className="bg-[#1f9d55] text-white px-5 py-2 rounded-xl hover:bg-[#15803d] transition"
+  >
+    START GRATIS
+  </Link>
+
+</nav>
 
         {/* Mobile buttons */}
         <div className="flex items-center gap-4 md:hidden">
@@ -78,33 +85,41 @@ export default function Navbar() {
 
       {/* Mobile menu */}
       {menuOpen && (
-        <div className="md:hidden bg-[#0d1b2a] border-t border-white/10 px-6 py-6 space-y-4 text-lg">
+  <div className="md:hidden bg-[#0d1b2a] border-t border-white/10 px-6 py-6 space-y-4 text-lg">
 
-          <Link
-            href="/verenigingen"
-            className="block text-white"
-            onClick={() => setMenuOpen(false)}
-          >
-            VERENIGINGEN
-          </Link>
+    <Link
+      href="/verenigingen"
+      className="block text-white"
+      onClick={() => setMenuOpen(false)}
+    >
+      VERENIGINGEN
+    </Link>
 
-          <Link
-            href="/activatie"
-            className="block text-white"
-            onClick={() => setMenuOpen(false)}
-          >
-            ACTIVATIE
-          </Link>
+    <Link
+      href="/activatie"
+      className="block text-white"
+      onClick={() => setMenuOpen(false)}
+    >
+      ACTIVATIE
+    </Link>
 
-          <Link
-            href="/login"
-            className="block text-white"
-            onClick={() => setMenuOpen(false)}
-          >
-            LOGIN
-          </Link>
+    <Link
+      href="/bedrijven"
+      className="block text-white"
+      onClick={() => setMenuOpen(false)}
+    >
+      BEDRIJVEN
+    </Link>
 
-        </div>
+    <Link
+      href="/login"
+      className="block text-white"
+      onClick={() => setMenuOpen(false)}
+    >
+      LOGIN
+    </Link>
+
+  </div>
       )}
     </header>
   );
