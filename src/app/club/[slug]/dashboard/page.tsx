@@ -28,9 +28,11 @@ type Club = {
 deleted_at?: string | null;
   agreement_accepted?: boolean | null;
   agreement_version?: string | null;
-
   trial_end?: string | null; // 👈 deze toevoegen
   extra_ads?: number | null;
+  stripe_connect_enabled?: boolean | null;
+stripe_payouts_enabled?: boolean | null;
+stripe_connect_account_id?: string | null;
 };
 
 type ClubDashboardInsights = {
@@ -97,6 +99,48 @@ useEffect(() => {
   }
 }, [searchParams]);
 
+useEffect(() => {
+  const refreshStripeStatus = async () => {
+    if (
+      searchParams.get("stripe") !== "success" ||
+      !club?.id
+    ) {
+      return;
+    }
+
+    try {
+      await fetch("/api/stripe/connect/status", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          clubId: club.id,
+        }),
+      });
+
+      // query parameter verwijderen
+      const url = new URL(window.location.href);
+      url.searchParams.delete("stripe");
+
+      window.history.replaceState(
+        {},
+        "",
+        url.toString()
+      );
+
+      // dashboard opnieuw laden
+      window.location.reload();
+
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  refreshStripeStatus();
+
+}, [searchParams, club?.id]);
+
   useEffect(() => {
     (async () => {
       setLoading(true);
@@ -129,7 +173,10 @@ useEffect(() => {
     agreement_accepted,
     agreement_version,
     trial_end,
-    extra_ads
+    extra_ads,
+    stripe_connect_enabled,
+stripe_payouts_enabled,
+stripe_connect_account_id
   `)
   .eq("slug", slug)
   .maybeSingle();
@@ -597,6 +644,46 @@ async function reactivateSubscription() {
   } catch (err) {
     console.error(err);
     alert("Server fout");
+  }
+}
+
+async function connectStripe() {
+  if (!club) return;
+
+  try {
+    // account aanmaken
+    await fetch("/api/stripe/connect/create-account", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        clubId: club.id,
+      }),
+    });
+
+    // onboarding link ophalen
+    const res = await fetch(
+      "/api/stripe/connect/onboarding-link",
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          clubId: club.id,
+        }),
+      }
+    );
+
+    const data = await res.json();
+
+    if (data.url) {
+      window.location.href = data.url;
+    }
+  } catch (err) {
+    console.error(err);
+    alert("Stripe onboarding mislukt");
   }
 }
       
@@ -1108,6 +1195,49 @@ const canUpgrade = isHigher;
 )}
 
         </section>
+
+        <section className="border-2 rounded-xl p-6 bg-gray-50 mt-8">
+
+  <h2 className="font-semibold text-lg mb-2">
+    Uitbetalingen
+  </h2>
+
+  {!club.stripe_connect_enabled ? (
+
+    <>
+      <div className="mb-4 text-sm text-gray-600">
+        Koppel een bankrekening om advertentieverkopen te ontvangen.
+      </div>
+
+      <div className="mb-4">
+        <span className="inline-flex px-3 py-1 rounded-full bg-orange-100 text-orange-700 text-sm">
+          Niet gekoppeld
+        </span>
+      </div>
+
+      <button
+        onClick={connectStripe}
+        className="bg-[#0d1b2a] hover:bg-[#132a44] text-white px-4 py-2 rounded-lg"
+      >
+        Bankrekening koppelen
+      </button>
+    </>
+
+  ) : (
+
+    <>
+      <div className="mb-4 text-sm text-gray-600">
+        Advertentieverkoop is actief.
+      </div>
+
+      <div className="inline-flex px-3 py-1 rounded-full bg-green-100 text-green-700 text-sm">
+        Actief
+      </div>
+    </>
+
+  )}
+
+</section>
 
         {/* ===============================
             Support balk
