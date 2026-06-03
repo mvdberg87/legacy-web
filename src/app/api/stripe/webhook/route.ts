@@ -107,9 +107,20 @@ if (
   };
 
   const packagePrice =
-    packagePrices[
-      lead.package_key as keyof typeof packagePrices
-    ];
+  packagePrices[
+    lead.package_key as keyof typeof packagePrices
+  ];
+
+if (!packagePrice) {
+  console.error(
+    "❌ Invalid package key:",
+    lead.package_key
+  );
+
+  return NextResponse.json({
+    received: true,
+  });
+}
 
   for (const clubId of clubIds) {
 
@@ -157,7 +168,9 @@ if (
             session.id,
 
           stripe_payment_intent_id:
-            session.payment_intent,
+  typeof session.payment_intent === "string"
+    ? session.payment_intent
+    : null,
 
           start_date:
             startDate.toISOString(),
