@@ -294,7 +294,7 @@ const toggleClub = (clubId: string) => {
     </p>
 
     <p className="text-sm opacity-70">
-      per vereniging / seizoen
+      per vereniging / jaar
     </p>
 
     <ul className="mt-6 space-y-3 text-sm">
@@ -333,7 +333,7 @@ const toggleClub = (clubId: string) => {
     </p>
 
     <p className="text-sm opacity-70">
-      per vereniging / seizoen
+      per vereniging / jaar
     </p>
 
     <ul className="mt-6 space-y-3 text-sm">
@@ -368,13 +368,13 @@ const toggleClub = (clubId: string) => {
     </p>
 
     <p className="text-sm opacity-70">
-      per vereniging / seizoen
+      per vereniging / jaar
     </p>
 
     <ul className="mt-6 space-y-3 text-sm">
       <li>✓ Alles uit Spotlight</li>
       <li>✓ Narrowcasting binnen vereniging</li>
-      <li>✓ Vacatures aanpasbaar gedurende seizoen</li>
+      <li>✓ Vacatures aanpasbaar gedurende jaar</li>
       <li>✓ Extra activatiemomenten</li>
     </ul>
 
@@ -393,7 +393,7 @@ const toggleClub = (clubId: string) => {
   </h3>
 
   <p className="mt-3 text-white/60">
-    excl. BTW per seizoen
+    excl. BTW per jaar
   </p>
 
   <p className="mt-6 text-sm text-white/50">
