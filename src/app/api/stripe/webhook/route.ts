@@ -71,6 +71,156 @@ if (existing) {
 const session = event.data.object as Stripe.Checkout.Session;
 
 /* ===============================
+   ADVERTISEMENT PURCHASE
+=============================== */
+
+if (
+  session.metadata?.type ===
+  "advertisement_purchase"
+) {
+
+  const leadId = session.metadata?.lead_id;
+
+  if (!leadId) {
+    console.error("❌ Missing lead_id");
+    return NextResponse.json({ received: true });
+  }
+
+  const { data: lead } =
+    await supabaseAdmin
+      .from("advertisement_leads")
+      .select("*")
+      .eq("id", leadId)
+      .single();
+
+  if (!lead) {
+    console.error("❌ Lead not found");
+    return NextResponse.json({ received: true });
+  }
+
+  const clubIds = lead.club_ids as string[];
+
+  const packagePrices = {
+    partner: 350,
+    spotlight: 750,
+    premium: 1250,
+  };
+
+  const packagePrice =
+    packagePrices[
+      lead.package_key as keyof typeof packagePrices
+    ];
+
+  for (const clubId of clubIds) {
+
+    const clubAmount =
+      Math.round(packagePrice * 0.7);
+
+    const platformAmount =
+      Math.round(packagePrice * 0.3);
+
+    const startDate =
+      new Date();
+
+    const endDate =
+      new Date();
+
+    endDate.setFullYear(
+      endDate.getFullYear() + 1
+    );
+
+    const { data: order } =
+      await supabaseAdmin
+        .from("advertisement_orders")
+        .insert({
+          club_id: clubId,
+
+          company_name:
+            lead.company_name,
+
+          company_email:
+            lead.company_email,
+
+          package_name:
+            lead.package_key,
+
+          amount:
+            packagePrice,
+
+          club_amount:
+            clubAmount,
+
+          platform_amount:
+            platformAmount,
+
+          stripe_checkout_session_id:
+            session.id,
+
+          stripe_payment_intent_id:
+            session.payment_intent,
+
+          start_date:
+            startDate.toISOString(),
+
+          end_date:
+            endDate.toISOString(),
+
+          status:
+            "paid",
+        })
+        .select()
+        .single();
+
+    await supabaseAdmin
+      .from("company_advertisements")
+      .insert({
+        club_id: clubId,
+
+        company_name:
+          lead.company_name,
+
+        company_email:
+          lead.company_email,
+
+        company_website:
+          lead.company_website,
+
+        vacancy_url:
+          lead.vacancy_url,
+
+        package_id: null,
+
+        order_id:
+          order?.id,
+
+        start_date:
+          startDate.toISOString(),
+
+        end_date:
+          endDate.toISOString(),
+
+        status:
+          "pending_activation",
+      });
+  }
+
+  await supabaseAdmin
+    .from("advertisement_leads")
+    .update({
+      status: "paid",
+    })
+    .eq("id", lead.id);
+
+  console.log(
+    "✅ Advertisement purchase verwerkt"
+  );
+
+  return NextResponse.json({
+    received: true,
+  });
+}
+
+/* ===============================
    🔥 EXTRA ADS CHECK
 =============================== */
 

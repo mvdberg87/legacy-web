@@ -22,6 +22,16 @@ const [selectedPackage, setSelectedPackage] = useState<
   "partner" | "spotlight" | "premium" | null
 >(null);
 
+const [companyName, setCompanyName] = useState("");
+const [contactName, setContactName] = useState("");
+const [companyEmail, setCompanyEmail] = useState("");
+const [companyWebsite, setCompanyWebsite] = useState("");
+const [vacancyUrl, setVacancyUrl] = useState("");
+const [phoneNumber, setPhoneNumber] = useState("");
+const [notes, setNotes] = useState("");
+
+const [loading, setLoading] = useState(false);
+
 useEffect(() => {
   fetchClubs();
 }, []);
@@ -62,6 +72,67 @@ const toggleClub = (clubId: string) => {
       ? prev.filter((id) => id !== clubId)
       : [...prev, clubId]
   );
+};
+
+const startCheckout = async () => {
+
+  if (
+    !selectedPackage ||
+    selectedClubs.length === 0 ||
+    !companyName ||
+    !contactName ||
+    !companyEmail ||
+    !companyWebsite ||
+    !vacancyUrl
+  ) {
+    alert("Vul alle verplichte velden in.");
+    return;
+  }
+
+  try {
+
+    setLoading(true);
+
+    const res = await fetch(
+      "/api/stripe/company-checkout",
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          clubIds: selectedClubs,
+          packageKey: selectedPackage,
+
+          companyName,
+          contactName,
+          companyEmail,
+          companyWebsite,
+          vacancyUrl,
+          phoneNumber,
+          notes,
+        }),
+      }
+    );
+
+    const data = await res.json();
+
+    if (data.url) {
+      window.location.href = data.url;
+      return;
+    }
+
+    alert("Checkout kon niet worden gestart.");
+
+  } catch (err) {
+
+    console.error(err);
+
+    alert("Er ging iets mis.");
+
+  } finally {
+    setLoading(false);
+  }
 };
 
   return (
@@ -402,27 +473,93 @@ const toggleClub = (clubId: string) => {
 
 </div>
 
+<div className="mt-16 max-w-3xl mx-auto bg-white text-black rounded-2xl p-8">
+
+  <h3 className="text-2xl font-bold">
+    Bedrijfsgegevens
+  </h3>
+
+  <div className="grid md:grid-cols-2 gap-4 mt-6">
+
+    <input
+      value={companyName}
+      onChange={(e) => setCompanyName(e.target.value)}
+      placeholder="Bedrijfsnaam *"
+      className="border rounded-xl p-3"
+    />
+
+    <input
+      value={contactName}
+      onChange={(e) => setContactName(e.target.value)}
+      placeholder="Contactpersoon *"
+      className="border rounded-xl p-3"
+    />
+
+    <input
+      value={companyEmail}
+      onChange={(e) => setCompanyEmail(e.target.value)}
+      placeholder="E-mailadres *"
+      className="border rounded-xl p-3"
+    />
+
+    <input
+      value={phoneNumber}
+      onChange={(e) => setPhoneNumber(e.target.value)}
+      placeholder="Telefoonnummer"
+      className="border rounded-xl p-3"
+    />
+
+    <input
+      value={companyWebsite}
+      onChange={(e) => setCompanyWebsite(e.target.value)}
+      placeholder="Website *"
+      className="border rounded-xl p-3"
+    />
+
+    <input
+      value={vacancyUrl}
+      onChange={(e) => setVacancyUrl(e.target.value)}
+      placeholder="Vacature URL *"
+      className="border rounded-xl p-3"
+    />
+
+  </div>
+
+  <textarea
+    value={notes}
+    onChange={(e) => setNotes(e.target.value)}
+    placeholder="Extra toelichting"
+    className="border rounded-xl p-3 w-full mt-4"
+    rows={4}
+  />
+
+</div>
+
 <div className="mt-10 text-center">
 
   <button
-    disabled={
-      !selectedPackage ||
-      selectedClubs.length === 0
-    }
-    className="
-      bg-[#1f9d55]
-      px-10
-      py-4
-      rounded-2xl
-      font-semibold
-      hover:bg-[#15803d]
-      transition
-      disabled:opacity-40
-      disabled:cursor-not-allowed
-    "
-  >
-    Start recruitmentcampagne
-  </button>
+  onClick={startCheckout}
+  disabled={
+    loading ||
+    !selectedPackage ||
+    selectedClubs.length === 0
+  }
+  className="
+    bg-[#1f9d55]
+    px-10
+    py-4
+    rounded-2xl
+    font-semibold
+    hover:bg-[#15803d]
+    transition
+    disabled:opacity-40
+    disabled:cursor-not-allowed
+  "
+>
+  {loading
+    ? "Bezig..."
+    : "Start recruitmentcampagne"}
+</button>
 
 </div>
 
