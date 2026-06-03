@@ -4,7 +4,23 @@ import { supabaseAdmin } from "@/lib/supabaseAdmin";
 const resend = new Resend(process.env.RESEND_API_KEY!);
 
 export async function POST(req: Request) {
-  const { type, clubId, endDate, clubEmail, reason } = await req.json();;
+  const {
+  type,
+
+  clubId,
+  endDate,
+  clubEmail,
+  reason,
+
+  companyName,
+  contactName,
+  companyEmail,
+  companyWebsite,
+  vacancyUrl,
+
+  packageName,
+  clubs,
+} = await req.json();
 
   // 🔥 club ophalen
   const { data: club } = await supabaseAdmin
@@ -62,6 +78,95 @@ export async function POST(req: Request) {
       `,
     });
   }
+
+/* ===============================
+   ADVERTISEMENT SOLD
+=============================== */
+
+if (type === "advertisement_sold") {
+  await resend.emails.send({
+    from: "Sponsorjobs <info@sponsorjobs.nl>",
+    to: "info@sponsorjobs.nl",
+
+    subject: "Nieuwe advertentie verkocht",
+
+    html: `
+      <h2>Nieuwe advertentie verkocht</h2>
+
+      <p><strong>Bedrijf:</strong> ${companyName}</p>
+      <p><strong>Contactpersoon:</strong> ${contactName}</p>
+      <p><strong>E-mail:</strong> ${companyEmail}</p>
+
+      <p><strong>Website:</strong> ${companyWebsite}</p>
+
+      <p><strong>Vacature:</strong></p>
+      <p>${vacancyUrl}</p>
+
+      <p><strong>Pakket:</strong> ${packageName}</p>
+
+      <p><strong>Clubs:</strong></p>
+
+      <ul>
+        ${
+          clubs?.map(
+            (club: string) =>
+              `<li>${club}</li>`
+          ).join("") || ""
+        }
+      </ul>
+
+      <p>
+        Actie vereist:
+        advertentie controleren en activeren.
+      </p>
+    `,
+  });
+}
+
+/* ===============================
+   ADVERTISEMENT CONFIRMATION
+=============================== */
+
+if (
+  type ===
+  "advertisement_confirmation"
+) {
+  await resend.emails.send({
+    from: "Sponsorjobs <info@sponsorjobs.nl>",
+
+    to: companyEmail,
+
+    subject:
+      "Bedankt voor uw aankoop",
+
+    html: `
+      <p>Beste ${contactName},</p>
+
+      <p>
+        Bedankt voor uw aankoop via Sponsorjobs.
+      </p>
+
+      <p>
+        Wij controleren uw advertentie
+        en activeren deze binnen
+        1 werkdag.
+      </p>
+
+      <p>
+        Zodra de advertentie actief is,
+        ontvangt u hiervan bericht.
+      </p>
+
+      <p>
+        Met sportieve groet,
+      </p>
+
+      <p>
+        Team Sponsorjobs
+      </p>
+    `,
+  });
+}
 
   return Response.json({ ok: true });
 }

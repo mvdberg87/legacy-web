@@ -98,6 +98,16 @@ if (
     return NextResponse.json({ received: true });
   }
 
+  if (lead.status === "paid") {
+  console.log(
+    "⚠️ Advertisement already processed"
+  );
+
+  return NextResponse.json({
+    received: true,
+  });
+}
+
   const clubIds = lead.club_ids as string[];
 
   const packagePrices = {
@@ -201,7 +211,7 @@ if (!packagePrice) {
         vacancy_url:
           lead.vacancy_url,
 
-        package_id: null,
+        package_id: lead.package_id,
 
         order_id:
           order?.id,
@@ -218,19 +228,91 @@ if (!packagePrice) {
   }
 
   await supabaseAdmin
-    .from("advertisement_leads")
-    .update({
-      status: "paid",
-    })
-    .eq("id", lead.id);
+  .from("advertisement_leads")
+  .update({
+    status: "paid",
+  })
+  .eq("id", lead.id);
 
-  console.log(
-    "✅ Advertisement purchase verwerkt"
-  );
+  const { data: clubs } =
+  await supabaseAdmin
+    .from("clubs")
+    .select("name")
+    .in("id", clubIds);
 
-  return NextResponse.json({
-    received: true,
-  });
+const clubNames =
+  clubs?.map((c) => c.name) || [];
+
+  await fetch(
+  `${process.env.NEXT_PUBLIC_SITE_URL}/api/send-email`,
+  {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+
+    body: JSON.stringify({
+      type: "advertisement_sold",
+
+      companyName:
+        lead.company_name,
+
+      contactName:
+        lead.contact_name,
+
+      companyEmail:
+        lead.company_email,
+
+      companyWebsite:
+        lead.company_website,
+
+      vacancyUrl:
+        lead.vacancy_url,
+
+      packageName:
+        lead.package_key,
+
+      clubs:
+        clubNames,
+    }),
+  }
+);
+
+await fetch(
+  `${process.env.NEXT_PUBLIC_SITE_URL}/api/send-email`,
+  {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+
+    body: JSON.stringify({
+      type:
+        "advertisement_confirmation",
+
+      companyEmail:
+        lead.company_email,
+
+      contactName:
+        lead.contact_name,
+    }),
+  }
+);
+
+/* ===============================
+   MAILS
+=============================== */
+
+// komt hier
+
+console.log(
+  "✅ Advertisement purchase verwerkt"
+);
+
+return NextResponse.json({
+  received: true,
+});
+
 }
 
 /* ===============================
@@ -298,9 +380,9 @@ console.log("🔥 METADATA:", session.metadata);
   if (!clubId) return NextResponse.json({ received: true });
 
   const subscriptionId =
-    typeof session.subscription === "string"
-      ? session.subscription
-      : session.subscription?.id;
+  typeof session.subscription === "string"
+    ? session.subscription
+    : session.subscription?.id ?? null;
 
   if (!subscriptionId) return NextResponse.json({ received: true });
 
