@@ -47,6 +47,17 @@ if (!packagePrice) {
 const amount =
   packagePrice * clubIds.length;
 
+  const packageName =
+  packageKey.charAt(0).toUpperCase() +
+  packageKey.slice(1);
+
+const { data: packageData } =
+  await supabaseAdmin
+    .from("advertisement_packages")
+    .select("id")
+    .eq("name", packageName)
+    .single();
+
       const { data: lead, error: leadError } =
   await supabaseAdmin
     .from("advertisement_leads")
@@ -61,6 +72,7 @@ const amount =
       package_key: packageKey,
       club_ids: clubIds,
       status: "checkout_pending",
+      package_id: packageData?.id,
     })
     .select()
     .single();
