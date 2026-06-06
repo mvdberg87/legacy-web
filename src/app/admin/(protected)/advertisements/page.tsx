@@ -44,6 +44,9 @@ function StatusBadge({
 
       rejected:
   "bg-red-100 text-red-800",
+
+  deleted:
+  "bg-gray-200 text-gray-700",
   };
 
   return (
@@ -155,6 +158,28 @@ async function deleteAdvertisement(
         "Content-Type":
           "application/json",
       },
+      body: JSON.stringify({
+        advertisementId,
+      }),
+    }
+  );
+
+  await load();
+}
+
+async function restoreAdvertisement(
+  advertisementId: string
+) {
+  await fetch(
+    "/api/admin/advertisements/restore",
+    {
+      method: "POST",
+
+      headers: {
+        "Content-Type":
+          "application/json",
+      },
+
       body: JSON.stringify({
         advertisementId,
       }),
@@ -455,8 +480,12 @@ await load();
 
                 <td className="px-4 py-3 text-center">
                   <StatusBadge
-                    status={ad.status}
-                  />
+  status={
+    ad.deleted_at
+      ? "deleted"
+      : ad.status
+  }
+/>
                 </td>
 
                 <td className="px-4 py-3 text-center">
@@ -485,8 +514,8 @@ await load();
 
                 <td className="px-4 py-3 text-center">
 
-  {ad.status ===
-    "pending_activation" && (
+  {ad.status === "pending_activation" &&
+ !ad.deleted_at && (
 
     <div className="flex justify-center gap-2">
 
@@ -533,7 +562,10 @@ await load();
 
   )}
 
-  {ad.status === "active" && (
+  
+
+  {ad.status === "active" &&
+ !ad.deleted_at && (
 
   <div className="flex justify-center gap-2">
 
@@ -576,6 +608,19 @@ await load();
   <span className="text-red-600 text-xs font-medium">
     Afgekeurd
   </span>
+)}
+
+{ad.deleted_at && (
+
+  <button
+    onClick={() =>
+      restoreAdvertisement(ad.id)
+    }
+    className="bg-green-600 text-white px-3 py-1 rounded text-xs hover:bg-green-700"
+  >
+    ↩️ Herstel
+  </button>
+
 )}
 
 </td>
