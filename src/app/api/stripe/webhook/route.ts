@@ -528,11 +528,16 @@ if (!packageKey) {
     }
 
   } catch (err) {
-    return NextResponse.json(
-      { error: "Webhook handler failed" },
-      { status: 500 }
-    );
-  }
+  console.error(
+    "❌ WEBHOOK ERROR:",
+    err
+  );
+
+  return NextResponse.json(
+    { error: "Webhook handler failed" },
+    { status: 500 }
+  );
+}
 
   await supabaseAdmin
   .from("stripe_events")
