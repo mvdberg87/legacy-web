@@ -13,36 +13,44 @@ export async function POST(
       vacancyUrl,
     } = await req.json();
 
-    await supabaseAdmin
-      .from("company_advertisements")
-      .update({
-        company_name:
-          companyName,
+    console.log("UPDATE REQUEST:", {
+      advertisementId,
+      companyName,
+      companyWebsite,
+      vacancyUrl,
+    });
 
-        company_website:
-          companyWebsite,
+    const result =
+      await supabaseAdmin
+        .from("company_advertisements")
+        .update({
+          company_name: companyName,
+          company_website: companyWebsite,
+          vacancy_url: vacancyUrl,
+        })
+        .eq("id", advertisementId)
+        .select();
 
-        vacancy_url:
-          vacancyUrl,
-
-        updated_at:
-          new Date().toISOString(),
-      })
-      .eq(
-        "id",
-        advertisementId
-      );
+    console.log(
+      "UPDATE RESULT:",
+      result
+    );
 
     return NextResponse.json({
       success: true,
+      result,
     });
 
-  } catch {
+  } catch (error) {
+
+    console.error(
+      "UPDATE ERROR:",
+      error
+    );
 
     return NextResponse.json(
       {
-        error:
-          "Update failed",
+        error: "Update failed",
       },
       {
         status: 500,
