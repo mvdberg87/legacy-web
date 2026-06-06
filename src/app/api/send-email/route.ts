@@ -208,5 +208,54 @@ if (
   });
 }
 
+/* ===============================
+   ADVERTISEMENT REJECTED
+=============================== */
+
+if (
+  type ===
+  "advertisement_rejected"
+) {
+  await resend.emails.send({
+    from: "Sponsorjobs <info@sponsorjobs.nl>",
+
+    to: companyEmail,
+
+    subject:
+      "Aanvullende informatie nodig",
+
+    html: `
+      <p>Beste ${contactName || companyName},</p>
+
+      <p>
+        Bedankt voor uw aanvraag via Sponsorjobs.
+      </p>
+
+      <p>
+        Op dit moment kunnen wij de
+        advertentie nog niet activeren.
+      </p>
+
+      <p>
+        <strong>Reden:</strong>
+      </p>
+
+      <p>
+        ${reason}
+      </p>
+
+      <p>
+        Zodra dit is aangepast,
+        beoordelen wij de advertentie
+        opnieuw.
+      </p>
+
+      <p>
+        Team Sponsorjobs
+      </p>
+    `,
+  });
+}
+
   return Response.json({ ok: true });
 }

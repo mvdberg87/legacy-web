@@ -78,6 +78,29 @@ export async function POST(
   }
 );
 
+await fetch(
+  `${process.env.NEXT_PUBLIC_SITE_URL}/api/send-email`,
+  {
+    method: "POST",
+
+    headers: {
+      "Content-Type":
+        "application/json",
+    },
+
+    body: JSON.stringify({
+      type:
+        "advertisement_activated",
+
+      companyEmail:
+        advertisement.company_email,
+
+      companyName:
+        advertisement.company_name,
+    }),
+  }
+);
+
     return NextResponse.json({
       success: true,
     });
