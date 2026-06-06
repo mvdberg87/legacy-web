@@ -3,10 +3,16 @@
 import { useState } from "react";
 import SubscriptionsTable from "@/components/admin/SubscriptionsTable";
 import UpgradeRequestsTable from "@/components/admin/UpgradeRequestsTable";
+import AdvertisementRevenueTable
+from "@/components/admin/AdvertisementRevenueTable";
 
 export default function AdminRevenuePage() {
 
-  const [tab, setTab] = useState<"subscriptions" | "upgrades">("subscriptions");
+  const [tab, setTab] = useState<
+  "subscriptions" |
+  "advertisements" |
+  "upgrades"
+>("subscriptions");
 
   return (
     <div className="space-y-6">
@@ -31,10 +37,21 @@ export default function AdminRevenuePage() {
           Upgrade requests
         </button>
 
+        <button
+  onClick={() =>
+    setTab("advertisements")
+  }
+  className="px-4 py-2 border rounded"
+>
+  Advertisements
+</button>
+
       </div>
 
       {tab === "subscriptions" && <SubscriptionsTable />}
       {tab === "upgrades" && <UpgradeRequestsTable />}
+      {tab === "advertisements" &&
+  <AdvertisementRevenueTable />}
 
     </div>
   );
