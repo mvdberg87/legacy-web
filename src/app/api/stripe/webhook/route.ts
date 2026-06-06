@@ -131,6 +131,34 @@ if (!packagePrice) {
     received: true,
   });
 }
+const packageNames = {
+  partner: "Partner",
+  spotlight: "Spotlight",
+  premium: "Premium",
+};
+
+const packageName =
+  packageNames[
+    lead.package_key as keyof typeof packageNames
+  ];
+
+const { data: packageData } =
+  await supabaseAdmin
+    .from("advertisement_packages")
+    .select("id")
+    .eq("name", packageName)
+    .single();
+
+if (!packageData) {
+  console.error(
+    "❌ Package not found:",
+    packageName
+  );
+
+  return NextResponse.json({
+    received: true,
+  });
+}
 
   for (const clubId of clubIds) {
 
@@ -230,7 +258,7 @@ console.log(
         vacancy_url:
           lead.vacancy_url,
 
-        package_id: lead.package_id,
+        package_id: packageData.id,
 
         order_id:
           order?.id,
