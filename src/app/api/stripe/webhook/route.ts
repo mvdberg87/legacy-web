@@ -150,49 +150,68 @@ if (!packagePrice) {
       endDate.getFullYear() + 1
     );
 
-    const { data: order } =
-      await supabaseAdmin
-        .from("advertisement_orders")
-        .insert({
-          club_id: clubId,
+    const {
+  data: order,
+  error: orderError,
+} =
+  await supabaseAdmin
+    .from("advertisement_orders")
+    .insert({
+      club_id: clubId,
 
-          company_name:
-            lead.company_name,
+      company_name:
+        lead.company_name,
 
-          company_email:
-            lead.company_email,
+      company_email:
+        lead.company_email,
 
-          package_name:
-            lead.package_key,
+      package_name:
+        lead.package_key,
 
-          amount:
-            packagePrice,
+      amount:
+        packagePrice,
 
-          club_amount:
-            clubAmount,
+      club_amount:
+        clubAmount,
 
-          platform_amount:
-            platformAmount,
+      platform_amount:
+        platformAmount,
 
-          stripe_checkout_session_id:
-            session.id,
+      stripe_checkout_session_id:
+        session.id,
 
-          stripe_payment_intent_id:
-  typeof session.payment_intent === "string"
-    ? session.payment_intent
-    : null,
+      stripe_payment_intent_id:
+        typeof session.payment_intent === "string"
+          ? session.payment_intent
+          : null,
 
-          start_date:
-            startDate.toISOString(),
+      start_date:
+        startDate.toISOString(),
 
-          end_date:
-            endDate.toISOString(),
+      end_date:
+        endDate.toISOString(),
 
-          status:
-            "paid",
-        })
-        .select()
-        .single();
+      status: "paid",
+    })
+    .select()
+    .single();
+
+if (orderError) {
+  console.error(
+    "❌ ORDER INSERT ERROR:",
+    orderError
+  );
+}
+
+console.log(
+  "🔥 ORDER RESULT:",
+  order
+);
+
+console.log(
+  "🔥 ORDER ID:",
+  order?.id
+);
 
     await supabaseAdmin
       .from("company_advertisements")
