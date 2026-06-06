@@ -11,6 +11,8 @@ type Advertisement = {
 
   company_name: string;
   company_email: string;
+  company_website: string | null;
+vacancy_url: string | null;
 
   package_name: string | null;
 
@@ -73,6 +75,18 @@ export default function AdminAdvertisementsPage() {
 
   const [loading, setLoading] =
     useState(true);
+
+    const [editingAd, setEditingAd] =
+  useState<Advertisement | null>(null);
+
+const [editCompanyName, setEditCompanyName] =
+  useState("");
+
+const [editWebsite, setEditWebsite] =
+  useState("");
+
+const [editVacancyUrl, setEditVacancyUrl] =
+  useState("");
 
     const [filter, setFilter] = useState<
   | "all"
@@ -137,6 +151,46 @@ async function toggleFeatured(
       }),
     }
   );
+
+  await load();
+}
+
+async function saveAdvertisement() {
+
+  if (!editingAd) return;
+
+  const response = await fetch(
+    "/api/admin/advertisements/update",
+    {
+      method: "POST",
+
+      headers: {
+        "Content-Type":
+          "application/json",
+      },
+
+      body: JSON.stringify({
+        advertisementId:
+          editingAd.id,
+
+        companyName:
+          editCompanyName,
+
+        companyWebsite:
+          editWebsite,
+
+        vacancyUrl:
+          editVacancyUrl,
+      }),
+    }
+  );
+
+  if (!response.ok) {
+    alert("Opslaan mislukt");
+    return;
+  }
+
+  setEditingAd(null);
 
   await load();
 }
@@ -586,6 +640,21 @@ await load();
     </button>
 
     <button
+  onClick={() => {
+    setEditingAd(ad);
+
+    setEditCompanyName(
+      ad.company_name ?? ""
+    );
+
+    setEditWebsite(
+      ad.company_website ?? ""
+    );
+
+    setEditVacancyUrl(
+      ad.vacancy_url ?? ""
+    );
+  }}
   className="bg-blue-600 text-white px-3 py-1 rounded text-xs"
 >
   ✏️
@@ -634,6 +703,75 @@ await load();
         </table>
 
       </div>
+
+      {editingAd && (
+
+  <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
+
+    <div className="bg-white rounded-xl p-6 w-full max-w-lg">
+
+      <h2 className="text-lg font-semibold mb-4">
+        Advertentie bewerken
+      </h2>
+
+      <input
+        value={editCompanyName}
+        onChange={(e) =>
+          setEditCompanyName(
+            e.target.value
+          )
+        }
+        placeholder="Bedrijfsnaam"
+        className="w-full border rounded p-2 mb-3"
+      />
+
+      <input
+        value={editWebsite}
+        onChange={(e) =>
+          setEditWebsite(
+            e.target.value
+          )
+        }
+        placeholder="Website"
+        className="w-full border rounded p-2 mb-3"
+      />
+
+      <input
+        value={editVacancyUrl}
+        onChange={(e) =>
+          setEditVacancyUrl(
+            e.target.value
+          )
+        }
+        placeholder="Vacature URL"
+        className="w-full border rounded p-2 mb-4"
+      />
+
+      <div className="flex justify-end gap-2">
+
+        <button
+          onClick={() =>
+            setEditingAd(null)
+          }
+          className="px-4 py-2 border rounded"
+        >
+          Annuleren
+        </button>
+
+        <button
+          onClick={saveAdvertisement}
+          className="px-4 py-2 bg-green-600 text-white rounded"
+        >
+          Opslaan
+        </button>
+
+      </div>
+
+    </div>
+
+  </div>
+
+)}
 
     </div>
   );
