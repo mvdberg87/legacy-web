@@ -237,14 +237,17 @@ await load();
   (ad) => {
 
     if (filter === "all") {
-      return true;
+      return !ad.deleted_at;
     }
 
     if (filter === "deleted") {
       return !!ad.deleted_at;
     }
 
-    return ad.status === filter;
+    return (
+      ad.status === filter &&
+      !ad.deleted_at
+    );
   }
 );
 
@@ -306,16 +309,17 @@ await load();
 
 </div>
 
-<div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
+<div className="grid grid-cols-2 md:grid-cols-5 gap-4 mb-6">
 
   <div className="border rounded p-4">
     <div className="text-2xl font-bold">
       {
         ads.filter(
-          a =>
-            a.status ===
-            "pending_activation"
-        ).length
+  a =>
+    a.status ===
+      "pending_activation" &&
+    !a.deleted_at
+).length
       }
     </div>
     <div>Pending</div>
@@ -325,7 +329,7 @@ await load();
     <div className="text-2xl font-bold">
       {
         ads.filter(
-          a => a.status === "active"
+          a => a.status === "active" && !a.deleted_at
         ).length
       }
     </div>
@@ -336,8 +340,10 @@ await load();
     <div className="text-2xl font-bold">
       {
         ads.filter(
-          a => a.status === "rejected"
-        ).length
+  a =>
+    a.status === "rejected" &&
+    !a.deleted_at
+).length
       }
     </div>
     <div>Afgekeurd</div>
@@ -347,12 +353,26 @@ await load();
     <div className="text-2xl font-bold">
       {
         ads.filter(
-          a => a.is_featured
-        ).length
+  a =>
+    a.is_featured &&
+    !a.deleted_at
+).length
       }
     </div>
     <div>Featured</div>
   </div>
+
+  <div className="border rounded p-4">
+  <div className="text-2xl font-bold">
+    {
+      ads.filter(
+        a => a.deleted_at
+      ).length
+    }
+  </div>
+
+  <div>Verwijderd</div>
+</div>
 
 </div>
 
