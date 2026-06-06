@@ -88,6 +88,9 @@ const [editWebsite, setEditWebsite] =
 const [editVacancyUrl, setEditVacancyUrl] =
   useState("");
 
+  const [editPackageName, setEditPackageName] =
+  useState("");
+
     const [filter, setFilter] = useState<
   | "all"
   | "pending_activation"
@@ -170,18 +173,21 @@ async function saveAdvertisement() {
       },
 
       body: JSON.stringify({
-        advertisementId:
-          editingAd.id,
+  advertisementId:
+    editingAd.id,
 
-        companyName:
-          editCompanyName,
+  companyName:
+    editCompanyName,
 
-        companyWebsite:
-          editWebsite,
+  companyWebsite:
+    editWebsite,
 
-        vacancyUrl:
-          editVacancyUrl,
-      }),
+  vacancyUrl:
+    editVacancyUrl,
+
+  packageName:
+    editPackageName,
+}),
     }
   );
 
@@ -654,10 +660,14 @@ await load();
     setEditVacancyUrl(
       ad.vacancy_url ?? ""
     );
+    setEditPackageName(
+  ad.package_name ?? ""
+);
   }}
   className="bg-blue-600 text-white px-3 py-1 rounded text-xs"
 >
   ✏️
+
 </button>
 
     <button
@@ -735,6 +745,28 @@ await load();
         placeholder="Website"
         className="w-full border rounded p-2 mb-3"
       />
+
+      <select
+  value={editPackageName}
+  onChange={(e) =>
+    setEditPackageName(
+      e.target.value
+    )
+  }
+  className="w-full border rounded p-2 mb-3"
+>
+  <option value="partner">
+    Partner
+  </option>
+
+  <option value="spotlight">
+    Spotlight
+  </option>
+
+  <option value="premium">
+    Premium
+  </option>
+</select>
 
       <input
         value={editVacancyUrl}
