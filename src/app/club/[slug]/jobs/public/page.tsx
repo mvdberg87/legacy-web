@@ -119,6 +119,26 @@ if (jobIds.length > 0) {
     .is("job_id", null) // alleen echte handmatige ads
     .order("is_featured", { ascending: false });
 
+    /* ===============================
+   4b️⃣ Marketplace advertenties
+=============================== */
+
+const { data: marketplaceAds } = await supabase
+  .from("company_advertisements")
+  .select(`
+    id,
+    company_name,
+    company_website,
+    vacancy_url,
+    is_featured
+  `)
+  .eq("club_id", club.id)
+  .eq("status", "active")
+  .is("deleted_at", null)
+  .order("is_featured", {
+    ascending: false,
+  });
+
   /* ===============================
      5️⃣ Vacatures mappen (zonder featured)
      =============================== */
@@ -139,10 +159,32 @@ if (jobIds.length > 0) {
   /* ===============================
      6️⃣ Advertenties combineren
      =============================== */
-  const combinedAds = [
-    ...featuredJobAds,
-    ...(manualAds ?? []),
-  ];
+  const marketplaceAdsMapped =
+  (marketplaceAds ?? []).map(
+    (ad) => ({
+      id: ad.id,
+
+      company_name:
+        ad.company_name,
+
+      job_title:
+        "Vacature bekijken",
+
+      link_url:
+        ad.vacancy_url,
+
+      image_url: null,
+
+      is_featured:
+        ad.is_featured,
+    })
+  );
+
+const combinedAds = [
+  ...featuredJobAds,
+  ...(marketplaceAdsMapped ?? []),
+  ...(manualAds ?? []),
+];
 
   /* ===============================
      7️⃣ Render

@@ -24,6 +24,7 @@ type Advertisement = {
   platform_amount: number;
 
   is_featured: boolean;
+  deleted_at: string | null;
 };
 
 function StatusBadge({
@@ -69,6 +70,14 @@ export default function AdminAdvertisementsPage() {
 
   const [loading, setLoading] =
     useState(true);
+
+    const [filter, setFilter] = useState<
+  | "all"
+  | "pending_activation"
+  | "active"
+  | "rejected"
+  | "deleted"
+>("all");
 
     async function rejectAdvertisement(
   advertisementId: string
@@ -224,6 +233,21 @@ await load();
     load();
   }, []);
 
+  const filteredAds = ads.filter(
+  (ad) => {
+
+    if (filter === "all") {
+      return true;
+    }
+
+    if (filter === "deleted") {
+      return !!ad.deleted_at;
+    }
+
+    return ad.status === filter;
+  }
+);
+
   if (loading) {
     return <p>Laden...</p>;
   }
@@ -234,6 +258,103 @@ await load();
       <h1 className="text-xl font-semibold mb-6">
         Advertentiebeheer
       </h1>
+
+      <div className="flex gap-2 mb-6 flex-wrap">
+
+  <button
+    onClick={() => setFilter("all")}
+    className="px-4 py-2 border rounded"
+  >
+    Alle
+  </button>
+
+  <button
+    onClick={() =>
+      setFilter("pending_activation")
+    }
+    className="px-4 py-2 border rounded"
+  >
+    Pending
+  </button>
+
+  <button
+    onClick={() =>
+      setFilter("active")
+    }
+    className="px-4 py-2 border rounded"
+  >
+    Actief
+  </button>
+
+  <button
+    onClick={() =>
+      setFilter("rejected")
+    }
+    className="px-4 py-2 border rounded"
+  >
+    Afgekeurd
+  </button>
+
+  <button
+    onClick={() =>
+      setFilter("deleted")
+    }
+    className="px-4 py-2 border rounded"
+  >
+    Verwijderd
+  </button>
+
+</div>
+
+<div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
+
+  <div className="border rounded p-4">
+    <div className="text-2xl font-bold">
+      {
+        ads.filter(
+          a =>
+            a.status ===
+            "pending_activation"
+        ).length
+      }
+    </div>
+    <div>Pending</div>
+  </div>
+
+  <div className="border rounded p-4">
+    <div className="text-2xl font-bold">
+      {
+        ads.filter(
+          a => a.status === "active"
+        ).length
+      }
+    </div>
+    <div>Actief</div>
+  </div>
+
+  <div className="border rounded p-4">
+    <div className="text-2xl font-bold">
+      {
+        ads.filter(
+          a => a.status === "rejected"
+        ).length
+      }
+    </div>
+    <div>Afgekeurd</div>
+  </div>
+
+  <div className="border rounded p-4">
+    <div className="text-2xl font-bold">
+      {
+        ads.filter(
+          a => a.is_featured
+        ).length
+      }
+    </div>
+    <div>Featured</div>
+  </div>
+
+</div>
 
       <div className="overflow-x-auto">
 
@@ -287,7 +408,7 @@ await load();
 
           <tbody>
 
-            {ads.map((ad) => (
+            {filteredAds.map((ad) => (
 
               <tr
                 key={ad.id}
@@ -393,11 +514,43 @@ await load();
   )}
 
   {ad.status === "active" && (
-    <span className="text-green-600 text-xs font-medium">
-      Actief
-    </span>
-    
-  )}
+
+  <div className="flex justify-center gap-2">
+
+    <button
+      onClick={() =>
+        toggleFeatured(
+          ad.id,
+          ad.is_featured
+        )
+      }
+      className={`px-3 py-1 rounded text-xs text-white ${
+        ad.is_featured
+          ? "bg-yellow-600"
+          : "bg-yellow-500"
+      }`}
+    >
+      ⭐
+    </button>
+
+    <button
+  className="bg-blue-600 text-white px-3 py-1 rounded text-xs"
+>
+  ✏️
+</button>
+
+    <button
+      onClick={() =>
+        deleteAdvertisement(ad.id)
+      }
+      className="bg-gray-700 text-white px-3 py-1 rounded text-xs hover:bg-gray-800"
+    >
+      🗑️
+    </button>
+
+  </div>
+
+)}
 
   {ad.status === "rejected" && (
   <span className="text-red-600 text-xs font-medium">
