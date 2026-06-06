@@ -38,6 +38,9 @@ function StatusBadge({
 
     expired:
       "bg-red-100 text-red-800",
+
+      rejected:
+  "bg-red-100 text-red-800",
   };
 
   return (
@@ -64,6 +67,43 @@ export default function AdminAdvertisementsPage() {
 
   const [loading, setLoading] =
     useState(true);
+
+    async function rejectAdvertisement(
+  advertisementId: string
+) {
+
+  const reason = prompt(
+    "Reden van afkeuren?"
+  );
+
+  if (!reason) return;
+
+  const response = await fetch(
+    "/api/admin/advertisements/reject",
+    {
+      method: "POST",
+
+      headers: {
+        "Content-Type":
+          "application/json",
+      },
+
+      body: JSON.stringify({
+        advertisementId,
+        rejectionReason: reason,
+      }),
+    }
+  );
+
+  if (!response.ok) {
+    alert("Afkeuren mislukt");
+    return;
+  }
+
+  alert("Advertentie afgekeurd");
+
+  await load();
+}
 
     async function activateAdvertisement(
   advertisementId: string
@@ -249,14 +289,27 @@ await load();
   {ad.status ===
     "pending_activation" && (
 
-    <button
-      onClick={() =>
-        activateAdvertisement(ad.id)
-      }
-      className="bg-green-600 text-white px-3 py-1 rounded text-xs hover:bg-green-700"
-    >
-      Activeer
-    </button>
+    <div className="flex justify-center gap-2">
+
+  <button
+    onClick={() =>
+      activateAdvertisement(ad.id)
+    }
+    className="bg-green-600 text-white px-3 py-1 rounded text-xs hover:bg-green-700"
+  >
+    Activeer
+  </button>
+
+  <button
+    onClick={() =>
+      rejectAdvertisement(ad.id)
+    }
+    className="bg-red-600 text-white px-3 py-1 rounded text-xs hover:bg-red-700"
+  >
+    Afkeuren
+  </button>
+
+</div>
 
   )}
 
@@ -264,7 +317,14 @@ await load();
     <span className="text-green-600 text-xs font-medium">
       Actief
     </span>
+    
   )}
+
+  {ad.status === "rejected" && (
+  <span className="text-red-600 text-xs font-medium">
+    Afgekeurd
+  </span>
+)}
 
 </td>
 
