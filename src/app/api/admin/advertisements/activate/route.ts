@@ -7,9 +7,13 @@ export async function POST(
 
   try {
 
+    console.log("🔥 ACTIVATE ROUTE HIT");
+
     const {
       advertisementId,
     } = await req.json();
+
+    console.log("🔥 ADVERTISEMENT ID:", advertisementId);
 
     if (!advertisementId) {
       return NextResponse.json(
@@ -27,6 +31,11 @@ export async function POST(
         .eq("id", advertisementId)
         .single();
 
+        console.log(
+  "🔥 ADVERTISEMENT:",
+  advertisement
+);
+
     if (!advertisement) {
       return NextResponse.json(
         { error: "Advertisement not found" },
@@ -34,16 +43,22 @@ export async function POST(
       );
     }
 
-    await supabaseAdmin
-      .from(
-        "company_advertisements"
-      )
-      .update({
-        status: "active",
-        activated_at:
-          new Date().toISOString(),
-      })
-      .eq("id", advertisementId);
+    const { error } =
+  await supabaseAdmin
+    .from(
+      "company_advertisements"
+    )
+    .update({
+      status: "active",
+      activated_at:
+        new Date().toISOString(),
+    })
+    .eq("id", advertisementId);
+
+console.log(
+  "🔥 UPDATE ERROR:",
+  error
+);
 
     return NextResponse.json({
       success: true,
