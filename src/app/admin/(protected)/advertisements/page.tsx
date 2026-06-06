@@ -65,6 +65,35 @@ export default function AdminAdvertisementsPage() {
   const [loading, setLoading] =
     useState(true);
 
+    async function activateAdvertisement(
+  advertisementId: string
+) {
+  const confirmed = confirm(
+    "Advertentie activeren?"
+  );
+
+  if (!confirmed) return;
+
+  const { error } = await supabase
+    .from("company_advertisements")
+    .update({
+      status: "active",
+      activated_at:
+        new Date().toISOString(),
+    })
+    .eq("id", advertisementId);
+
+  if (error) {
+    console.error(error);
+    alert("Activatie mislukt");
+    return;
+  }
+
+  alert("Advertentie geactiveerd");
+
+await load();
+}
+
   async function load() {
     setLoading(true);
 
@@ -139,8 +168,12 @@ export default function AdminAdvertisementsPage() {
               </th>
 
               <th className="px-4 py-3 text-center">
-                Sponsuls
-              </th>
+  Sponsuls
+</th>
+
+<th className="px-4 py-3 text-center">
+  Actie
+</th>
             </tr>
 
           </thead>
@@ -197,6 +230,30 @@ export default function AdminAdvertisementsPage() {
                 <td className="px-4 py-3 text-center text-blue-700">
                   € {ad.platform_amount}
                 </td>
+
+                <td className="px-4 py-3 text-center">
+
+  {ad.status ===
+    "pending_activation" && (
+
+    <button
+      onClick={() =>
+        activateAdvertisement(ad.id)
+      }
+      className="bg-green-600 text-white px-3 py-1 rounded text-xs hover:bg-green-700"
+    >
+      Activeer
+    </button>
+
+  )}
+
+  {ad.status === "active" && (
+    <span className="text-green-600 text-xs font-medium">
+      Actief
+    </span>
+  )}
+
+</td>
 
               </tr>
 
