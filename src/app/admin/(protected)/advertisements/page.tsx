@@ -74,20 +74,33 @@ export default function AdminAdvertisementsPage() {
 
   if (!confirmed) return;
 
-  const { error } = await supabase
-    .from("company_advertisements")
-    .update({
-      status: "active",
-      activated_at:
-        new Date().toISOString(),
-    })
-    .eq("id", advertisementId);
+  const response = await fetch(
+  "/api/admin/advertisements/activate",
+  {
+    method: "POST",
 
-  if (error) {
-    console.error(error);
-    alert("Activatie mislukt");
-    return;
+    headers: {
+      "Content-Type":
+        "application/json",
+    },
+
+    body: JSON.stringify({
+      advertisementId,
+    }),
   }
+);
+
+const result =
+  await response.json();
+
+if (!response.ok) {
+  alert(
+    result.error ||
+    "Activatie mislukt"
+  );
+
+  return;
+}
 
   alert("Advertentie geactiveerd");
 
