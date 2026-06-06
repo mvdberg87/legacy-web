@@ -168,5 +168,45 @@ if (
   });
 }
 
+/* ===============================
+   ADVERTISEMENT ACTIVATED
+=============================== */
+
+if (
+  type ===
+  "advertisement_activated"
+) {
+  await resend.emails.send({
+    from: "Sponsorjobs <info@sponsorjobs.nl>",
+
+    to: companyEmail,
+
+    subject:
+      "Uw advertentie is geactiveerd",
+
+    html: `
+      <p>Beste ${contactName || "relatie"},</p>
+
+      <p>
+        Uw advertentie is gecontroleerd
+        en geactiveerd.
+      </p>
+
+      <p>
+        De vacature is nu zichtbaar op
+        Sponsorjobs.
+      </p>
+
+      <p>
+        Bedankt voor uw vertrouwen.
+      </p>
+
+      <p>
+        Team Sponsorjobs
+      </p>
+    `,
+  });
+}
+
   return Response.json({ ok: true });
 }
