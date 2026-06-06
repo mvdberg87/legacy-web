@@ -22,6 +22,8 @@ type Advertisement = {
   amount: number;
   club_amount: number;
   platform_amount: number;
+
+  is_featured: boolean;
 };
 
 function StatusBadge({
@@ -101,6 +103,54 @@ export default function AdminAdvertisementsPage() {
   }
 
   alert("Advertentie afgekeurd");
+
+  await load();
+}
+
+async function toggleFeatured(
+  advertisementId: string,
+  currentValue: boolean
+) {
+  await fetch(
+    "/api/admin/advertisements/highlight",
+    {
+      method: "POST",
+      headers: {
+        "Content-Type":
+          "application/json",
+      },
+      body: JSON.stringify({
+        advertisementId,
+        isFeatured: !currentValue,
+      }),
+    }
+  );
+
+  await load();
+}
+
+async function deleteAdvertisement(
+  advertisementId: string
+) {
+  const confirmed = confirm(
+    "Advertentie verwijderen?"
+  );
+
+  if (!confirmed) return;
+
+  await fetch(
+    "/api/admin/advertisements/delete",
+    {
+      method: "POST",
+      headers: {
+        "Content-Type":
+          "application/json",
+      },
+      body: JSON.stringify({
+        advertisementId,
+      }),
+    }
+  );
 
   await load();
 }
@@ -209,6 +259,10 @@ await load();
               </th>
 
               <th className="px-4 py-3 text-center">
+  Featured
+</th>
+
+              <th className="px-4 py-3 text-center">
                 Loopt tot
               </th>
 
@@ -265,6 +319,10 @@ await load();
                 </td>
 
                 <td className="px-4 py-3 text-center">
+  {ad.is_featured ? "⭐" : "-"}
+</td>
+
+                <td className="px-4 py-3 text-center">
                   {new Date(
                     ad.end_date
                   ).toLocaleDateString(
@@ -308,6 +366,27 @@ await load();
   >
     Afkeuren
   </button>
+
+  <button
+  onClick={() =>
+    toggleFeatured(
+      ad.id,
+      ad.is_featured
+    )
+  }
+  className="bg-yellow-500 text-white px-3 py-1 rounded text-xs hover:bg-yellow-600"
+>
+  ⭐
+</button>
+
+<button
+  onClick={() =>
+    deleteAdvertisement(ad.id)
+  }
+  className="bg-gray-700 text-white px-3 py-1 rounded text-xs hover:bg-gray-800"
+>
+  🗑️
+</button>
 
 </div>
 
