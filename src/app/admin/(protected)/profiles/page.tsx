@@ -18,6 +18,7 @@ type Profile = {
   club_slug: string | null;
   club_status: string | null;
   club_package: string | null;
+  advertising_sales_enabled?: boolean | null;
   subscription_status?: string | null;
 subscription_cancelled_at?: string | null;
 subscription_end?: string | null;
@@ -137,6 +138,27 @@ async function resendActivationLink(requestId: string) {
   }
 }
 
+async function toggleManagedAds(
+  clubId: string,
+  currentValue: boolean
+) {
+
+  const { error } =
+    await supabase
+      .from("clubs")
+      .update({
+        advertising_sales_enabled:
+          !currentValue,
+      })
+      .eq("id", clubId);
+
+  if (error) {
+    alert("Opslaan mislukt");
+    return;
+  }
+
+  await loadProfiles();
+}
   /* ---------- Filter ---------- */
 
   const filtered = profiles.filter((p) => {
@@ -183,8 +205,17 @@ async function resendActivationLink(requestId: string) {
                   <th className="px-3 py-3 text-left">E-mail</th>
                   <th className="px-3 py-3 text-left">Club</th>
                   <th className="px-3 py-3 text-left">Rol</th>
-<th className="px-3 py-3 text-left">Pakket</th>
-<th className="px-3 py-3 text-left">Aangemaakt</th>
+<th className="px-3 py-3 text-left">
+  Pakket
+</th>
+
+<th className="px-3 py-3 text-center">
+  Managed Ads
+</th>
+
+<th className="px-3 py-3 text-left">
+  Aangemaakt
+</th>
                   <th className="px-3 py-3 text-center">Acties</th>
                 </tr>
               </thead>
@@ -247,6 +278,35 @@ async function resendActivationLink(requestId: string) {
 
                       <td className="px-3 py-3">
   {p.club_package ?? "—"}
+</td>
+
+<td className="px-3 py-3 text-center">
+
+  {club ? (
+
+    <button
+      onClick={() =>
+        toggleManagedAds(
+          club.id,
+          p.advertising_sales_enabled ??
+            false
+        )
+      }
+      className={`px-3 py-1 rounded text-xs text-white ${
+        p.advertising_sales_enabled
+          ? "bg-green-600"
+          : "bg-gray-500"
+      }`}
+    >
+      {p.advertising_sales_enabled
+        ? "AAN"
+        : "UIT"}
+    </button>
+
+  ) : (
+    "—"
+  )}
+
 </td>
 
                       <td className="px-3 py-3">
