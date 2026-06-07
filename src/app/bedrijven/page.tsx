@@ -39,9 +39,16 @@ useEffect(() => {
 const fetchClubs = async () => {
 
   const { data, error } = await supabase
-    .from("clubs")
-    .select("id, name, slug, primary_color")
-    .order("name");
+  .from("clubs")
+  .select(
+    "id, name, slug, primary_color"
+  )
+  .eq("status", "active")
+  .eq(
+    "advertising_sales_enabled",
+    true
+  )
+  .order("name");
 
   if (error) {
     console.error(error);
@@ -266,9 +273,10 @@ const startCheckout = async () => {
       </h2>
 
       <p className="mt-4 text-white/70">
-        Selecteer één of meerdere verenigingen
-        waar jouw vacatures zichtbaar mogen worden.
-      </p>
+  Hieronder staan uitsluitend verenigingen
+  die deelnemen aan het Sponsorjobs
+  Advertentienetwerk.
+</p>
 
     </div>
 

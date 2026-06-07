@@ -43,7 +43,26 @@ export default function AdvertisementsPage() {
   const [loading, setLoading] =
     useState(true);
 
+    const [
+  advertisingSalesEnabled,
+  setAdvertisingSalesEnabled,
+] = useState<boolean | null>(null);
+
   async function load() {
+
+    const { data: club } =
+  await supabase
+    .from("clubs")
+    .select(
+      "advertising_sales_enabled"
+    )
+    .eq("slug", slug)
+    .single();
+
+setAdvertisingSalesEnabled(
+  club?.advertising_sales_enabled ??
+    false
+);
 
     const { data } =
       await supabase
@@ -67,6 +86,30 @@ export default function AdvertisementsPage() {
   if (loading) {
     return <p>Laden...</p>;
   }
+
+  if (
+  advertisingSalesEnabled === false
+) {
+  return (
+    <main className="min-h-screen p-6 bg-[#0d1b2a]">
+
+      <ClubNavbar slug={slug} />
+
+      <div className="max-w-6xl mx-auto bg-white border-2 rounded-2xl p-10 shadow-md mt-6">
+
+        <h1 className="text-2xl font-semibold mb-4">
+          Advertenties
+        </h1>
+
+        <p className="text-gray-600">
+          Advertentieverkoop is niet geactiveerd voor deze club.
+        </p>
+
+      </div>
+
+    </main>
+  );
+}
 
   const activeAds =
     ads.filter(
