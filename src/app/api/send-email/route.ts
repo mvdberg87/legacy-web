@@ -405,5 +405,45 @@ if (
   });
 }
 
+/* ===============================
+   ADVERTISEMENT RENEWED
+=============================== */
+
+if (
+  type ===
+  "advertisement_renewed"
+) {
+  await resend.emails.send({
+    from:
+      "Sponsorjobs <info@sponsorjobs.nl>",
+
+    to: companyEmail,
+
+    subject:
+      "Uw advertentie is verlengd",
+
+    html: `
+      <p>Beste ${companyName},</p>
+
+      <p>
+        Uw advertentie bij
+        ${clubName}
+        is automatisch
+        verlengd met 12 maanden.
+      </p>
+
+      <p>
+        Nieuwe einddatum:
+        ${new Date(endDate)
+          .toLocaleDateString("nl-NL")}
+      </p>
+
+      <p>
+        Team Sponsorjobs
+      </p>
+    `,
+  });
+}
+
   return Response.json({ ok: true });
 }

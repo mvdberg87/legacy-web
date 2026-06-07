@@ -241,11 +241,92 @@ if (error) {
 
   if (diff < 0) {
 
+  /* =========================
+     AUTO RENEW
+  ========================= */
+
+  if (ad.auto_renew) {
+
+    const newEndDate =
+      new Date(ad.end_date);
+
+    newEndDate.setFullYear(
+      newEndDate.getFullYear() + 1
+    );
+
+    await supabaseAdmin
+      .from(
+        "company_advertisements"
+      )
+      .update({
+        end_date:
+          newEndDate
+            .toISOString(),
+
+        reminder_90_sent:
+          false,
+
+        reminder_60_sent:
+          false,
+
+        reminder_30_sent:
+          false,
+      })
+      .eq("id", ad.id);
+
+    await fetch(
+      `${siteUrl}/api/send-email`,
+      {
+        method: "POST",
+
+        headers: {
+          "Content-Type":
+            "application/json",
+        },
+
+        body: JSON.stringify({
+          type:
+            "advertisement_renewed",
+
+          companyName:
+            ad.company_name,
+
+          companyEmail:
+            ad.company_email,
+
+          clubName:
+            ad.club_name,
+
+          endDate:
+            newEndDate,
+        }),
+      }
+    );
+
     result.expired.push(
-      ad.company_name
+      `${ad.company_name} renewed`
+    );
+
+  } else {
+
+    /* =========================
+       GEEN AUTO RENEW
+    ========================= */
+
+    await supabaseAdmin
+      .from(
+        "company_advertisements"
+      )
+      .update({
+        status: "expired",
+      })
+      .eq("id", ad.id);
+
+    result.expired.push(
+      `${ad.company_name} expired`
     );
   }
 }
 
   return NextResponse.json(result);
-}
+}}
