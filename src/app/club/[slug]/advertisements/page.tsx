@@ -151,7 +151,7 @@ const expectedRenewalRevenue =
 
     <ClubNavbar slug={slug} />
 
-    <div className="max-w-5xl mx-auto bg-white border-2 rounded-2xl p-5 sm:p-8 shadow-md mt-6">
+    <div className="max-w-6xl mx-auto bg-white border-2 rounded-2xl p-10 shadow-md mt-6">
 
       <h1 className="text-2xl sm:text-3xl font-semibold mb-6 leading-tight">
   <span className="block">
@@ -163,7 +163,7 @@ const expectedRenewalRevenue =
   </span>
 </h1>
 
-      <div className="grid grid-cols-2 md:grid-cols-8 gap-4 mb-8">
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-5 mb-8">
 
         <div className="border-2 rounded-xl p-5 bg-white text-center">
           <div className="text-2xl font-bold">
@@ -244,9 +244,11 @@ const expectedRenewalRevenue =
 
       </div>
 
-      <div className="overflow-x-auto">
+      <div className="border-2 rounded-2xl overflow-hidden">
 
-        <table className="w-full text-sm">
+  <div className="overflow-x-auto">
+
+    <table className="w-full text-sm">
 
           <thead className="bg-[#0d1b2a] text-white">
 
@@ -334,11 +336,14 @@ const expectedRenewalRevenue =
 
           </tbody>
 
-        </table>
+              </table>
 
-      </div>
+    </div>
 
-          </div>
-    </main>
+  </div>
+
+</div>
+
+</main>
   );
 }
