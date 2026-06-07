@@ -301,7 +301,8 @@ console.log(
         year: "numeric",
       });
 
-      const subject = `📊 ${club.name}: ${growth}% groei in ${monthName}`;
+      const subject =
+  `📊 Sponsorjobs Maandrapportage | ${club.name} | ${monthName}`;
 
       /* ===============================
          SEND MAIL
@@ -371,12 +372,155 @@ console.log(
 =============================== */
 
 function generateHtml(data: any) {
+  const dashboardUrl =
+    "https://www.sponsorjobs.nl/login";
+
   return `
-    <h1>${data.club.name}</h1>
-    <p>${data.monthName}</p>
-    <p>Clicks: ${data.totalClicksLastMonth}</p>
-    <p>CTR: ${data.ctrLastMonth.toFixed(1)}%</p>
-    <p>Shares: ${data.totalSharesLastMonth}</p>
-    <p>Aanbeveling: ${data.recommendation}</p>
+  <div style="
+    background:#f4f6f8;
+    padding:40px;
+    font-family:Arial,sans-serif;
+  ">
+
+    <div style="
+      max-width:700px;
+      margin:auto;
+      background:white;
+      border-radius:16px;
+      overflow:hidden;
+    ">
+
+      <div style="
+        background:#0d1b2a;
+        color:white;
+        padding:32px;
+        text-align:center;
+      ">
+        <h1 style="margin:0;">
+          Sponsorjobs Maandrapportage
+        </h1>
+
+        <p style="
+          margin-top:12px;
+          opacity:.8;
+        ">
+          ${data.club.name}
+        </p>
+      </div>
+
+      <div style="padding:32px;">
+
+        <h2>
+          Resultaten van ${data.monthName}
+        </h2>
+
+        <table width="100%" cellpadding="12">
+          <tr>
+            <td align="center">
+              <h2>${data.totalPageviewsLastMonth}</h2>
+              <div>Paginaweergaven</div>
+            </td>
+
+            <td align="center">
+              <h2>${data.totalClicksLastMonth}</h2>
+              <div>Kliks</div>
+            </td>
+          </tr>
+
+          <tr>
+            <td align="center">
+              <h2>${data.ctrLastMonth.toFixed(1)}%</h2>
+              <div>CTR</div>
+            </td>
+
+            <td align="center">
+              <h2>${data.totalSharesLastMonth}</h2>
+              <div>Shares</div>
+            </td>
+          </tr>
+        </table>
+
+        <hr style="margin:30px 0;" />
+
+        <h3>
+          Groei ten opzichte van vorige maand
+        </h3>
+
+        <p>
+          Klikgroei:
+          <strong>${data.growth}%</strong>
+        </p>
+
+        <hr style="margin:30px 0;" />
+
+        <h3>
+          Meest bekeken sponsoren
+        </h3>
+
+        <ul>
+          ${
+            data.sponsors
+              ?.slice(0, 3)
+              ?.map(
+                (s: any) =>
+                  `<li>${s.sponsor} (${s.clicks} klikken)</li>`
+              )
+              .join("") || ""
+          }
+        </ul>
+
+        <hr style="margin:30px 0;" />
+
+        <h3>
+          Best presterende vacatures
+        </h3>
+
+        <ul>
+          ${
+            data.topJobs
+              ?.map(
+                (job: any) =>
+                  `<li>${job.title} (${job.clicks} klikken)</li>`
+              )
+              .join("") || ""
+          }
+        </ul>
+
+        <hr style="margin:30px 0;" />
+
+        <h3>
+          Advies van Sponsorjobs
+        </h3>
+
+        <p>
+          ${data.recommendation}
+        </p>
+
+        <div style="
+          margin-top:40px;
+          text-align:center;
+        ">
+
+          <a
+            href="${dashboardUrl}"
+            style="
+              background:#0d1b2a;
+              color:white;
+              text-decoration:none;
+              padding:14px 24px;
+              border-radius:8px;
+              display:inline-block;
+            "
+          >
+            Bekijk dashboard
+          </a>
+
+        </div>
+
+      </div>
+
+    </div>
+
+  </div>
   `;
 }
