@@ -93,7 +93,7 @@ export default function ClubNavbar({ slug }: { slug: string }) {
         borderColor: BORDER,
       }}
     >
-      <div className="max-w-5xl mx-auto flex items-center justify-between px-4 py-4">
+      <div className="max-w-6xl mx-auto flex items-center justify-between px-4 py-4">
         {/* Logo + clubnaam */}
         <div
           className="flex items-center gap-3 cursor-pointer"
