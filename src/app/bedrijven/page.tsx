@@ -41,12 +41,7 @@ const fetchClubs = async () => {
   const { data, error } = await supabase
   .from("clubs")
   .select(
-  "id, name, slug, primary_color, status, advertising_sales_enabled"
-)
-  .eq("status", "active")
-  .eq(
-    "advertising_sales_enabled",
-    true
+    "id, name, slug, primary_color, status, advertising_sales_enabled"
   )
   .order("name");
 
