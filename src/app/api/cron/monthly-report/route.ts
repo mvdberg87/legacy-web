@@ -280,6 +280,43 @@ console.log(
       const maxAds =
         SUBSCRIPTIONS[club.active_package]?.ads ?? 0;
 
+        /* ===============================
+   Advertisement Stats
+=============================== */
+
+let advertisementRevenue = 0;
+let advertisementsSold = 0;
+
+if (club.advertising_sales_enabled) {
+
+  const { data: advertisements } =
+    await supabaseAdmin
+      .from("company_advertisements")
+      .select(`
+        club_amount,
+        created_at
+      `)
+      .eq("club_id", club.id)
+      .gte(
+        "created_at",
+        firstDayLastMonth.toISOString()
+      )
+      .lt(
+        "created_at",
+        firstDayCurrentMonth.toISOString()
+      );
+
+  advertisementsSold =
+    advertisements?.length ?? 0;
+
+  advertisementRevenue =
+    advertisements?.reduce(
+      (sum, ad) =>
+        sum + (ad.club_amount ?? 0),
+      0
+    ) ?? 0;
+}
+
       /* ===============================
          Recommendation
       =============================== */
@@ -330,6 +367,8 @@ console.log(
           sponsors,
           topJobs,
           recommendation,
+          advertisementRevenue,
+advertisementsSold,
         }),
       });
 
@@ -346,17 +385,33 @@ console.log(
       }
 
       await supabaseAdmin.from("monthly_reports").insert({
-        club_id: club.id,
-        month: monthKey,
-        total_clicks: totalClicksLastMonth,
-        total_pageviews: totalPageviewsLastMonth,
-        total_shares: totalSharesLastMonth,
-        ctr: Number(ctrLastMonth.toFixed(1)),
-        share_rate: Number(shareRate.toFixed(1)),
-        growth,
-        status: "sent",
-        sent_at: new Date(),
-      });
+  club_id: club.id,
+  month: monthKey,
+
+  total_clicks: totalClicksLastMonth,
+  total_pageviews: totalPageviewsLastMonth,
+  total_shares: totalSharesLastMonth,
+
+  ctr: Number(
+    ctrLastMonth.toFixed(1)
+  ),
+
+  share_rate: Number(
+    shareRate.toFixed(1)
+  ),
+
+  growth,
+
+  advertisements_sold:
+    advertisementsSold,
+
+  advertisement_revenue:
+    advertisementRevenue,
+
+  status: "sent",
+
+  sent_at: new Date(),
+});
     }
 
     return NextResponse.json({ success: true });
@@ -456,6 +511,32 @@ function generateHtml(data: any) {
         <h3>
           Meest bekeken sponsoren
         </h3>
+
+        ${
+  data.advertisementsSold > 0
+    ? `
+      <hr style="margin:30px 0;" />
+
+      <h3>
+        Advertentieverkopen
+      </h3>
+
+      <p>
+        Nieuwe advertenties:
+        <strong>
+          ${data.advertisementsSold}
+        </strong>
+      </p>
+
+      <p>
+        Extra opbrengst voor de vereniging:
+        <strong>
+          €${data.advertisementRevenue.toLocaleString("nl-NL")}
+        </strong>
+      </p>
+    `
+    : ""
+}
 
         <ul>
           ${

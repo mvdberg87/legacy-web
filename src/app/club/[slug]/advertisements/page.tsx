@@ -40,6 +40,16 @@ export default function AdvertisementsPage() {
       []
     );
 
+    const [monthlyReports, setMonthlyReports] =
+  useState<any[]>([]);
+
+  const [lifetimeStats, setLifetimeStats] =
+  useState({
+    revenue: 0,
+    advertisements: 0,
+    clubRevenue: 0,
+  });
+
   const [loading, setLoading] =
     useState(true);
 
@@ -76,7 +86,48 @@ setAdvertisingSalesEnabled(
 
     setAds(data ?? []);
 
-    setLoading(false);
+const totalRevenue =
+  (data ?? []).reduce(
+    (sum, ad) =>
+      sum + (ad.amount ?? 0),
+    0
+  );
+
+const totalClubRevenue =
+  (data ?? []).reduce(
+    (sum, ad) =>
+      sum +
+      (ad.club_amount ?? 0),
+    0
+  );
+
+setLifetimeStats({
+  revenue: totalRevenue,
+  advertisements:
+    data?.length ?? 0,
+  clubRevenue:
+    totalClubRevenue,
+});
+
+setLoading(false);
+
+  const { data: reports } =
+  await supabase
+    .from("monthly_reports")
+    .select(`
+      month,
+      advertisement_revenue,
+      advertisements_sold
+    `)
+    .eq("club_id", data?.[0]?.club_id)
+    .order("month", {
+      ascending: false,
+    })
+    .limit(12);
+
+setMonthlyReports(
+  reports ?? []
+);
   }
 
   useEffect(() => {
@@ -206,7 +257,7 @@ const expectedRenewalRevenue =
   </span>
 </h1>
 
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-5 mb-8">
+      
 
         <div className="border-2 rounded-xl p-5 bg-white text-center">
           <div className="text-2xl font-bold">
@@ -216,8 +267,7 @@ const expectedRenewalRevenue =
           <div>
             Actieve advertenties
           </div>
-        </div>
-
+<div className="grid grid-cols-2 md:grid-cols-4 gap-5 mb-8">
         <div className="border-2 rounded-xl p-5 bg-white text-center">
           <div className="text-2xl font-bold">
             €
@@ -282,7 +332,45 @@ const expectedRenewalRevenue =
     )}
   </div>
 
-  <div>Verwachte renewal</div>
+  <div>Verwachte renewal</div> 
+</div>
+  <div className="border-2 rounded-xl p-5 bg-white text-center">
+  <div className="text-2xl font-bold">
+  €
+  {lifetimeStats.revenue.toLocaleString(
+    "nl-NL"
+  )}
+</div>
+
+<div>
+  Totale omzet
+</div>
+</div>
+
+<div className="border-2 rounded-xl p-5 bg-white text-center">
+  <div className="text-2xl font-bold">
+    €
+    {lifetimeStats.clubRevenue.toLocaleString(
+      "nl-NL"
+    )}
+  </div>
+
+  <div>
+    Totale clubopbrengst
+  </div>
+</div>
+
+<div className="border-2 rounded-xl p-5 bg-white text-center">
+  <div className="text-2xl font-bold">
+    {lifetimeStats.advertisements.toLocaleString(
+      "nl-NL"
+    )}
+  </div>
+
+  <div>
+    Verkochte advertenties
+  </div>
+</div>
 </div>
 
       </div>
@@ -381,11 +469,82 @@ const expectedRenewalRevenue =
 
               </table>
 
+              </div>
+
+              <div className="mt-8 border-2 rounded-2xl overflow-hidden">
+
+  <div className="bg-[#0d1b2a] text-white p-4 font-semibold">
+    Advertentie omzet laatste 12 maanden
+  </div>
+
+  <table className="w-full text-sm">
+
+    <thead className="bg-gray-100">
+
+      <tr>
+        <th className="p-3 text-left">
+          Maand
+        </th>
+
+        <th className="p-3 text-center">
+          Advertenties
+        </th>
+
+        <th className="p-3 text-center">
+          Omzet
+        </th>
+      </tr>
+
+    </thead>
+
+    <tbody>
+
+      {monthlyReports.map(
+        (report) => (
+          <tr
+            key={report.month}
+            className="border-b"
+          >
+            <td className="p-3">
+              {new Date(
+                report.month
+              ).toLocaleDateString(
+                "nl-NL",
+                {
+                  month: "long",
+                  year: "numeric",
+                }
+              )}
+            </td>
+
+            <td className="p-3 text-center">
+              {
+                report.advertisements_sold
+              }
+            </td>
+
+            <td className="p-3 text-center">
+              €
+              {(
+                report.advertisement_revenue ??
+                0
+              ).toLocaleString(
+                "nl-NL"
+              )}
+            </td>
+          </tr>
+        )
+      )}
+
+    </tbody>
+
+  </table>
+
+</div>
+
     </div>
 
   </div>
-
-</div>
 
 </main>
   );
