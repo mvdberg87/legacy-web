@@ -259,27 +259,27 @@ const expectedRenewalRevenue =
 
       
 
-        <div className="border-2 rounded-xl p-5 bg-white text-center">
-          <div className="text-2xl font-bold">
-            {activeAds.length}
-          </div>
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-5 mb-12">
 
-          <div>
-            Actieve advertenties
-          </div>
-<div className="grid grid-cols-2 md:grid-cols-4 gap-5 mb-12">
-        <div className="border-2 rounded-xl p-5 bg-white text-center">
-          <div className="text-2xl font-bold">
-            €
-            {totalRevenue.toLocaleString(
-              "nl-NL"
-            )}
-          </div>
+  <div className="border-2 rounded-xl p-5 bg-white text-center">
+    <div className="text-2xl font-bold">
+      {activeAds.length}
+    </div>
 
-          <div>
-            Club opbrengst
-          </div>
-        </div>
+    <div>
+      Actieve advertenties
+    </div>
+  </div>
+
+  <div className="border-2 rounded-xl p-5 bg-white text-center">
+    <div className="text-2xl font-bold">
+      €
+      {totalRevenue.toLocaleString("nl-NL")}
+    </div>
+
+    <div>
+      Club opbrengst
+    </div>
 
         <div className="border-2 rounded-xl p-5 bg-white text-center">
   <div className="text-2xl font-bold">
