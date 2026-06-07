@@ -257,9 +257,8 @@ const expectedRenewalRevenue =
   </span>
 </h1>
 
-      
-
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-5 mb-12">
+      <div className="overflow-x-auto">
+        <div className="grid grid-cols-2 md:grid-cols-5 gap-5 mb-12">
 
   <div className="border-2 rounded-xl p-5 bg-white text-center">
     <div className="text-2xl font-bold">
@@ -279,6 +278,7 @@ const expectedRenewalRevenue =
 
     <div>
       Club opbrengst
+    </div>
     </div>
 
         <div className="border-2 rounded-xl p-5 bg-white text-center">
