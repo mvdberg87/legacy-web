@@ -165,6 +165,13 @@ if (!packageData) {
     const clubAmount =
       Math.round(packagePrice * 0.7);
 
+      const { data: clubData } =
+  await supabaseAdmin
+    .from("clubs")
+    .select("name,email")
+    .eq("id", clubId)
+    .single();
+
     const platformAmount =
       Math.round(packagePrice * 0.3);
 
@@ -193,8 +200,8 @@ if (!packageData) {
       company_email:
         lead.company_email,
 
-      package_name:
-        lead.package_key,
+      packageName:
+  packageName,
 
       amount:
         packagePrice,
@@ -242,37 +249,76 @@ console.log(
 );
 
     await supabaseAdmin
-      .from("company_advertisements")
-      .insert({
-        club_id: clubId,
+  .from("company_advertisements")
+  .insert({
+    club_id: clubId,
 
-        company_name:
+    company_name:
+      lead.company_name,
+
+    company_email:
+      lead.company_email,
+
+    company_website:
+      lead.company_website,
+
+    vacancy_url:
+      lead.vacancy_url,
+
+    package_id: packageData.id,
+
+    order_id:
+      order?.id,
+
+    start_date:
+      startDate.toISOString(),
+
+    end_date:
+      endDate.toISOString(),
+
+    status:
+      "pending_activation",
+  });
+
+/* ===============================
+   CLUB MAIL
+=============================== */
+
+if (clubData?.email) {
+  await fetch(
+    `${process.env.NEXT_PUBLIC_SITE_URL}/api/send-email`,
+    {
+      method: "POST",
+      headers: {
+        "Content-Type":
+          "application/json",
+      },
+
+      body: JSON.stringify({
+        type:
+          "club_advertisement_sold",
+
+        clubEmail:
+          clubData.email,
+
+        companyName:
           lead.company_name,
 
-        company_email:
-          lead.company_email,
-
-        company_website:
-          lead.company_website,
-
-        vacancy_url:
+        vacancyUrl:
           lead.vacancy_url,
 
-        package_id: packageData.id,
+        packageName:
+          lead.package_key,
 
-        order_id:
-          order?.id,
+        clubRevenue:
+          clubAmount,
+      }),
+    }
+  );
+}
 
-        start_date:
-          startDate.toISOString(),
-
-        end_date:
-          endDate.toISOString(),
-
-        status:
-          "pending_activation",
-      });
-  }
+} // <-- einde for-loop
+  
 
   await supabaseAdmin
   .from("advertisement_leads")

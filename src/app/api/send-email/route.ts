@@ -23,6 +23,8 @@ export async function POST(req: Request) {
   packageName,
   clubs,
 
+  clubRevenue,
+
   autoRenew,
 } = await req.json();
 
@@ -125,6 +127,59 @@ if (type === "advertisement_sold") {
       <p>
         Actie vereist:
         advertentie controleren en activeren.
+      </p>
+    `,
+  });
+}
+
+if (type === "club_advertisement_sold") {
+  await resend.emails.send({
+    from: "Sponsorjobs <info@sponsorjobs.nl>",
+
+    to: clubEmail,
+
+    subject:
+      "Nieuwe advertentie verkocht via Sponsorjobs",
+
+    html: `
+      <p>Beste sponsorcommissie,</p>
+
+      <p>
+        Er is een nieuwe advertentie verkocht
+        voor jullie vereniging.
+      </p>
+
+      <p>
+        <strong>Bedrijf:</strong><br />
+        ${companyName}
+      </p>
+
+      <p>
+        <strong>Vacature:</strong><br />
+        ${vacancyUrl}
+      </p>
+
+      <p>
+        <strong>Pakket:</strong><br />
+        ${packageName}
+      </p>
+
+      <p>
+        <strong>Opbrengst voor de club:</strong><br />
+        €${clubRevenue}
+      </p>
+
+      <p>
+        Status:<br />
+        In afwachting van controle en activatie.
+      </p>
+
+      <p>
+        Met sportieve groet,
+      </p>
+
+      <p>
+        Team Sponsorjobs
       </p>
     `,
   });
