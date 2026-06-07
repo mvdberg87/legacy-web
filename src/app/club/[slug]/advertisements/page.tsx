@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { getSupabaseBrowser } from "@/lib/supabaseBrowser";
 import { useParams } from "next/navigation";
+import ClubNavbar from "@/components/club/ClubNavbar";
 
 type Advertisement = {
   id: string;
@@ -146,15 +147,25 @@ const expectedRenewalRevenue =
     );
 
   return (
-    <div className="bg-white rounded-2xl p-6 shadow">
+  <main className="min-h-screen p-6 bg-[#0d1b2a]">
 
-      <h1 className="text-2xl font-bold mb-6">
-        Advertenties
-      </h1>
+    <ClubNavbar slug={slug} />
+
+    <div className="max-w-5xl mx-auto bg-white border-2 rounded-2xl p-5 sm:p-8 shadow-md mt-6">
+
+      <h1 className="text-2xl sm:text-3xl font-semibold mb-6 leading-tight">
+  <span className="block">
+    Advertenties
+  </span>
+
+  <span className="block text-base sm:text-2xl font-normal text-gray-600 mt-1">
+    Overzicht advertentieverkopen
+  </span>
+</h1>
 
       <div className="grid grid-cols-2 md:grid-cols-8 gap-4 mb-8">
 
-        <div className="border rounded p-4">
+        <div className="border-2 rounded-xl p-5 bg-white text-center">
           <div className="text-2xl font-bold">
             {activeAds.length}
           </div>
@@ -164,7 +175,7 @@ const expectedRenewalRevenue =
           </div>
         </div>
 
-        <div className="border rounded p-4">
+        <div className="border-2 rounded-xl p-5 bg-white text-center">
           <div className="text-2xl font-bold">
             €
             {totalRevenue.toLocaleString(
@@ -177,7 +188,7 @@ const expectedRenewalRevenue =
           </div>
         </div>
 
-        <div className="border rounded p-4">
+        <div className="border-2 rounded-xl p-5 bg-white text-center">
   <div className="text-2xl font-bold">
     €
     {totalTurnover.toLocaleString(
@@ -188,7 +199,7 @@ const expectedRenewalRevenue =
   <div>Advertentie omzet</div>
 </div>
 
-<div className="border rounded p-4">
+<div className="border-2 rounded-xl p-5 bg-white text-center">
   <div className="text-2xl font-bold">
     {featuredAds.length}
   </div>
@@ -196,7 +207,7 @@ const expectedRenewalRevenue =
   <div>Featured</div>
 </div>
 
-<div className="border rounded p-4">
+<div className="border-2 rounded-xl p-5 bg-white text-center">
   <div className="text-2xl font-bold">
     {renewals.length}
   </div>
@@ -204,7 +215,7 @@ const expectedRenewalRevenue =
   <div>Auto Renew</div>
 </div>
 
-<div className="border rounded p-4">
+<div className="border-2 rounded-xl p-5 bg-white text-center">
   <div className="text-2xl font-bold">
     {expires90Days.length}
   </div>
@@ -212,7 +223,7 @@ const expectedRenewalRevenue =
   <div>&lt; 90 dagen</div>
 </div>
 
-<div className="border rounded p-4">
+<div className="border-2 rounded-xl p-5 bg-white text-center">
   <div className="text-2xl font-bold">
     {expires30Days.length}
   </div>
@@ -220,7 +231,7 @@ const expectedRenewalRevenue =
   <div>&lt; 30 dagen</div>
 </div>
 
-<div className="border rounded p-4">
+<div className="border-2 rounded-xl p-5 bg-white text-center">
   <div className="text-2xl font-bold">
     €
     {expectedRenewalRevenue.toLocaleString(
@@ -327,6 +338,7 @@ const expectedRenewalRevenue =
 
       </div>
 
-    </div>
+          </div>
+    </main>
   );
 }
