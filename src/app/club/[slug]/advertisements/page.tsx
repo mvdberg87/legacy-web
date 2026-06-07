@@ -267,7 +267,7 @@ const expectedRenewalRevenue =
           <div>
             Actieve advertenties
           </div>
-<div className="grid grid-cols-2 md:grid-cols-4 gap-5 mb-8">
+<div className="grid grid-cols-2 md:grid-cols-4 gap-5 mb-12">
         <div className="border-2 rounded-xl p-5 bg-white text-center">
           <div className="text-2xl font-bold">
             €
@@ -469,9 +469,9 @@ const expectedRenewalRevenue =
 
               </table>
 
-              </div>
+</div>
 
-              <div className="mt-8 border-2 rounded-2xl overflow-hidden">
+<div className="mt-12 border-2 rounded-2xl overflow-hidden bg-white">
 
   <div className="bg-[#0d1b2a] text-white p-4 font-semibold">
     Advertentie omzet laatste 12 maanden
