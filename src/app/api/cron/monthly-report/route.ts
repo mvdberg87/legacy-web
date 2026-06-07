@@ -67,9 +67,15 @@ console.log(
       }
 
       if (!email || !email.includes("@")) {
-        console.log("SKIP: invalid email");
-        continue;
-      }
+
+  console.log(
+    "SKIP INVALID EMAIL:",
+    club.name,
+    email
+  );
+
+  continue;
+}
 
       /* ===============================
          Duplicate check
@@ -101,10 +107,21 @@ console.log(
 
       const jobIds = jobs?.map((j) => j.id) ?? [];
 
+      console.log(
+  "JOBS FOUND:",
+  club.name,
+  jobIds.length
+);
+
       if (jobIds.length === 0) {
-        console.log("SKIP: no jobs");
-        continue;
-      }
+
+  console.log(
+    "SKIP NO JOBS:",
+    club.name
+  );
+
+  continue;
+}
 
       const jobMap = Object.fromEntries(jobs!.map((j) => [j.id, j]));
 
@@ -289,6 +306,12 @@ console.log(
       /* ===============================
          SEND MAIL
       =============================== */
+
+      console.log(
+  "SENDING REPORT:",
+  club.name,
+  email
+);
 
       const { error: mailError } = await resend.emails.send({
         from: "Sponsorjobs <no-reply@sponsorjobs.nl>",
