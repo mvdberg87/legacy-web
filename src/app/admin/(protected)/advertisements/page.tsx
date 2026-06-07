@@ -344,6 +344,77 @@ await load();
     load();
   }, []);
 
+  const today = new Date();
+
+const expiresIn90Days = ads.filter((a) => {
+  if (
+    a.status !== "active" ||
+    a.deleted_at
+  )
+    return false;
+
+  const endDate = new Date(
+    a.end_date
+  );
+
+  const diff =
+    (endDate.getTime() -
+      today.getTime()) /
+    (1000 * 60 * 60 * 24);
+
+  return diff <= 90 && diff > 60;
+});
+
+const expiresIn60Days = ads.filter((a) => {
+  if (
+    a.status !== "active" ||
+    a.deleted_at
+  )
+    return false;
+
+  const endDate = new Date(
+    a.end_date
+  );
+
+  const diff =
+    (endDate.getTime() -
+      today.getTime()) /
+    (1000 * 60 * 60 * 24);
+
+  return diff <= 60 && diff > 30;
+});
+
+const expiresIn30Days = ads.filter((a) => {
+  if (
+    a.status !== "active" ||
+    a.deleted_at
+  )
+    return false;
+
+  const endDate = new Date(
+    a.end_date
+  );
+
+  const diff =
+    (endDate.getTime() -
+      today.getTime()) /
+    (1000 * 60 * 60 * 24);
+
+  return diff <= 30 && diff >= 0;
+});
+
+const expiredAds = ads.filter((a) => {
+  if (
+    a.status !== "active" ||
+    a.deleted_at
+  )
+    return false;
+
+  return (
+    new Date(a.end_date) < today
+  );
+});
+
   const filteredAds = ads.filter(
   (ad) => {
 
@@ -420,7 +491,7 @@ await load();
 
 </div>
 
-<div className="grid grid-cols-2 md:grid-cols-5 gap-4 mb-6">
+<div className="grid grid-cols-2 md:grid-cols-9 gap-4 mb-6">
 
   <div className="border rounded p-4">
     <div className="text-2xl font-bold">
@@ -446,6 +517,30 @@ await load();
     </div>
     <div>Actief</div>
   </div>
+
+  <div className="border rounded p-4">
+  <div className="text-2xl font-bold">
+    {expiresIn90Days.length}
+  </div>
+
+  <div>&lt; 90 dagen</div>
+</div>
+
+<div className="border rounded p-4">
+  <div className="text-2xl font-bold">
+    {expiresIn60Days.length}
+  </div>
+
+  <div>&lt; 60 dagen</div>
+</div>
+
+<div className="border rounded p-4">
+  <div className="text-2xl font-bold">
+    {expiresIn30Days.length}
+  </div>
+
+  <div>&lt; 30 dagen</div>
+</div>
 
   <div className="border rounded p-4">
     <div className="text-2xl font-bold">
@@ -474,6 +569,14 @@ await load();
   </div>
 
   <div className="border rounded p-4">
+  <div className="text-2xl font-bold">
+    {expiredAds.length}
+  </div>
+
+  <div>Verlopen</div>
+</div>
+
+<div className="border rounded p-4">
   <div className="text-2xl font-bold">
     {
       ads.filter(
