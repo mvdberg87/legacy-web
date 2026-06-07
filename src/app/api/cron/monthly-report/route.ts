@@ -19,10 +19,31 @@ export async function GET(req: Request) {
     const firstDayLastMonth = new Date(now.getFullYear(), now.getMonth() - 1, 1);
     const firstDayMonthBefore = new Date(now.getFullYear(), now.getMonth() - 2, 1);
 
-    const { data: clubs } = await supabaseAdmin
-      .from("clubs")
-      .select("id, name, slug, email, active_package, monthly_report_enabled")
-      .eq("monthly_report_enabled", true);
+    const {
+  data: clubs,
+  error: clubsError,
+} = await supabaseAdmin
+  .from("clubs")
+  .select(`
+    id,
+    name,
+    slug,
+    email,
+    active_package,
+    advertising_sales_enabled,
+    status
+  `)
+  .eq("status", "approved");
+
+console.log(
+  "MONTHLY REPORT CLUBS:",
+  clubs?.length
+);
+
+console.log(
+  "MONTHLY REPORT ERROR:",
+  clubsError
+);
 
     for (const club of clubs ?? []) {
       console.log("PROCESSING CLUB:", club.name);
