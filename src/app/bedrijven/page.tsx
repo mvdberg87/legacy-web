@@ -54,6 +54,8 @@ console.log("ERROR", error);
   }
 
   setClubs(data || []);
+
+  console.log("CLUBS", data);
 };
 
 const packagePrices = {
@@ -64,6 +66,11 @@ const packagePrices = {
 
 const totalPrice = useMemo(() => {
   if (!selectedPackage) return 0;
+
+  console.log(
+  "Aantal clubs:",
+  clubs.length
+);
 
   return (
     selectedClubs.length *
