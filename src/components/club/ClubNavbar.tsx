@@ -14,29 +14,64 @@ export default function ClubNavbar({ slug }: { slug: string }) {
   const [clubName, setClubName] = useState<string | null>(null);
   const [logoUrl, setLogoUrl] = useState<string | null>(null);
   const [menuOpen, setMenuOpen] = useState(false);
+  const [
+  advertisingSalesEnabled,
+  setAdvertisingSalesEnabled
+] = useState(false);
 
   const PRIMARY = "#0d1b2a"; // Sponsorjobs Navy
   const BORDER = "#ffffff"; // Wit
 
   const links = [
-    { label: "Dashboard", path: `/club/${slug}/dashboard` },
-    { label: "Vacatures", path: `/club/${slug}/jobs` },
-    { label: "Club bewerken", path: `/club/${slug}/edit` },
-    { label: "Publieke pagina", path: `/club/${slug}/jobs/public` },
-  ];
+  {
+    label: "Dashboard",
+    path: `/club/${slug}/dashboard`,
+  },
+
+  {
+    label: "Vacatures",
+    path: `/club/${slug}/jobs`,
+  },
+
+  ...(advertisingSalesEnabled
+    ? [
+        {
+          label: "Advertenties",
+          path: `/club/${slug}/advertisements`,
+        },
+      ]
+    : []),
+
+  {
+    label: "Club bewerken",
+    path: `/club/${slug}/edit`,
+  },
+
+  {
+    label: "Publieke pagina",
+    path: `/club/${slug}/jobs/public`,
+  },
+];
 
   useEffect(() => {
     (async () => {
       const { data } = await supabase
         .from("clubs")
-        .select("name, logo_url")
+        .select(
+  "name, logo_url, advertising_sales_enabled"
+)
         .eq("slug", slug)
         .maybeSingle();
 
       if (data) {
-        setClubName(data.name);
-        setLogoUrl(data.logo_url);
-      }
+  setClubName(data.name);
+  setLogoUrl(data.logo_url);
+
+  setAdvertisingSalesEnabled(
+    data.advertising_sales_enabled ??
+      false
+  );
+}
     })();
   }, [slug, supabase]);
 
