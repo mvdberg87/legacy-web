@@ -11,15 +11,28 @@ export async function POST(
       autoRenew,
     } = await req.json();
 
-    await supabaseAdmin
-      .from("company_advertisements")
-      .update({
-        auto_renew: autoRenew,
-      })
-      .eq(
-        "id",
-        advertisementId
-      );
+    console.log(
+  "TOGGLE RENEWAL:",
+  advertisementId,
+  autoRenew
+);
+
+    const result =
+  await supabaseAdmin
+    .from("company_advertisements")
+    .update({
+      auto_renew: autoRenew,
+    })
+    .eq(
+      "id",
+      advertisementId
+    )
+    .select();
+
+console.log(
+  "TOGGLE RESULT:",
+  result
+);
 
     return NextResponse.json({
       success: true,
