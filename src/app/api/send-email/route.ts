@@ -8,6 +8,8 @@ export async function POST(req: Request) {
   type,
 
   clubId,
+  clubName,
+
   endDate,
   clubEmail,
   reason,
@@ -20,6 +22,8 @@ export async function POST(req: Request) {
 
   packageName,
   clubs,
+
+  autoRenew,
 } = await req.json();
 
   // 🔥 club ophalen
@@ -29,7 +33,10 @@ export async function POST(req: Request) {
     .eq("id", clubId)
     .single();
 
-  const clubName = club?.name || "club";
+  const resolvedClubName =
+  clubName ||
+  club?.name ||
+  "club";
 
   /* ===============================
      CLUB MAIL
@@ -249,6 +256,147 @@ if (
         beoordelen wij de advertentie
         opnieuw.
       </p>
+
+      <p>
+        Team Sponsorjobs
+      </p>
+    `,
+  });
+}
+
+/* ===============================
+   ADVERTISEMENT REMINDER 90
+=============================== */
+
+if (
+  type ===
+  "advertisement_reminder_90"
+) {
+  await resend.emails.send({
+    from:
+      "Sponsorjobs <info@sponsorjobs.nl>",
+
+    to: companyEmail,
+
+    subject:
+      "Uw advertentie verloopt over 90 dagen",
+
+    html: `
+      <p>Beste ${companyName},</p>
+
+      <p>
+        Uw advertentie bij
+        ${resolvedClubName}
+        verloopt op
+        ${new Date(endDate).toLocaleDateString("nl-NL")}.
+      </p>
+
+      ${
+        autoRenew
+          ? `
+        <p>
+          Deze advertentie wordt
+          automatisch verlengd,
+          tenzij u vóór de einddatum
+          aangeeft te willen stoppen.
+        </p>
+      `
+          : ""
+      }
+
+      <p>
+        Team Sponsorjobs
+      </p>
+    `,
+  });
+}
+
+/* ===============================
+   ADVERTISEMENT REMINDER 60
+=============================== */
+
+if (
+  type ===
+  "advertisement_reminder_60"
+) {
+  await resend.emails.send({
+    from:
+      "Sponsorjobs <info@sponsorjobs.nl>",
+
+    to: companyEmail,
+
+    subject:
+      "Uw advertentie verloopt over 60 dagen",
+
+    html: `
+      <p>Beste ${companyName},</p>
+
+      <p>
+        Uw advertentie bij
+        ${resolvedClubName}
+        verloopt op
+        ${new Date(endDate).toLocaleDateString("nl-NL")}.
+      </p>
+
+      ${
+        autoRenew
+          ? `
+        <p>
+          Deze advertentie wordt
+          automatisch verlengd,
+          tenzij u vóór de einddatum
+          aangeeft te willen stoppen.
+        </p>
+      `
+          : ""
+      }
+
+      <p>
+        Team Sponsorjobs
+      </p>
+    `,
+  });
+}
+
+/* ===============================
+   ADVERTISEMENT REMINDER 30
+=============================== */
+
+if (
+  type ===
+  "advertisement_reminder_30"
+) {
+  await resend.emails.send({
+    from:
+      "Sponsorjobs <info@sponsorjobs.nl>",
+
+    to: companyEmail,
+
+    subject:
+      "Uw advertentie verloopt over 30 dagen",
+
+    html: `
+      <p>Beste ${companyName},</p>
+
+      <p>
+        Uw advertentie bij
+        ${resolvedClubName}
+        verloopt op
+        ${new Date(endDate).toLocaleDateString("nl-NL")}.
+      </p>
+
+      ${
+        autoRenew
+          ? `
+        <p>
+          Deze advertentie wordt
+          automatisch verlengd,
+          tenzij u vóór de einddatum
+          aangeeft te willen stoppen.
+        </p>
+      `
+          : ""
+      }
 
       <p>
         Team Sponsorjobs

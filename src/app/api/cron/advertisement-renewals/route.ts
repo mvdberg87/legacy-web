@@ -1,13 +1,19 @@
 import { NextResponse } from "next/server";
 import { supabaseAdmin } from "@/lib/supabaseAdmin";
 
+const siteUrl =
+  process.env.NEXT_PUBLIC_SITE_URL ??
+  "https://www.sponsorjobs.nl";
+
 export async function GET() {
 
   const today = new Date();
 
   const { data: ads, error } =
   await supabaseAdmin
-    .from("company_advertisements")
+    .from(
+      "admin_advertisements_overview"
+    )
     .select("*")
     .eq("status", "active")
     .is("deleted_at", null);
@@ -61,6 +67,38 @@ if (error) {
       ad.company_name
     );
 
+    await fetch(
+  `${siteUrl}/api/send-email`,
+  {
+    method: "POST",
+
+    headers: {
+      "Content-Type":
+        "application/json",
+    },
+
+    body: JSON.stringify({
+      type:
+        "advertisement_reminder_90",
+
+      companyName:
+        ad.company_name,
+
+      companyEmail:
+        ad.company_email,
+
+      clubName:
+        ad.club_name,
+
+      endDate:
+        ad.end_date,
+
+      autoRenew:
+        ad.auto_renew,
+    }),
+  }
+);
+
     await supabaseAdmin
       .from(
         "company_advertisements"
@@ -90,6 +128,38 @@ if (error) {
       ad.company_name
     );
 
+    await fetch(
+  `${siteUrl}/api/send-email`,
+  {
+    method: "POST",
+
+    headers: {
+      "Content-Type":
+        "application/json",
+    },
+
+    body: JSON.stringify({
+      type:
+        "advertisement_reminder_60",
+
+      companyName:
+        ad.company_name,
+
+      companyEmail:
+        ad.company_email,
+
+      clubName:
+        ad.club_name,
+
+      endDate:
+        ad.end_date,
+
+      autoRenew:
+        ad.auto_renew,
+    }),
+  }
+);
+
     await supabaseAdmin
       .from(
         "company_advertisements"
@@ -118,6 +188,38 @@ if (error) {
       "30 dagen reminder:",
       ad.company_name
     );
+
+    await fetch(
+  `${siteUrl}/api/send-email`,
+  {
+    method: "POST",
+
+    headers: {
+      "Content-Type":
+        "application/json",
+    },
+
+    body: JSON.stringify({
+      type:
+        "advertisement_reminder_30",
+
+      companyName:
+        ad.company_name,
+
+      companyEmail:
+        ad.company_email,
+
+      clubName:
+        ad.club_name,
+
+      endDate:
+        ad.end_date,
+
+      autoRenew:
+        ad.auto_renew,
+    }),
+  }
+);
 
     await supabaseAdmin
       .from(
