@@ -258,119 +258,30 @@ const expectedRenewalRevenue =
 </h1>
 
       <div className="overflow-x-auto">
-        <div className="grid grid-cols-2 md:grid-cols-5 gap-5 mb-12">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-5 mb-12">
 
   <div className="border-2 rounded-xl p-5 bg-white text-center">
     <div className="text-2xl font-bold">
       {activeAds.length}
     </div>
-
-    <div>
-      Actieve advertenties
-    </div>
+    <div>Actieve advertenties</div>
   </div>
 
   <div className="border-2 rounded-xl p-5 bg-white text-center">
     <div className="text-2xl font-bold">
       €
-      {totalRevenue.toLocaleString("nl-NL")}
+      {lifetimeStats.clubRevenue.toLocaleString("nl-NL")}
     </div>
-
-    <div>
-      Club opbrengst
-    </div>
-    </div>
-
-        <div className="border-2 rounded-xl p-5 bg-white text-center">
-  <div className="text-2xl font-bold">
-    €
-    {totalTurnover.toLocaleString(
-      "nl-NL"
-    )}
+    <div>Totale clubopbrengst</div>
   </div>
 
-  <div>Advertentie omzet</div>
-</div>
-
-<div className="border-2 rounded-xl p-5 bg-white text-center">
-  <div className="text-2xl font-bold">
-    {featuredAds.length}
-  </div>
-
-  <div>Featured</div>
-</div>
-
-<div className="border-2 rounded-xl p-5 bg-white text-center">
-  <div className="text-2xl font-bold">
-    {renewals.length}
-  </div>
-
-  <div>Auto Renew</div>
-</div>
-
-<div className="border-2 rounded-xl p-5 bg-white text-center">
-  <div className="text-2xl font-bold">
-    {expires90Days.length}
-  </div>
-
-  <div>&lt; 90 dagen</div>
-</div>
-
-<div className="border-2 rounded-xl p-5 bg-white text-center">
-  <div className="text-2xl font-bold">
-    {expires30Days.length}
-  </div>
-
-  <div>&lt; 30 dagen</div>
-</div>
-
-<div className="border-2 rounded-xl p-5 bg-white text-center">
-  <div className="text-2xl font-bold">
-    €
-    {expectedRenewalRevenue.toLocaleString(
-      "nl-NL"
-    )}
-  </div>
-
-  <div>Verwachte renewal</div> 
-</div>
   <div className="border-2 rounded-xl p-5 bg-white text-center">
-  <div className="text-2xl font-bold">
-  €
-  {lifetimeStats.revenue.toLocaleString(
-    "nl-NL"
-  )}
-</div>
-
-<div>
-  Totale omzet
-</div>
-</div>
-
-<div className="border-2 rounded-xl p-5 bg-white text-center">
-  <div className="text-2xl font-bold">
-    €
-    {lifetimeStats.clubRevenue.toLocaleString(
-      "nl-NL"
-    )}
+    <div className="text-2xl font-bold">
+      {lifetimeStats.advertisements}
+    </div>
+    <div>Verkochte advertenties</div>
   </div>
 
-  <div>
-    Totale clubopbrengst
-  </div>
-</div>
-
-<div className="border-2 rounded-xl p-5 bg-white text-center">
-  <div className="text-2xl font-bold">
-    {lifetimeStats.advertisements.toLocaleString(
-      "nl-NL"
-    )}
-  </div>
-
-  <div>
-    Verkochte advertenties
-  </div>
-</div>
 </div>
 
       </div>
@@ -471,6 +382,8 @@ const expectedRenewalRevenue =
 
 </div>
 
+</div>
+
 <div className="mt-12 border-2 rounded-2xl overflow-hidden bg-white">
 
   <div className="bg-[#0d1b2a] text-white p-4 font-semibold">
@@ -544,8 +457,7 @@ const expectedRenewalRevenue =
 
     </div>
 
-  </div>
-
 </main>
+
   );
 }
