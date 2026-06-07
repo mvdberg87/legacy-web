@@ -26,6 +26,7 @@ vacancy_url: string | null;
   platform_amount: number;
 
   is_featured: boolean;
+  auto_renew: boolean;
   deleted_at: string | null;
 };
 
@@ -242,6 +243,31 @@ async function restoreAdvertisement(
 
       body: JSON.stringify({
         advertisementId,
+      }),
+    }
+  );
+
+  await load();
+}
+
+async function toggleRenewal(
+  advertisementId: string,
+  currentValue: boolean
+) {
+
+  await fetch(
+    "/api/admin/advertisements/toggle-renewal",
+    {
+      method: "POST",
+
+      headers: {
+        "Content-Type":
+          "application/json",
+      },
+
+      body: JSON.stringify({
+        advertisementId,
+        autoRenew: !currentValue,
       }),
     }
   );
@@ -488,6 +514,10 @@ await load();
   Featured
 </th>
 
+<th className="px-4 py-3 text-center">
+  Renewal
+</th>
+
               <th className="px-4 py-3 text-center">
                 Loopt tot
               </th>
@@ -550,6 +580,10 @@ await load();
 
                 <td className="px-4 py-3 text-center">
   {ad.is_featured ? "⭐" : "-"}
+</td>
+
+<td className="px-4 py-3 text-center">
+  {ad.auto_renew ? "🔄" : "⛔"}
 </td>
 
                 <td className="px-4 py-3 text-center">
@@ -644,6 +678,22 @@ await load();
     >
       ⭐
     </button>
+
+    <button
+  onClick={() =>
+    toggleRenewal(
+      ad.id,
+      ad.auto_renew
+    )
+  }
+  className={`px-3 py-1 rounded text-xs text-white ${
+    ad.auto_renew
+      ? "bg-green-600"
+      : "bg-red-600"
+  }`}
+>
+  {ad.auto_renew ? "🔄" : "⛔"}
+</button>
 
     <button
   onClick={() => {
