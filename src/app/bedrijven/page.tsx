@@ -43,6 +43,7 @@ const fetchClubs = async () => {
   .select(
     "id, name, slug, primary_color, status, advertising_sales_enabled"
   )
+  .eq("advertising_sales_enabled", true)
   .order("name");
 
   console.log("CLUBS", data);
