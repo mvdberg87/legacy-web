@@ -302,7 +302,7 @@ console.log(
       });
 
       const subject =
-  `📊 Sponsorjobs Maandrapportage | ${club.name} | ${monthName}`;
+  `Sponsorjobs Maandrapportage | ${club.name} | ${monthName}`;
 
       /* ===============================
          SEND MAIL

@@ -144,34 +144,73 @@ if (
     to: companyEmail,
 
     subject:
-      "Bedankt voor uw aankoop",
+  "Bevestiging recruitmentcampagne Sponsorjobs",
 
     html: `
-      <p>Beste ${contactName},</p>
+  <p>Beste ${contactName},</p>
 
-      <p>
-        Bedankt voor uw aankoop via Sponsorjobs.
-      </p>
+  <p>
+    Bedankt voor uw bestelling via Sponsorjobs.
+  </p>
 
-      <p>
-        Wij controleren uw advertentie
-        en activeren deze binnen
-        1 werkdag.
-      </p>
+  <p>
+    Uw recruitmentcampagne is succesvol ontvangen en wordt momenteel gecontroleerd.
+  </p>
 
-      <p>
-        Zodra de advertentie actief is,
-        ontvangt u hiervan bericht.
-      </p>
+  <h3>Campagnegegevens</h3>
 
-      <p>
-        Met sportieve groet,
-      </p>
+  <p>
+    <strong>Bedrijf:</strong><br />
+    ${companyName}
+  </p>
 
-      <p>
-        Team Sponsorjobs
-      </p>
-    `,
+  <p>
+    <strong>Pakket:</strong><br />
+    ${packageName}
+  </p>
+
+  <p>
+    <strong>Geselecteerde verenigingen:</strong>
+  </p>
+
+  <ul>
+    ${
+      clubs?.map(
+        (club: string) =>
+          `<li>${club}</li>`
+      ).join("") || ""
+    }
+  </ul>
+
+  <p>
+    <strong>Looptijd:</strong><br />
+    12 maanden
+  </p>
+
+  <h3>Vervolg</h3>
+
+  <p>
+    ✓ Wij controleren uw aanvraag<br />
+    ✓ Uw campagne wordt binnen 1 werkdag geactiveerd<br />
+    ✓ Na activatie ontvangt u automatisch bericht
+  </p>
+
+  <p>
+    Heeft u vragen over uw campagne?
+    Neem dan contact op via
+    <a href="mailto:info@sponsorjobs.nl">
+      info@sponsorjobs.nl
+    </a>.
+  </p>
+
+  <p>
+    Met sportieve groet,
+  </p>
+
+  <p>
+    Team Sponsorjobs
+  </p>
+`,
   });
 }
 
