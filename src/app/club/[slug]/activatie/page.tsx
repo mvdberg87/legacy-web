@@ -34,6 +34,15 @@ export default function ActivatiePage() {
   const [loading, setLoading] =
     useState(true);
 
+const [tone, setTone] =
+  useState("Professioneel");
+
+const [generatedText, setGeneratedText] =
+  useState("");
+
+const [generating, setGenerating] =
+  useState(false);
+
   useEffect(() => {
     loadJobs();
   }, []);
@@ -81,11 +90,50 @@ export default function ActivatiePage() {
     }
   }
 
-  function handleGenerate() {
-    alert(
-      "Sprint 2B: tekstgenerator komt hier."
+  async function generatePost() {
+
+  if (!selectedJob) return;
+
+  setGenerating(true);
+
+  const job =
+    jobs.find(
+      (j) => j.id === selectedJob
     );
-  }
+
+  const response = await fetch(
+    "/api/activatie/generate-post",
+    {
+      method: "POST",
+
+      headers: {
+        "Content-Type":
+          "application/json",
+      },
+
+      body: JSON.stringify({
+        companyName:
+          job?.company_name,
+
+        jobTitle:
+          job?.title,
+
+        platform: activationType,
+
+        tone,
+      }),
+    }
+  );
+
+  const data =
+    await response.json();
+
+  setGeneratedText(
+    data.text ?? ""
+  );
+
+  setGenerating(false);
+}
 
   return (
     <main className="min-h-screen p-6 bg-[#0d1b2a]">
@@ -173,8 +221,29 @@ export default function ActivatiePage() {
 
             </div>
 
+<div className="mb-8">
+
+  <label className="block text-sm font-medium mb-2">
+    Tone of voice
+  </label>
+
+  <select
+    value={tone}
+    onChange={(e) =>
+      setTone(e.target.value)
+    }
+    className="w-full border-2 rounded-lg p-3"
+  >
+    <option>Professioneel</option>
+    <option>Zakelijk</option>
+    <option>Enthousiast</option>
+    <option>Sportief</option>
+  </select>
+
+</div>
+
             <button
-              onClick={handleGenerate}
+  onClick={generatePost}
               className="
                 bg-[#0d1b2a]
                 text-white
@@ -184,12 +253,38 @@ export default function ActivatiePage() {
                 hover:opacity-90
               "
             >
-              Genereren
+              {generating
+  ? "Genereren..."
+  : "Genereer post"}
             </button>
-          </>
+
+            {generatedText && (
+
+  <div className="mt-8">
+
+    <h2 className="font-semibold mb-3">
+      Gegenereerde post
+    </h2>
+
+    <textarea
+      value={generatedText}
+      readOnly
+      className="
+        w-full
+        h-64
+        border-2
+        rounded-xl
+        p-4
+      "
+    />
+
+  </div>
         )}
 
-      </div>
+        </>
+)}
+
+</div>
 
     </main>
   );
