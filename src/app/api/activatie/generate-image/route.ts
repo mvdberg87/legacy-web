@@ -1,5 +1,4 @@
-import sharp from "sharp";
-import { NextResponse } from "next/server";
+import { createCanvas, loadImage, registerFont } from "canvas";
 import path from "path";
 
 export async function POST(
@@ -12,71 +11,90 @@ export async function POST(
       jobTitle,
     } = await req.json();
 
-    const templatePath =
+    registerFont(
       path.join(
         process.cwd(),
         "public",
-        "templates",
-        "linkedin.png"
+        "fonts",
+        "Montserrat-ExtraBold.ttf"
+      ),
+      {
+        family: "MontserratBold",
+      }
+    );
+
+    registerFont(
+      path.join(
+        process.cwd(),
+        "public",
+        "fonts",
+        "Montserrat-SemiBold.ttf"
+      ),
+      {
+        family: "MontserratSemi",
+      }
+    );
+
+    const template =
+      await loadImage(
+        path.join(
+          process.cwd(),
+          "public",
+          "templates",
+          "linkedin.png"
+        )
       );
 
-    const svg = `
-<svg
-  width="1200"
-  height="1200"
-  xmlns="http://www.w3.org/2000/svg"
->
+    const canvas =
+      createCanvas(
+        template.width,
+        template.height
+      );
 
-  <rect
-    x="40"
-    y="300"
-    width="1120"
-    height="450"
-    fill="#00000088"
-  />
+    const ctx =
+      canvas.getContext("2d");
 
-  <text
-    x="600"
-    y="450"
-    text-anchor="middle"
-    font-size="60"
-    fill="white"
-    font-family="sans-serif"
-  >
-    TEST VACATURE
-  </text>
+    ctx.drawImage(
+      template,
+      0,
+      0
+    );
 
-  <text
-    x="600"
-    y="550"
-    text-anchor="middle"
-    font-size="42"
-    fill="white"
-    font-family="sans-serif"
-  >
-    TROFI PACK
-  </text>
+    // TITEL FUNCTIE
 
-</svg>
-`;
+    ctx.fillStyle =
+      "#ffffff";
 
-    const image =
-  await sharp(templatePath)
+    ctx.font =
+      "bold 72px MontserratBold";
 
-    .composite([
-      {
-        input: Buffer.from(svg),
-        top: 0,
-        left: 0,
-      },
-    ])
+    ctx.textAlign =
+      "center";
 
-    .png()
+    ctx.fillText(
+      jobTitle ?? "",
+      600,
+      260
+    );
 
-    .toBuffer();
+    // BEDRIJFSNAAM
+
+    ctx.font =
+      "42px MontserratSemi";
+
+    ctx.fillText(
+      companyName ?? "",
+      280,
+      1030
+    );
+
+    const buffer =
+      canvas.toBuffer(
+        "image/png"
+      );
 
     return new Response(
-      Uint8Array.from(image),
+      Uint8Array.from(buffer),
       {
         headers: {
           "Content-Type":
@@ -87,7 +105,9 @@ export async function POST(
 
   } catch (err) {
 
-    return NextResponse.json(
+    console.error(err);
+
+    return Response.json(
       {
         error:
           "Image generation failed",
