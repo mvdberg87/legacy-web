@@ -34,13 +34,17 @@ export default function ClubNavbar({ slug }: { slug: string }) {
   },
 
   ...(advertisingSalesEnabled
-    ? [
-        {
-          label: "Advertenties",
-          path: `/club/${slug}/advertisements`,
-        },
-      ]
-    : []),
+  ? [
+      {
+        label: "Advertenties",
+        path: `/club/${slug}/advertisements`,
+      },
+      {
+        label: "Activatie",
+        path: `/club/${slug}/activatie`,
+      },
+    ]
+  : []),
 
   {
     label: "Club bewerken",
