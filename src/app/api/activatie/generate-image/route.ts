@@ -21,17 +21,53 @@ export async function POST(
       );
 
     const svg = `
-<svg width="1200" height="1200">
+<svg
+  width="1200"
+  height="1200"
+  xmlns="http://www.w3.org/2000/svg"
+>
+
+  <rect
+    x="100"
+    y="350"
+    width="1000"
+    height="400"
+    fill="rgba(0,0,0,0.7)"
+  />
 
   <text
     x="600"
-    y="500"
+    y="460"
     text-anchor="middle"
     font-size="60"
+    font-family="Arial"
     font-weight="bold"
-    fill="#ffffff"
+    fill="white"
   >
     VACATURE
+  </text>
+
+  <text
+    x="600"
+    y="560"
+    text-anchor="middle"
+    font-size="50"
+    font-family="Arial"
+    font-weight="bold"
+    fill="white"
+  >
+    ${jobTitle ?? ""}
+  </text>
+
+  <text
+    x="600"
+    y="650"
+    text-anchor="middle"
+    font-size="36"
+    font-family="Arial"
+    fill="white"
+  >
+    ${companyName ?? ""}
   </text>
 
 </svg>
@@ -43,6 +79,8 @@ export async function POST(
     .composite([
       {
         input: Buffer.from(svg),
+        top: 0,
+        left: 0,
       },
     ])
 
