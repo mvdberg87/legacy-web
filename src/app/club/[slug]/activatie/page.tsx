@@ -90,11 +90,12 @@ setClubData(club);
         await supabase
           .from("jobs")
           .select(`
-            id,
-            title,
-            company_name,
-            activation_image_url
-          `)
+  id,
+  title,
+  company_name,
+  activation_image_url,
+  company_logo_url
+`)
           .eq("club_id", club.id)
           .is("archived_at", null)
           .order("created_at", {
@@ -102,6 +103,8 @@ setClubData(club);
           });
 
       setJobs(jobsData ?? []);
+
+      console.log("JOBS:", jobsData);
 
       if (
         jobsData &&
@@ -137,6 +140,7 @@ setClubData(club);
           "application/json",
       },
 
+
       body: JSON.stringify({
         companyName:
           job?.company_name,
@@ -168,6 +172,8 @@ async function generateImage() {
     jobs.find(
       (j) => j.id === selectedJob
     );
+
+    console.log("JOB", job);
 
   const response =
     await fetch(

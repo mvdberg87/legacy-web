@@ -248,12 +248,12 @@ if (clubLogo) {
     logo.height * ratio;
 
   ctx.drawImage(
-    logo,
-    900 - logoWidth / 2,
-    960 - logoHeight / 2,
-    logoWidth,
-    logoHeight
-  );
+  logo,
+  955 - logoWidth / 2,
+  1030 - logoHeight / 2,
+  logoWidth,
+  logoHeight
+);
 }
 
     const buffer =
