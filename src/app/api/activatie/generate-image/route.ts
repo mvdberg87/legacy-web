@@ -194,36 +194,45 @@ ctx.font =
 
 ctx.fillText(
   companyName ?? "",
-  520,
+  360,
   1000
 );
 
 if (companyLogo) {
+  try {
 
-  const logo =
-    await loadImage(companyLogo);
+    const logo =
+      await loadImage(companyLogo);
 
-  const maxSize = 140;
+    const maxSize = 200;
 
-  const ratio =
-    Math.min(
-      maxSize / logo.width,
-      maxSize / logo.height
+    const ratio =
+      Math.min(
+        maxSize / logo.width,
+        maxSize / logo.height
+      );
+
+    const logoWidth =
+      logo.width * ratio;
+
+    const logoHeight =
+      logo.height * ratio;
+
+    ctx.drawImage(
+      logo,
+      220 - logoWidth / 2,
+      930 - logoHeight / 2,
+      logoWidth,
+      logoHeight
     );
 
-  const logoWidth =
-    logo.width * ratio;
+  } catch (error) {
 
-  const logoHeight =
-    logo.height * ratio;
+    console.log(
+      "Company logo kon niet geladen worden"
+    );
 
-  ctx.drawImage(
-    logo,
-    220 - logoWidth / 2,
-    930 - logoHeight / 2,
-    logoWidth,
-    logoHeight
-  );
+  }
 }
 
 if (clubLogo) {
@@ -249,8 +258,8 @@ if (clubLogo) {
 
   ctx.drawImage(
   logo,
-  955 - logoWidth / 2,
-  1030 - logoHeight / 2,
+  900 - logoWidth / 2,
+  980 - logoHeight / 2,
   logoWidth,
   logoHeight
 );
@@ -271,9 +280,9 @@ if (clubLogo) {
       }
     );
 
-  } catch (err) {
+    } catch (error) {
 
-    console.error(err);
+    console.error(error);
 
     return Response.json(
       {

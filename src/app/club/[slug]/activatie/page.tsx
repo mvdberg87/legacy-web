@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
 import ClubNavbar from "@/components/club/ClubNavbar";
 import { getSupabaseBrowser } from "@/lib/supabaseBrowser";
+import { getCompanyLogo } from "@/lib/companyLogo";
 
 type Job = {
   id: string;
@@ -11,6 +12,7 @@ type Job = {
   company_name: string;
   activation_image_url: string | null;
   company_logo_url: string | null;
+  company_website: string | null;
 };
 
 type ClubData = {
@@ -87,15 +89,16 @@ const [generating, setGenerating] =
 setClubData(club);
 
       const { data: jobsData } =
-        await supabase
-          .from("jobs")
-          .select(`
-  id,
-  title,
-  company_name,
-  activation_image_url,
-  company_logo_url
-`)
+  await supabase
+    .from("jobs")
+    .select(`
+      id,
+      title,
+      company_name,
+      company_website,
+      activation_image_url,
+      company_logo_url
+    `)
           .eq("club_id", club.id)
           .is("archived_at", null)
           .order("created_at", {
@@ -103,8 +106,6 @@ setClubData(club);
           });
 
       setJobs(jobsData ?? []);
-
-      console.log("JOBS:", jobsData);
 
       if (
         jobsData &&
@@ -197,7 +198,10 @@ async function generateImage() {
     clubData?.logo_url,
 
   companyLogo:
-    job?.company_logo_url,
+  getCompanyLogo(
+    job?.company_website,
+    job?.company_logo_url
+  ),
 
   backgroundImage:
     clubData?.activation_image_url,
@@ -234,10 +238,6 @@ async function generateImage() {
         <p className="text-gray-600 mb-8">
           Genereer social media content en narrowcasting voor vacatures.
         </p>
-
-        <pre className="text-xs bg-gray-100 p-2 mb-4 overflow-auto">
-  {JSON.stringify(clubData, null, 2)}
-</pre>
 
         {loading ? (
           <p>Laden...</p>
