@@ -1,6 +1,31 @@
 import { createCanvas, loadImage, registerFont } from "canvas";
 import path from "path";
 
+function fitFontSize(
+  ctx: any,
+  text: string,
+  maxWidth: number,
+  startSize: number,
+  fontFamily: string
+) {
+  let size = startSize;
+
+  while (size > 20) {
+    ctx.font = `${size}px ${fontFamily}`;
+
+    if (
+      ctx.measureText(text).width <=
+      maxWidth
+    ) {
+      return size;
+    }
+
+    size--;
+  }
+
+  return 20;
+}
+
 export async function POST(
   req: Request
 ) {
@@ -65,28 +90,47 @@ export async function POST(
     ctx.fillStyle =
       "#ffffff";
 
-    ctx.font =
-      "bold 72px MontserratBold";
+    ctx.textAlign = "center";
 
-    ctx.textAlign =
-      "center";
+const jobTitleSize =
+  fitFontSize(
+    ctx,
+    jobTitle ?? "",
+    850,
+    52,
+    "MontserratBold"
+  );
 
-    ctx.fillText(
-      jobTitle ?? "",
-      600,
-      260
-    );
+ctx.font =
+  `${jobTitleSize}px MontserratBold`;
+
+ctx.fillText(
+  jobTitle ?? "",
+  600,
+  260
+);
 
     // BEDRIJFSNAAM
 
-    ctx.font =
-      "42px MontserratSemi";
+    ctx.textAlign = "left";
 
-    ctx.fillText(
-      companyName ?? "",
-      280,
-      1030
-    );
+const companySize =
+  fitFontSize(
+    ctx,
+    companyName ?? "",
+    420,
+    42,
+    "MontserratSemi"
+  );
+
+ctx.font =
+  `${companySize}px MontserratSemi`;
+
+ctx.fillText(
+  companyName ?? "",
+  340,
+  1030
+);
 
     const buffer =
       canvas.toBuffer(
