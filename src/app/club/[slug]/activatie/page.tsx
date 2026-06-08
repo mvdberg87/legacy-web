@@ -43,6 +43,12 @@ const [generatedText, setGeneratedText] =
 const [generating, setGenerating] =
   useState(false);
 
+  const [imageUrl, setImageUrl] =
+  useState("");
+
+  const [clubData, setClubData] =
+  useState<any>(null);
+
   useEffect(() => {
     loadJobs();
   }, []);
@@ -52,14 +58,21 @@ const [generating, setGenerating] =
       const { data: club } =
         await supabase
           .from("clubs")
-          .select("id")
+          .select(`
+  id,
+  name,
+  logo_url,
+  primary_color,
+  secondary_color
+`)
           .eq("slug", slug)
           .single();
 
       if (!club) {
-        setLoading(false);
-        return;
-      }
+  return;
+}
+
+setClubData(club);
 
       const { data: jobsData } =
         await supabase
@@ -134,6 +147,41 @@ const [generating, setGenerating] =
   );
 
   setGenerating(false);
+}
+
+async function generateImage() {
+
+  const response =
+    await fetch(
+  "/api/activatie/generate-image",
+  {
+    method: "POST",
+
+    headers: {
+      "Content-Type":
+        "application/json",
+    },
+
+    body: JSON.stringify({
+      primaryColor:
+        clubData?.primary_color,
+
+      secondaryColor:
+        clubData?.secondary_color,
+
+      clubLogo:
+        clubData?.logo_url,
+    }),
+  }
+);
+
+  const blob =
+    await response.blob();
+
+  const url =
+    URL.createObjectURL(blob);
+
+  setImageUrl(url);
 }
 
   return (
@@ -259,6 +307,20 @@ const [generating, setGenerating] =
   : "Genereer post"}
             </button>
 
+            <button
+  onClick={generateImage}
+  className="
+    bg-green-700
+    text-white
+    px-6
+    py-3
+    rounded-lg
+    ml-3
+  "
+>
+  Genereer afbeelding
+</button>
+
             {generatedText && (
 
   <div className="mt-8">
@@ -281,6 +343,28 @@ const [generating, setGenerating] =
 
   </div>
         )}
+
+        {imageUrl && (
+
+  <div className="mt-8">
+
+    <h2 className="font-semibold mb-3">
+      Preview afbeelding
+    </h2>
+
+    <img
+      src={imageUrl}
+      alt="Preview"
+      className="
+        max-w-full
+        border-2
+        rounded-xl
+      "
+    />
+
+  </div>
+
+)}
 
         </>
 )}
