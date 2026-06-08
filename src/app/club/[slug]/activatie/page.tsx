@@ -143,17 +143,13 @@ setClubData(club);
 
 
       body: JSON.stringify({
-        companyName:
-          job?.company_name,
-
-        jobTitle:
-          job?.title,
-
-        platform: activationType,
-
-        tone,
-        clubName: slug,
-      }),
+  companyName: job?.company_name,
+  jobTitle: job?.title,
+  applyUrl: job?.apply_url,
+  platform: activationType,
+  tone,
+  clubName: slug,
+}),
     }
   );
 

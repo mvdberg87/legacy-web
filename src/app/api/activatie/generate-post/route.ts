@@ -10,8 +10,9 @@ export async function POST(req: Request) {
     const {
       companyName,
       jobTitle,
+      applyUrl,
       platform,
-      tone,
+      tone,     
       clubName,
     } = await req.json();
 
@@ -40,9 +41,14 @@ Belangrijke regels:
   "één van onze sponsoren"
   "partner van onze vereniging"
 - Noem het bedrijf minimaal één keer bij naam
-- Sluit af met een duidelijke call-to-action
 - Maximaal 150 woorden
 - Nederlands
+- Sluit af met een duidelijke call-to-action
+- Gebruik altijd onderstaande vacaturelink
+- Plaats de link op een aparte laatste regel
+
+Vacaturelink:
+${applyUrl ?? "Geen vacaturelink beschikbaar"}
 
 Voorbeeld van de schrijfstijl:
 
