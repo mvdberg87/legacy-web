@@ -9,6 +9,15 @@ type Job = {
   id: string;
   title: string;
   company_name: string;
+  activation_image_url: string | null;
+};
+
+type ClubData = {
+  id: string;
+  name: string;
+  logo_url: string | null;
+  primary_color: string | null;
+  secondary_color: string | null;
 };
 
 export default function ActivatiePage() {
@@ -47,7 +56,7 @@ const [generating, setGenerating] =
   useState("");
 
   const [clubData, setClubData] =
-  useState<any>(null);
+  useState<ClubData | null>(null);
 
   useEffect(() => {
     loadJobs();
@@ -80,7 +89,8 @@ setClubData(club);
           .select(`
             id,
             title,
-            company_name
+            company_name,
+            activation_image_url
           `)
           .eq("club_id", club.id)
           .is("archived_at", null)
@@ -168,21 +178,24 @@ async function generateImage() {
         },
 
         body: JSON.stringify({
-          primaryColor:
-            clubData?.primary_color,
+  primaryColor:
+    clubData?.primary_color,
 
-          secondaryColor:
-            clubData?.secondary_color,
+  secondaryColor:
+    clubData?.secondary_color,
 
-          clubLogo:
-            clubData?.logo_url,
+  clubLogo:
+    clubData?.logo_url,
 
-          companyName:
-            job?.company_name,
+  companyName:
+    job?.company_name,
 
-          jobTitle:
-            job?.title,
-        }),
+  jobTitle:
+    job?.title,
+
+  backgroundImage:
+    job?.activation_image_url,
+}),
       }
     );
 

@@ -21,6 +21,7 @@ type Job = {
   apply_url: string;
   created_at: string;
   featured: boolean;
+  activation_image_url?: string | null;
 };
 
 type JobWithStats = Job & {
@@ -56,6 +57,8 @@ export default function ClubJobsPage() {
   const [jobTitle, setJobTitle] = useState("");
   const [companyName, setCompanyName] = useState("");
   const [jobUrl, setJobUrl] = useState("");
+  const [activationImage, setActivationImage] =
+  useState<File | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   /* ===============================
@@ -219,19 +222,70 @@ const isLimitReached = currentVacancies >= maxVacancies;
      Acties
   =============================== */
 
+  async function uploadActivationImage(
+  file: File
+) {
+  const fileExt =
+    file.name.split(".").pop();
+
+  const filePath =
+    `${club?.id}/activation-${Date.now()}.${fileExt}`;
+
+  const { error } =
+    await supabase.storage
+      .from("job-images")
+      .upload(
+        filePath,
+        file,
+        {
+          upsert: true,
+        }
+      );
+
+  if (error) {
+    throw error;
+  }
+
+  const { data } =
+    supabase.storage
+      .from("job-images")
+      .getPublicUrl(
+        filePath
+      );
+
+  return data.publicUrl;
+}
+
   async function addJob(e: React.FormEvent) {
     e.preventDefault();
     if (!jobTitle || !companyName || !jobUrl) return;
 
     setIsSubmitting(true);
 
-    await supabase.from("jobs").insert({
-      club_id: club.id,
-      title: jobTitle.trim(),
-      company_name: companyName.trim(),
-      apply_url: jobUrl.trim(),
-      featured: false,
-    });
+    let activationImageUrl =
+  null;
+
+if (activationImage) {
+  activationImageUrl =
+    await uploadActivationImage(
+      activationImage
+    );
+}
+
+await supabase
+  .from("jobs")
+  .insert({
+    club_id: club.id,
+    title: jobTitle.trim(),
+    company_name:
+      companyName.trim(),
+    apply_url:
+      jobUrl.trim(),
+    featured: false,
+
+    activation_image_url:
+      activationImageUrl,
+  });
 
     setJobTitle("");
     setCompanyName("");
@@ -347,6 +401,24 @@ const isLimitReached = currentVacancies >= maxVacancies;
               className="border-2 rounded-lg px-3 py-2"
               required
             />
+
+<div>
+  <label className="block text-sm font-medium mb-1">
+    Achtergrondfoto vacature
+  </label>
+
+  <input
+    type="file"
+    accept="image/png,image/jpeg,image/webp"
+    onChange={(e) =>
+      setActivationImage(
+        e.target.files?.[0] ?? null
+      )
+    }
+    className="text-sm"
+  />
+</div>
+
             <button
   disabled={isLimitReached}
   className={`rounded-xl py-3 font-semibold ${

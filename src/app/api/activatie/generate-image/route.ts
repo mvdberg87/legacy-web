@@ -32,9 +32,11 @@ export async function POST(
   try {
 
     const {
-      companyName,
-      jobTitle,
-    } = await req.json();
+  companyName,
+  jobTitle,
+  clubLogo,
+  backgroundImage,
+} = await req.json();
 
     registerFont(
       path.join(
@@ -78,6 +80,22 @@ export async function POST(
 
     const ctx =
       canvas.getContext("2d");
+
+      if (backgroundImage) {
+
+  const bg =
+    await loadImage(
+      backgroundImage
+    );
+
+  ctx.drawImage(
+    bg,
+    0,
+    0,
+    template.width,
+    template.height
+  );
+}
 
     ctx.drawImage(
       template,
@@ -131,6 +149,22 @@ ctx.fillText(
   340,
   1030
 );
+
+if (clubLogo) {
+
+  const logo =
+    await loadImage(
+      clubLogo
+    );
+
+  ctx.drawImage(
+    logo,
+    790,
+    840,
+    180,
+    180
+  );
+}
 
     const buffer =
       canvas.toBuffer(
