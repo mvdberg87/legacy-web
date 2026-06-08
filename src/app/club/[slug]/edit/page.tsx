@@ -14,6 +14,7 @@ type Club = {
   name: string;
   description: string | null;
   logo_url: string | null;
+  activation_image_url: string | null;
   slug: string;
   jobs_intro_text: string;
 };
@@ -58,41 +59,114 @@ export default function ClubEditPage() {
 
   /* ---------- Logo upload ---------- */
 
-  async function handleLogoUpload(file: File) {
-    if (!club) return;
+  async function handleLogoUpload(
+  file: File
+) {
+  if (!club) return;
 
-    if (!["image/png", "image/jpeg"].includes(file.type)) {
-      alert("Alleen PNG of JPG toegestaan.");
-      return;
-    }
-
-    setUploadingLogo(true);
-
-    const fileExt = file.name.split(".").pop();
-    const filePath = `${club.id}/logo-${Date.now()}.${fileExt}`;
-
-    const { error: uploadError } = await supabase.storage
-      .from("club-logos")
-      .upload(filePath, file, { upsert: true });
-
-    if (uploadError) {
-      alert("Upload mislukt.");
-      setUploadingLogo(false);
-      return;
-    }
-
-    const { data } = supabase.storage
-  .from("club-logos")
-  .getPublicUrl(filePath);
-
-const publicUrlWithCacheBust = `${data.publicUrl}?t=${Date.now()}`;
-
-setClub((c) =>
-  c ? { ...c, logo_url: publicUrlWithCacheBust } : c
-);
-
-    setUploadingLogo(false);
+  if (
+    ![
+      "image/png",
+      "image/jpeg",
+    ].includes(file.type)
+  ) {
+    alert(
+      "Alleen PNG of JPG toegestaan."
+    );
+    return;
   }
+
+  setUploadingLogo(true);
+
+  const fileExt =
+    file.name.split(".").pop();
+
+  const filePath =
+    `${club.id}/logo-${Date.now()}.${fileExt}`;
+
+  const {
+    error: uploadError,
+  } = await supabase.storage
+    .from("club-logos")
+    .upload(
+      filePath,
+      file,
+      { upsert: true }
+    );
+
+  if (uploadError) {
+    alert("Upload mislukt.");
+    setUploadingLogo(false);
+    return;
+  }
+
+  const { data } =
+    supabase.storage
+      .from("club-logos")
+      .getPublicUrl(
+        filePath
+      );
+
+  setClub((c) =>
+    c
+      ? {
+          ...c,
+          logo_url:
+            data.publicUrl,
+        }
+      : c
+  );
+
+  setUploadingLogo(false);
+}
+
+async function handleActivationImageUpload(
+  file: File
+) {
+  if (!club) return;
+
+  setUploadingLogo(true);
+
+  const fileExt =
+    file.name.split(".").pop();
+
+  const filePath =
+    `${club.id}/activation-${Date.now()}.${fileExt}`;
+
+  const { error } =
+    await supabase.storage
+      .from("club-assets")
+      .upload(
+        filePath,
+        file,
+        { upsert: true }
+      );
+
+  if (error) {
+    alert("Upload mislukt");
+    setUploadingLogo(false);
+    return;
+  }
+
+  const { data } =
+    supabase.storage
+      .from("club-assets")
+      .getPublicUrl(
+        filePath
+      );
+
+  setClub((c) =>
+    c
+      ? {
+          ...c,
+          activation_image_url:
+            data.publicUrl,
+        }
+      : c
+  );
+
+  setUploadingLogo(false);
+}
 
   /* ---------- Opslaan ---------- */
 
@@ -115,13 +189,16 @@ setClub((c) =>
 const { data: updateData, error: updateError } = await supabase
   .from("clubs")
   .update({
-    name: club.name,
-    logo_url: club.logo_url,
-    jobs_intro_text:
-      cleanedText === DEFAULT_PUBLIC_JOBS_INTRO
-        ? null
-        : cleanedText,
-  })
+  name: club.name,
+  logo_url: club.logo_url,
+  activation_image_url:
+    club.activation_image_url,
+  jobs_intro_text:
+    cleanedText ===
+    DEFAULT_PUBLIC_JOBS_INTRO
+      ? null
+      : cleanedText,
+})
   .eq("id", club.id)
   .select();
 
@@ -263,6 +340,34 @@ console.log("UPDATE RESULT:", updateData, updateError);
                 />
               </div>
             )}
+
+            <div className="mt-6">
+  <label className="block text-sm font-medium mb-2">
+    Achtergrondfoto vacaturetemplate
+  </label>
+
+  <input
+    type="file"
+    accept="image/png,image/jpeg"
+    onChange={(e) =>
+      e.target.files &&
+      handleActivationImageUpload(
+        e.target.files[0]
+      )
+    }
+    className="text-sm"
+  />
+
+  {club.activation_image_url && (
+    <div className="mt-4">
+      <img
+        src={club.activation_image_url}
+        alt="Activatiefoto"
+        className="h-24 object-cover border rounded-lg mx-auto"
+      />
+    </div>
+  )}
+</div>
           </div>
 
           {/* Acties */}

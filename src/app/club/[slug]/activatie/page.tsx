@@ -16,6 +16,7 @@ type ClubData = {
   id: string;
   name: string;
   logo_url: string | null;
+  activation_image_url: string | null;
   primary_color: string | null;
   secondary_color: string | null;
 };
@@ -71,6 +72,7 @@ const [generating, setGenerating] =
   id,
   name,
   logo_url,
+  activation_image_url,
   primary_color,
   secondary_color
 `)
@@ -187,14 +189,14 @@ async function generateImage() {
   clubLogo:
     clubData?.logo_url,
 
+  backgroundImage:
+    clubData?.activation_image_url,
+
   companyName:
     job?.company_name,
 
   jobTitle:
     job?.title,
-
-  backgroundImage:
-    job?.activation_image_url,
 }),
       }
     );

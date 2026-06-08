@@ -88,13 +88,27 @@ export async function POST(
       backgroundImage
     );
 
-  ctx.drawImage(
-    bg,
-    0,
-    0,
-    template.width,
-    template.height
-  );
+  const scale = Math.max(
+  template.width / bg.width,
+  template.height / bg.height
+);
+
+const width = bg.width * scale;
+const height = bg.height * scale;
+
+const x =
+  (template.width - width) / 2;
+
+const y =
+  (template.height - height) / 2;
+
+ctx.drawImage(
+  bg,
+  x,
+  y,
+  width,
+  height
+);
 }
 
     ctx.drawImage(
@@ -125,7 +139,7 @@ ctx.font =
 ctx.fillText(
   jobTitle ?? "",
   600,
-  260
+  220
 );
 
     // BEDRIJFSNAAM
@@ -157,12 +171,26 @@ if (clubLogo) {
       clubLogo
     );
 
+  const maxSize = 180;
+
+  const ratio =
+    Math.min(
+      maxSize / logo.width,
+      maxSize / logo.height
+    );
+
+  const logoWidth =
+    logo.width * ratio;
+
+  const logoHeight =
+    logo.height * ratio;
+
   ctx.drawImage(
     logo,
-    790,
-    840,
-    180,
-    180
+    880 - logoWidth / 2,
+    930 - logoHeight / 2,
+    logoWidth,
+    logoHeight
   );
 }
 
