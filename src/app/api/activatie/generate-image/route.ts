@@ -208,7 +208,7 @@ if (companyLogo) {
 
     ctx.roundRect(
       235,
-      115,
+      120,
       130,
       130,
       20
@@ -233,7 +233,7 @@ if (companyLogo) {
     ctx.drawImage(
       logo,
       305 - logoWidth / 2,
-      175 - logoHeight / 2,
+      180 - logoHeight / 2,
       logoWidth,
       logoHeight
     );
