@@ -258,8 +258,8 @@ if (clubLogo) {
 
   ctx.drawImage(
   logo,
-  900 - logoWidth / 2,
-  980 - logoHeight / 2,
+  920 - logoWidth / 2,
+  1000 - logoHeight / 2,
   logoWidth,
   logoHeight
 );

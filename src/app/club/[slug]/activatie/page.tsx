@@ -12,7 +12,7 @@ type Job = {
   company_name: string;
   activation_image_url: string | null;
   company_logo_url: string | null;
-  company_website: string | null;
+  apply_url: string | null;
 };
 
 type ClubData = {
@@ -95,7 +95,7 @@ setClubData(club);
       id,
       title,
       company_name,
-      company_website,
+      apply_url,
       activation_image_url,
       company_logo_url
     `)
@@ -199,7 +199,7 @@ async function generateImage() {
 
   companyLogo:
   getCompanyLogo(
-    job?.company_website,
+    job?.apply_url,
     job?.company_logo_url
   ),
 
