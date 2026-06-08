@@ -5,13 +5,12 @@ import path from "path";
 export async function POST(
   req: Request
 ) {
-
-  const {
-    companyName,
-    jobTitle,
-  } = await req.json();
-
   try {
+
+    const {
+      companyName,
+      jobTitle,
+    } = await req.json();
 
     const templatePath =
       path.join(
@@ -39,19 +38,17 @@ export async function POST(
 `;
 
     const image =
-      await sharp(templatePath)
+  await sharp(templatePath)
 
-        .composite([
-          {
-            input: Buffer.from(svg),
-            top: 0,
-            left: 0,
-          },
-        ])
+    .composite([
+      {
+        input: Buffer.from(svg),
+      },
+    ])
 
-        .png()
+    .png()
 
-        .toBuffer();
+    .toBuffer();
 
     return new Response(
       Uint8Array.from(image),
