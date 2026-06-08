@@ -154,7 +154,7 @@ ctx.fillRect(
     // TITEL FUNCTIE
 
     ctx.fillStyle =
-  "#ffffff";
+  "#4D9F5D";
 
 ctx.textAlign = "left";
 
@@ -207,16 +207,16 @@ if (companyLogo) {
     ctx.beginPath();
 
     ctx.roundRect(
-      260,
-      120,
-      90,
-      90,
-      16
+      235,
+      105,
+      130,
+      130,
+      20
     );
 
     ctx.fill();
 
-    const maxSize = 60;
+    const maxSize = 90;
 
     const ratio =
       Math.min(
