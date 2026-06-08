@@ -225,6 +225,10 @@ async function generateImage() {
           Genereer social media content en narrowcasting voor vacatures.
         </p>
 
+        <pre className="text-xs bg-gray-100 p-2 mb-4 overflow-auto">
+  {JSON.stringify(clubData, null, 2)}
+</pre>
+
         {loading ? (
           <p>Laden...</p>
         ) : (

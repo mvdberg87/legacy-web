@@ -38,6 +38,8 @@ export async function POST(
   backgroundImage,
 } = await req.json();
 
+console.log("BACKGROUND:", backgroundImage);
+
     registerFont(
       path.join(
         process.cwd(),
@@ -88,19 +90,38 @@ export async function POST(
       backgroundImage
     );
 
-  const scale = Math.max(
-  template.width / bg.width,
-  template.height / bg.height
+ const photoX = 80;
+const photoY = 250;
+const photoWidth = 1050;
+const photoHeight = 950;
+
+const scale = Math.max(
+  photoWidth / bg.width,
+  photoHeight / bg.height
 );
 
 const width = bg.width * scale;
 const height = bg.height * scale;
 
 const x =
-  (template.width - width) / 2;
+  photoX +
+  (photoWidth - width) / 2;
 
 const y =
-  (template.height - height) / 2;
+  photoY +
+  (photoHeight - height) / 2;
+
+ctx.save();
+
+ctx.beginPath();
+ctx.rect(
+  photoX,
+  photoY,
+  photoWidth,
+  photoHeight
+);
+
+ctx.clip();
 
 ctx.drawImage(
   bg,
@@ -108,6 +129,18 @@ ctx.drawImage(
   y,
   width,
   height
+);
+
+ctx.restore();
+
+ctx.fillStyle =
+  "rgba(0,0,0,0.25)";
+
+ctx.fillRect(
+  photoX,
+  photoY,
+  photoWidth,
+  photoHeight
 );
 }
 
@@ -161,7 +194,7 @@ ctx.font =
 ctx.fillText(
   companyName ?? "",
   340,
-  1030
+  1010
 );
 
 if (clubLogo) {
