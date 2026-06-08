@@ -35,6 +35,7 @@ export async function POST(
   companyName,
   jobTitle,
   clubLogo,
+  companyLogo,
   backgroundImage,
 } = await req.json();
 
@@ -172,7 +173,7 @@ ctx.font =
 ctx.fillText(
   jobTitle ?? "",
   600,
-  220
+  190
 );
 
     // BEDRIJFSNAAM
@@ -193,9 +194,37 @@ ctx.font =
 
 ctx.fillText(
   companyName ?? "",
-  340,
-  1010
+  520,
+  1000
 );
+
+if (companyLogo) {
+
+  const logo =
+    await loadImage(companyLogo);
+
+  const maxSize = 140;
+
+  const ratio =
+    Math.min(
+      maxSize / logo.width,
+      maxSize / logo.height
+    );
+
+  const logoWidth =
+    logo.width * ratio;
+
+  const logoHeight =
+    logo.height * ratio;
+
+  ctx.drawImage(
+    logo,
+    220 - logoWidth / 2,
+    930 - logoHeight / 2,
+    logoWidth,
+    logoHeight
+  );
+}
 
 if (clubLogo) {
 
@@ -220,8 +249,8 @@ if (clubLogo) {
 
   ctx.drawImage(
     logo,
-    880 - logoWidth / 2,
-    930 - logoHeight / 2,
+    900 - logoWidth / 2,
+    960 - logoHeight / 2,
     logoWidth,
     logoHeight
   );

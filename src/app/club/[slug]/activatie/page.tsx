@@ -10,6 +10,7 @@ type Job = {
   title: string;
   company_name: string;
   activation_image_url: string | null;
+  company_logo_url: string | null;
 };
 
 type ClubData = {
@@ -188,6 +189,9 @@ async function generateImage() {
 
   clubLogo:
     clubData?.logo_url,
+
+  companyLogo:
+    job?.company_logo_url,
 
   backgroundImage:
     clubData?.activation_image_url,
