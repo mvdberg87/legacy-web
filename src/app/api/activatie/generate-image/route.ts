@@ -208,7 +208,7 @@ if (companyLogo) {
 
     ctx.roundRect(
       235,
-      105,
+      115,
       130,
       130,
       20
@@ -233,7 +233,7 @@ if (companyLogo) {
     ctx.drawImage(
       logo,
       305 - logoWidth / 2,
-      165 - logoHeight / 2,
+      175 - logoHeight / 2,
       logoWidth,
       logoHeight
     );
@@ -270,7 +270,7 @@ if (clubLogo) {
 
   ctx.drawImage(
   logo,
-  920 - logoWidth / 2,
+  915 - logoWidth / 2,
   1000 - logoHeight / 2,
   logoWidth,
   logoHeight
