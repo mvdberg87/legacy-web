@@ -121,6 +121,7 @@ const [generating, setGenerating] =
         platform: activationType,
 
         tone,
+        clubName: slug,
       }),
     }
   );

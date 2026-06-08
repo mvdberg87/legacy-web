@@ -12,10 +12,13 @@ export async function POST(req: Request) {
       jobTitle,
       platform,
       tone,
+      clubName,
     } = await req.json();
 
     const prompt = `
-Schrijf een ${platform} post voor een vacature.
+Je schrijft een social media post namens een sportvereniging.
+
+De vereniging promoot een vacature van één van haar sponsoren.
 
 Bedrijf:
 ${companyName}
@@ -23,14 +26,31 @@ ${companyName}
 Vacature:
 ${jobTitle}
 
+Platform:
+${platform}
+
 Tone of voice:
 ${tone}
 
-Eisen:
-- maximaal 150 woorden
-- enthousiasmerend
-- call-to-action
+Belangrijke regels:
+- Schrijf altijd vanuit de vereniging
+- Schrijf nooit alsof het bedrijf zelf de afzender is
+- Gebruik termen als:
+  "onze sponsor"
+  "één van onze sponsoren"
+  "partner van onze vereniging"
+- Noem het bedrijf minimaal één keer bij naam
+- Sluit af met een duidelijke call-to-action
+- Maximaal 150 woorden
 - Nederlands
+
+Voorbeeld van de schrijfstijl:
+
+"Bij één van onze sponsoren zijn ze op zoek naar versterking!
+
+Trofi Pack zoekt een Operator BOIX. Een mooie kans om aan de slag te gaan bij een innovatief bedrijf uit onze regio.
+
+Ben jij of ken jij iemand die perfect past bij deze functie? Bekijk dan de vacature en solliciteer direct."
 `;
 
     const response =
