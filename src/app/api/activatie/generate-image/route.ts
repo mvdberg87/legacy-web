@@ -154,15 +154,15 @@ ctx.fillRect(
     // TITEL FUNCTIE
 
     ctx.fillStyle =
-      "#ffffff";
+  "#ffffff";
 
-    ctx.textAlign = "center";
+ctx.textAlign = "left";
 
 const jobTitleSize =
   fitFontSize(
     ctx,
     jobTitle ?? "",
-    850,
+    650,
     52,
     "MontserratBold"
   );
@@ -172,39 +172,51 @@ ctx.font =
 
 ctx.fillText(
   jobTitle ?? "",
-  600,
-  190
+  390,
+  180
 );
 
     // BEDRIJFSNAAM
 
     ctx.textAlign = "left";
 
-const companySize =
-  fitFontSize(
-    ctx,
-    companyName ?? "",
-    420,
-    42,
-    "MontserratSemi"
-  );
-
 ctx.font =
-  `${companySize}px MontserratSemi`;
+  "34px MontserratSemi";
+
+ctx.fillStyle =
+  "#ffffff";
 
 ctx.fillText(
   companyName ?? "",
-  360,
-  1000
+  390,
+  230
 );
 
 if (companyLogo) {
+
   try {
 
     const logo =
       await loadImage(companyLogo);
 
-    const maxSize = 200;
+    // wit vlak
+
+    ctx.fillStyle =
+      "#ffffff";
+
+    ctx.beginPath();
+
+    ctx.roundRect(
+      260,
+      120,
+      90,
+      90,
+      16
+    );
+
+    ctx.fill();
+
+    const maxSize = 60;
 
     const ratio =
       Math.min(
@@ -220,8 +232,8 @@ if (companyLogo) {
 
     ctx.drawImage(
       logo,
-      220 - logoWidth / 2,
-      930 - logoHeight / 2,
+      305 - logoWidth / 2,
+      165 - logoHeight / 2,
       logoWidth,
       logoHeight
     );

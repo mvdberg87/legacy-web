@@ -386,23 +386,26 @@ async function generateImage() {
 
         {imageUrl && (
 
-  <div className="mt-8">
+  <div className="mt-8 text-center">
 
-    <h2 className="font-semibold mb-3">
-      Preview afbeelding
-    </h2>
+  <h2 className="font-semibold mb-3">
+    Preview afbeelding
+  </h2>
 
-    <img
-      src={imageUrl}
-      alt="Preview"
-      className="
-        max-w-full
-        border-2
-        rounded-xl
-      "
-    />
+  <img
+    src={imageUrl}
+    alt="Preview"
+    className="
+      w-full
+      max-w-md
+      mx-auto
+      border-2
+      rounded-xl
+      shadow-lg
+    "
+  />
 
-  </div>
+</div>
 
 )}
 
