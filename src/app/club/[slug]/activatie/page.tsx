@@ -151,29 +151,40 @@ setClubData(club);
 
 async function generateImage() {
 
+  const job =
+    jobs.find(
+      (j) => j.id === selectedJob
+    );
+
   const response =
     await fetch(
-  "/api/activatie/generate-image",
-  {
-    method: "POST",
+      "/api/activatie/generate-image",
+      {
+        method: "POST",
 
-    headers: {
-      "Content-Type":
-        "application/json",
-    },
+        headers: {
+          "Content-Type":
+            "application/json",
+        },
 
-    body: JSON.stringify({
-      primaryColor:
-        clubData?.primary_color,
+        body: JSON.stringify({
+          primaryColor:
+            clubData?.primary_color,
 
-      secondaryColor:
-        clubData?.secondary_color,
+          secondaryColor:
+            clubData?.secondary_color,
 
-      clubLogo:
-        clubData?.logo_url,
-    }),
-  }
-);
+          clubLogo:
+            clubData?.logo_url,
+
+          companyName:
+            job?.company_name,
+
+          jobTitle:
+            job?.title,
+        }),
+      }
+    );
 
   const blob =
     await response.blob();

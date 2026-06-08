@@ -2,7 +2,15 @@ import sharp from "sharp";
 import { NextResponse } from "next/server";
 import path from "path";
 
-export async function POST() {
+export async function POST(
+  req: Request
+) {
+
+  const {
+    companyName,
+    jobTitle,
+  } = await req.json();
+
   try {
 
     const templatePath =
@@ -13,27 +21,49 @@ export async function POST() {
         "linkedin.png"
       );
 
+    const svg = `
+<svg width="1200" height="1200">
+
+  <text
+    x="600"
+    y="500"
+    text-anchor="middle"
+    font-size="60"
+    font-weight="bold"
+    fill="#ffffff"
+  >
+    VACATURE
+  </text>
+
+</svg>
+`;
+
     const image =
-  await sharp(templatePath)
-    .png()
-    .toBuffer();
+      await sharp(templatePath)
 
-const uint8 =
-  Uint8Array.from(image);
+        .composite([
+          {
+            input: Buffer.from(svg),
+            top: 0,
+            left: 0,
+          },
+        ])
 
-return new Response(
-  uint8,
-  {
-    headers: {
-      "Content-Type":
-        "image/png",
-    },
-  }
-);
+        .png()
+
+        .toBuffer();
+
+    return new Response(
+      Uint8Array.from(image),
+      {
+        headers: {
+          "Content-Type":
+            "image/png",
+        },
+      }
+    );
 
   } catch (err) {
-
-    console.error(err);
 
     return NextResponse.json(
       {
