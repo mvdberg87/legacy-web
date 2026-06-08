@@ -56,7 +56,7 @@ export async function POST(
     font-weight="bold"
     fill="white"
   >
-    ${jobTitle ?? ""}
+    TEST VACATURE
   </text>
 
   <text
@@ -67,7 +67,7 @@ export async function POST(
     font-family="Arial"
     fill="white"
   >
-    ${companyName ?? ""}
+    TEST BEDRIJF
   </text>
 
 </svg>
