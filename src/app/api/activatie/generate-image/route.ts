@@ -28,46 +28,33 @@ export async function POST(
 >
 
   <rect
-    x="100"
-    y="350"
-    width="1000"
-    height="400"
-    fill="rgba(0,0,0,0.7)"
+    x="40"
+    y="300"
+    width="1120"
+    height="450"
+    fill="#00000088"
   />
 
   <text
     x="600"
-    y="460"
+    y="450"
     text-anchor="middle"
     font-size="60"
-    font-family="Arial"
-    font-weight="bold"
     fill="white"
-  >
-    VACATURE
-  </text>
-
-  <text
-    x="600"
-    y="560"
-    text-anchor="middle"
-    font-size="50"
-    font-family="Arial"
-    font-weight="bold"
-    fill="white"
+    font-family="sans-serif"
   >
     TEST VACATURE
   </text>
 
   <text
     x="600"
-    y="650"
+    y="550"
     text-anchor="middle"
-    font-size="36"
-    font-family="Arial"
+    font-size="42"
     fill="white"
+    font-family="sans-serif"
   >
-    TEST BEDRIJF
+    TROFI PACK
   </text>
 
 </svg>
