@@ -122,7 +122,7 @@ if (template === "story") {
 
   // foto volledig vullen
   photoX = 0;
-  photoY = 490;
+  photoY = 480;
   photoWidth = canvas.width;
   photoHeight = 1100;
 
