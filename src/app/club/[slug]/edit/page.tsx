@@ -364,37 +364,43 @@ setTimeout(() => {
 
             <div className="mt-6">
   <label className="block text-sm font-medium mb-2">
-    Standaard achtergrondfoto vacaturetemplate
+    Achtergrondfoto vacaturetemplate
   </label>
 
-  <label
-  className="
-    inline-block
-    px-4
-    py-2
-    text-sm
-    bg-[#0d1b2a]
-    text-white
-    rounded-lg
-    cursor-pointer
-  "
->
-  {club.activation_image_url
-    ? "Afbeelding wijzigen"
-    : "Afbeelding uploaden"}
+  {club.activation_image_url && (
+    <p className="text-xs text-green-600 mb-2">
+      ✔ Afbeelding geüpload
+    </p>
+  )}
 
-  <input
-    type="file"
-    accept="image/png,image/jpeg"
-    onChange={(e) =>
-      e.target.files &&
-      handleActivationImageUpload(
-        e.target.files[0]
-      )
-    }
-    className="hidden"
-  />
-</label>
+  <label
+    className="
+      inline-block
+      px-4
+      py-2
+      text-sm
+      bg-[#0d1b2a]
+      text-white
+      rounded-lg
+      cursor-pointer
+    "
+  >
+    {club.activation_image_url
+      ? "Afbeelding wijzigen"
+      : "Afbeelding uploaden"}
+
+    <input
+      type="file"
+      accept="image/png,image/jpeg"
+      onChange={(e) =>
+        e.target.files &&
+        handleActivationImageUpload(
+          e.target.files[0]
+        )
+      }
+      className="hidden"
+    />
+  </label>
 
   {club.activation_image_url && (
     <div className="mt-4">

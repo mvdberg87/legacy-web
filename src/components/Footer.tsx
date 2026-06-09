@@ -17,10 +17,6 @@ export default function Footer() {
           Platformvoorwaarden
         </Link>
 
-        <Link href="/verenigingen">
-        Verenigingen
-        </Link>
-
         <a href="mailto:info@sponsorjobs.nl" className="hover:text-gray-900">
           Contact
         </a>
