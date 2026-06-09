@@ -96,17 +96,82 @@ templateImage.height
     const ctx =
       canvas.getContext("2d");
 
+      let photoX = 80;
+let photoY = 250;
+let photoWidth = 1050;
+let photoHeight = 950;
+
+let titleX = 390;
+let titleY = 180;
+
+let companyX = 390;
+let companyY = 230;
+
+let companyLogoBoxX = 235;
+let companyLogoBoxY = 120;
+
+let companyLogoCenterX = 305;
+let companyLogoCenterY = 180;
+
+let clubLogoX = 915;
+let clubLogoY = 1000;
+
+// STORY
+
+if (template === "story") {
+
+  photoX = 40;
+  photoY = 420;
+  photoWidth = 1000;
+  photoHeight = 1000;
+
+  titleX = 120;
+  titleY = 220;
+
+  companyX = 120;
+  companyY = 280;
+
+  companyLogoBoxX = 120;
+  companyLogoBoxY = 120;
+
+  companyLogoCenterX = 185;
+  companyLogoCenterY = 185;
+
+  clubLogoX = 900;
+  clubLogoY = 1700;
+}
+
+// NARROWCASTING
+
+if (template === "narrowcasting") {
+
+  photoX = 80;
+  photoY = 80;
+  photoWidth = 1300;
+  photoHeight = 920;
+
+  titleX = 1450;
+  titleY = 220;
+
+  companyX = 1450;
+  companyY = 300;
+
+  companyLogoBoxX = 1450;
+  companyLogoBoxY = 380;
+
+  companyLogoCenterX = 1515;
+  companyLogoCenterY = 445;
+
+  clubLogoX = 1650;
+  clubLogoY = 850;
+}
+
       if (backgroundImage) {
 
   const bg =
     await loadImage(
       backgroundImage
     );
-
- const photoX = 80;
-const photoY = 250;
-const photoWidth = 1050;
-const photoHeight = 950;
 
 const scale = Math.max(
   photoWidth / bg.width,
@@ -185,8 +250,8 @@ ctx.font =
 
 ctx.fillText(
   jobTitle ?? "",
-  390,
-  180
+  titleX,
+  titleY
 );
 
     // BEDRIJFSNAAM
@@ -201,8 +266,8 @@ ctx.fillStyle =
 
 ctx.fillText(
   companyName ?? "",
-  390,
-  230
+  companyX,
+  companyY
 );
 
 if (companyLogo) {
@@ -220,12 +285,12 @@ if (companyLogo) {
     ctx.beginPath();
 
     ctx.roundRect(
-      235,
-      120,
-      130,
-      130,
-      20
-    );
+  companyLogoBoxX,
+  companyLogoBoxY,
+  130,
+  130,
+  20
+);
 
     ctx.fill();
 
@@ -245,8 +310,8 @@ if (companyLogo) {
 
     ctx.drawImage(
       logo,
-      305 - logoWidth / 2,
-      180 - logoHeight / 2,
+      companyLogoCenterX - logoWidth / 2,
+companyLogoCenterY - logoHeight / 2,
       logoWidth,
       logoHeight
     );
@@ -283,8 +348,8 @@ if (clubLogo) {
 
   ctx.drawImage(
   logo,
-  915 - logoWidth / 2,
-  1000 - logoHeight / 2,
+  clubLogoX - logoWidth / 2,
+  clubLogoY - logoHeight / 2,
   logoWidth,
   logoHeight
 );
