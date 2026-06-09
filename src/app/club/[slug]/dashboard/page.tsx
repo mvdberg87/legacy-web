@@ -80,6 +80,7 @@ export default function ClubDashboardPage() {
   const [showAgreement, setShowAgreement] = useState(false);
 const [selectedPackage, setSelectedPackage] = useState<PackageKey | null>(null);
 const [accepted, setAccepted] = useState(false);
+const [copied, setCopied] = useState(false);
 
   /* =====================================================
      DATA OPHALEN
@@ -480,6 +481,16 @@ const needsUpdate =
   /* ===============================
                5️⃣ Upgrade status
             =============================== */
+
+            async function copyPublicUrl(publicUrl: string) {
+  await navigator.clipboard.writeText(publicUrl);
+
+  setCopied(true);
+
+  setTimeout(() => {
+    setCopied(false);
+  }, 2000);
+}
       
        async function goToCheckout(targetPackage: PackageKey) {
   if (!club) return;
@@ -792,13 +803,18 @@ async function connectStripe() {
           />
 
           <button
-            onClick={() =>
-              navigator.clipboard.writeText(publicUrl)
-            }
-            className="bg-[#0d1b2a] hover:bg-[#132a44] text-white px-4 py-2 rounded-lg text-sm font-medium transition"
-          >
-            Kopieer link
-          </button>
+  onClick={() => copyPublicUrl(publicUrl)}
+  className={`
+    px-4 py-2 rounded-lg text-sm font-medium transition
+    ${
+      copied
+        ? "bg-green-600 text-white"
+        : "bg-[#0d1b2a] hover:bg-[#132a44] text-white"
+    }
+  `}
+>
+  {copied ? "✅ Gekopieerd!" : "Kopieer link"}
+</button>
         </div>
 
         <div className="mt-2 mb-4">
@@ -1015,6 +1031,16 @@ const isLower = thisIndex < currentIndex;
 
 const canUpgrade = isHigher;
 
+const canDowngrade =
+  (
+    activePackage === "unlimited" &&
+    (key === "pro" || key === "plus")
+  ) ||
+  (
+    activePackage === "pro" &&
+    key === "plus"
+  );
+
               return (
                 <div
   key={key}
@@ -1053,7 +1079,10 @@ const canUpgrade = isHigher;
 </p>
 
                   <button
-  disabled={!canUpgrade || isBillingBlocked}
+  disabled={
+  (!canUpgrade && !canDowngrade) ||
+  isBillingBlocked
+}
   onClick={() => {
   if (!canUpgrade) return;
 
@@ -1074,6 +1103,8 @@ const canUpgrade = isHigher;
   ? isBillingBlocked
     ? "Geblokkeerd"
     : "Upgrade"
+  : canDowngrade
+  ? "Downgrade"
   : "–"}
 </button>
                 </div>
@@ -1205,23 +1236,86 @@ const canUpgrade = isHigher;
   {!club.stripe_connect_enabled ? (
 
     <>
-      <div className="mb-4 text-sm text-gray-600">
-        Koppel een bankrekening om advertentieverkopen te ontvangen.
+  <div className="rounded-xl border bg-white p-5">
+
+    <h3 className="font-semibold text-lg mb-2">
+      Sponsoractivatie
+    </h3>
+
+    <p className="text-sm text-gray-600 mb-4">
+      Meer waarde uit sponsoren halen?
+    </p>
+
+    <p className="text-sm text-gray-700 mb-4">
+      Wij ondersteunen verenigingen bij het versterken van
+      sponsorrelaties, zichtbaarheid en recruitment.
+    </p>
+
+    <div className="space-y-4 text-sm">
+
+      <div>
+        <div className="font-semibold mb-1">
+          Commerciële activatie
+        </div>
+
+        <ul className="list-disc pl-5 text-gray-600">
+          <li>Recruitmentpropositie</li>
+          <li>Sponsoropvolging</li>
+          <li>Activatiegesprekken</li>
+        </ul>
       </div>
 
-      <div className="mb-4">
-        <span className="inline-flex px-3 py-1 rounded-full bg-orange-100 text-orange-700 text-sm">
-          Niet gekoppeld
-        </span>
+      <div>
+        <div className="font-semibold mb-1">
+          Content & zichtbaarheid
+        </div>
+
+        <ul className="list-disc pl-5 text-gray-600">
+          <li>Social media content</li>
+          <li>Spotlight vacatures</li>
+          <li>Narrowcasting</li>
+          <li>Vacaturecampagnes</li>
+        </ul>
       </div>
 
-      <button
-        onClick={connectStripe}
-        className="bg-[#0d1b2a] hover:bg-[#132a44] text-white px-4 py-2 rounded-lg"
-      >
-        Bankrekening koppelen
-      </button>
-    </>
+      <div>
+        <div className="font-semibold mb-1">
+          Recruitment ondersteuning
+        </div>
+
+        <ul className="list-disc pl-5 text-gray-600">
+          <li>Dashboard & statistieken</li>
+          <li>Vacatureopvolging</li>
+          <li>Recruitmentoptimalisatie</li>
+          <li>Evaluatiemomenten</li>
+        </ul>
+      </div>
+
+    </div>
+
+    <p className="text-sm font-medium mt-5 mb-4">
+      Samen kijken hoe jouw vereniging meer rendement uit sponsorrelaties kan halen?
+    </p>
+
+    <a
+      href="https://www.sponsorjobs.nl/contact"
+      target="_blank"
+      rel="noopener noreferrer"
+      className="
+        inline-block
+        bg-[#0d1b2a]
+        hover:bg-[#132a44]
+        text-white
+        px-4
+        py-2
+        rounded-lg
+      "
+    >
+      Vraag een activatiegesprek aan
+    </a>
+
+  </div>
+</>
 
   ) : (
 
