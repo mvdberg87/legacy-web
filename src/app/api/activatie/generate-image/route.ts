@@ -122,16 +122,16 @@ if (template === "story") {
 
   // foto volledig vullen
   photoX = 0;
-  photoY = 450;
+  photoY = 470;
   photoWidth = canvas.width;
   photoHeight = 1100;
 
   // bedrijfslogo lager
   companyLogoBoxX = 70;
-  companyLogoBoxY = 250;
+  companyLogoBoxY = 260;
 
   companyLogoCenterX = 135;
-  companyLogoCenterY = 315;
+  companyLogoCenterY = 325;
 
   // titel + bedrijfsnaam lager
   titleX = 260;
@@ -151,17 +151,17 @@ if (template === "narrowcasting") {
 
   // foto volledig achter sponsorvlak
   photoX = 60;
-  photoY = 100;
+  photoY = 150;
 
   photoWidth = 1860;
   photoHeight = 900;
 
   // bedrijfslogo verder naar links
   companyLogoBoxX = 930;
-  companyLogoBoxY = 55;
+  companyLogoBoxY = 75;
 
   companyLogoCenterX = 995;
-  companyLogoCenterY = 120;
+  companyLogoCenterY = 140;
 
   // functietitel groter en dichter bij logo
   titleX = 1090;
@@ -171,7 +171,7 @@ if (template === "narrowcasting") {
   companyY = 205;
 
   // clublogo midden in sponsorvak
-  clubLogoX = 1580;
+  clubLogoX = 1560;
   clubLogoY = 930;
 }
 
