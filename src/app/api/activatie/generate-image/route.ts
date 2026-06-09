@@ -128,17 +128,17 @@ if (template === "story") {
 
   // bedrijfslogo lager
   companyLogoBoxX = 70;
-  companyLogoBoxY = 220;
+  companyLogoBoxY = 250;
 
   companyLogoCenterX = 135;
-  companyLogoCenterY = 285;
+  companyLogoCenterY = 315;
 
   // titel + bedrijfsnaam lager
   titleX = 260;
-  titleY = 330;
+  titleY = 310;
 
   companyX = 260;
-  companyY = 400;
+  companyY = 390;
 
   // clublogo hoger
   clubLogoX = 850;
@@ -153,25 +153,25 @@ if (template === "narrowcasting") {
   photoX = 60;
   photoY = 100;
 
-  photoWidth = 1760;
+  photoWidth = 1860;
   photoHeight = 900;
 
   // bedrijfslogo verder naar links
-  companyLogoBoxX = 980;
+  companyLogoBoxX = 930;
   companyLogoBoxY = 55;
 
-  companyLogoCenterX = 1045;
+  companyLogoCenterX = 995;
   companyLogoCenterY = 120;
 
   // functietitel groter en dichter bij logo
-  titleX = 1140;
+  titleX = 1090;
   titleY = 125;
 
-  companyX = 1140;
+  companyX = 1090;
   companyY = 205;
 
   // clublogo midden in sponsorvak
-  clubLogoX = 1600;
+  clubLogoX = 1580;
   clubLogoY = 930;
 }
 
@@ -279,8 +279,15 @@ ctx.fillText(
 
     ctx.textAlign = "left";
 
+const companyFontSize =
+  template === "story"
+    ? jobTitleSize
+    : template === "narrowcasting"
+    ? jobTitleSize
+    : 34;
+
 ctx.font =
-  "34px MontserratSemi";
+  `${companyFontSize}px MontserratSemi`;
 
 ctx.fillStyle =
   "#ffffff";
