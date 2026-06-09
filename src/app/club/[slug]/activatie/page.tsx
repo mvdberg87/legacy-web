@@ -184,6 +184,7 @@ async function generateImage() {
         },
 
         body: JSON.stringify({
+          template: activationType,
   primaryColor:
     clubData?.primary_color,
 
@@ -382,26 +383,44 @@ async function generateImage() {
 
         {imageUrl && (
 
-  <div className="mt-8 text-center">
+  <div className="mt-8">
 
-  <h2 className="font-semibold mb-3">
-    Preview afbeelding
-  </h2>
+    <h2 className="font-semibold mb-3">
+      Preview afbeelding
+    </h2>
 
-  <img
-    src={imageUrl}
-    alt="Preview"
-    className="
-      w-full
-      max-w-md
-      mx-auto
-      border-2
-      rounded-xl
-      shadow-lg
-    "
-  />
+    <img
+      src={imageUrl}
+      alt="Preview"
+      className="
+        max-w-[600px]
+        w-full
+        border-2
+        rounded-xl
+      "
+    />
 
-</div>
+    <a
+      href={imageUrl}
+      download={`${
+        jobs.find(
+          (j) => j.id === selectedJob
+        )?.company_name ?? "vacature"
+      }.png`}
+      className="
+        inline-block
+        mt-4
+        bg-blue-600
+        text-white
+        px-4
+        py-2
+        rounded-lg
+      "
+    >
+      Download afbeelding
+    </a>
+
+  </div>
 
 )}
 

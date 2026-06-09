@@ -37,6 +37,9 @@ export async function POST(
   clubLogo,
   companyLogo,
   backgroundImage,
+  primaryColor,
+  secondaryColor,
+  template,
 } = await req.json();
 
 console.log("BACKGROUND:", backgroundImage);
@@ -65,20 +68,29 @@ console.log("BACKGROUND:", backgroundImage);
       }
     );
 
-    const template =
-      await loadImage(
-        path.join(
-          process.cwd(),
-          "public",
-          "templates",
-          "linkedin.png"
-        )
-      );
+    const templateFile =
+  template === "instagram"
+    ? "instagram.png"
+    : template === "story"
+    ? "story.png"
+    : template === "narrowcasting"
+    ? "narrowcasting.png"
+    : "linkedin.png";
+
+    const templateImage =
+  await loadImage(
+    path.join(
+      process.cwd(),
+      "public",
+      "templates",
+      templateFile
+    )
+  );
 
     const canvas =
       createCanvas(
-        template.width,
-        template.height
+        templateImage.width,
+templateImage.height
       );
 
     const ctx =
@@ -146,7 +158,7 @@ ctx.fillRect(
 }
 
     ctx.drawImage(
-      template,
+  templateImage,
       0,
       0
     );
@@ -154,6 +166,7 @@ ctx.fillRect(
     // TITEL FUNCTIE
 
     ctx.fillStyle =
+  primaryColor ??
   "#4D9F5D";
 
 ctx.textAlign = "left";
