@@ -32,6 +32,8 @@ export default function ClubEditPage() {
   const [uploadingLogo, setUploadingLogo] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
+  const [saved, setSaved] =
+  useState(false);
 
   /* ---------- Club ophalen ---------- */
 
@@ -208,9 +210,11 @@ console.log("UPDATE RESULT:", updateData, updateError);
       setError("Fout bij opslaan.");
     } else {
       setSuccess("Clubgegevens succesvol opgeslagen.");
-      setTimeout(() => {
-        router.push(`/club/${club.slug}/dashboard`);
-      }, 1200);
+      setSaved(true);
+
+setTimeout(() => {
+  setSaved(false);
+}, 2000);
     }
 
     setSaving(false);
@@ -315,15 +319,32 @@ console.log("UPDATE RESULT:", updateData, updateError);
   </p>
 )}
 
-            <input
-              type="file"
-              accept="image/png,image/jpeg"
-              onChange={(e) =>
-                e.target.files &&
-                handleLogoUpload(e.target.files[0])
-              }
-              className="text-sm"
-            />
+            <label
+  className="
+    inline-block
+    px-4
+    py-2
+    text-sm
+    bg-[#0d1b2a]
+    text-white
+    rounded-lg
+    cursor-pointer
+  "
+>
+  {club.logo_url
+    ? "Logo wijzigen"
+    : "Logo uploaden"}
+
+  <input
+    type="file"
+    accept="image/png,image/jpeg"
+    onChange={(e) =>
+      e.target.files &&
+      handleLogoUpload(e.target.files[0])
+    }
+    className="hidden"
+  />
+</label>
 
             {uploadingLogo && (
               <p className="text-xs text-gray-500 mt-1">
@@ -343,8 +364,24 @@ console.log("UPDATE RESULT:", updateData, updateError);
 
             <div className="mt-6">
   <label className="block text-sm font-medium mb-2">
-    Achtergrondfoto vacaturetemplate
+    Standaard achtergrondfoto vacaturetemplate
   </label>
+
+  <label
+  className="
+    inline-block
+    px-4
+    py-2
+    text-sm
+    bg-[#0d1b2a]
+    text-white
+    rounded-lg
+    cursor-pointer
+  "
+>
+  {club.activation_image_url
+    ? "Afbeelding wijzigen"
+    : "Afbeelding uploaden"}
 
   <input
     type="file"
@@ -355,8 +392,9 @@ console.log("UPDATE RESULT:", updateData, updateError);
         e.target.files[0]
       )
     }
-    className="text-sm"
+    className="hidden"
   />
+</label>
 
   {club.activation_image_url && (
     <div className="mt-4">
@@ -371,24 +409,20 @@ console.log("UPDATE RESULT:", updateData, updateError);
           </div>
 
           {/* Acties */}
-          <div className="flex justify-between items-center pt-4">
-            <button
-              type="button"
-              onClick={() =>
-                router.push(`/club/${club.slug}/dashboard`)
-              }
-              className="rounded-lg border border-gray-300 px-4 py-2 text-sm"
-            >
-              Terug
-            </button>
+          <div className="flex justify-end gap-3">  
 
             <button
-              type="submit"
-              disabled={saving}
-              className="rounded-lg bg-green-600 text-white px-4 py-2 font-semibold hover:bg-green-700 text-sm"
-            >
-              {saving ? "Opslaan…" : "Opslaan"}
-            </button>
+  type="submit"
+  disabled={saving}
+  className="rounded-lg bg-green-600 text-white px-4 py-2 font-semibold hover:bg-green-700 text-sm"
+>
+  {saving
+    ? "Opslaan..."
+    : saved
+    ? "✓ Opgeslagen"
+    : "Opslaan"}
+</button>
+            
           </div>
         </form>
             </div>

@@ -1294,13 +1294,24 @@ const canDowngrade =
     </p>
 
     <a
-      href="https://www.sponsorjobs.nl/contact"
-      target="_blank"
-      rel="noopener noreferrer"
-      className="inline-block bg-[#0d1b2a] hover:bg-[#132a44] text-white px-4 py-2 rounded-lg"
-    >
-      Vraag een activatiegesprek aan
-    </a>
+  href="https://www.sponsorjobs.nl/contact"
+  target="_blank"
+  rel="noopener noreferrer"
+  className="
+    inline-block
+    bg-[#0d1b2a]
+    hover:bg-[#132a44]
+    text-white
+    hover:text-white
+    no-underline
+    px-4
+    py-2
+    rounded-lg
+    font-medium
+  "
+>
+  Vraag een activatiegesprek aan
+</a>
 
   </div>
 </>
