@@ -121,49 +121,50 @@ let clubLogoY = 1000;
 if (template === "story") {
 
   photoX = 40;
-  photoY = 420;
+  photoY = 350;
   photoWidth = 1000;
-  photoHeight = 1000;
+  photoHeight = 1150;
 
-  titleX = 120;
-  titleY = 220;
+  companyLogoBoxX = 70;
+  companyLogoBoxY = 90;
 
-  companyX = 120;
-  companyY = 280;
+  companyLogoCenterX = 135;
+  companyLogoCenterY = 155;
 
-  companyLogoBoxX = 120;
-  companyLogoBoxY = 120;
+  titleX = 240;
+  titleY = 170;
 
-  companyLogoCenterX = 185;
-  companyLogoCenterY = 185;
+  companyX = 240;
+  companyY = 225;
 
-  clubLogoX = 900;
-  clubLogoY = 1700;
+  clubLogoX = 850;
+  clubLogoY = 1600;
 }
 
 // NARROWCASTING
 
 if (template === "narrowcasting") {
 
-  photoX = 80;
-  photoY = 80;
-  photoWidth = 1300;
-  photoHeight = 920;
+  photoX = 60;
+  photoY = 100;
 
-  titleX = 1450;
-  titleY = 220;
+  photoWidth = 1180;
+  photoHeight = 880;
 
-  companyX = 1450;
-  companyY = 300;
+  titleX = 1280;
+  titleY = 150;
 
-  companyLogoBoxX = 1450;
-  companyLogoBoxY = 380;
+  companyX = 1280;
+  companyY = 220;
 
-  companyLogoCenterX = 1515;
-  companyLogoCenterY = 445;
+  companyLogoBoxX = 1280;
+  companyLogoBoxY = 300;
 
-  clubLogoX = 1650;
-  clubLogoY = 850;
+  companyLogoCenterX = 1345;
+  companyLogoCenterY = 365;
+
+  clubLogoX = 1600;
+  clubLogoY = 820;
 }
 
       if (backgroundImage) {
@@ -236,11 +237,18 @@ ctx.fillRect(
 
 ctx.textAlign = "left";
 
+const titleMaxWidth =
+  template === "narrowcasting"
+    ? 550
+    : template === "story"
+    ? 700
+    : 650;
+
 const jobTitleSize =
   fitFontSize(
     ctx,
     jobTitle ?? "",
-    650,
+    titleMaxWidth,
     52,
     "MontserratBold"
   );
