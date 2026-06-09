@@ -79,7 +79,7 @@ export default function AdminNavbar() {
         </button>
 
         {/* 🔹 Desktop navigatie */}
-        <nav className="hidden md:flex items-center gap-2">
+        <nav className="hidden xl:flex items-center gap-2">
           {links.map((link) => {
             const active = isActive(link.path);
 
@@ -110,7 +110,7 @@ export default function AdminNavbar() {
         <button
           aria-label="Menu"
           onClick={() => setMenuOpen((v) => !v)}
-          className="md:hidden p-2 border rounded-lg transition-colors"
+          className="xl:hidden p-2 border rounded-lg transition-colors"
           style={{ borderColor: primary }}
         >
           {menuOpen ? (
@@ -130,7 +130,7 @@ export default function AdminNavbar() {
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -8 }}
             transition={{ duration: 0.2 }}
-            className="md:hidden border-t flex flex-col px-4 py-3 space-y-2 shadow-lg bg-white"
+            className="xl:hidden border-t flex flex-col px-4 py-3 space-y-2 shadow-lg bg-white"
             style={{ borderColor: primary }}
           >
             {links.map((link) => {
