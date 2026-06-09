@@ -120,51 +120,59 @@ let clubLogoY = 1000;
 
 if (template === "story") {
 
-  photoX = 40;
-  photoY = 420;
-  photoWidth = 1000;
-  photoHeight = 1180;
+  // foto volledig vullen
+  photoX = 0;
+  photoY = 450;
+  photoWidth = canvas.width;
+  photoHeight = 1100;
 
+  // bedrijfslogo lager
   companyLogoBoxX = 70;
-  companyLogoBoxY = 150;
+  companyLogoBoxY = 220;
 
   companyLogoCenterX = 135;
-  companyLogoCenterY = 215;
+  companyLogoCenterY = 285;
 
+  // titel + bedrijfsnaam lager
   titleX = 260;
-titleY = 240;
+  titleY = 330;
 
-companyX = 260;
-companyY = 305;
+  companyX = 260;
+  companyY = 400;
 
+  // clublogo hoger
   clubLogoX = 850;
-  clubLogoY = 1600;
+  clubLogoY = 1450;
 }
 
 // NARROWCASTING
 
 if (template === "narrowcasting") {
 
+  // foto volledig achter sponsorvlak
   photoX = 60;
   photoY = 100;
 
-  photoWidth = 1380;
+  photoWidth = 1760;
   photoHeight = 900;
 
-  titleX = 1220;
-titleY = 140;
+  // bedrijfslogo verder naar links
+  companyLogoBoxX = 980;
+  companyLogoBoxY = 55;
 
-  companyX = 1220;
-companyY = 210;
+  companyLogoCenterX = 1045;
+  companyLogoCenterY = 120;
 
-  companyLogoBoxX = 1000;
-companyLogoBoxY = 70;
+  // functietitel groter en dichter bij logo
+  titleX = 1140;
+  titleY = 125;
 
-companyLogoCenterX = 1065;
-companyLogoCenterY = 135;
+  companyX = 1140;
+  companyY = 205;
 
+  // clublogo midden in sponsorvak
   clubLogoX = 1600;
-  clubLogoY = 760;
+  clubLogoY = 930;
 }
 
       if (backgroundImage) {
@@ -239,14 +247,14 @@ ctx.textAlign = "left";
 
 const titleMaxWidth =
   template === "narrowcasting"
-    ? 550
+    ? 700
     : template === "story"
     ? 700
     : 650;
 
 const startFontSize =
   template === "narrowcasting"
-    ? 68
+    ? 78
     : 52;
 
 const jobTitleSize =
