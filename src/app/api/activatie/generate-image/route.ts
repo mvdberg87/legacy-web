@@ -121,21 +121,21 @@ let clubLogoY = 1000;
 if (template === "story") {
 
   photoX = 40;
-  photoY = 350;
+  photoY = 420;
   photoWidth = 1000;
-  photoHeight = 1150;
+  photoHeight = 1180;
 
   companyLogoBoxX = 70;
-  companyLogoBoxY = 90;
+  companyLogoBoxY = 150;
 
   companyLogoCenterX = 135;
-  companyLogoCenterY = 155;
+  companyLogoCenterY = 215;
 
-  titleX = 240;
-  titleY = 170;
+  titleX = 260;
+titleY = 240;
 
-  companyX = 240;
-  companyY = 225;
+companyX = 260;
+companyY = 305;
 
   clubLogoX = 850;
   clubLogoY = 1600;
@@ -148,23 +148,23 @@ if (template === "narrowcasting") {
   photoX = 60;
   photoY = 100;
 
-  photoWidth = 1180;
-  photoHeight = 880;
+  photoWidth = 1380;
+  photoHeight = 900;
 
-  titleX = 1280;
-  titleY = 150;
+  titleX = 1220;
+titleY = 140;
 
-  companyX = 1280;
-  companyY = 220;
+  companyX = 1220;
+companyY = 210;
 
-  companyLogoBoxX = 1280;
-  companyLogoBoxY = 300;
+  companyLogoBoxX = 1000;
+companyLogoBoxY = 70;
 
-  companyLogoCenterX = 1345;
-  companyLogoCenterY = 365;
+companyLogoCenterX = 1065;
+companyLogoCenterY = 135;
 
   clubLogoX = 1600;
-  clubLogoY = 820;
+  clubLogoY = 760;
 }
 
       if (backgroundImage) {
@@ -244,12 +244,17 @@ const titleMaxWidth =
     ? 700
     : 650;
 
+const startFontSize =
+  template === "narrowcasting"
+    ? 68
+    : 52;
+
 const jobTitleSize =
   fitFontSize(
     ctx,
     jobTitle ?? "",
     titleMaxWidth,
-    52,
+    startFontSize,
     "MontserratBold"
   );
 
