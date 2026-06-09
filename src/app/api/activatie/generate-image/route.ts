@@ -182,10 +182,11 @@ if (template === "narrowcasting") {
       backgroundImage
     );
 
-const scale = Math.max(
-  photoWidth / bg.width,
-  photoHeight / bg.height
-);
+const scale =
+  Math.max(
+    photoWidth / bg.width,
+    photoHeight / bg.height
+  ) * 1.02;
 
 const width = bg.width * scale;
 const height = bg.height * scale;
