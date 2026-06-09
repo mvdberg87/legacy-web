@@ -62,6 +62,9 @@ const [generating, setGenerating] =
   const [clubData, setClubData] =
   useState<ClubData | null>(null);
 
+  const [copied, setCopied] =
+  useState(false);
+
   useEffect(() => {
     loadJobs();
   }, []);
@@ -163,6 +166,19 @@ setClubData(club);
   setGenerating(false);
 }
 
+async function copyPost() {
+
+  await navigator.clipboard.writeText(
+    generatedText
+  );
+
+  setCopied(true);
+
+  setTimeout(() => {
+    setCopied(false);
+  }, 2000);
+}
+
 async function generateImage() {
 
   const job =
@@ -219,6 +235,75 @@ async function generateImage() {
     URL.createObjectURL(blob);
 
   setImageUrl(url);
+}
+
+async function downloadPackage() {
+
+  const job =
+    jobs.find(
+      (j) => j.id === selectedJob
+    );
+
+  if (!job) return;
+
+  const response =
+    await fetch(
+      "/api/activatie/download-package",
+      {
+        method: "POST",
+        headers: {
+          "Content-Type":
+            "application/json",
+        },
+
+        body: JSON.stringify({
+          companyName:
+            job.company_name,
+
+          jobTitle:
+            job.title,
+
+          applyUrl:
+            job.apply_url,
+
+          generatedText,
+
+          clubLogo:
+            clubData?.logo_url,
+
+          companyLogo:
+            getCompanyLogo(
+              job.apply_url,
+              job.company_logo_url
+            ),
+
+          backgroundImage:
+            clubData?.activation_image_url,
+
+          primaryColor:
+            clubData?.primary_color,
+
+          secondaryColor:
+            clubData?.secondary_color,
+        }),
+      }
+    );
+
+  const blob =
+    await response.blob();
+
+  const url =
+    URL.createObjectURL(blob);
+
+  const a =
+    document.createElement("a");
+
+  a.href = url;
+
+  a.download =
+    `${job.company_name}-${job.title}.zip`;
+
+  a.click();
 }
 
   return (
@@ -378,6 +463,22 @@ async function generateImage() {
       "
     />
 
+    <button
+  onClick={copyPost}
+  className="
+    mt-4
+    bg-green-600
+    text-white
+    px-4
+    py-2
+    rounded-lg
+  "
+>
+  {copied
+    ? "✓ Gekopieerd"
+    : "Kopieer post"}
+</button>
+
   </div>
         )}
 
@@ -419,6 +520,22 @@ async function generateImage() {
     >
       Download afbeelding
     </a>
+
+    <button
+  onClick={downloadPackage}
+  className="
+    inline-block
+    mt-4
+    ml-3
+    bg-purple-600
+    text-white
+    px-4
+    py-2
+    rounded-lg
+  "
+>
+  Download activatiepakket
+</button>
 
   </div>
 
