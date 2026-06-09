@@ -122,7 +122,7 @@ if (template === "story") {
 
   // foto volledig vullen
   photoX = 0;
-  photoY = 470;
+  photoY = 490;
   photoWidth = canvas.width;
   photoHeight = 1100;
 
@@ -151,7 +151,7 @@ if (template === "narrowcasting") {
 
   // foto volledig achter sponsorvlak
   photoX = 60;
-  photoY = 150;
+  photoY = 220;
 
   photoWidth = 1860;
   photoHeight = 900;
