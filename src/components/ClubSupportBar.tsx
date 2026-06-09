@@ -4,7 +4,7 @@ export default function ClubSupportBar() {
       <div className="max-w-4xl mx-auto">
         <div className="bg-[#0d1b2a] text-white rounded-2xl py-6 px-8 text-center">
           <p className="text-lg font-medium">
-            Heb je vragen over SponsorJobs?
+            Heb je vragen over Sponsorjobs?
           </p>
           <p className="mt-2 text-sm opacity-90">
             Neem gerust contact op via{" "}

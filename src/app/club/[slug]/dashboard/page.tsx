@@ -1084,7 +1084,7 @@ const canDowngrade =
   isBillingBlocked
 }
   onClick={() => {
-  if (!canUpgrade) return;
+  if (!canUpgrade && !canDowngrade) return;
 
   setSelectedPackage(key);
   setShowAgreement(true);
@@ -1229,10 +1229,6 @@ const canDowngrade =
 
         <section className="border-2 rounded-xl p-6 bg-gray-50 mt-8">
 
-  <h2 className="font-semibold text-lg mb-2">
-    Uitbetalingen
-  </h2>
-
   {!club.stripe_connect_enabled ? (
 
     <>
@@ -1301,15 +1297,7 @@ const canDowngrade =
       href="https://www.sponsorjobs.nl/contact"
       target="_blank"
       rel="noopener noreferrer"
-      className="
-        inline-block
-        bg-[#0d1b2a]
-        hover:bg-[#132a44]
-        text-white
-        px-4
-        py-2
-        rounded-lg
-      "
+      className="inline-block bg-[#0d1b2a] hover:bg-[#132a44] text-white px-4 py-2 rounded-lg"
     >
       Vraag een activatiegesprek aan
     </a>
