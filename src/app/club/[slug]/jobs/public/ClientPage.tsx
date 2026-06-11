@@ -201,12 +201,12 @@ const companies = Array.from(
   <div className="flex flex-col sm:flex-row items-center gap-3 sm:gap-4">
 
     {club.logo_url && (
-      <img
-        src={club.logo_url}
-        alt={`${club.name} logo`}
-        className="h-12 w-12 object-contain"
-      />
-    )}
+  <img
+    src={club.logo_url}
+    alt={`${club.name} logo`}
+    className="h-20 w-20 sm:h-24 sm:w-24 object-contain"
+  />
+)}
 
     <div className="flex flex-col items-center text-center">
   <h1 className="text-xl sm:text-2xl md:text-3xl font-semibold leading-tight">
@@ -435,7 +435,7 @@ const logo = getCompanyLogo(website, company.logo);
         )}
 <footer className="text-center text-sm text-white mt-12 opacity-80">
   <p className="mb-2 font-medium">
-    Heb je vragen over SponsorJobs? Of wil je als bedrijf ook toegang tot regionaal talent?
+    Heb je vragen over Sponsorjobs? Of wil je als bedrijf ook toegang tot regionaal talent?
   </p>
   {adminEmail ? (
     <a

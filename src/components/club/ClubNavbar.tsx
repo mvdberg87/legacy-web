@@ -85,9 +85,15 @@ export default function ClubNavbar({ slug }: { slug: string }) {
   }
 
   function navigate(path: string) {
-    router.push(path);
+  if (path === `/club/${slug}/jobs/public`) {
+    window.open(`/${slug}`, "_blank", "noopener,noreferrer");
     setMenuOpen(false);
+    return;
   }
+
+  router.push(path);
+  setMenuOpen(false);
+}
 
   return (
     <header
