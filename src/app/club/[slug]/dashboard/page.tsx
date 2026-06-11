@@ -1301,13 +1301,14 @@ const canDowngrade =
     inline-block
     bg-[#0d1b2a]
     hover:bg-[#132a44]
-    text-white
-    hover:text-white
-    no-underline
+    !text-white
+    hover:!text-white
     px-4
     py-2
     rounded-lg
     font-medium
+    no-underline
+    transition
   "
 >
   Vraag een activatiegesprek aan

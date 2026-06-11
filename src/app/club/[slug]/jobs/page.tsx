@@ -61,6 +61,9 @@ export default function ClubJobsPage() {
   useState<File | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
+const [jobAdded, setJobAdded] =
+  useState(false);
+
   /* ===============================
      Data ophalen
   =============================== */
@@ -288,10 +291,18 @@ await supabase
   });
 
     setJobTitle("");
-    setCompanyName("");
-    setJobUrl("");
-    setIsSubmitting(false);
-    loadData();
+setCompanyName("");
+setJobUrl("");
+setActivationImage(null);
+
+setJobAdded(true);
+
+setTimeout(() => {
+  setJobAdded(false);
+}, 3000);
+
+setIsSubmitting(false);
+loadData();
   }
 
   async function toggleFeatured(jobId: string) {
@@ -378,6 +389,12 @@ await supabase
   )}
 </div>
 
+{jobAdded && (
+  <div className="mb-4 p-3 rounded-lg bg-green-100 text-green-800 text-sm">
+    ✓ Vacature succesvol toegevoegd
+  </div>
+)}
+
         {!showArchived && (
           <form onSubmit={addJob} className="grid gap-3 mb-6">
             <input
@@ -407,6 +424,22 @@ await supabase
     Achtergrondfoto vacature
   </label>
 
+  <label
+  className="
+    inline-block
+    px-4
+    py-2
+    text-sm
+    bg-[#0d1b2a]
+    text-white
+    rounded-lg
+    cursor-pointer
+  "
+>
+  {activationImage
+    ? "✓ Afbeelding geselecteerd"
+    : "Afbeelding uploaden"}
+
   <input
     type="file"
     accept="image/png,image/jpeg,image/webp"
@@ -415,12 +448,19 @@ await supabase
         e.target.files?.[0] ?? null
       )
     }
-    className="text-sm"
+    className="hidden"
   />
+</label>
+
+{activationImage && (
+  <p className="mt-2 text-xs text-green-600">
+    ✔ {activationImage.name}
+  </p>
+)}
 </div>
 
             <button
-  disabled={isLimitReached}
+  disabled={isLimitReached || isSubmitting}
   className={`rounded-xl py-3 font-semibold ${
     isLimitReached
       ? "bg-gray-300 text-gray-500 cursor-not-allowed"
@@ -429,6 +469,10 @@ await supabase
 >
   {isLimitReached
     ? "Limiet bereikt"
+    : isSubmitting
+    ? "Toevoegen..."
+    : jobAdded
+    ? "✓ Toegevoegd"
     : "Vacature toevoegen"}
 </button>
 
@@ -571,15 +615,15 @@ await supabase
   <th className="px-4 py-3 text-center">Beheer</th>
 </tr>
           </thead>
-          <tbody className="[&>tr:nth-child(even)]:bg-gray-50/60">
+          <tbody>
   {visibleJobs.map((job) => (
               <tr
   key={job.id}
   className={`border-t border-[#0d1b2a] hover:bg-gray-100 transition ${
-    job.featured
-      ? "bg-yellow-50 border-l-4 border-yellow-400"
-      : ""
-  }`}
+  job.featured
+    ? "!bg-yellow-50 border-l-4 border-yellow-400"
+    : ""
+}`}
 >
                 <td className="px-4 py-3">
                   <div className="font-medium">{job.title}</div>

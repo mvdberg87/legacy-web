@@ -13,6 +13,7 @@ type Job = {
   company_name: string;
   apply_url: string;
   club_id: string;
+  activation_image_url: string | null;
 };
 
 type Club = {
@@ -38,6 +39,11 @@ export default function EditJobPage() {
   const [title, setTitle] = useState("");
   const [companyName, setCompanyName] = useState("");
   const [applyUrl, setApplyUrl] = useState("");
+  const [activationImageUrl, setActivationImageUrl] =
+  useState<string | null>(null);
+
+const [uploadingImage, setUploadingImage] =
+  useState(false);
 
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
@@ -74,7 +80,7 @@ export default function EditJobPage() {
 
       const { data: jobData } = await supabase
         .from("jobs")
-        .select("id, title, company_name, apply_url, club_id")
+        .select("id, title, company_name, apply_url, club_id, activation_image_url")
         .eq("id", jobId)
         .maybeSingle();
 
@@ -87,10 +93,42 @@ export default function EditJobPage() {
       setTitle(jobData.title);
       setCompanyName(jobData.company_name);
       setApplyUrl(jobData.apply_url);
+      setActivationImageUrl(jobData.activation_image_url);
 
       setLoading(false);
     })();
   }, [supabase, jobId]);
+
+  async function handleActivationImageUpload(file: File) {
+  if (!job) return;
+
+  setUploadingImage(true);
+
+  const fileExt = file.name.split(".").pop();
+
+  const filePath =
+    `${job.club_id}/job-${job.id}-activation-${Date.now()}.${fileExt}`;
+
+  const { error } = await supabase.storage
+    .from("job-images")
+    .upload(filePath, file, {
+      upsert: true,
+    });
+
+  if (error) {
+    alert("Upload mislukt.");
+    setUploadingImage(false);
+    return;
+  }
+
+  const { data } = supabase.storage
+    .from("job-images")
+    .getPublicUrl(filePath);
+
+  setActivationImageUrl(data.publicUrl);
+
+  setUploadingImage(false);
+}
 
   async function saveJob(e: React.FormEvent) {
     e.preventDefault();
@@ -105,10 +143,11 @@ export default function EditJobPage() {
     const { error } = await supabase
       .from("jobs")
       .update({
-        title: title.trim(),
-        company_name: companyName.trim(),
-        apply_url: applyUrl.trim(),
-      })
+  title: title.trim(),
+  company_name: companyName.trim(),
+  apply_url: applyUrl.trim(),
+  activation_image_url: activationImageUrl,
+})
       .eq("id", jobId);
 
     setSaving(false);
@@ -185,6 +224,63 @@ export default function EditJobPage() {
               required
             />
           </div>
+
+          <div>
+  <label className="block text-sm font-medium mb-2">
+    Achtergrondfoto vacature
+  </label>
+
+  {activationImageUrl && (
+    <p className="text-xs text-green-600 mb-2">
+      ✔ Afbeelding geüpload
+    </p>
+  )}
+
+  <label
+    className="
+      inline-block
+      px-4
+      py-2
+      text-sm
+      bg-[#0d1b2a]
+      text-white
+      rounded-lg
+      cursor-pointer
+    "
+  >
+    {activationImageUrl
+      ? "Afbeelding wijzigen"
+      : "Afbeelding uploaden"}
+
+    <input
+      type="file"
+      accept="image/png,image/jpeg,image/webp"
+      onChange={(e) =>
+        e.target.files &&
+        handleActivationImageUpload(
+          e.target.files[0]
+        )
+      }
+      className="hidden"
+    />
+  </label>
+
+  {uploadingImage && (
+    <p className="text-xs text-gray-500 mt-2">
+      Afbeelding uploaden…
+    </p>
+  )}
+
+  {activationImageUrl && (
+    <div className="mt-4">
+      <img
+        src={activationImageUrl}
+        alt="Achtergrondfoto vacature"
+        className="h-32 w-full object-cover border rounded-lg"
+      />
+    </div>
+  )}
+</div>
 
           <div className="flex justify-between items-center pt-4">
             <button
