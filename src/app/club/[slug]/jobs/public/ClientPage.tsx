@@ -198,27 +198,27 @@ const companies = Array.from(
 {/* Header */}
 <div className="py-6 sm:py-8 px-4 flex flex-col items-center text-center shadow bg-white">
 
-  <div className="flex flex-col sm:flex-row items-center gap-3 sm:gap-4">
+  <div className="flex items-center justify-center gap-6">
 
-    {club.logo_url && (
-  <img
-    src={club.logo_url}
-    alt={`${club.name} logo`}
-    className="h-20 w-20 sm:h-24 sm:w-24 object-contain"
-  />
-)}
+  {club.logo_url && (
+    <img
+      src={club.logo_url}
+      alt={`${club.name} logo`}
+      className="h-32 w-32 object-contain flex-shrink-0"
+    />
+  )}
 
-    <div className="flex flex-col items-center text-center">
-  <h1 className="text-xl sm:text-2xl md:text-3xl font-semibold leading-tight">
-    Vacatures bij sponsoren van
-  </h1>
+  <div className="flex flex-col text-left">
+    <h1 className="text-xl sm:text-2xl md:text-3xl font-semibold leading-tight">
+      Vacatures bij sponsoren van
+    </h1>
 
-  <span className="text-lg sm:text-xl font-semibold mt-1">
-    {club.name}
-  </span>
-</div>
-
+    <span className="text-lg sm:text-xl font-semibold mt-1">
+      {club.name}
+    </span>
   </div>
+
+</div>
 
   <p className="text-sm text-gray-600 mt-1">
     Leden, supporters en bedrijven verbinden
