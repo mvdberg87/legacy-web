@@ -576,7 +576,7 @@ loadData();
             ⋯
           </summary>
 
-          <div className="absolute right-0 mt-2 w-40 bg-white border rounded-lg shadow-lg z-10">
+          <div className="absolute right-0 mt-2 w-40 bg-white border rounded-lg shadow-lg z-50">
 
             {!showArchived && (
               <button
@@ -611,7 +611,7 @@ loadData();
   ))}
 </div>
 
-        <div className="hidden md:block border-4 border-[#0d1b2a] rounded-xl overflow-hidden">
+        <div className="hidden md:block border-4 border-[#0d1b2a] rounded-xl">
   <table className="min-w-full text-sm">
           <thead className="bg-[#0d1b2a] text-white border-b-4 border-[#0d1b2a]">
             <tr>
@@ -701,7 +701,7 @@ loadData();
         ⋯
       </summary>
 
-      <div className="absolute right-0 mt-2 w-40 bg-white border rounded-lg shadow-lg z-10">
+      <div className="absolute right-0 mt-2 w-40 bg-white border rounded-lg shadow-lg z-50">
 
         {!showArchived && (
   <button
