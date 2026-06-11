@@ -347,13 +347,13 @@ loadData();
   }
 
   async function restoreJob(jobId: string) {
-    await supabase
-      .from("jobs")
-      .update({ archived_at: null })
-      .eq("id", jobId);
+  await supabase
+    .from("jobs")
+    .update({ archived_at: null })
+    .eq("id", jobId);
 
-    loadData();
-  }
+  loadData();
+}
 
   async function deleteJob(jobId: string) {
     if (!confirm("Vacature definitief verwijderen?")) return;
@@ -586,6 +586,15 @@ loadData();
                 Archiveren
               </button>
             )}
+
+            {showArchived && (
+  <button
+    onClick={() => restoreJob(job.id)}
+    className="block w-full text-left px-3 py-2 hover:bg-gray-100"
+  >
+    Terugzetten
+  </button>
+)}
 
             <button
               onClick={() => deleteJob(job.id)}

@@ -274,10 +274,17 @@ const [uploadingImage, setUploadingImage] =
   {activationImageUrl && (
     <div className="mt-4">
       <img
-        src={activationImageUrl}
-        alt="Achtergrondfoto vacature"
-        className="h-32 w-full object-cover border rounded-lg"
-      />
+  src={activationImageUrl}
+  alt="Achtergrondfoto vacature"
+  className="
+    max-h-64
+    w-full
+    object-contain
+    border
+    rounded-lg
+    bg-gray-50
+  "
+/>
     </div>
   )}
 </div>
