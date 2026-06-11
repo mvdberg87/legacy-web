@@ -21,6 +21,7 @@ type Club = {
   name: string;
   primary_color?: string | null;
   secondary_color?: string | null;
+  advertising_sales_enabled?: boolean | null;
 };
 
 /* ---------- Pagina ---------- */
@@ -72,7 +73,7 @@ const [uploadingImage, setUploadingImage] =
 
       const { data: clubData } = await supabase
         .from("clubs")
-        .select("id, name, primary_color, secondary_color")
+        .select("id, name, primary_color, secondary_color, advertising_sales_enabled")
         .eq("id", profile.club_id)
         .maybeSingle();
 
@@ -176,6 +177,9 @@ const [uploadingImage, setUploadingImage] =
     );
   }
 
+  const canUseManagedAds =
+  club.advertising_sales_enabled === true;
+
   return (
     <main className="min-h-screen bg-[#0d1b2a] p-6">
       <ClubNavbar slug={slug} />
@@ -225,6 +229,7 @@ const [uploadingImage, setUploadingImage] =
             />
           </div>
 
+{canUseManagedAds && (
           <div>
   <label className="block text-sm font-medium mb-2">
     Achtergrondfoto vacature
@@ -288,6 +293,7 @@ const [uploadingImage, setUploadingImage] =
     </div>
   )}
 </div>
+)}
 
           <div className="flex justify-between items-center pt-4">
             <button

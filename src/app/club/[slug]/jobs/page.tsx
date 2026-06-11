@@ -37,6 +37,7 @@ type Club = {
   name: string;
   active_package: PackageKey;
   admin_override?: boolean;
+  advertising_sales_enabled?: boolean;
 };
 
 /* ===============================
@@ -90,7 +91,7 @@ const [jobAdded, setJobAdded] =
 
     const { data: clubData } = await supabase
       .from("clubs")
-      .select("id, name, active_package, admin_override")
+      .select("id, name, active_package, admin_override, advertising_sales_enabled")
       .eq("id", profile.club_id)
       .maybeSingle();
 
@@ -218,6 +219,9 @@ const isLimitReached = currentVacancies >= maxVacancies;
 
   const canUseAds =
     club.admin_override || club.active_package !== "basic";
+
+    const canUseManagedAds =
+  club.advertising_sales_enabled === true;
 
   const visibleJobs = showArchived ? archivedJobs : jobs;
 
@@ -419,6 +423,7 @@ loadData();
               required
             />
 
+{canUseManagedAds && (
 <div>
   <label className="block text-sm font-medium mb-1">
     Achtergrondfoto vacature
@@ -458,6 +463,7 @@ loadData();
   </p>
 )}
 </div>
+)}
 
             <button
   disabled={isLimitReached || isSubmitting}

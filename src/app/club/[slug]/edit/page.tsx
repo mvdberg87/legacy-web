@@ -17,6 +17,7 @@ type Club = {
   activation_image_url: string | null;
   slug: string;
   jobs_intro_text: string;
+  advertising_sales_enabled?: boolean | null;
 };
 
 /* ---------- Pagina ---------- */
@@ -236,6 +237,9 @@ setTimeout(() => {
       </main>
     );
 
+    const canUseManagedAds =
+  club.advertising_sales_enabled === true;
+
   /* ---------- Render ---------- */
 
   return (
@@ -362,6 +366,7 @@ setTimeout(() => {
               </div>
             )}
 
+{canUseManagedAds && (
             <div className="mt-6">
   <label className="block text-sm font-medium mb-2">
     Achtergrondfoto vacaturetemplate
@@ -412,6 +417,7 @@ setTimeout(() => {
     </div>
   )}
 </div>
+)}
           </div>
 
           {/* Acties */}
