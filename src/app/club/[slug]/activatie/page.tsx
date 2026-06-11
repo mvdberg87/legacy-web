@@ -65,6 +65,18 @@ const [generating, setGenerating] =
   const [copied, setCopied] =
   useState(false);
 
+  const [generatingImage, setGeneratingImage] =
+  useState(false);
+
+const [imageDownloaded, setImageDownloaded] =
+  useState(false);
+
+const [packageDownloading, setPackageDownloading] =
+  useState(false);
+
+const [packageDownloaded, setPackageDownloaded] =
+  useState(false);
+
   useEffect(() => {
     loadJobs();
   }, []);
@@ -123,6 +135,19 @@ setClubData(club);
     }
   }
 
+  function slugifyFileName(value: string) {
+  return value
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-+|-+$/g, "");
+}
+
+function getSelectedJob() {
+  return jobs.find(
+    (j) => j.id === selectedJob
+  );
+}
+
   async function generatePost() {
 
   if (!selectedJob) return;
@@ -180,130 +205,166 @@ async function copyPost() {
 }
 
 async function generateImage() {
-
-  const job =
-    jobs.find(
-      (j) => j.id === selectedJob
-    );
-
-    console.log("JOB", job);
-
-  const response =
-    await fetch(
-      "/api/activatie/generate-image",
-      {
-        method: "POST",
-
-        headers: {
-          "Content-Type":
-            "application/json",
-        },
-
-        body: JSON.stringify({
-          template: activationType,
-  primaryColor:
-    clubData?.primary_color,
-
-  secondaryColor:
-    clubData?.secondary_color,
-
-  clubLogo:
-    clubData?.logo_url,
-
-  companyLogo:
-  getCompanyLogo(
-    job?.apply_url,
-    job?.company_logo_url
-  ),
-
-  backgroundImage:
-    clubData?.activation_image_url,
-
-  companyName:
-    job?.company_name,
-
-  jobTitle:
-    job?.title,
-}),
-      }
-    );
-
-  const blob =
-    await response.blob();
-
-  const url =
-    URL.createObjectURL(blob);
-
-  setImageUrl(url);
-}
-
-async function downloadPackage() {
-
-  const job =
-    jobs.find(
-      (j) => j.id === selectedJob
-    );
+  const job = getSelectedJob();
 
   if (!job) return;
 
-  const response =
-    await fetch(
-      "/api/activatie/download-package",
-      {
-        method: "POST",
-        headers: {
-          "Content-Type":
-            "application/json",
-        },
+  setGeneratingImage(true);
 
-        body: JSON.stringify({
-          companyName:
-            job.company_name,
+  try {
+    const response =
+      await fetch(
+        "/api/activatie/generate-image",
+        {
+          method: "POST",
 
-          jobTitle:
-            job.title,
+          headers: {
+            "Content-Type":
+              "application/json",
+          },
 
-          applyUrl:
-            job.apply_url,
+          body: JSON.stringify({
+            template: activationType,
 
-          generatedText,
+            primaryColor:
+              clubData?.primary_color,
 
-          clubLogo:
-            clubData?.logo_url,
+            secondaryColor:
+              clubData?.secondary_color,
 
-          companyLogo:
-            getCompanyLogo(
-              job.apply_url,
-              job.company_logo_url
-            ),
+            clubLogo:
+              clubData?.logo_url,
 
-          backgroundImage:
-            clubData?.activation_image_url,
+            companyLogo:
+              getCompanyLogo(
+                job.apply_url,
+                job.company_logo_url
+              ),
 
-          primaryColor:
-            clubData?.primary_color,
+            backgroundImage:
+              job.activation_image_url ??
+              clubData?.activation_image_url,
 
-          secondaryColor:
-            clubData?.secondary_color,
-        }),
-      }
-    );
+            companyName:
+              job.company_name,
 
-  const blob =
-    await response.blob();
+            jobTitle:
+              job.title,
+          }),
+        }
+      );
 
-  const url =
-    URL.createObjectURL(blob);
+    const blob =
+      await response.blob();
+
+    const url =
+      URL.createObjectURL(blob);
+
+    setImageUrl(url);
+  } finally {
+    setGeneratingImage(false);
+  }
+}
+
+function downloadImage() {
+  const job = getSelectedJob();
+
+  if (!job || !imageUrl) return;
+
+  setImageDownloaded(true);
+
+  const fileName =
+    `${activationType}_${slugifyFileName(job.title)}.png`;
 
   const a =
     document.createElement("a");
 
-  a.href = url;
-
-  a.download =
-    `${job.company_name}-${job.title}.zip`;
-
+  a.href = imageUrl;
+  a.download = fileName;
   a.click();
+
+  setTimeout(() => {
+    setImageDownloaded(false);
+  }, 2000);
+}
+
+async function downloadPackage() {
+  const job = getSelectedJob();
+
+  if (!job) return;
+
+  setPackageDownloading(true);
+  setPackageDownloaded(false);
+
+  try {
+    const response =
+      await fetch(
+        "/api/activatie/download-package",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type":
+              "application/json",
+          },
+
+          body: JSON.stringify({
+            companyName:
+              job.company_name,
+
+            jobTitle:
+              job.title,
+
+            applyUrl:
+              job.apply_url,
+
+            generatedText,
+
+            clubLogo:
+              clubData?.logo_url,
+
+            companyLogo:
+              getCompanyLogo(
+                job.apply_url,
+                job.company_logo_url
+              ),
+
+            backgroundImage:
+              job.activation_image_url ??
+              clubData?.activation_image_url,
+
+            primaryColor:
+              clubData?.primary_color,
+
+            secondaryColor:
+              clubData?.secondary_color,
+          }),
+        }
+      );
+
+    const blob =
+      await response.blob();
+
+    const url =
+      URL.createObjectURL(blob);
+
+    const a =
+      document.createElement("a");
+
+    a.href = url;
+
+    a.download =
+      `activatiepakket_${slugifyFileName(job.title)}.zip`;
+
+    a.click();
+
+    setPackageDownloaded(true);
+
+    setTimeout(() => {
+      setPackageDownloaded(false);
+    }, 2000);
+  } finally {
+    setPackageDownloading(false);
+  }
 }
 
   return (
@@ -431,6 +492,7 @@ async function downloadPackage() {
 
             <button
   onClick={generateImage}
+  disabled={generatingImage}
   className="
     bg-green-700
     text-white
@@ -438,10 +500,19 @@ async function downloadPackage() {
     py-3
     rounded-lg
     ml-3
+    disabled:opacity-60
   "
 >
-  Genereer afbeelding
+  {generatingImage
+    ? "Afbeelding genereren..."
+    : "Genereer afbeelding"}
 </button>
+
+<p className="text-xs text-gray-500 mt-3">
+  Als er bij de vacature geen eigen achtergrondfoto is toegevoegd,
+  gebruiken we automatisch de standaardfoto uit Club bewerken:
+  Achtergrondfoto vacaturetemplate.
+</p>
 
             {generatedText && (
 
@@ -500,41 +571,43 @@ async function downloadPackage() {
         rounded-xl
       "
     />
-
-    <a
-      href={imageUrl}
-      download={`${
-        jobs.find(
-          (j) => j.id === selectedJob
-        )?.company_name ?? "vacature"
-      }.png`}
-      className="
-        inline-block
-        mt-4
-        bg-blue-600
-        text-white
-        px-4
-        py-2
-        rounded-lg
-      "
-    >
-      Download afbeelding
-    </a>
-
-    <button
-  onClick={downloadPackage}
+<button
+  onClick={downloadImage}
   className="
     inline-block
     mt-4
-    ml-3
-    bg-purple-600
+    bg-[#0d1b2a]
     text-white
     px-4
     py-2
     rounded-lg
   "
 >
-  Download activatiepakket
+  {imageDownloaded
+    ? "✓ Download gestart"
+    : "Download afbeelding"}
+</button>
+
+    <button
+  onClick={downloadPackage}
+  disabled={packageDownloading}
+  className="
+    inline-block
+    mt-4
+    ml-3
+    bg-green-700
+    text-white
+    px-4
+    py-2
+    rounded-lg
+    disabled:opacity-60
+  "
+>
+  {packageDownloading
+    ? "Pakket maken..."
+    : packageDownloaded
+    ? "✓ Download gestart"
+    : "Download activatiepakket"}
 </button>
 
   </div>
