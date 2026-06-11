@@ -704,20 +704,29 @@ loadData();
       <div className="absolute right-0 mt-2 w-40 bg-white border rounded-lg shadow-lg z-10">
 
         {!showArchived && (
-          <button
-            onClick={() => archiveJob(job.id)}
-            className="block w-full text-left px-3 py-2 hover:bg-gray-100"
-          >
-            Archiveren
-          </button>
-        )}
+  <button
+    onClick={() => archiveJob(job.id)}
+    className="block w-full text-left px-3 py-2 hover:bg-gray-100"
+  >
+    Archiveren
+  </button>
+)}
 
-        <button
-          onClick={() => deleteJob(job.id)}
-          className="block w-full text-left px-3 py-2 text-red-600 hover:bg-gray-100"
-        >
-          Verwijderen
-        </button>
+{showArchived && (
+  <button
+    onClick={() => restoreJob(job.id)}
+    className="block w-full text-left px-3 py-2 hover:bg-gray-100"
+  >
+    Terugzetten
+  </button>
+)}
+
+<button
+  onClick={() => deleteJob(job.id)}
+  className="block w-full text-left px-3 py-2 text-red-600 hover:bg-gray-100"
+>
+  Verwijderen
+</button>
 
       </div>
     </details>
