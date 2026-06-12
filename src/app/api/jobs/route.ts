@@ -1,88 +1,59 @@
 import { NextRequest, NextResponse } from "next/server";
 import { supabaseAdmin } from "@/lib/supabaseAdmin";
 
-export const runtime = "nodejs";
-
-/* ===============================
-   POST /api/jobs
-   =============================== */
 export async function POST(req: NextRequest) {
   try {
-    const body = await req.json();
+    const { job_id, club_id, source } =
+      await req.json();
 
-    const {
-      club_id,
-      title,
-      company_name,
-      job_url,
-      is_featured = false, // 👈 advertentie
-    } = body;
-
-    if (!club_id || !title || !company_name || !job_url) {
+    if (!job_id || !club_id) {
       return NextResponse.json(
-        { error: "Ontbrekende verplichte velden" },
+        {
+          error:
+            "job_id en club_id zijn verplicht",
+        },
         { status: 400 }
       );
     }
 
-    /* ===============================
-       1. Club + pakket ophalen
-       =============================== */
-    const { data: club, error: clubError } = await supabaseAdmin
-      .from("clubs")
-      .select("id, active_package")
-      .eq("id", club_id)
-      .maybeSingle();
+    const { error } =
+      await supabaseAdmin
+        .from("job_shares")
+        .insert({
+          job_id,
+          club_id,
+          source: source ?? "unknown",
+        });
 
-    if (clubError || !club) {
-      return NextResponse.json(
-        { error: "Club niet gevonden" },
-        { status: 404 }
+    if (error) {
+      console.error(
+        "❌ job_share insert error:",
+        error
       );
-    }
 
-    /* ===============================
-       2. 🔒 PAKKET-CHECK (HARD)
-       =============================== */
-    if (club.active_package === "basic" && is_featured) {
       return NextResponse.json(
         {
-          error:
-            "Advertenties zijn niet beschikbaar in het Basic pakket. Upgrade om advertenties te gebruiken.",
-          code: "PACKAGE_LIMIT",
+          error: error.message,
         },
-        { status: 403 }
-      );
-    }
-
-    /* ===============================
-       3. Vacature aanmaken
-       =============================== */
-    const { data: job, error: jobError } = await supabaseAdmin
-      .from("sponsor_jobs")
-      .insert({
-        club_id,
-        title,
-        company_name,
-        job_url,
-        featured: is_featured,
-      })
-      .select()
-      .single();
-
-    if (jobError) {
-      console.error(jobError);
-      return NextResponse.json(
-        { error: "Vacature aanmaken mislukt" },
         { status: 500 }
       );
     }
 
-    return NextResponse.json({ success: true, job });
+    return NextResponse.json({
+      success: true,
+    });
+
   } catch (err) {
-    console.error("❌ api/jobs POST error:", err);
+
+    console.error(
+      "❌ track-share crash:",
+      err
+    );
+
     return NextResponse.json(
-      { error: "Interne serverfout" },
+      {
+        error: "Unexpected error",
+      },
       { status: 500 }
     );
   }
