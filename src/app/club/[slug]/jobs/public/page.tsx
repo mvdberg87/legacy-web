@@ -129,13 +129,18 @@ const { data: marketplaceAds } = await supabaseAdmin
     id,
     company_name,
     company_website,
-    company_logo_url,
     vacancy_url,
+    company_logo_url,
     is_featured
   `)
   .eq("club_id", club.id)
   .eq("status", "active")
   .is("deleted_at", null);
+
+  console.log(
+  "MARKETPLACE ADS",
+  marketplaceAds
+);
 
   /* ===============================
      5️⃣ Vacatures mappen (zonder featured)

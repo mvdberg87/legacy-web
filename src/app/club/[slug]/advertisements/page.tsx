@@ -368,34 +368,48 @@ const expectedRenewalRevenue =
             <tr>
 
               <th className="p-3 text-left">
-                Bedrijf
-              </th>
+  Bedrijf
+</th>
 
-              <th className="p-3 text-center">
-                Pakket
-              </th>
+<th className="p-3 text-center">
+  Pakket
+</th>
 
-              <th className="p-3 text-center">
+<th className="p-3 text-center">
   Status
 </th>
 
-<th>Clicks</th>
-<th>CTR</th>
-<th>Shares</th>
-<th>Share rate</th>
-<th>Laatste click</th>
+<th className="p-3 text-center w-20">
+  Clicks
+</th>
+
+<th className="p-3 text-center w-20">
+  CTR
+</th>
+
+<th className="p-3 text-center w-20">
+  Shares
+</th>
+
+<th className="p-3 text-center w-24">
+  Share rate
+</th>
+
+<th className="p-3 text-center w-32">
+  Laatste click
+</th>
 
 <th className="p-3 text-center">
   Featured
 </th>
 
-              <th className="p-3 text-center">
-                Loopt tot
-              </th>
+<th className="p-3 text-center">
+  Loopt tot
+</th>
 
-              <th className="p-3 text-center">
-                Clubdeel
-              </th>
+<th className="p-3 text-center">
+  Clubdeel
+</th>
 
             </tr>
 
@@ -424,15 +438,23 @@ const expectedRenewalRevenue =
   {ad.status}
 </td>
 
-<td>{ad.total_clicks ?? 0}</td>
+<td className="p-3 text-center">
+  {ad.total_clicks ?? 0}
+</td>
 
-<td>0%</td>
+<td className="p-3 text-center">
+  0%
+</td>
 
-<td>{ad.total_shares ?? 0}</td>
+<td className="p-3 text-center">
+  {ad.total_shares ?? 0}
+</td>
 
-<td>0%</td>
+<td className="p-3 text-center">
+  0%
+</td>
 
-<td>
+<td className="p-3 text-center">
   {ad.last_click
     ? new Date(ad.last_click).toLocaleDateString("nl-NL")
     : "-"}
