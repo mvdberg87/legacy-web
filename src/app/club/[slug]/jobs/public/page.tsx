@@ -123,21 +123,28 @@ if (jobIds.length > 0) {
    4b️⃣ Marketplace advertenties
 =============================== */
 
-const { data: marketplaceAds } = await supabaseAdmin
+const {
+  data: marketplaceAds,
+  error: marketplaceError,
+} = await supabaseAdmin
   .from("company_advertisements")
   .select(`
     id,
     company_name,
     company_website,
     vacancy_url,
-    company_logo_url,
     is_featured
   `)
   .eq("club_id", club.id)
   .eq("status", "active")
   .is("deleted_at", null);
 
-  console.log(
+console.log(
+  "MARKETPLACE ERROR",
+  marketplaceError
+);
+
+console.log(
   "MARKETPLACE ADS",
   marketplaceAds
 );
@@ -170,7 +177,7 @@ const { data: marketplaceAds } = await supabaseAdmin
       company_name: ad.company_name,
       job_title: "Vacature bekijken",
       link_url: ad.vacancy_url,
-      image_url: ad.company_logo_url,
+      image_url: null,
       is_featured: ad.is_featured,
     }));
 
@@ -191,7 +198,7 @@ const marketplaceJobsMapped =
       apply_url: ad.vacancy_url,
       is_featured: false,
       company_website: ad.company_website,
-      company_logo_url: ad.company_logo_url,
+      company_logo_url: null,
       total_clicks: 0,
       ctr: 0,
     }));
