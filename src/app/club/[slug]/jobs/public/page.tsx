@@ -136,11 +136,6 @@ const { data: marketplaceAds } = await supabaseAdmin
   .eq("status", "active")
   .is("deleted_at", null);
 
-  console.log(
-  "MARKETPLACE ADS",
-  marketplaceAds
-);
-
   /* ===============================
      5️⃣ Vacatures mappen (zonder featured)
      =============================== */
@@ -162,25 +157,16 @@ const { data: marketplaceAds } = await supabaseAdmin
      6️⃣ Advertenties combineren
      =============================== */
   const marketplaceAdsMapped =
-  (marketplaceAds ?? []).map(
-    (ad) => ({
+  (marketplaceAds ?? [])
+    .filter((ad) => ad.is_featured)
+    .map((ad) => ({
       id: ad.id,
-
-      company_name:
-        ad.company_name,
-
-      job_title:
-        "Vacature bekijken",
-
-      link_url:
-        ad.vacancy_url,
-
+      company_name: ad.company_name,
+      job_title: "Vacature bekijken",
+      link_url: ad.vacancy_url,
       image_url: null,
-
-      is_featured:
-        ad.is_featured,
-    })
-  );
+      is_featured: ad.is_featured,
+    }));
 
 const combinedAds = [
   ...featuredJobAds,
