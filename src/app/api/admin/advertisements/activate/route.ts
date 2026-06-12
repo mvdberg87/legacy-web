@@ -55,6 +55,52 @@ export async function POST(
     })
     .eq("id", advertisementId);
 
+    // Controleer of er al een job bestaat
+const { data: existingJob } =
+  await supabaseAdmin
+    .from("jobs")
+    .select("id")
+    .eq("company_name", advertisement.company_name)
+    .eq("club_id", advertisement.club_id)
+    .maybeSingle();
+
+if (!existingJob) {
+  const { error: jobError } =
+    await supabaseAdmin
+      .from("jobs")
+      .insert({
+        club_id: advertisement.club_id,
+
+        title:
+          advertisement.company_name,
+
+        company_name:
+          advertisement.company_name,
+
+        company_website:
+          advertisement.company_website,
+
+        apply_url:
+          advertisement.vacancy_url,
+
+        apply_email:
+          advertisement.company_email,
+
+        featured:
+          advertisement.is_featured,
+
+        is_active: true,
+        is_approved: true,
+      });
+
+  if (jobError) {
+    console.error(
+      "Job creation failed:",
+      jobError
+    );
+  }
+}
+
     await fetch(
   `${process.env.NEXT_PUBLIC_SITE_URL}/api/send-email`,
   {

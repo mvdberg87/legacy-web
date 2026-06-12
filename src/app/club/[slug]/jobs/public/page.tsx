@@ -139,6 +139,11 @@ const { data: marketplaceAds } = await supabase
     ascending: false,
   });
 
+  console.log(
+  "MARKETPLACE ADS",
+  marketplaceAds
+);
+
   /* ===============================
      5️⃣ Vacatures mappen (zonder featured)
      =============================== */
