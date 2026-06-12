@@ -130,6 +130,21 @@ setMonthlyReports(
 );
   }
 
+  async function toggleFeatured(
+  advertisementId: string
+) {
+  await supabase
+    .from("company_advertisements")
+    .update({
+      is_featured: !ads.find(
+        (a) => a.id === advertisementId
+      )?.is_featured,
+    })
+    .eq("id", advertisementId);
+
+  load();
+}
+
   useEffect(() => {
     load();
   }, []);
@@ -317,6 +332,10 @@ const expectedRenewalRevenue =
               </th>
 
               <th className="p-3 text-center">
+  Actie
+</th>
+
+              <th className="p-3 text-center">
                 Loopt tot
               </th>
 
@@ -333,9 +352,11 @@ const expectedRenewalRevenue =
             {ads.map((ad) => (
 
               <tr
-                key={ad.id}
-                className="border-b"
-              >
+  key={ad.id}
+  className={`border-b ${
+    ad.is_featured ? "bg-yellow-50" : ""
+  }`}
+>
 
                 <td className="p-3">
                   {ad.company_name}
@@ -358,6 +379,22 @@ const expectedRenewalRevenue =
                     ? "🔄"
                     : "⛔"}
                 </td>
+
+                <td className="p-3 text-center">
+  <button
+    onClick={() => toggleFeatured(ad.id)}
+    className={`
+      px-3 py-1 rounded-md text-sm border
+      ${
+        ad.is_featured
+          ? "bg-yellow-100 border-yellow-400 text-yellow-800"
+          : ""
+      }
+    `}
+  >
+    ⭐ Featured
+  </button>
+</td>
 
                 <td className="p-3 text-center">
                   {new Date(
