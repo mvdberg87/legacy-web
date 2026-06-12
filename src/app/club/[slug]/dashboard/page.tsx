@@ -539,10 +539,14 @@ const needsUpdate =
     }
 
     if (data.url) {
-      window.location.href = data.url;
-    } else {
-      alert("Geen Stripe checkout URL ontvangen");
-    }
+  window.open(
+    data.url,
+    "_blank",
+    "noopener,noreferrer"
+  );
+} else {
+  alert("Geen Stripe checkout URL ontvangen");
+}
 
   } catch (err) {
     console.error("Checkout error:", err);
@@ -690,7 +694,11 @@ async function connectStripe() {
     const data = await res.json();
 
     if (data.url) {
-      window.location.href = data.url;
+      window.open(
+  data.url,
+  "_blank",
+  "noopener,noreferrer"
+);
     }
   } catch (err) {
     console.error(err);
