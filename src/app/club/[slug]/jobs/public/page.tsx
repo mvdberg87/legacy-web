@@ -162,6 +162,7 @@ console.log(
     is_featured: job.featured,
     company_website: job.company_website,
     company_logo_url: job.company_logo_url,
+    source: "job" as const,
     total_clicks: clickMap[job.id] ?? 0,
     ctr: 0,
   }));
@@ -187,6 +188,23 @@ const combinedAds = [
   ...(manualAds ?? []),
 ];
 
+const marketplaceJobsMapped =
+  (marketplaceAds ?? [])
+    .filter((ad) => !ad.is_featured)
+    .map((ad) => ({
+      id: ad.id,
+      job_title: "Vacature bekijken",
+      company_name: ad.company_name,
+      created_at: new Date().toISOString(),
+      apply_url: ad.vacancy_url,
+      is_featured: false,
+      company_website: ad.company_website,
+      company_logo_url: null,
+      source: "advertisement" as const,
+      total_clicks: 0,
+      ctr: 0,
+    }));
+
   /* ===============================
      7️⃣ Render
      =============================== */
@@ -205,7 +223,10 @@ const combinedAds = [
     club.jobs_intro_text?.trim() ||
     DEFAULT_PUBLIC_JOBS_INTRO
   }
-  jobs={jobsMapped}
+  jobs={[
+  ...jobsMapped,
+  ...marketplaceJobsMapped,
+]}
   ads={combinedAds}
 />
   );

@@ -19,6 +19,8 @@ type Advertisement = {
   total_clicks?: number;
   total_shares?: number;
   last_click?: string | null;
+  ctr?: string;
+share_rate?: string;
 };
 
 export default function AdvertisementsPage() {
@@ -80,6 +82,17 @@ setAdvertisingSalesEnabled(
         .is("deleted_at", null)
         .order("end_date");
 
+        const clubId = data?.[0]?.club_id;
+
+const { count: pageviews } =
+  await supabase
+    .from("club_page_views")
+    .select("*", {
+      count: "exact",
+      head: true,
+    })
+    .eq("club_id", clubId);
+
 
     const adIds = (data ?? []).map((ad) => ad.id);
 
@@ -133,12 +146,39 @@ const lastClickMap: Record<string, string> = {};
 });
 
 const enrichedAds =
-  (data ?? []).map((ad) => ({
-    ...ad,
-    total_clicks: clickMap[ad.id] ?? 0,
-    total_shares: shareMap[ad.id] ?? 0,
-    last_click: lastClickMap[ad.id] ?? null,
-  }));
+  (data ?? []).map((ad) => {
+
+    const clicks =
+      clickMap[ad.id] ?? 0;
+
+    const shares =
+      shareMap[ad.id] ?? 0;
+
+    return {
+      ...ad,
+      total_clicks: clicks,
+      total_shares: shares,
+      ctr:
+        pageviews && pageviews > 0
+          ? (
+              (clicks / pageviews) *
+              100
+            ).toFixed(1)
+          : "0",
+
+      share_rate:
+        pageviews && pageviews > 0
+          ? (
+              (shares / pageviews) *
+              100
+            ).toFixed(1)
+          : "0",
+
+      last_click:
+        lastClickMap[ad.id] ??
+        null,
+    };
+  });
 
 setAds(enrichedAds);
 
@@ -456,7 +496,7 @@ const expectedRenewalRevenue =
 </td>
 
 <td className="p-3 text-center">
-  0%
+  {ad.ctr ?? 0}%
 </td>
 
 <td className="p-3 text-center">
@@ -464,7 +504,7 @@ const expectedRenewalRevenue =
 </td>
 
 <td className="p-3 text-center">
-  0%
+  {ad.share_rate ?? 0}%
 </td>
 
 <td className="p-3 text-center">

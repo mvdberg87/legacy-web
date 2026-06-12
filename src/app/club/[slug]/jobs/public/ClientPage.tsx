@@ -26,6 +26,7 @@ type Job = {
   company_website?: string | null;
   company_logo_url?: string | null;
   total_clicks?: number;
+  source?: "job" | "advertisement";
 };
 
 type Ad = {
@@ -401,7 +402,7 @@ const logo = getCompanyLogo(website, company.logo);
                   <ListingCard
   href={ad.link_url}
   external
-  title={ad.job_title ?? "Sponsor"}
+  title={ad.job_title ?? "Vacature bekijken"}
   company={ad.company_name}
   website={ad.link_url}
   cachedLogo={ad.image_url}
@@ -410,27 +411,22 @@ const logo = getCompanyLogo(website, company.logo);
   variant="ad"
   onClick={() => {
 
-  if (isMarketplaceAd) {
-    trackAdvertisementClick(
-      ad.id
-    );
-  } else {
-    trackJobClick(jobId);
-  }
+    if (isMarketplaceAd) {
+      trackAdvertisementClick(ad.id);
+    } else {
+      trackJobClick(jobId);
+    }
 
-}}
+  }}
+  onShare={() => {
 
-onShare={() => {
+    if (isMarketplaceAd) {
+      trackAdvertisementShare(ad.id);
+    } else {
+      trackJobShare(jobId);
+    }
 
-  if (isMarketplaceAd) {
-    trackAdvertisementShare(
-      ad.id
-    );
-  } else {
-    trackJobShare(jobId);
-  }
-
-}}
+  }}
 />
                 );
               })}
@@ -509,8 +505,25 @@ onShare={() => {
         cachedLogo={job.company_logo_url}
         jobId={job.id}
         clubId={club.id}
-        onClick={() => trackJobClick(job.id)}   // ✅ GOED
-        onShare={() => trackJobShare(job.id)}
+        onClick={() => {
+
+  if (job.source === "advertisement") {
+    trackAdvertisementClick(job.id);
+  } else {
+    trackJobClick(job.id);
+  }
+
+}}
+
+onShare={() => {
+
+  if (job.source === "advertisement") {
+    trackAdvertisementShare(job.id);
+  } else {
+    trackJobShare(job.id);
+  }
+
+}}
       />
     </div>
   );
