@@ -111,6 +111,56 @@ function trackJobShare(jobId: string) {
   }).catch(() => {});
 }
 
+function trackAdvertisementClick(
+  advertisementId: string
+) {
+  if (!club?.id) return;
+
+  fetch(
+    "/api/advertisements/track-click",
+    {
+      method: "POST",
+      headers: {
+        "Content-Type":
+          "application/json",
+      },
+      body: JSON.stringify({
+        advertisement_id:
+          advertisementId,
+        club_id: club.id,
+        source:
+          "public_jobs_page",
+      }),
+      keepalive: true,
+    }
+  ).catch(() => {});
+}
+
+function trackAdvertisementShare(
+  advertisementId: string
+) {
+  if (!club?.id) return;
+
+  fetch(
+    "/api/advertisements/track-share",
+    {
+      method: "POST",
+      headers: {
+        "Content-Type":
+          "application/json",
+      },
+      body: JSON.stringify({
+        advertisement_id:
+          advertisementId,
+        club_id: club.id,
+        source:
+          "public_jobs_page",
+      }),
+      keepalive: true,
+    }
+  ).catch(() => {});
+}
+
   const searchParams = useSearchParams();
 const companyParam = searchParams.get("company");
 
@@ -332,6 +382,9 @@ const logo = getCompanyLogo(website, company.logo);
     ? ad.id.replace("job-", "")
     : ad.id;
 
+    const isMarketplaceAd =
+  !ad.id.startsWith("job-");
+
 
                 return (
                   <ListingCard
@@ -344,8 +397,29 @@ const logo = getCompanyLogo(website, company.logo);
   jobId={jobId}
   clubId={club.id}
   variant="ad"
-  onClick={() => jobId && trackJobClick(jobId)}   // 🔥 FIX
-  onShare={() => trackJobShare(jobId)}
+  onClick={() => {
+
+  if (isMarketplaceAd) {
+    trackAdvertisementClick(
+      ad.id
+    );
+  } else {
+    trackJobClick(jobId);
+  }
+
+}}
+
+onShare={() => {
+
+  if (isMarketplaceAd) {
+    trackAdvertisementShare(
+      ad.id
+    );
+  } else {
+    trackJobShare(jobId);
+  }
+
+}}
 />
                 );
               })}

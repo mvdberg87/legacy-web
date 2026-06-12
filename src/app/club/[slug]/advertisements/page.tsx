@@ -7,22 +7,20 @@ import ClubNavbar from "@/components/club/ClubNavbar";
 
 type Advertisement = {
   id: string;
-
   company_name: string;
-
   package_name: string;
-
   status: string;
-
   end_date: string;
-
   auto_renew: boolean;
-
   is_featured: boolean | null;
+  amount: number | null;
+  club_amount: number | null;
 
-amount: number | null;
-
-club_amount: number | null;
+  total_clicks?: number;
+  total_shares?: number;
+  ctr?: number;
+  share_rate?: number;
+  last_click?: string | null;
 };
 
 export default function AdvertisementsPage() {
@@ -85,6 +83,18 @@ setAdvertisingSalesEnabled(
         .order("end_date");
 
     setAds(data ?? []);
+
+    const { count: pageviews } =
+  await supabase
+    .from("club_page_views")
+    .select("*", {
+      count: "exact",
+      head: true,
+    })
+    .eq("club_id", data?.[0]?.club_id);
+
+const totalPageviews =
+  pageviews ?? 0;
 
 const totalRevenue =
   (data ?? []).reduce(

@@ -129,6 +129,7 @@ const { data: marketplaceAds } = await supabaseAdmin
     id,
     company_name,
     company_website,
+    company_logo_url,
     vacancy_url,
     is_featured
   `)
@@ -164,7 +165,7 @@ const { data: marketplaceAds } = await supabaseAdmin
       company_name: ad.company_name,
       job_title: "Vacature bekijken",
       link_url: ad.vacancy_url,
-      image_url: null,
+      image_url: ad.company_logo_url,
       is_featured: ad.is_featured,
     }));
 
@@ -185,7 +186,7 @@ const marketplaceJobsMapped =
       apply_url: ad.vacancy_url,
       is_featured: false,
       company_website: ad.company_website,
-      company_logo_url: null,
+      company_logo_url: ad.company_logo_url,
       total_clicks: 0,
       ctr: 0,
     }));
