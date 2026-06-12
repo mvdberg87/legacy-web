@@ -328,14 +328,6 @@ const expectedRenewalRevenue =
 </th>
 
               <th className="p-3 text-center">
-                Renewal
-              </th>
-
-              <th className="p-3 text-center">
-  Actie
-</th>
-
-              <th className="p-3 text-center">
                 Loopt tot
               </th>
 
@@ -371,28 +363,21 @@ const expectedRenewalRevenue =
 </td>
 
 <td className="p-3 text-center">
-  {ad.is_featured ? "⭐" : "-"}
-</td>
-
-                <td className="p-3 text-center">
-                  {ad.auto_renew
-                    ? "🔄"
-                    : "⛔"}
-                </td>
-
-                <td className="p-3 text-center">
   <button
+    type="button"
     onClick={() => toggleFeatured(ad.id)}
     className={`
-      px-3 py-1 rounded-md text-sm border
+      px-3 py-1 rounded-md text-sm border transition
       ${
         ad.is_featured
           ? "bg-yellow-100 border-yellow-400 text-yellow-800"
-          : ""
+          : "hover:bg-gray-50"
       }
     `}
   >
-    ⭐ Featured
+    {ad.is_featured
+      ? "⭐ Featured"
+      : "Maak featured"}
   </button>
 </td>
 
