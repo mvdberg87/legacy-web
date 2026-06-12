@@ -187,44 +187,25 @@ const combinedAds = [
   ...(manualAds ?? []),
 ];
 
-const marketplaceJobsMapped =
-  (marketplaceAds ?? [])
-    .filter((ad) => !ad.is_featured)
-    .map((ad) => ({
-      id: `marketplace-${ad.id}`,
-      job_title: "Vacature bekijken",
-      company_name: ad.company_name,
-      created_at: new Date().toISOString(),
-      apply_url: ad.vacancy_url,
-      is_featured: false,
-      company_website: ad.company_website,
-      company_logo_url: null,
-      total_clicks: 0,
-      ctr: 0,
-    }));
-
   /* ===============================
      7️⃣ Render
      =============================== */
   return (
     <ClientPage
   club={{
-  id: club.id,
-  name: club.name,
-  slug: club.slug,
-  logo_url: club.logo_url,
-  primary_color: club.primary_color,
-  secondary_color: club.secondary_color,
-}}
+    id: club.id,
+    name: club.name,
+    slug: club.slug,
+    logo_url: club.logo_url,
+    primary_color: club.primary_color,
+    secondary_color: club.secondary_color,
+  }}
   adminEmail={adminEmail}
   introText={
     club.jobs_intro_text?.trim() ||
     DEFAULT_PUBLIC_JOBS_INTRO
   }
-  jobs={[
-  ...jobsMapped,
-  ...marketplaceJobsMapped,
-]}
+  jobs={jobsMapped}
   ads={combinedAds}
 />
   );
