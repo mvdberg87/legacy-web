@@ -94,86 +94,38 @@ const { count: pageviews } =
     .eq("club_id", clubId);
 
 
-    const adIds = (data ?? []).map((ad) => ad.id);
-
-    const {
-  data: clicks,
-  error: clicksError,
-} = await supabase
-  .from("company_advertisement_clicks")
-  .select("advertisement_id, created_at")
-  .in("advertisement_id", adIds);
-
-console.log("AD IDS", adIds);
-console.log("CLICKS", clicks);
-console.log("CLICKS ERROR", clicksError);
-
-console.log(
-  "FIRST AD",
-  data?.[0]
+    const adIds = (data ?? []).map(
+  (ad) => ad.id
 );
 
-console.log(
-  "FIRST CLICK",
-  clicks?.[0]
-);
+const { data: stats } =
+  await supabase
+    .from(
+      "club_advertisement_stats"
+    )
+    .select("*")
+    .in("id", adIds);
 
-const {
-  data: shares,
-  error: sharesError,
-} = await supabase
-  .from("company_advertisement_shares")
-  .select("advertisement_id")
-  .in("advertisement_id", adIds);
+const statsMap =
+  Object.fromEntries(
+    (stats ?? []).map(
+      (row) => [row.id, row]
+    )
+  );
 
-console.log("SHARES", shares);
-console.log("SHARES ERROR", sharesError);
-
-  const clickMap: Record<string, number> = {};
-const shareMap: Record<string, number> = {};
-const lastClickMap: Record<string, string> = {};
-
-(clicks ?? []).forEach((click) => {
-  clickMap[click.advertisement_id] =
-    (clickMap[click.advertisement_id] ?? 0) + 1;
-
-  const existing =
-    lastClickMap[click.advertisement_id];
-
-  if (
-    !existing ||
-    new Date(click.created_at) >
-      new Date(existing)
-  ) {
-    lastClickMap[click.advertisement_id] =
-      click.created_at;
-  }
-});
-
-(shares ?? []).forEach((share) => {
-  shareMap[share.advertisement_id] =
-    (shareMap[share.advertisement_id] ?? 0) + 1;
-});
+console.log("STATS", stats);
 
 const enrichedAds =
   (data ?? []).map((ad) => {
 
-    console.log(
-  "CLICKMAP",
-  clickMap
-);
+    const stat =
+  statsMap[ad.id];
 
-console.log(
-  ad.company_name,
-  ad.id,
-  clickMap[ad.id]
-);
+const clicks =
+  stat?.total_clicks ?? 0;
 
-    const clicks =
-      clickMap[ad.id] ?? 0;
-
-    const shares =
-      shareMap[ad.id] ?? 0;
+const shares =
+  stat?.total_shares ?? 0;
 
     return {
       ...ad,
@@ -196,8 +148,8 @@ console.log(
           : "0",
 
       last_click:
-        lastClickMap[ad.id] ??
-        null,
+  stat?.last_click ??
+  null,
     };
   });
 
