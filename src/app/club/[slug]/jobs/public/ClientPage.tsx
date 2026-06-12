@@ -76,6 +76,8 @@ export default function ClientPage({
   function trackJobClick(jobId: string) {
   if (!club?.id) return;
 
+  console.log("JOB CLICK", jobId);
+
   fetch("/api/jobs/track-click", {
     method: "POST",
     headers: {
@@ -97,6 +99,8 @@ export default function ClientPage({
 function trackJobShare(jobId: string) {
   if (!club?.id) return;
 
+  console.log("JOB SHARE", jobId);
+
   fetch("/api/jobs/track-share", {
     method: "POST",
     headers: {
@@ -115,6 +119,11 @@ function trackAdvertisementClick(
   advertisementId: string
 ) {
   if (!club?.id) return;
+
+  console.log(
+  "ADVERTISEMENT CLICK",
+  advertisementId
+);
 
   fetch(
     "/api/advertisements/track-click",
@@ -140,6 +149,8 @@ function trackAdvertisementShare(
   advertisementId: string
 ) {
   if (!club?.id) return;
+
+  console.log("ADVERTISEMENT SHARE", advertisementId);
 
   fetch(
     "/api/advertisements/track-share",
