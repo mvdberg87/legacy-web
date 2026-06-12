@@ -123,7 +123,7 @@ if (jobIds.length > 0) {
    4b️⃣ Marketplace advertenties
 =============================== */
 
-const { data: marketplaceAds } = await supabase
+const { data: marketplaceAds } = await supabaseAdmin
   .from("company_advertisements")
   .select(`
     id,
@@ -134,10 +134,8 @@ const { data: marketplaceAds } = await supabase
   `)
   .eq("club_id", club.id)
   .eq("status", "active")
-  .is("deleted_at", null)
-  .order("is_featured", {
-    ascending: false,
-  });
+  .eq("is_featured", true)
+  .is("deleted_at", null);
 
   console.log(
   "MARKETPLACE ADS",
