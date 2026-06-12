@@ -18,8 +18,6 @@ type Advertisement = {
 
   total_clicks?: number;
   total_shares?: number;
-  ctr?: number;
-  share_rate?: number;
   last_click?: string | null;
 };
 
@@ -82,19 +80,54 @@ setAdvertisingSalesEnabled(
         .is("deleted_at", null)
         .order("end_date");
 
-    setAds(data ?? []);
 
-    const { count: pageviews } =
-  await supabase
-    .from("club_page_views")
-    .select("*", {
-      count: "exact",
-      head: true,
-    })
-    .eq("club_id", data?.[0]?.club_id);
+    const adIds = (data ?? []).map((ad) => ad.id);
 
-const totalPageviews =
-  pageviews ?? 0;
+    const { data: clicks } = await supabase
+  .from("company_advertisement_clicks")
+  .select("advertisement_id, created_at")
+  .in("advertisement_id", adIds);
+
+const { data: shares } = await supabase
+  .from("company_advertisement_shares")
+  .select("advertisement_id")
+  .in("advertisement_id", adIds);
+
+  const clickMap: Record<string, number> = {};
+const shareMap: Record<string, number> = {};
+const lastClickMap: Record<string, string> = {};
+
+(clicks ?? []).forEach((click) => {
+  clickMap[click.advertisement_id] =
+    (clickMap[click.advertisement_id] ?? 0) + 1;
+
+  const existing =
+    lastClickMap[click.advertisement_id];
+
+  if (
+    !existing ||
+    new Date(click.created_at) >
+      new Date(existing)
+  ) {
+    lastClickMap[click.advertisement_id] =
+      click.created_at;
+  }
+});
+
+(shares ?? []).forEach((share) => {
+  shareMap[share.advertisement_id] =
+    (shareMap[share.advertisement_id] ?? 0) + 1;
+});
+
+const enrichedAds =
+  (data ?? []).map((ad) => ({
+    ...ad,
+    total_clicks: clickMap[ad.id] ?? 0,
+    total_shares: shareMap[ad.id] ?? 0,
+    last_click: lastClickMap[ad.id] ?? null,
+  }));
+
+setAds(enrichedAds);
 
 const totalRevenue =
   (data ?? []).reduce(
@@ -346,6 +379,12 @@ const expectedRenewalRevenue =
   Status
 </th>
 
+<th>Clicks</th>
+<th>CTR</th>
+<th>Shares</th>
+<th>Share rate</th>
+<th>Laatste click</th>
+
 <th className="p-3 text-center">
   Featured
 </th>
@@ -383,6 +422,20 @@ const expectedRenewalRevenue =
 
                 <td className="p-3 text-center">
   {ad.status}
+</td>
+
+<td>{ad.total_clicks ?? 0}</td>
+
+<td>0%</td>
+
+<td>{ad.total_shares ?? 0}</td>
+
+<td>0%</td>
+
+<td>
+  {ad.last_click
+    ? new Date(ad.last_click).toLocaleDateString("nl-NL")
+    : "-"}
 </td>
 
 <td className="p-3 text-center">
