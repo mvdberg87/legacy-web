@@ -108,6 +108,16 @@ console.log("AD IDS", adIds);
 console.log("CLICKS", clicks);
 console.log("CLICKS ERROR", clicksError);
 
+console.log(
+  "FIRST AD",
+  data?.[0]
+);
+
+console.log(
+  "FIRST CLICK",
+  clicks?.[0]
+);
+
 const {
   data: shares,
   error: sharesError,
@@ -147,6 +157,17 @@ const lastClickMap: Record<string, string> = {};
 
 const enrichedAds =
   (data ?? []).map((ad) => {
+
+    console.log(
+  "CLICKMAP",
+  clickMap
+);
+
+console.log(
+  ad.company_name,
+  ad.id,
+  clickMap[ad.id]
+);
 
     const clicks =
       clickMap[ad.id] ?? 0;
