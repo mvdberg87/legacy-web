@@ -3,8 +3,19 @@ import { supabaseAdmin } from "@/lib/supabaseAdmin";
 
 export async function POST(req: NextRequest) {
   try {
-    const { job_id, club_id, source } =
-      await req.json();
+    const payload =
+  await req.json();
+
+console.log(
+  "TRACK CLICK PAYLOAD",
+  payload
+);
+
+const {
+  job_id,
+  club_id,
+  source,
+} = payload;
 
     if (!job_id || !club_id) {
       return NextResponse.json(
