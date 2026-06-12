@@ -83,15 +83,28 @@ setAdvertisingSalesEnabled(
 
     const adIds = (data ?? []).map((ad) => ad.id);
 
-    const { data: clicks } = await supabase
+    const {
+  data: clicks,
+  error: clicksError,
+} = await supabase
   .from("company_advertisement_clicks")
   .select("advertisement_id, created_at")
   .in("advertisement_id", adIds);
 
-const { data: shares } = await supabase
+console.log("AD IDS", adIds);
+console.log("CLICKS", clicks);
+console.log("CLICKS ERROR", clicksError);
+
+const {
+  data: shares,
+  error: sharesError,
+} = await supabase
   .from("company_advertisement_shares")
   .select("advertisement_id")
   .in("advertisement_id", adIds);
+
+console.log("SHARES", shares);
+console.log("SHARES ERROR", sharesError);
 
   const clickMap: Record<string, number> = {};
 const shareMap: Record<string, number> = {};
