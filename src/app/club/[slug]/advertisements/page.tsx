@@ -133,16 +133,29 @@ setMonthlyReports(
   async function toggleFeatured(
   advertisementId: string
 ) {
-  await supabase
-    .from("company_advertisements")
-    .update({
-      is_featured: !ads.find(
-        (a) => a.id === advertisementId
-      )?.is_featured,
-    })
-    .eq("id", advertisementId);
+  const ad = ads.find(
+    (a) => a.id === advertisementId
+  );
 
-  load();
+  if (!ad) return;
+
+  await fetch(
+    "/api/admin/advertisements/highlight",
+    {
+      method: "POST",
+      headers: {
+        "Content-Type":
+          "application/json",
+      },
+      body: JSON.stringify({
+        advertisementId,
+        isFeatured:
+          !ad.is_featured,
+      }),
+    }
+  );
+
+  await load();
 }
 
   useEffect(() => {
