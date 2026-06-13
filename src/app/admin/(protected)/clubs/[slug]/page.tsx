@@ -69,9 +69,12 @@ const [stats, setStats] = useState({
 
 function StatCard({ label, value }: { label: string; value: any }) {
   return (
-    <div className="border-2 border-slate-900 rounded-2xl p-6 text-center">
-      <div className="text-3xl font-semibold">{value}</div>
-      <div className="text-xs text-gray-500 uppercase tracking-wide mt-2">
+    <div className="border-2 border-slate-900 rounded-2xl p-4 text-center min-h-[140px]">
+      <div className="text-3xl font-semibold">
+        {value}
+      </div>
+
+      <div className="text-xs text-gray-500 uppercase tracking-wide mt-2 whitespace-normal break-words">
         {label}
       </div>
     </div>
@@ -549,7 +552,7 @@ async function archiveAd(adId: string) {
 </div>
 
   {/* Stat cards */}
-  <div className="grid grid-cols-2 md:grid-cols-7 gap-4">
+  <div className="grid grid-cols-2 lg:grid-cols-4 2xl:grid-cols-7 gap-4">
 
   <StatCard label="Pageviews" value={stats.pageviews} />
 
@@ -578,16 +581,36 @@ async function archiveAd(adId: string) {
     </h2>
 
     <div className="overflow-x-auto">
-      <table className="min-w-full text-sm">
+      <table className="min-w-[1100px] text-sm">
         <thead className="bg-[#0d1b2a] text-white text-xs uppercase">
           <tr>
-  <th className="px-4 py-3 text-left">Vacature</th>
-  <th className="px-4 py-3 text-center">Clicks</th>
-  <th className="px-4 py-3 text-center">CTR</th>
-  <th className="px-4 py-3 text-center">Shares</th>
-  <th className="px-4 py-3 text-center">Share rate</th>
-  <th className="px-4 py-3 text-center">Laatste click</th>
-  <th className="px-4 py-3 text-center">Acties</th>
+  <th className="px-4 py-3 text-left">
+    Vacature
+  </th>
+
+  <th className="px-4 py-3 text-center">
+    Clicks
+  </th>
+
+  <th className="px-4 py-3 text-center">
+    CTR
+  </th>
+
+  <th className="px-4 py-3 text-center">
+    Shares
+  </th>
+
+  <th className="px-4 py-3 text-center">
+    Share Rate
+  </th>
+
+  <th className="px-4 py-3 text-center">
+    Laatste click
+  </th>
+
+  <th className="px-4 py-3 text-center">
+    Acties
+  </th>
 </tr>
         </thead>
 
@@ -722,14 +745,37 @@ async function archiveAd(adId: string) {
 </div>
 
 <div className="overflow-x-auto">
-          <table className="min-w-full text-sm">
+  <table className="min-w-[1100px] text-sm">
             <thead className="bg-[#0d1b2a] text-white text-xs uppercase">
               <tr>
-                <th className="px-4 py-3 text-left">Vacature</th>
-                <th className="px-4 py-3 text-center">Clicks</th>
-                <th className="px-4 py-3 text-center">Laatste click</th>
-                <th className="px-4 py-3 text-center">Acties</th>
-              </tr>
+  <th className="px-4 py-3 text-left">
+    Vacature
+  </th>
+
+  <th className="px-4 py-3 text-center">
+    Clicks
+  </th>
+
+  <th className="px-4 py-3 text-center">
+    CTR
+  </th>
+
+  <th className="px-4 py-3 text-center">
+    Shares
+  </th>
+
+  <th className="px-4 py-3 text-center">
+    Share Rate
+  </th>
+
+  <th className="px-4 py-3 text-center">
+    Laatste click
+  </th>
+
+  <th className="px-4 py-3 text-center">
+    Acties
+  </th>
+</tr>
             </thead>
 
             <tbody>
