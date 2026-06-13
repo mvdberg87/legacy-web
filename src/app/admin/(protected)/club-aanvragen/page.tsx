@@ -3,6 +3,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { motion } from "framer-motion";
 import { getSupabaseBrowser } from "@/lib/supabaseBrowser";
+import error from "@/app/club/[slug]/error";
 
 
 /* ===============================
@@ -100,14 +101,21 @@ function ClubSignupRequestsPanel() {
   setRejectingId(requestId);
 
   try {
-    const { error } = await supabase
-      .from("club_signup_requests")
-      .update({
-  status: "rejected",
-  rejection_reason: reason,
-  reviewed_at: new Date().toISOString(),
-})
-      .eq("id", requestId);
+    const res = await fetch("/api/admin/reject-club", {
+  method: "POST",
+  headers: {
+    "Content-Type": "application/json",
+  },
+  body: JSON.stringify({
+    requestId,
+    reason,
+  }),
+});
+
+if (!res.ok) {
+  alert("Afkeuren mislukt");
+  return;
+}
 
     if (error) {
       alert("Afkeuren mislukt");
