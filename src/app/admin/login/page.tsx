@@ -86,7 +86,7 @@ if (!allowedAdmins.includes(user.email ?? "")) {
 }
 
 // ✅ Redirect naar admin
-router.push("/admin");
+router.push("/admin/dashboard");
   }
 
   return (
