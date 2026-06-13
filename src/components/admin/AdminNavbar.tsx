@@ -19,7 +19,8 @@ export default function AdminNavbar() {
      Navigatie
      =============================== */
   const links = [
-  { label: "📋 Clubs", path: "/admin/clubs" },
+  { label: "🏠 Dashboard", path: "/admin" },
+  { label: "📥 Clubaanvragen", path: "/admin/club-aanvragen" },
   { label: "📢 Advertenties", path: "/admin/advertisements" },
   { label: "👥 Profielen", path: "/admin/profiles" },
   { label: "💰 Revenue", path: "/admin/revenue" },

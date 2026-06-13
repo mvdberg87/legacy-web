@@ -38,6 +38,7 @@ function ClubSignupRequestsPanel() {
   const [requests, setRequests] = useState<SignupRequest[]>([]);
   const [loading, setLoading] = useState(true);
   const [approvingId, setApprovingId] = useState<string | null>(null);
+  const [rejectingId, setRejectingId] = useState<string | null>(null);
 
   async function load() {
     setLoading(true);
@@ -87,6 +88,38 @@ function ClubSignupRequestsPanel() {
     }
   }
 
+  async function reject(requestId: string) {
+  if (rejectingId) return;
+
+  const reason = prompt(
+    "Waarom wordt deze aanvraag afgekeurd?"
+  );
+
+  if (!reason) return;
+
+  setRejectingId(requestId);
+
+  try {
+    const { error } = await supabase
+      .from("club_signup_requests")
+      .update({
+  status: "rejected",
+  rejection_reason: reason,
+  reviewed_at: new Date().toISOString(),
+})
+      .eq("id", requestId);
+
+    if (error) {
+      alert("Afkeuren mislukt");
+      return;
+    }
+
+    await load();
+  } finally {
+    setRejectingId(null);
+  }
+}
+
   if (loading) return <p>Laden…</p>;
   if (requests.length === 0)
     return (
@@ -130,20 +163,36 @@ function ClubSignupRequestsPanel() {
                   ).toLocaleDateString("nl-NL")}
                 </td>
                 <td className="px-3 py-2 text-center">
-                  <button
-                    onClick={() => approve(r.id)}
-                    disabled={approvingId === r.id}
-                    className={`px-3 py-1 rounded text-xs text-white ${
-                      approvingId === r.id
-                        ? "bg-gray-400 cursor-not-allowed"
-                        : "bg-green-600 hover:bg-green-700"
-                    }`}
-                  >
-                    {approvingId === r.id
-                      ? "Bezig…"
-                      : "Goedkeuren"}
-                  </button>
-                </td>
+  <div className="flex justify-center gap-2">
+
+    <button
+      onClick={() => approve(r.id)}
+      disabled={approvingId === r.id}
+      className={`px-3 py-1 rounded text-xs text-white ${
+        approvingId === r.id
+          ? "bg-gray-400 cursor-not-allowed"
+          : "bg-green-600 hover:bg-green-700"
+      }`}
+    >
+      Goedkeuren
+    </button>
+
+    <button
+      onClick={() => reject(r.id)}
+      disabled={rejectingId === r.id}
+      className={`px-3 py-1 rounded text-xs text-white ${
+        rejectingId === r.id
+          ? "bg-gray-400 cursor-not-allowed"
+          : "bg-red-600 hover:bg-red-700"
+      }`}
+    >
+      Afkeuren
+    </button>
+
+  </div>
+</td>
+
+
               </tr>
             ))}
           </tbody>
@@ -161,7 +210,6 @@ function ClubOverviewPanel() {
   const supabase = useMemo(() => getSupabaseBrowser(), []);
   const [clubs, setClubs] = useState<ClubOverviewRow[]>([]);
   const [loading, setLoading] = useState(true);
-  const [refreshing, setRefreshing] = useState(false);
   const [showArchived, setShowArchived] = useState(false);
 
   async function loadClubs() {
