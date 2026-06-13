@@ -128,6 +128,8 @@ const { data: adsData } = await supabase
 
 setAds(adsData ?? []);
 
+console.log("ADS DATA", adsData);
+
     /* ===============================
    Monthly reports ophalen
 =============================== */
