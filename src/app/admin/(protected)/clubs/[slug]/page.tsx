@@ -120,13 +120,11 @@ const res = await fetch("/api/admin/get-club-user", {
 const userData = await res.json();
 setClubUser(userData.user);
 
-const { data: adsData, error: adsError } = await supabase
+const { data: adsData } = await supabase
   .from("admin_advertisements_performance")
   .select("*")
-  .eq("slug", clubData.slug);
-
-console.log("ADS ERROR", adsError);
-console.log("ADS DATA", adsData);
+  .eq("slug", clubData.slug)
+  .eq("status", "active");
 
 setAds(adsData ?? []);
 
@@ -574,16 +572,6 @@ async function archiveAd(adId: string) {
 
 </div>
 </motion.div>
-<div className="bg-yellow-100 p-4 rounded mb-4">
-  <p>
-    advertising_sales_enabled:{" "}
-    {String(club.advertising_sales_enabled)}
-  </p>
-
-  <p>
-    ads.length: {ads.length}
-  </p>
-</div>
 {club.advertising_sales_enabled && (
   <motion.div
     className="bg-white text-black rounded-2xl shadow p-6"
@@ -591,9 +579,6 @@ async function archiveAd(adId: string) {
     animate={{ opacity: 1 }}
   >
 
-    <div className="bg-red-500 text-white p-4 mb-4">
-  TEST MANAGED ADS
-</div>
     <h2 className="text-lg font-semibold mb-4">
       Managed Ads
     </h2>
@@ -633,11 +618,6 @@ async function archiveAd(adId: string) {
         </thead>
 
         <tbody>
-  <tr>
-    <td colSpan={7}>
-      TEST RIJ
-    </td>
-  </tr>
 
   {ads.map((ad) => (
             <tr key={ad.id} className="border-b">
