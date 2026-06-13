@@ -590,6 +590,10 @@ async function archiveAd(adId: string) {
     initial={{ opacity: 0 }}
     animate={{ opacity: 1 }}
   >
+
+    <div className="bg-red-500 text-white p-4 mb-4">
+  TEST MANAGED ADS
+</div>
     <h2 className="text-lg font-semibold mb-4">
       Managed Ads
     </h2>
@@ -629,7 +633,13 @@ async function archiveAd(adId: string) {
         </thead>
 
         <tbody>
-          {ads.map((ad) => (
+  <tr>
+    <td colSpan={7}>
+      TEST RIJ
+    </td>
+  </tr>
+
+  {ads.map((ad) => (
             <tr key={ad.id} className="border-b">
 
               <td className="px-4 py-3">
