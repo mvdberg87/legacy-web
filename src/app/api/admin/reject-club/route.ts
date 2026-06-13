@@ -76,6 +76,8 @@ export async function POST(req: NextRequest) {
       `
       : "";
 
+      console.log("📧 sending rejection mail to", signup.email);
+
     await resend.emails.send({
       from: process.env.EMAIL_FROM!,
       to: [signup.email],

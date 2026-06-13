@@ -3,24 +3,11 @@
 import { useEffect, useMemo, useState } from "react";
 import { motion } from "framer-motion";
 import { getSupabaseBrowser } from "@/lib/supabaseBrowser";
-import error from "@/app/club/[slug]/error";
 
 
 /* ===============================
    Types
    =============================== */
-
-type ClubOverviewRow = {
-  id: string;
-  name: string;
-  status: "pending" | "approved" | "rejected" | "archived";
-  ad_package: "basic" | "plus" | "pro" | "unlimited";
-  active_jobs: number | null;
-  total_sponsors: number | null;
-  total_clicks: number | null;
-  last_activity_at: string | null;
-  admin_override?: boolean;
-};
 
 type SignupRequest = {
   id: string;
@@ -102,22 +89,19 @@ function ClubSignupRequestsPanel() {
 
   try {
     const res = await fetch("/api/admin/reject-club", {
-  method: "POST",
-  headers: {
-    "Content-Type": "application/json",
-  },
-  body: JSON.stringify({
-    requestId,
-    reason,
-  }),
-});
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        requestId,
+        reason,
+      }),
+    });
 
-if (!res.ok) {
-  alert("Afkeuren mislukt");
-  return;
-}
-
-    if (error) {
+    if (!res.ok) {
+      const data = await res.json();
+      console.error(data);
       alert("Afkeuren mislukt");
       return;
     }
@@ -211,57 +195,6 @@ if (!res.ok) {
 }
 
 /* ===============================
-   Clubs overview panel
-   =============================== */
-
-function ClubOverviewPanel() {
-  const supabase = useMemo(() => getSupabaseBrowser(), []);
-  const [clubs, setClubs] = useState<ClubOverviewRow[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [showArchived, setShowArchived] = useState(false);
-
-  async function loadClubs() {
-    setLoading(true);
-
-    let query = supabase
-      .from("club_admin_overview")
-      .select("*")
-      .order("created_at", { ascending: false });
-
-    if (!showArchived) {
-      query = query.neq("status", "archived");
-    }
-
-    const { data, error } = await query;
-
-    if (error) {
-      console.error("Load clubs error:", error);
-      setClubs([]);
-    } else {
-      setClubs(data ?? []);
-    }
-
-    setLoading(false);
-  }
-
-  useEffect(() => {
-    loadClubs();
-  }, [showArchived]);
-
-  if (loading) return <p>Laden…</p>;
-
-  return (
-    <motion.div
-      className="bg-white text-black rounded-2xl shadow p-6"
-      initial={{ opacity: 0, y: 8 }}
-      animate={{ opacity: 1, y: 0 }}
-    >
-      {/* tabelinhoud ongewijzigd */}
-    </motion.div>
-  );
-}
-
-/* ===============================
    Admin dashboard page
    =============================== */
 
@@ -269,7 +202,6 @@ export default function AdminPage() {
   return (
     <div className="space-y-8">
       <ClubSignupRequestsPanel />
-      <ClubOverviewPanel />
     </div>
   );
 }
