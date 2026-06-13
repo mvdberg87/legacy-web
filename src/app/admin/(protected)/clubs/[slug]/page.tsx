@@ -314,14 +314,25 @@ setTopJobs({
 });
 
     setJobs(
-  (jobsData ?? []).map((j) => ({
-    ...j,
-    total_clicks: clickStats[j.id]?.total ?? 0,
-    total_shares: shareCounts[j.id] ?? 0,
-    ctr: 0,
-    share_rate: 0,
-    last_click: clickStats[j.id]?.last ?? null,
-  }))
+  (jobsData ?? []).map((j) => {
+    const clicks = clickStats[j.id]?.total ?? 0;
+    const shares = shareCounts[j.id] ?? 0;
+
+    return {
+      ...j,
+      total_clicks: clicks,
+      total_shares: shares,
+      ctr:
+        pageviews && pageviews > 0
+          ? Number(((clicks / pageviews) * 100).toFixed(1))
+          : 0,
+      share_rate:
+        pageviews && pageviews > 0
+          ? Number(((shares / pageviews) * 100).toFixed(1))
+          : 0,
+      last_click: clickStats[j.id]?.last ?? null,
+    };
+  })
 );
 
     setLoading(false);
@@ -570,28 +581,14 @@ async function archiveAd(adId: string) {
       <table className="min-w-full text-sm">
         <thead className="bg-[#0d1b2a] text-white text-xs uppercase">
           <tr>
-            <th className="px-4 py-3 text-left">
-              Vacature
-            </th>
-            <th className="px-4 py-3 text-center">
-              Clicks
-            </th>
-            <th className="px-4 py-3 text-center">
-              CTR
-            </th>
-            <th className="px-4 py-3 text-center">
-              Shares
-            </th>
-            <th className="px-4 py-3 text-center">
-              Share rate
-            </th>
-            <th className="px-4 py-3 text-center">
-              Laatste click
-            </th>
-            <th className="px-4 py-3 text-center">
-              Acties
-            </th>
-          </tr>
+  <th className="px-4 py-3 text-left">Vacature</th>
+  <th className="px-4 py-3 text-center">Clicks</th>
+  <th className="px-4 py-3 text-center">CTR</th>
+  <th className="px-4 py-3 text-center">Shares</th>
+  <th className="px-4 py-3 text-center">Share rate</th>
+  <th className="px-4 py-3 text-center">Laatste click</th>
+  <th className="px-4 py-3 text-center">Acties</th>
+</tr>
         </thead>
 
         <tbody>
@@ -758,6 +755,18 @@ async function archiveAd(adId: string) {
                   </td>
 
                   <td className="px-4 py-3 text-center">
+  {job.ctr}%
+</td>
+
+<td className="px-4 py-3 text-center">
+  {job.total_shares}
+</td>
+
+<td className="px-4 py-3 text-center">
+  {job.share_rate}%
+</td>
+
+                  <td className="px-4 py-3 text-center">
                     {job.last_click
                       ? new Date(job.last_click).toLocaleDateString("nl-NL")
                       : "—"}
@@ -808,7 +817,7 @@ async function archiveAd(adId: string) {
               {jobs.length === 0 && (
                 <tr>
                   <td
-                    colSpan={4}
+                    colSpan={7}
                     className="text-center py-6 text-gray-500"
                   >
                     Geen vacatures gevonden
