@@ -18,6 +18,9 @@ type Job = {
 
 type JobWithStats = Job & {
   total_clicks: number;
+  total_shares: number;
+  ctr: number;
+  share_rate: number;
   last_click: string | null;
 };
 
@@ -27,6 +30,8 @@ type Club = {
   slug: string;
   active_package: string;
   primary_color?: string | null;
+
+  advertising_sales_enabled?: boolean;
 };
 
 /* ---------- Pagina ---------- */
@@ -40,6 +45,8 @@ export default function AdminClubDetailPage() {
 
   const [club, setClub] = useState<Club | null>(null);
   const [jobs, setJobs] = useState<JobWithStats[]>([]);
+  const [clubRevenue, setClubRevenue] = useState(0);
+  const [ads, setAds] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [reports, setReports] = useState<any[]>([]);
   const [topJobs, setTopJobs] = useState({
@@ -77,10 +84,17 @@ function StatCard({ label, value }: { label: string; value: any }) {
     setLoading(true);
 
     const { data: clubData } = await supabase
-      .from("clubs")
-      .select("id, name, slug, active_package, primary_color")
-      .eq("slug", slug)
-      .maybeSingle();
+  .from("clubs")
+  .select(`
+    id,
+    name,
+    slug,
+    active_package,
+    primary_color,
+    advertising_sales_enabled
+  `)
+  .eq("slug", slug)
+  .maybeSingle();
 
     if (!clubData) {
   console.log("CLUB NOT FOUND FOR SLUG:", slug);
@@ -102,6 +116,14 @@ const res = await fetch("/api/admin/get-club-user", {
 
 const userData = await res.json();
 setClubUser(userData.user);
+
+const { data: adsData } = await supabase
+  .from("admin_advertisements_performance")
+  .select("*")
+  .eq("slug", clubData.slug)
+  .is("deleted_at", null);
+
+setAds(adsData ?? []);
 
     /* ===============================
    Monthly reports ophalen
@@ -151,6 +173,19 @@ const { count: activeAds } = await supabase
   .select("*", { count: "exact", head: true })
   .eq("club_id", clubData.id)
   .is("archived_at", null);
+
+  const { data: adsRevenue } = await supabase
+  .from("advertisement_orders")
+  .select("club_amount")
+  .eq("club_id", clubData.id);
+
+  const totalRevenue =
+  adsRevenue?.reduce(
+    (sum, row) => sum + Number(row.club_amount ?? 0),
+    0
+  ) ?? 0;
+
+setClubRevenue(totalRevenue);
 
     // ===============================
 // Extra statistieken berekenen
@@ -282,6 +317,9 @@ setTopJobs({
   (jobsData ?? []).map((j) => ({
     ...j,
     total_clicks: clickStats[j.id]?.total ?? 0,
+    total_shares: shareCounts[j.id] ?? 0,
+    ctr: 0,
+    share_rate: 0,
     last_click: clickStats[j.id]?.last ?? null,
   }))
 );
@@ -313,8 +351,41 @@ setTopJobs({
     load();
   }
 
+  async function toggleAdFeatured(
+  adId: string,
+  current: boolean
+) {
+  await supabase
+    .from("advertisements")
+    .update({
+      is_featured: !current,
+    })
+    .eq("id", adId);
+
+  load();
+}
+
+async function archiveAd(adId: string) {
+  if (
+    !confirm(
+      "Weet je zeker dat je deze advertentie wilt archiveren?"
+    )
+  )
+    return;
+
+  await supabase
+    .from("advertisements")
+    .update({
+      deleted_at: new Date().toISOString(),
+      status: "inactive",
+    })
+    .eq("id", adId);
+
+  load();
+}
+
   async function archiveJob(jobId: string) {
-    if (!confirm("Weet je zeker dat je deze vacature wilt verwijderen?")) return;
+    if (!confirm("Weet je zeker dat je deze vacature wilt archiveren?")) return;
 
     await supabase
       .from("jobs")
@@ -379,7 +450,7 @@ setTopJobs({
   </p>
 
   {/* PACKAGE SELECTOR */}
-  <div className="mt-3 flex items-center gap-3">
+  <div className="mt-3 flex items-center gap-6">
     <span className="text-sm font-medium">Pakket:</span>
 
     <select
@@ -406,10 +477,21 @@ setTopJobs({
       <option value="pro">Pro</option>
       <option value="unlimited">Unlimited</option>
     </select>
+
+    <div>
+  <span className="text-sm text-gray-500">
+    Clubopbrengst
+  </span>
+
+  <div className="font-semibold text-green-700">
+    € {clubRevenue.toLocaleString("nl-NL")}
   </div>
 </div>
 
     <div className="text-right text-sm">
+  </div>
+</div>
+
       <p className="text-gray-500">Publieke pagina</p>
       <a
   href={`https://www.sponsorjobs.nl/${club.slug}`}
@@ -474,11 +556,149 @@ setTopJobs({
 
 </div>
 </motion.div>
+{club.advertising_sales_enabled && (
+  <motion.div
+    className="bg-white text-black rounded-2xl shadow p-6"
+    initial={{ opacity: 0 }}
+    animate={{ opacity: 1 }}
+  >
+    <h2 className="text-lg font-semibold mb-4">
+      Managed Ads
+    </h2>
+
+    <div className="overflow-x-auto">
+      <table className="min-w-full text-sm">
+        <thead className="bg-[#0d1b2a] text-white text-xs uppercase">
+          <tr>
+            <th className="px-4 py-3 text-left">
+              Vacature
+            </th>
+            <th className="px-4 py-3 text-center">
+              Clicks
+            </th>
+            <th className="px-4 py-3 text-center">
+              CTR
+            </th>
+            <th className="px-4 py-3 text-center">
+              Shares
+            </th>
+            <th className="px-4 py-3 text-center">
+              Share rate
+            </th>
+            <th className="px-4 py-3 text-center">
+              Laatste click
+            </th>
+            <th className="px-4 py-3 text-center">
+              Acties
+            </th>
+          </tr>
+        </thead>
+
+        <tbody>
+          {ads.map((ad) => (
+            <tr key={ad.id} className="border-b">
+
+              <td className="px-4 py-3">
+  <div className="font-medium">
+    {ad.company_name}
+  </div>
+
+  <div className="text-xs text-gray-500">
+    {ad.package_name ?? "Advertentie"}
+  </div>
+</td>
+
+              <td className="px-4 py-3 text-center">
+                {ad.total_clicks ?? 0}
+              </td>
+
+              <td className="px-4 py-3 text-center">
+                {ad.ctr ?? 0}%
+              </td>
+
+              <td className="px-4 py-3 text-center">
+                {ad.total_shares ?? 0}
+              </td>
+
+              <td className="px-4 py-3 text-center">
+                {ad.share_rate ?? 0}%
+              </td>
+
+              <td className="px-4 py-3 text-center">
+                {ad.last_click
+                  ? new Date(ad.last_click).toLocaleDateString("nl-NL")
+                  : "—"}
+              </td>
+
+
+              <td className="px-4 py-3 text-center space-x-2">
+
+                <button
+  onClick={() =>
+    window.open(ad.vacancy_url, "_blank")
+  }
+  className="border px-2 py-1 rounded"
+>
+  👁
+</button>
+
+
+
+                <button
+  onClick={() =>
+    router.push(
+      `/admin/clubs/${club.slug}/advertisements/${ad.id}/edit`
+    )
+  }
+  className="border px-2 py-1 rounded"
+>
+  ✏️
+</button>
+
+                <button
+  onClick={() =>
+    toggleAdFeatured(
+      ad.id,
+      ad.is_featured
+    )
+  }
+  className="border px-2 py-1 rounded"
+>
+  ⭐
+</button>
+
+                <button
+  onClick={() => archiveAd(ad.id)}
+  className="border px-2 py-1 rounded text-red-600"
+>
+  🗑
+</button>
+
+              </td>
+            </tr>
+          ))}
+          {ads.length === 0 && (
+  <tr>
+    <td
+      colSpan={7}
+      className="text-center py-6 text-gray-500"
+    >
+      Geen advertenties gevonden
+    </td>
+  </tr>
+)}
+        </tbody>
+
+      </table>
+    </div>
+  </motion.div>
+)}
       <motion.div
         className="bg-white text-black rounded-2xl shadow p-6"
         initial={{ opacity: 0, y: 10 }}
         animate={{ opacity: 1, y: 0 }}
       >
+
         {/* Header */}
         <div className="flex justify-between items-center mb-6">
           <div>
@@ -577,7 +797,7 @@ setTopJobs({
                     <button
                       onClick={() => archiveJob(job.id)}
                       className="border px-2 py-1 rounded text-red-600"
-                      title="Verwijderen"
+                      title="Archiveren"
                     >
                       🗑
                     </button>
