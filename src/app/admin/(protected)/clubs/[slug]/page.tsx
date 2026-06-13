@@ -120,11 +120,13 @@ const res = await fetch("/api/admin/get-club-user", {
 const userData = await res.json();
 setClubUser(userData.user);
 
-const { data: adsData } = await supabase
+const { data: adsData, error: adsError } = await supabase
   .from("admin_advertisements_performance")
   .select("*")
-  .eq("slug", clubData.slug)
-  .is("deleted_at", null);
+  .eq("slug", clubData.slug);
+
+console.log("ADS ERROR", adsError);
+console.log("ADS DATA", adsData);
 
 setAds(adsData ?? []);
 
