@@ -574,6 +574,16 @@ async function archiveAd(adId: string) {
 
 </div>
 </motion.div>
+<div className="bg-yellow-100 p-4 rounded mb-4">
+  <p>
+    advertising_sales_enabled:{" "}
+    {String(club.advertising_sales_enabled)}
+  </p>
+
+  <p>
+    ads.length: {ads.length}
+  </p>
+</div>
 {club.advertising_sales_enabled && (
   <motion.div
     className="bg-white text-black rounded-2xl shadow p-6"
