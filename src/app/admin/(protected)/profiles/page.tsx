@@ -23,6 +23,8 @@ type Profile = {
 subscription_cancelled_at?: string | null;
 subscription_end?: string | null;
 
+archived_at?: string | null;
+
   signup_request_id: string | null;
   signup_request_status: "pending" | "approved" | "rejected" | null;
 };
@@ -115,6 +117,51 @@ export default function AdminProfilesPage() {
       setRefreshing(false);
     }
   }
+
+  async function archiveClub(
+  clubId: string
+) {
+  if (
+    !confirm(
+      "Weet je zeker dat je deze club wilt archiveren?"
+    )
+  ) {
+    return;
+  }
+
+  const { error } = await supabase
+    .from("clubs")
+    .update({
+      archived_at:
+        new Date().toISOString(),
+    })
+    .eq("id", clubId);
+
+  if (error) {
+    alert("Archiveren mislukt");
+    return;
+  }
+
+  await loadProfiles();
+}
+
+async function restoreClub(
+  clubId: string
+) {
+  const { error } = await supabase
+    .from("clubs")
+    .update({
+      archived_at: null,
+    })
+    .eq("id", clubId);
+
+  if (error) {
+    alert("Herstellen mislukt");
+    return;
+  }
+
+  await loadProfiles();
+}
 
 async function resendActivationLink(requestId: string) {
   if (!confirm("Nieuwe activatielink versturen?")) return;
@@ -316,49 +363,89 @@ async function toggleManagedAds(
                       <td className="px-3 py-3 text-center">
                         {club && (
                           <div className="flex justify-center gap-2">
-  <button
-    onClick={() =>
-      updateClubStatus(club.id, "approved")
-    }
-    disabled={refreshing}
-    className="bg-green-600 text-white px-2 py-1 rounded text-xs"
-  >
-    ✅
-  </button>
 
-  <button
-    onClick={() =>
-      updateClubStatus(club.id, "rejected")
-    }
-    disabled={refreshing}
-    className="bg-yellow-500 text-white px-2 py-1 rounded text-xs"
-  >
-    ❌
-  </button>
+  {club.status === "pending" && (
+    <>
+      <button
+        onClick={() =>
+          updateClubStatus(
+            club.id,
+            "approved"
+          )
+        }
+        disabled={refreshing}
+        className="bg-green-600 text-white px-2 py-1 rounded text-xs"
+      >
+        ✅
+      </button>
 
-  {club &&
-  p.signup_request_id &&
-  p.signup_request_status === "approved" &&
-  club.status !== "active" && (
-    <button
-      onClick={() => resendActivationLink(p.signup_request_id)}
-      disabled={refreshing}
-      className="bg-blue-600 text-white px-2 py-1 rounded text-xs"
-      title="Nieuwe activatielink sturen"
-    >
-      🔁
-    </button>
-)}
+      <button
+        onClick={() =>
+          updateClubStatus(
+            club.id,
+            "rejected"
+          )
+        }
+        disabled={refreshing}
+        className="bg-yellow-500 text-white px-2 py-1 rounded text-xs"
+      >
+        ❌
+      </button>
+    </>
+  )}
 
-  <button
-    onClick={() =>
-      deleteClub(club.id, club.name)
-    }
-    disabled={refreshing}
-    className="bg-red-600 text-white px-2 py-1 rounded text-xs"
-  >
-    🗑️
-  </button>
+  {p.archived_at ? (
+    <>
+      <button
+        onClick={() =>
+          restoreClub(club.id)
+        }
+        className="bg-green-600 text-white px-2 py-1 rounded text-xs"
+      >
+        ↩️
+      </button>
+
+      <button
+        onClick={() =>
+          deleteClub(
+            club.id,
+            club.name
+          )
+        }
+        className="bg-red-600 text-white px-2 py-1 rounded text-xs"
+      >
+        🗑️
+      </button>
+    </>
+  ) : (
+    <>
+      {club.status === "active" && (
+        <button
+          onClick={() =>
+            archiveClub(club.id)
+          }
+          className="bg-blue-600 text-white px-2 py-1 rounded text-xs"
+        >
+          📦
+        </button>
+      )}
+
+      {club.status !== "active" && (
+        <button
+          onClick={() =>
+            deleteClub(
+              club.id,
+              club.name
+            )
+          }
+          className="bg-red-600 text-white px-2 py-1 rounded text-xs"
+        >
+          🗑️
+        </button>
+      )}
+    </>
+  )}
+
 </div>
                         )}
                       </td>
