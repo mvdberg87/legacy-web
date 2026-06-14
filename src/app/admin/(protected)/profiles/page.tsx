@@ -395,16 +395,42 @@ async function toggleManagedAds(
   )}
 
   {p.archived_at ? (
-    <>
+  <>
+    <button
+      onClick={() => restoreClub(club.id)}
+      className="bg-green-600 text-white px-2 py-1 rounded text-xs"
+    >
+      ↩️
+    </button>
+
+    <button
+      onClick={() =>
+        deleteClub(
+          club.id,
+          club.name
+        )
+      }
+      className="bg-red-600 text-white px-2 py-1 rounded text-xs"
+    >
+      🗑️
+    </button>
+  </>
+) : (
+  <>
+    {(club.status === "active" ||
+      club.status === "approved") && (
       <button
         onClick={() =>
-          restoreClub(club.id)
+          archiveClub(club.id)
         }
-        className="bg-green-600 text-white px-2 py-1 rounded text-xs"
+        className="bg-blue-600 text-white px-2 py-1 rounded text-xs"
       >
-        ↩️
+        📦
       </button>
+    )}
 
+    {(club.status === "pending" ||
+      club.status === "rejected") && (
       <button
         onClick={() =>
           deleteClub(
@@ -416,35 +442,9 @@ async function toggleManagedAds(
       >
         🗑️
       </button>
-    </>
-  ) : (
-    <>
-      {club.status === "active" && (
-        <button
-          onClick={() =>
-            archiveClub(club.id)
-          }
-          className="bg-blue-600 text-white px-2 py-1 rounded text-xs"
-        >
-          📦
-        </button>
-      )}
-
-      {club.status !== "active" && (
-        <button
-          onClick={() =>
-            deleteClub(
-              club.id,
-              club.name
-            )
-          }
-          className="bg-red-600 text-white px-2 py-1 rounded text-xs"
-        >
-          🗑️
-        </button>
-      )}
-    </>
-  )}
+    )}
+  </>
+)}
 
 </div>
                         )}
