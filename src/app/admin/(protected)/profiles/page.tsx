@@ -38,6 +38,8 @@ export default function AdminProfilesPage() {
   const [profiles, setProfiles] = useState<Profile[]>([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState("");
+  const [showArchivedClubs, setShowArchivedClubs] =
+  useState(false);
   const [refreshing, setRefreshing] = useState(false);
 
   /* ---------- Data ophalen ---------- */
@@ -129,38 +131,61 @@ export default function AdminProfilesPage() {
     return;
   }
 
-  const { error } = await supabase
-    .from("clubs")
-    .update({
-      archived_at:
-        new Date().toISOString(),
-    })
-    .eq("id", clubId);
-
-  if (error) {
-    alert("Archiveren mislukt");
-    return;
+  const res = await fetch(
+  "/api/admin/archive-club",
+  {
+    method: "POST",
+    headers: {
+      "Content-Type":
+        "application/json",
+    },
+    body: JSON.stringify({
+      clubId,
+    }),
   }
+);
 
-  await loadProfiles();
+const data = await res.json();
+
+if (!res.ok) {
+  alert(
+    data.error ??
+    "Archiveren mislukt"
+  );
+  return;
+}
+
+await loadProfiles();
 }
 
 async function restoreClub(
   clubId: string
 ) {
-  const { error } = await supabase
-    .from("clubs")
-    .update({
-      archived_at: null,
-    })
-    .eq("id", clubId);
-
-  if (error) {
-    alert("Herstellen mislukt");
-    return;
+  const res = await fetch(
+  "/api/admin/restore-club",
+  {
+    method: "POST",
+    headers: {
+      "Content-Type":
+        "application/json",
+    },
+    body: JSON.stringify({
+      clubId,
+    }),
   }
+);
 
-  await loadProfiles();
+const data = await res.json();
+
+if (!res.ok) {
+  alert(
+    data.error ??
+    "Herstellen mislukt"
+  );
+  return;
+}
+
+await loadProfiles();
 }
 
 async function resendActivationLink(requestId: string) {
@@ -208,11 +233,24 @@ async function toggleManagedAds(
 }
   /* ---------- Filter ---------- */
 
-  const filtered = profiles.filter((p) => {
+  const filtered = profiles
+  .filter((p) => {
+    if (!p.club_id) return true;
+
+    if (showArchivedClubs) {
+      return p.archived_at;
+    }
+
+    return !p.archived_at;
+  })
+  .filter((p) => {
     const q = search.toLowerCase();
+
     return (
       p.email.toLowerCase().includes(q) ||
-      (p.club_name ?? "").toLowerCase().includes(q) ||
+      (p.club_name ?? "")
+        .toLowerCase()
+        .includes(q) ||
       p.role.toLowerCase().includes(q)
     );
   });
@@ -227,6 +265,36 @@ async function toggleManagedAds(
           <h1 className="text-xl font-semibold">
             Profielbeheer
           </h1>
+
+          <div className="flex gap-3 mt-4">
+
+  <button
+    onClick={() =>
+      setShowArchivedClubs(false)
+    }
+    className={
+      !showArchivedClubs
+        ? "bg-[#0d1b2a] text-white px-4 py-2 rounded"
+        : "border px-4 py-2 rounded"
+    }
+  >
+    Actief
+  </button>
+
+  <button
+    onClick={() =>
+      setShowArchivedClubs(true)
+    }
+    className={
+      showArchivedClubs
+        ? "bg-[#0d1b2a] text-white px-4 py-2 rounded"
+        : "border px-4 py-2 rounded"
+    }
+  >
+    Gearchiveerd
+  </button>
+
+</div>
 
           <input
             type="text"
