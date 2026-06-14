@@ -102,7 +102,7 @@ export default function EditAdvertisementPage() {
                 company_name: e.target.value,
               })
             }
-            className="w-full border rounded-lg p-2"
+            className="w-full border rounded-lg p-2 bg-white text-black"
           />
         </div>
 
@@ -119,7 +119,7 @@ export default function EditAdvertisementPage() {
                 company_email: e.target.value,
               })
             }
-            className="w-full border rounded-lg p-2"
+            className="w-full border rounded-lg p-2 bg-white text-black"
           />
         </div>
 
@@ -136,7 +136,7 @@ export default function EditAdvertisementPage() {
                 company_website: e.target.value,
               })
             }
-            className="w-full border rounded-lg p-2"
+            className="w-full border rounded-lg p-2 bg-white text-black"
           />
         </div>
 
@@ -153,7 +153,7 @@ export default function EditAdvertisementPage() {
                 vacancy_url: e.target.value,
               })
             }
-            className="w-full border rounded-lg p-2"
+            className="w-full border rounded-lg p-2 bg-white text-black"
           />
         </div>
 
@@ -173,7 +173,7 @@ export default function EditAdvertisementPage() {
                   start_date: e.target.value,
                 })
               }
-              className="w-full border rounded-lg p-2"
+              className="w-full border rounded-lg p-2 bg-white text-black"
             />
           </div>
 
@@ -191,7 +191,7 @@ export default function EditAdvertisementPage() {
                   end_date: e.target.value,
                 })
               }
-              className="w-full border rounded-lg p-2"
+              className="w-full border rounded-lg p-2 bg-white text-black"
             />
           </div>
 

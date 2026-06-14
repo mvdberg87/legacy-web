@@ -123,7 +123,8 @@ setClubUser(userData.user);
 const { data: adsData } = await supabase
   .from("admin_advertisements_performance")
   .select("*")
-  .eq("slug", clubData.slug);
+  .eq("slug", clubData.slug)
+  .eq("status", "active");
 
 setAds(adsData ?? []);
 
