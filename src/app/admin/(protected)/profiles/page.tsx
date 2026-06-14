@@ -195,6 +195,45 @@ if (!res.ok) {
 await loadProfiles();
 }
 
+async function editContactPerson(
+  clubId: string,
+  currentName: string | null
+) {
+  const contactPerson = prompt(
+    "Naam contactpersoon",
+    currentName ?? ""
+  );
+
+  if (!contactPerson) return;
+
+  const res = await fetch(
+    "/api/admin/update-contact-person",
+    {
+      method: "POST",
+      headers: {
+        "Content-Type":
+          "application/json",
+      },
+      body: JSON.stringify({
+        clubId,
+        contactPerson,
+      }),
+    }
+  );
+
+  const data = await res.json();
+
+  if (!res.ok) {
+    alert(
+      data.error ??
+      "Opslaan mislukt"
+    );
+    return;
+  }
+
+  await loadProfiles();
+}
+
 async function resendActivationLink(requestId: string) {
   if (!confirm("Nieuwe activatielink versturen?")) return;
 
@@ -405,7 +444,21 @@ async function toggleManagedAds(
 </td>
 
                       <td className="px-3 py-3">
-  {p.contact_person ?? "—"}
+  {club ? (
+    <button
+      onClick={() =>
+        editContactPerson(
+          club.id,
+          p.contact_person ?? null
+        )
+      }
+      className="text-blue-600 hover:underline"
+    >
+      {p.contact_person ?? "—"}
+    </button>
+  ) : (
+    "—"
+  )}
 </td>
 
                       <td className="px-3 py-3">
