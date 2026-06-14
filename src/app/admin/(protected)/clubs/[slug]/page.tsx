@@ -398,13 +398,22 @@ async function archiveAd(adId: string) {
   )
     return;
 
-  await supabase
+  const { data, error } = await supabase
     .from("company_advertisements")
     .update({
       deleted_at: new Date().toISOString(),
       status: "inactive",
     })
-    .eq("id", adId);
+    .eq("id", adId)
+    .select();
+
+  console.log("ARCHIVE DATA", data);
+  console.log("ARCHIVE ERROR", error);
+
+  if (error) {
+    alert(error.message);
+    return;
+  }
 
   load();
 }
