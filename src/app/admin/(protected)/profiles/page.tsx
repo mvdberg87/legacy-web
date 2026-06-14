@@ -18,15 +18,22 @@ type Profile = {
   club_slug: string | null;
   club_status: string | null;
   club_package: string | null;
+
+  contact_person?: string | null;
+
   advertising_sales_enabled?: boolean | null;
   subscription_status?: string | null;
-subscription_cancelled_at?: string | null;
-subscription_end?: string | null;
+  subscription_cancelled_at?: string | null;
+  subscription_end?: string | null;
 
-archived_at?: string | null;
+  archived_at?: string | null;
 
   signup_request_id: string | null;
-  signup_request_status: "pending" | "approved" | "rejected" | null;
+  signup_request_status:
+    | "pending"
+    | "approved"
+    | "rejected"
+    | null;
 };
 
 
@@ -317,8 +324,11 @@ async function toggleManagedAds(
             <table className="min-w-full text-sm">
               <thead className="bg-[#0d1b2a] text-white text-xs uppercase">
                 <tr>
-                  <th className="px-3 py-3 text-left">E-mail</th>
                   <th className="px-3 py-3 text-left">Club</th>
+                  <th className="px-3 py-3 text-left">E-mail</th>
+                  <th className="px-3 py-3 text-left">
+  Contactpersoon
+</th>
                   <th className="px-3 py-3 text-left">Rol</th>
 <th className="px-3 py-3 text-left">
   Pakket
@@ -386,6 +396,10 @@ async function toggleManagedAds(
                           </span>
                         )}
                       </td>
+
+                      <td className="px-3 py-3">
+  {p.contact_person ?? "—"}
+</td>
 
                       <td className="px-3 py-3">
                         {p.role}
