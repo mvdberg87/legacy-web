@@ -47,6 +47,8 @@ export default function AdminClubDetailPage() {
   const [jobs, setJobs] = useState<JobWithStats[]>([]);
   const [clubRevenue, setClubRevenue] = useState(0);
   const [ads, setAds] = useState<any[]>([]);
+  const [showArchivedAds, setShowArchivedAds] =
+  useState(false);
   const [loading, setLoading] = useState(true);
   const [reports, setReports] = useState<any[]>([]);
   const [topJobs, setTopJobs] = useState({
@@ -120,11 +122,18 @@ const res = await fetch("/api/admin/get-club-user", {
 const userData = await res.json();
 setClubUser(userData.user);
 
-const { data: adsData } = await supabase
+let adsQuery = supabase
   .from("admin_advertisements_performance")
   .select("*")
-  .eq("slug", clubData.slug)
-  .eq("status", "active");
+  .eq("slug", clubData.slug);
+
+if (showArchivedAds) {
+  adsQuery = adsQuery.eq("status", "inactive");
+} else {
+  adsQuery = adsQuery.eq("status", "active");
+}
+
+const { data: adsData } = await adsQuery;
 
 setAds(adsData ?? []);
 
@@ -346,7 +355,7 @@ setTopJobs({
   useEffect(() => {
   if (!slug) return;
   load();
-}, [slug]);
+}, [slug, showArchivedAds]);
 
 
 
@@ -595,6 +604,32 @@ async function restoreAd(adId: string) {
       Managed Ads
     </h2>
 
+    <div className="flex gap-3 mb-4">
+
+  <button
+    onClick={() => setShowArchivedAds(false)}
+    className={
+      !showArchivedAds
+        ? "bg-[#0d1b2a] text-white px-4 py-2 rounded"
+        : "border px-4 py-2 rounded"
+    }
+  >
+    Actief
+  </button>
+
+  <button
+    onClick={() => setShowArchivedAds(true)}
+    className={
+      showArchivedAds
+        ? "bg-[#0d1b2a] text-white px-4 py-2 rounded"
+        : "border px-4 py-2 rounded"
+    }
+  >
+    Gearchiveerd
+  </button>
+
+</div>
+
     <div className="overflow-x-auto">
       <table className="min-w-[1100px] text-sm">
         <thead className="bg-[#0d1b2a] text-white text-xs uppercase">
@@ -638,6 +673,12 @@ async function restoreAd(adId: string) {
   <div className="font-medium">
   {ad.is_featured && "⭐ "}
   {ad.company_name}
+
+  {ad.status === "inactive" && (
+    <span className="ml-2 text-red-500 text-xs">
+      (gearchiveerd)
+    </span>
+  )}
 </div>
 
   <div className="text-xs text-gray-500">
@@ -704,12 +745,21 @@ async function restoreAd(adId: string) {
   ⭐
 </button>
 
-                <button
-  onClick={() => archiveAd(ad.id)}
-  className="border px-2 py-1 rounded text-red-600"
->
-  🗑
-</button>
+                {ad.status === "active" ? (
+  <button
+    onClick={() => archiveAd(ad.id)}
+    className="border px-2 py-1 rounded text-red-600"
+  >
+    🗑
+  </button>
+) : (
+  <button
+    onClick={() => restoreAd(ad.id)}
+    className="border px-2 py-1 rounded text-green-600"
+  >
+    ↩️
+  </button>
+)}
 
               </td>
             </tr>

@@ -90,7 +90,7 @@ export default function EditAdvertisementPage() {
         </h1>
 
         <div>
-          <label className="block text-sm mb-1">
+          <label className="block text-sm mb-1 text-black">
             Bedrijfsnaam
           </label>
 
@@ -107,7 +107,7 @@ export default function EditAdvertisementPage() {
         </div>
 
         <div>
-          <label className="block text-sm mb-1">
+          <label className="block text-sm mb-1 text-black">
             E-mail
           </label>
 
@@ -124,7 +124,7 @@ export default function EditAdvertisementPage() {
         </div>
 
         <div>
-          <label className="block text-sm mb-1">
+          <label className="block text-sm mb-1 text-black">
             Website
           </label>
 
@@ -141,7 +141,7 @@ export default function EditAdvertisementPage() {
         </div>
 
         <div>
-          <label className="block text-sm mb-1">
+          <label className="block text-sm mb-1 text-black">
             Vacature URL
           </label>
 
@@ -160,7 +160,7 @@ export default function EditAdvertisementPage() {
         <div className="grid md:grid-cols-2 gap-4">
 
           <div>
-            <label className="block text-sm mb-1">
+            <label className="block text-sm mb-1 text-black">
               Startdatum
             </label>
 
@@ -178,7 +178,7 @@ export default function EditAdvertisementPage() {
           </div>
 
           <div>
-            <label className="block text-sm mb-1">
+            <label className="block text-sm mb-1 text-black">
               Einddatum
             </label>
 
@@ -199,7 +199,7 @@ export default function EditAdvertisementPage() {
 
         <div className="flex gap-6">
 
-          <label className="flex items-center gap-2">
+          <label className="flex items-center gap-2 text-black">
             <input
               type="checkbox"
               checked={ad.is_featured}
@@ -213,7 +213,7 @@ export default function EditAdvertisementPage() {
             Uitgelicht
           </label>
 
-          <label className="flex items-center gap-2">
+          <label className="flex items-center gap-2 text-black">
             <input
               type="checkbox"
               checked={ad.auto_renew}
