@@ -469,13 +469,23 @@ async function restoreAd(adId: string) {
     return;
   }
 
-  const { error } = await supabase
-    .from("jobs")
-    .delete()
-    .eq("id", jobId);
+  const res = await fetch(
+    "/api/admin/delete-job",
+    {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        jobId,
+      }),
+    }
+  );
 
-  if (error) {
-    alert(error.message);
+  const data = await res.json();
+
+  if (!res.ok) {
+    alert(data.error ?? "Verwijderen mislukt");
     return;
   }
 
