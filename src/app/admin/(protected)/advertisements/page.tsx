@@ -50,6 +50,9 @@ function StatusBadge({
 
   deleted:
   "bg-gray-200 text-gray-700",
+
+  inactive:
+  "bg-gray-100 text-gray-700",
   };
 
   return (
@@ -404,11 +407,7 @@ const expiresIn30Days = ads.filter((a) => {
 });
 
 const expiredAds = ads.filter((a) => {
-  if (
-    a.status !== "active" ||
-    a.deleted_at
-  )
-    return false;
+  if (a.deleted_at) return false;
 
   return (
     new Date(a.end_date) < today
@@ -491,7 +490,7 @@ const expiredAds = ads.filter((a) => {
 
 </div>
 
-<div className="grid grid-cols-2 md:grid-cols-9 gap-4 mb-6">
+<div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 xl:grid-cols-9 gap-4 mb-6">
 
   <div className="border rounded p-4">
     <div className="text-2xl font-bold">
@@ -504,7 +503,7 @@ const expiredAds = ads.filter((a) => {
 ).length
       }
     </div>
-    <div>Pending</div>
+    <div className="text-sm whitespace-nowrap">Pending</div>
   </div>
 
   <div className="border rounded p-4">
@@ -515,7 +514,7 @@ const expiredAds = ads.filter((a) => {
         ).length
       }
     </div>
-    <div>Actief</div>
+    <div className="text-sm whitespace-nowrap">Actief</div>
   </div>
 
   <div className="border rounded p-4">
@@ -523,7 +522,7 @@ const expiredAds = ads.filter((a) => {
     {expiresIn90Days.length}
   </div>
 
-  <div>&lt; 90 dagen</div>
+  <div className="text-sm whitespace-nowrap">&lt; 90 dagen</div>
 </div>
 
 <div className="border rounded p-4">
@@ -531,7 +530,7 @@ const expiredAds = ads.filter((a) => {
     {expiresIn60Days.length}
   </div>
 
-  <div>&lt; 60 dagen</div>
+  <div className="text-sm whitespace-nowrap">&lt; 60 dagen</div>
 </div>
 
 <div className="border rounded p-4">
@@ -539,7 +538,7 @@ const expiredAds = ads.filter((a) => {
     {expiresIn30Days.length}
   </div>
 
-  <div>&lt; 30 dagen</div>
+  <div className="text-sm whitespace-nowrap">&lt; 30 dagen</div>
 </div>
 
   <div className="border rounded p-4">
@@ -552,7 +551,7 @@ const expiredAds = ads.filter((a) => {
 ).length
       }
     </div>
-    <div>Afgekeurd</div>
+    <div className="text-sm whitespace-nowrap">Afgekeurd</div>
   </div>
 
   <div className="border rounded p-4">
@@ -565,7 +564,7 @@ const expiredAds = ads.filter((a) => {
 ).length
       }
     </div>
-    <div>Featured</div>
+    <div className="text-sm whitespace-nowrap">Featured</div>
   </div>
 
   <div className="border rounded p-4">
@@ -573,7 +572,7 @@ const expiredAds = ads.filter((a) => {
     {expiredAds.length}
   </div>
 
-  <div>Verlopen</div>
+  <div className="text-sm whitespace-nowrap">Verlopen</div>
 </div>
 
 <div className="border rounded p-4">
@@ -585,14 +584,14 @@ const expiredAds = ads.filter((a) => {
     }
   </div>
 
-  <div>Verwijderd</div>
+  <div className="text-sm whitespace-nowrap">Verwijderd</div>
 </div>
 
 </div>
 
       <div className="overflow-x-auto">
 
-        <table className="w-full text-sm">
+        <table className="min-w-[1400px] text-sm">
 
           <thead className="bg-[#0d1b2a] text-white text-xs uppercase">
 
@@ -618,7 +617,7 @@ const expiredAds = ads.filter((a) => {
 </th>
 
 <th className="px-4 py-3 text-center">
-  Renewal
+  Verlenging
 </th>
 
               <th className="px-4 py-3 text-center">
@@ -686,28 +685,44 @@ const expiredAds = ads.filter((a) => {
 </td>
 
 <td className="px-4 py-3 text-center">
-  {ad.auto_renew ? "🔄" : "⛔"}
+  <span
+    className={`px-2 py-1 rounded text-xs font-medium ${
+      ad.auto_renew
+        ? "bg-green-100 text-green-800"
+        : "bg-red-100 text-red-800"
+    }`}
+  >
+    {ad.auto_renew ? "AAN" : "UIT"}
+  </span>
 </td>
 
                 <td className="px-4 py-3 text-center">
-                  {new Date(
-                    ad.end_date
-                  ).toLocaleDateString(
-                    "nl-NL"
-                  )}
-                </td>
+  <div>
+    {new Date(
+      ad.end_date
+    ).toLocaleDateString(
+      "nl-NL"
+    )}
+  </div>
+
+  {!ad.auto_renew && (
+    <div className="text-xs text-orange-600">
+      Opgezegd
+    </div>
+  )}
+</td>
 
                 <td className="px-4 py-3 text-center">
-                  € {ad.amount}
-                </td>
+  € {Number(ad.amount).toLocaleString("nl-NL")}
+</td>
 
-                <td className="px-4 py-3 text-center text-green-700">
-                  € {ad.club_amount}
-                </td>
+<td className="px-4 py-3 text-center text-green-700">
+  € {Number(ad.club_amount).toLocaleString("nl-NL")}
+</td>
 
-                <td className="px-4 py-3 text-center text-blue-700">
-                  € {ad.platform_amount}
-                </td>
+<td className="px-4 py-3 text-center text-blue-700">
+  € {Number(ad.platform_amount).toLocaleString("nl-NL")}
+</td>
 
                 <td className="px-4 py-3 text-center">
 
@@ -795,7 +810,7 @@ const expiredAds = ads.filter((a) => {
       : "bg-red-600"
   }`}
 >
-  {ad.auto_renew ? "🔄" : "⛔"}
+  {ad.auto_renew ? "AAN" : "UIT"}
 </button>
 
     <button
