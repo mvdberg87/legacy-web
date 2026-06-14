@@ -755,9 +755,12 @@ async function restoreAd(adId: string) {
     ↩️
   </button>
 ) : (
-  <span className="text-xs text-green-600">
-    Actief
-  </span>
+  <button
+    onClick={() => archiveAd(ad.id)}
+    className="border px-2 py-1 rounded text-red-600"
+  >
+    🗑
+  </button>
 )}
 
               </td>
@@ -897,7 +900,7 @@ async function restoreAd(adId: string) {
 
                     <button
   onClick={() =>
-    router.push(`clubs/${club.slug}/jobs/${job.id}/edit`)
+    router.push(`/clubs/${club.slug}/jobs/${job.id}/edit`)
   }
   className="border px-2 py-1 rounded"
   title="Bewerken"
