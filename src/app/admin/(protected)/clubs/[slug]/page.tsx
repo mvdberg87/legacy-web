@@ -380,12 +380,26 @@ setTopJobs({
   adId: string,
   current: boolean
 ) {
-  await supabase
-    .from("company_advertisements")
-    .update({
-      is_featured: !current,
-    })
-    .eq("id", adId);
+  const res = await fetch(
+    "/api/admin/toggle-ad-featured",
+    {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        advertisementId: adId,
+        featured: !current,
+      }),
+    }
+  );
+
+  const data = await res.json();
+
+  if (!res.ok) {
+    alert(data.error ?? "Uitlichten mislukt");
+    return;
+  }
 
   load();
 }

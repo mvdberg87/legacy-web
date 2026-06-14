@@ -87,13 +87,15 @@ export default function EditAdvertisementPage() {
         </h1>
 
         <div>
-  <label>Functietitel</label>
+  <label className="block text-sm mb-1 text-black">
+  Functietitel
+</label>
 
-  <input
-    value={jobTitle}
-    onChange={(e) => setJobTitle(e.target.value)}
-    className="w-full border rounded-lg px-3 py-2"
-  />
+ <input
+  value={jobTitle}
+  onChange={(e) => setJobTitle(e.target.value)}
+  className="w-full border rounded-lg px-3 py-2 bg-white text-black"
+/>
 </div>
 
         <div>
