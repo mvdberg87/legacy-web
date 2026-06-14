@@ -395,25 +395,27 @@ async function archiveAd(adId: string) {
     !confirm(
       "Weet je zeker dat je deze advertentie wilt archiveren?"
     )
-  )
+  ) {
     return;
+  }
 
-    console.log("ARCHIVE AD ID", adId);
+  const res = await fetch(
+    "/api/admin/archive-advertisement",
+    {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        advertisementId: adId,
+      }),
+    }
+  );
 
-  const { data, error } = await supabase
-    .from("company_advertisements")
-    .update({
-      deleted_at: new Date().toISOString(),
-      status: "inactive",
-    })
-    .eq("id", adId)
-    .select();
+  const data = await res.json();
 
-  console.log("ARCHIVE DATA", data);
-  console.log("ARCHIVE ERROR", error);
-
-  if (error) {
-    alert(error.message);
+  if (!res.ok) {
+    alert(data.error ?? "Archiveren mislukt");
     return;
   }
 
@@ -421,15 +423,25 @@ async function archiveAd(adId: string) {
 }
 
 async function restoreAd(adId: string) {
-  const { error } = await supabase
-    .from("company_advertisements")
-    .update({
-      deleted_at: null,
-      status: "active",
-    })
-    .eq("id", adId);
+  const res = await fetch(
+    "/api/admin/restore-advertisement",
+    {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        advertisementId: adId,
+      }),
+    }
+  );
 
-  console.log("RESTORE", adId);
+  const data = await res.json();
+
+  if (!res.ok) {
+    alert(data.error ?? "Herstellen mislukt");
+    return;
+  }
 
   load();
 }
