@@ -365,37 +365,44 @@ async function toggleManagedAds(
                       className="border-b last:border-b-0 hover:bg-blue-50/40"
                     >
                       <td className="px-3 py-3">
-                        {p.email}
-                      </td>
+  {club ? (
+    <div className="flex flex-col">
+      <Link
+        href={`/admin/clubs/${club.slug}`}
+        prefetch={false}
+        className="text-blue-600 hover:underline"
+      >
+        {club.name}
+      </Link>
 
-                      <td className="px-3 py-3">
-                        {club ? (
-                          <div className="flex flex-col">
-                            <Link
-  href={`/admin/clubs/${club.slug}`}
-  prefetch={false}
-  className="text-blue-600 hover:underline"
->
-  {club.name}
-</Link>
-                            <span className="text-xs">
-  {p.subscription_cancelled_at ? (
-    <span className="text-orange-600">
-      Opgezegd (tot {new Date(p.subscription_cancelled_at).toLocaleDateString("nl-NL")})
-    </span>
-  ) : p.subscription_status === "active" ? (
-    <span className="text-green-600">Actief</span>
+      <span className="text-xs">
+        {p.subscription_cancelled_at ? (
+          <span className="text-orange-600">
+            Opgezegd (tot {new Date(
+              p.subscription_cancelled_at
+            ).toLocaleDateString("nl-NL")})
+          </span>
+        ) : p.subscription_status === "active" ? (
+          <span className="text-green-600">
+            Actief
+          </span>
+        ) : (
+          <span className="text-gray-500">
+            {club.status}
+          </span>
+        )}
+      </span>
+    </div>
   ) : (
-    <span className="text-gray-500">{club.status}</span>
+    <span className="italic text-gray-400">
+      Geen club
+    </span>
   )}
-</span>
-                          </div>
-                        ) : (
-                          <span className="italic text-gray-400">
-                            Geen club
-                          </span>
-                        )}
-                      </td>
+</td>
+
+<td className="px-3 py-3">
+  {p.email}
+</td>
 
                       <td className="px-3 py-3">
   {p.contact_person ?? "—"}
