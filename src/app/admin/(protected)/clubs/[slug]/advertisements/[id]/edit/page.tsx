@@ -8,11 +8,8 @@ type Advertisement = {
   id: string;
   company_name: string;
   company_email: string;
-  company_website: string;
   vacancy_url: string;
   status: string;
-  is_featured: boolean;
-  auto_renew: boolean;
   start_date: string;
   end_date: string;
 };
@@ -56,11 +53,8 @@ export default function EditAdvertisementPage() {
       .update({
         company_name: ad.company_name,
         company_email: ad.company_email,
-        company_website: ad.company_website,
         vacancy_url: ad.vacancy_url,
         status: ad.status,
-        is_featured: ad.is_featured,
-        auto_renew: ad.auto_renew,
         start_date: ad.start_date,
         end_date: ad.end_date,
       })
@@ -123,22 +117,6 @@ export default function EditAdvertisementPage() {
           />
         </div>
 
-        <div>
-          <label className="block text-sm mb-1 text-black">
-            Website
-          </label>
-
-          <input
-            value={ad.company_website}
-            onChange={(e) =>
-              setAd({
-                ...ad,
-                company_website: e.target.value,
-              })
-            }
-            className="w-full border rounded-lg p-2 bg-white text-black"
-          />
-        </div>
 
         <div>
           <label className="block text-sm mb-1 text-black">
@@ -198,34 +176,6 @@ export default function EditAdvertisementPage() {
         </div>
 
         <div className="flex gap-6">
-
-          <label className="flex items-center gap-2 text-black">
-            <input
-              type="checkbox"
-              checked={ad.is_featured}
-              onChange={(e) =>
-                setAd({
-                  ...ad,
-                  is_featured: e.target.checked,
-                })
-              }
-            />
-            Uitgelicht
-          </label>
-
-          <label className="flex items-center gap-2 text-black">
-            <input
-              type="checkbox"
-              checked={ad.auto_renew}
-              onChange={(e) =>
-                setAd({
-                  ...ad,
-                  auto_renew: e.target.checked,
-                })
-              }
-            />
-            Auto renew
-          </label>
 
         </div>
 

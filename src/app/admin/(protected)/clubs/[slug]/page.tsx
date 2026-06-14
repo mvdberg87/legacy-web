@@ -410,13 +410,15 @@ async function archiveAd(adId: string) {
 }
 
 async function restoreAd(adId: string) {
-  await supabase
+  const { error } = await supabase
     .from("company_advertisements")
     .update({
       deleted_at: null,
       status: "active",
     })
     .eq("id", adId);
+
+  console.log("RESTORE ERROR", error);
 
   load();
 }
