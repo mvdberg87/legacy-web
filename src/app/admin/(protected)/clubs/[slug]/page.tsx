@@ -128,9 +128,9 @@ let adsQuery = supabase
   .eq("slug", clubData.slug);
 
 if (showArchivedAds) {
-  adsQuery = adsQuery.eq("status", "inactive");
+  adsQuery = adsQuery.not("deleted_at", "is", null);
 } else {
-  adsQuery = adsQuery.eq("status", "active");
+  adsQuery = adsQuery.is("deleted_at", null);
 }
 
 const { data: adsData } = await adsQuery;
@@ -418,7 +418,7 @@ async function restoreAd(adId: string) {
     })
     .eq("id", adId);
 
-  console.log("RESTORE ERROR", error);
+  console.log("RESTORE", adId);
 
   load();
 }
@@ -674,7 +674,7 @@ async function restoreAd(adId: string) {
               <td className="px-4 py-3">
   <div className="font-medium">
   {ad.is_featured && "⭐ "}
-  {ad.company_name}
+  {ad.job_title}
 
   {ad.status === "inactive" && (
     <span className="ml-2 text-red-500 text-xs">
@@ -684,7 +684,7 @@ async function restoreAd(adId: string) {
 </div>
 
   <div className="text-xs text-gray-500">
-    {ad.package_name ?? "Advertentie"}
+    {ad.company_name}
   </div>
 </td>
 
@@ -747,20 +747,17 @@ async function restoreAd(adId: string) {
   ⭐
 </button>
 
-                {ad.status === "active" ? (
-  <button
-    onClick={() => archiveAd(ad.id)}
-    className="border px-2 py-1 rounded text-red-600"
-  >
-    🗑
-  </button>
-) : (
+                {ad.deleted_at ? (
   <button
     onClick={() => restoreAd(ad.id)}
     className="border px-2 py-1 rounded text-green-600"
   >
     ↩️
   </button>
+) : (
+  <span className="text-xs text-green-600">
+    Actief
+  </span>
 )}
 
               </td>

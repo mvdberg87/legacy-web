@@ -28,6 +28,8 @@ export default function EditAdvertisementPage() {
 
   const [ad, setAd] = useState<Advertisement | null>(null);
 
+  const [jobTitle, setJobTitle] = useState("");
+
   useEffect(() => {
     load();
   }, []);
@@ -40,6 +42,7 @@ export default function EditAdvertisementPage() {
       .single();
 
     setAd(data);
+    setJobTitle(data.job_title ?? "");
     setLoading(false);
   }
 
@@ -52,7 +55,7 @@ export default function EditAdvertisementPage() {
       .from("company_advertisements")
       .update({
         company_name: ad.company_name,
-        company_email: ad.company_email,
+        job_title: jobTitle,
         vacancy_url: ad.vacancy_url,
         status: ad.status,
         start_date: ad.start_date,
@@ -84,6 +87,16 @@ export default function EditAdvertisementPage() {
         </h1>
 
         <div>
+  <label>Functietitel</label>
+
+  <input
+    value={jobTitle}
+    onChange={(e) => setJobTitle(e.target.value)}
+    className="w-full border rounded-lg px-3 py-2"
+  />
+</div>
+
+        <div>
           <label className="block text-sm mb-1 text-black">
             Bedrijfsnaam
           </label>
@@ -94,23 +107,6 @@ export default function EditAdvertisementPage() {
               setAd({
                 ...ad,
                 company_name: e.target.value,
-              })
-            }
-            className="w-full border rounded-lg p-2 bg-white text-black"
-          />
-        </div>
-
-        <div>
-          <label className="block text-sm mb-1 text-black">
-            E-mail
-          </label>
-
-          <input
-            value={ad.company_email}
-            onChange={(e) =>
-              setAd({
-                ...ad,
-                company_email: e.target.value,
               })
             }
             className="w-full border rounded-lg p-2 bg-white text-black"
