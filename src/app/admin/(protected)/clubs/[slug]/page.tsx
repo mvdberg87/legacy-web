@@ -128,9 +128,9 @@ let adsQuery = supabase
   .eq("slug", clubData.slug);
 
 if (showArchivedAds) {
-  adsQuery = adsQuery.not("deleted_at", "is", null);
+  adsQuery = adsQuery.eq("status", "inactive");
 } else {
-  adsQuery = adsQuery.is("deleted_at", null);
+  adsQuery = adsQuery.eq("status", "active");
 }
 
 const { data: adsData } = await adsQuery;
@@ -897,7 +897,7 @@ async function restoreAd(adId: string) {
 
                     <button
   onClick={() =>
-    router.push(`/admin/clubs/${club.slug}/jobs/${job.id}/edit`)
+    router.push(`clubs/${club.slug}/jobs/${job.id}/edit`)
   }
   className="border px-2 py-1 rounded"
   title="Bewerken"
