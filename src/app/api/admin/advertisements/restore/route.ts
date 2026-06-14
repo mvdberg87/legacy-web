@@ -12,8 +12,8 @@ export async function POST(
     await supabaseAdmin
       .from("company_advertisements")
       .update({
-        deleted_at: null,
-      })
+  status: "active",
+})
       .eq("id", advertisementId);
 
     return NextResponse.json({

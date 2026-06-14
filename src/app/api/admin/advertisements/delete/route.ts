@@ -12,8 +12,7 @@ export async function POST(
     await supabaseAdmin
       .from("company_advertisements")
       .update({
-        deleted_at:
-          new Date().toISOString(),
+        status: "archived"
       })
       .eq("id", advertisementId);
 

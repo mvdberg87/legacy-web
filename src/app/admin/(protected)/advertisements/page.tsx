@@ -9,6 +9,8 @@ type Advertisement = {
   club_name: string;
   slug: string;
 
+  job_title: string | null;
+
   company_name: string;
   company_email: string;
   company_website: string | null;
@@ -27,6 +29,7 @@ vacancy_url: string | null;
 
   is_featured: boolean;
   auto_renew: boolean;
+  archived_at: string | null;
   deleted_at: string | null;
 };
 
@@ -48,7 +51,7 @@ function StatusBadge({
       rejected:
   "bg-red-100 text-red-800",
 
-  deleted:
+  archived:
   "bg-gray-200 text-gray-700",
 
   inactive:
@@ -100,7 +103,7 @@ const [editVacancyUrl, setEditVacancyUrl] =
   | "pending_activation"
   | "active"
   | "rejected"
-  | "deleted"
+  | "archived"
 >("all");
 
     async function rejectAdvertisement(
@@ -205,17 +208,17 @@ async function saveAdvertisement() {
   await load();
 }
 
-async function deleteAdvertisement(
+async function archiveAdvertisement(
   advertisementId: string
 ) {
   const confirmed = confirm(
-    "Advertentie verwijderen?"
+    "Advertentie archiveren?"
   );
 
   if (!confirmed) return;
 
   await fetch(
-    "/api/admin/advertisements/delete",
+    "/api/admin/advertisements/archive",
     {
       method: "POST",
       headers: {
@@ -407,7 +410,7 @@ const expiresIn30Days = ads.filter((a) => {
 });
 
 const expiredAds = ads.filter((a) => {
-  if (a.deleted_at) return false;
+  if (a.status === "archived") return false;
 
   return (
     new Date(a.end_date) < today
@@ -418,17 +421,14 @@ const expiredAds = ads.filter((a) => {
   (ad) => {
 
     if (filter === "all") {
-      return !ad.deleted_at;
-    }
+  return ad.status !== "archived";
+}
 
-    if (filter === "deleted") {
-      return !!ad.deleted_at;
-    }
+if (filter === "archived") {
+  return ad.status === "archived";
+}
 
-    return (
-      ad.status === filter &&
-      !ad.deleted_at
-    );
+return ad.status === filter;
   }
 );
 
@@ -481,11 +481,11 @@ const expiredAds = ads.filter((a) => {
 
   <button
     onClick={() =>
-      setFilter("deleted")
+      setFilter("archived")
     }
     className="px-4 py-2 border rounded"
   >
-    Verwijderd
+    Gearchiveerd
   </button>
 
 </div>
@@ -497,9 +497,7 @@ const expiredAds = ads.filter((a) => {
       {
         ads.filter(
   a =>
-    a.status ===
-      "pending_activation" &&
-    !a.deleted_at
+    a.status === "pending_activation"
 ).length
       }
     </div>
@@ -510,7 +508,7 @@ const expiredAds = ads.filter((a) => {
     <div className="text-2xl font-bold">
       {
         ads.filter(
-          a => a.status === "active" && !a.deleted_at
+          a => a.status === "active"
         ).length
       }
     </div>
@@ -546,8 +544,7 @@ const expiredAds = ads.filter((a) => {
       {
         ads.filter(
   a =>
-    a.status === "rejected" &&
-    !a.deleted_at
+    a.status === "rejected"
 ).length
       }
     </div>
@@ -560,7 +557,7 @@ const expiredAds = ads.filter((a) => {
         ads.filter(
   a =>
     a.is_featured &&
-    !a.deleted_at
+a.status !== "archived"
 ).length
       }
     </div>
@@ -579,12 +576,12 @@ const expiredAds = ads.filter((a) => {
   <div className="text-2xl font-bold">
     {
       ads.filter(
-        a => a.deleted_at
-      ).length
+  a => a.status === "archived"
+).length
     }
   </div>
 
-  <div className="text-sm whitespace-nowrap">Verwijderd</div>
+  <div className="text-sm whitespace-nowrap">Gearchiveerd</div>
 </div>
 
 </div>
@@ -597,11 +594,11 @@ const expiredAds = ads.filter((a) => {
 
             <tr>
               <th className="px-4 py-3 text-left">
-                Bedrijf
+                Club
               </th>
 
               <th className="px-4 py-3 text-left">
-                Club
+                Advertentie
               </th>
 
               <th className="px-4 py-3 text-center">
@@ -653,18 +650,18 @@ const expiredAds = ads.filter((a) => {
               >
 
                 <td className="px-4 py-3">
-                  <div className="font-medium">
-                    {ad.company_name}
-                  </div>
+  {ad.club_name}
+</td>
 
-                  <div className="text-xs text-gray-500">
-                    {ad.company_email}
-                  </div>
-                </td>
+<td className="px-4 py-3">
+  <div className="font-medium">
+    {ad.job_title ?? "Geen functietitel"}
+  </div>
 
-                <td className="px-4 py-3">
-                  {ad.club_name}
-                </td>
+  <div className="text-xs text-gray-500">
+    {ad.company_name}
+  </div>
+</td>
 
                 <td className="px-4 py-3 text-center">
                   {ad.package_name}
@@ -672,11 +669,7 @@ const expiredAds = ads.filter((a) => {
 
                 <td className="px-4 py-3 text-center">
                   <StatusBadge
-  status={
-    ad.deleted_at
-      ? "deleted"
-      : ad.status
-  }
+  status={ad.status}
 />
                 </td>
 
@@ -685,15 +678,21 @@ const expiredAds = ads.filter((a) => {
 </td>
 
 <td className="px-4 py-3 text-center">
-  <span
-    className={`px-2 py-1 rounded text-xs font-medium ${
+  <button
+    onClick={() =>
+      toggleRenewal(
+        ad.id,
+        ad.auto_renew
+      )
+    }
+    className={`px-3 py-1 rounded text-xs font-medium ${
       ad.auto_renew
         ? "bg-green-100 text-green-800"
         : "bg-red-100 text-red-800"
     }`}
   >
     {ad.auto_renew ? "AAN" : "UIT"}
-  </span>
+  </button>
 </td>
 
                 <td className="px-4 py-3 text-center">
@@ -726,8 +725,7 @@ const expiredAds = ads.filter((a) => {
 
                 <td className="px-4 py-3 text-center">
 
-  {ad.status === "pending_activation" &&
- !ad.deleted_at && (
+  {ad.status === "pending_activation" && (
 
     <div className="flex justify-center gap-2">
 
@@ -763,7 +761,7 @@ const expiredAds = ads.filter((a) => {
 
 <button
   onClick={() =>
-    deleteAdvertisement(ad.id)
+    archiveAdvertisement(ad.id)
   }
   className="bg-gray-700 text-white px-3 py-1 rounded text-xs hover:bg-gray-800"
 >
@@ -776,8 +774,7 @@ const expiredAds = ads.filter((a) => {
 
   
 
-  {ad.status === "active" &&
- !ad.deleted_at && (
+  {ad.status === "active" && (
 
   <div className="flex justify-center gap-2">
 
@@ -796,22 +793,6 @@ const expiredAds = ads.filter((a) => {
     >
       ⭐
     </button>
-
-    <button
-  onClick={() =>
-    toggleRenewal(
-      ad.id,
-      ad.auto_renew
-    )
-  }
-  className={`px-3 py-1 rounded text-xs text-white ${
-    ad.auto_renew
-      ? "bg-green-600"
-      : "bg-red-600"
-  }`}
->
-  {ad.auto_renew ? "AAN" : "UIT"}
-</button>
 
     <button
   onClick={() => {
@@ -839,13 +820,13 @@ const expiredAds = ads.filter((a) => {
 </button>
 
     <button
-      onClick={() =>
-        deleteAdvertisement(ad.id)
-      }
-      className="bg-gray-700 text-white px-3 py-1 rounded text-xs hover:bg-gray-800"
-    >
-      🗑️
-    </button>
+  onClick={() =>
+    archiveAdvertisement(ad.id)
+  }
+  className="bg-gray-700 text-white px-3 py-1 rounded text-xs"
+>
+  📦
+</button>
 
   </div>
 
@@ -857,7 +838,7 @@ const expiredAds = ads.filter((a) => {
   </span>
 )}
 
-{ad.deleted_at && (
+{ad.status === "archived" && (
 
   <button
     onClick={() =>
