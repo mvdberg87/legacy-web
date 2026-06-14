@@ -194,7 +194,7 @@ const leaderboard = [...clubs]
       </h1>
 
 {/* KPI GRID */}
-<div className="grid grid-cols-2 md:grid-cols-5 gap-4 mb-6">
+<div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4 mb-6">
 
   <div className="border rounded-xl p-4 text-center">
     <div className="text-2xl font-semibold">
@@ -269,7 +269,8 @@ const leaderboard = [...clubs]
   </div>
 </div>
 
-      <table className="w-full text-sm">
+      <div className="overflow-x-auto">
+  <table className="min-w-[1400px] text-sm">
         <thead className="bg-[#0d1b2a] text-white text-xs uppercase">
   <tr>
 <th className="px-4 py-3 text-left">Club</th>
@@ -284,7 +285,6 @@ const leaderboard = [...clubs]
 <th className="px-4 py-3 text-center">CTR</th>
 <th className="px-4 py-3 text-center">Shares</th>
 <th className="px-4 py-3 text-center">Share rate</th>
-<th className="px-4 py-3 text-center">Actie</th>
 </tr>
 </thead>
 
@@ -292,8 +292,15 @@ const leaderboard = [...clubs]
           {clubs.map((club) => (
             <tr key={club.id} className="border-b">
               <td className="px-4 py-3 font-medium">
-                {club.name}
-              </td>
+  <button
+    onClick={() =>
+      router.push(`/admin/clubs/${club.slug}`)
+    }
+    className="text-blue-600 hover:underline"
+  >
+    {club.name}
+  </button>
+</td>
 
               <td className="px-4 py-3 text-center">
   {club.active_package}
@@ -357,59 +364,13 @@ const leaderboard = [...clubs]
     : "0%"}
 </td>
 
-<td className="px-4 py-3 text-center space-x-2">
-  
-  <button
-  disabled={club.status !== "active"}
-  onClick={() => router.push(`/admin/clubs/${club.slug}`)}
-  className={`px-3 py-1 rounded text-xs ${
-    club.status === "active"
-      ? "bg-slate-900 text-white hover:bg-black"
-      : "bg-gray-300 text-gray-600 cursor-not-allowed"
-  }`}
->
-  Open
-</button>
-
-  {club.status === "active" ? (
-    <button
-      onClick={async () => {
-        if (!confirm("Club deactiveren?")) return;
-
-        await supabase
-          .from("clubs")
-          .update({ status: "inactive" })
-          .eq("id", club.id);
-
-        load();
-      }}
-      className="bg-red-600 text-white px-3 py-1 rounded text-xs"
-    >
-      Deactivate
-    </button>
-  ) : (
-    <button
-      onClick={async () => {
-        if (!confirm("Club opnieuw activeren?")) return;
-
-        await supabase
-          .from("clubs")
-          .update({ status: "active" })
-          .eq("id", club.id);
-
-        load();
-      }}
-      className="bg-green-600 text-white px-3 py-1 rounded text-xs"
-    >
-      Reactivate
-    </button>
-  )}
-
-</td>
 </tr>
 ))}
 
 </tbody>
 </table>
 
-</div>)}
+</div>
+    </div>
+  );
+}
