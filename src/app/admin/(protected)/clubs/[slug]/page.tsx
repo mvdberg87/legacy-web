@@ -398,6 +398,8 @@ async function archiveAd(adId: string) {
   )
     return;
 
+    console.log("ARCHIVE AD ID", adId);
+
   const { data, error } = await supabase
     .from("company_advertisements")
     .update({
