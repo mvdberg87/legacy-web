@@ -460,22 +460,27 @@ async function restoreAd(adId: string) {
   load();
 }
 
-  async function archiveJob(jobId: string) {
-    if (!confirm("Weet je zeker dat je deze vacature wilt archiveren?")) return;
-
-    await supabase
-      .from("jobs")
-      .update({ archived_at: new Date().toISOString(), featured: false })
-      .eq("id", jobId);
-
-    await supabase
-      .from("club_ads")
-      .update({ archived_at: new Date().toISOString() })
-      .eq("job_id", jobId)
-      .is("archived_at", null);
-
-    load();
+  async function deleteJob(jobId: string) {
+  if (
+    !confirm(
+      "Weet je zeker dat je deze vacature wilt verwijderen?"
+    )
+  ) {
+    return;
   }
+
+  const { error } = await supabase
+    .from("jobs")
+    .delete()
+    .eq("id", jobId);
+
+  if (error) {
+    alert(error.message);
+    return;
+  }
+
+  load();
+}
 
   if (loading) return <p>Laden…</p>;
   if (!club) return null;
@@ -936,16 +941,6 @@ async function restoreAd(adId: string) {
                     </button>
 
                     <button
-  onClick={() =>
-    router.push(`/clubs/${club.slug}/jobs/${job.id}/edit`)
-  }
-  className="border px-2 py-1 rounded"
-  title="Bewerken"
->
-  ✏️
-</button>
-
-                    <button
                       onClick={() =>
                         toggleFeatured(job.id, job.featured)
                       }
@@ -956,9 +951,9 @@ async function restoreAd(adId: string) {
                     </button>
 
                     <button
-                      onClick={() => archiveJob(job.id)}
+                      onClick={() => deleteJob(job.id)}
                       className="border px-2 py-1 rounded text-red-600"
-                      title="Archiveren"
+                      title="Verwijderen"
                     >
                       🗑
                     </button>
