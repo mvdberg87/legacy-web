@@ -37,7 +37,7 @@ export default function EditAdvertisementPage() {
 
   async function load() {
     const { data } = await supabase
-      .from("advertisements")
+      .from("company_advertisements")
       .select("*")
       .eq("id", id)
       .single();
@@ -52,7 +52,7 @@ export default function EditAdvertisementPage() {
     setSaving(true);
 
     const { error } = await supabase
-      .from("advertisements")
+      .from("company_advertisements")
       .update({
         company_name: ad.company_name,
         company_email: ad.company_email,

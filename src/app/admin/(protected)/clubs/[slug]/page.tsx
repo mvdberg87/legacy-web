@@ -123,8 +123,7 @@ setClubUser(userData.user);
 const { data: adsData } = await supabase
   .from("admin_advertisements_performance")
   .select("*")
-  .eq("slug", clubData.slug)
-  .eq("status", "active");
+  .eq("slug", clubData.slug);
 
 setAds(adsData ?? []);
 
@@ -372,7 +371,7 @@ setTopJobs({
   current: boolean
 ) {
   await supabase
-    .from("advertisements")
+    .from("company_advertisements")
     .update({
       is_featured: !current,
     })
@@ -390,10 +389,22 @@ async function archiveAd(adId: string) {
     return;
 
   await supabase
-    .from("advertisements")
+    .from("company_advertisements")
     .update({
       deleted_at: new Date().toISOString(),
       status: "inactive",
+    })
+    .eq("id", adId);
+
+  load();
+}
+
+async function restoreAd(adId: string) {
+  await supabase
+    .from("company_advertisements")
+    .update({
+      deleted_at: null,
+      status: "active",
     })
     .eq("id", adId);
 
@@ -624,8 +635,9 @@ async function archiveAd(adId: string) {
 
               <td className="px-4 py-3">
   <div className="font-medium">
-    {ad.company_name}
-  </div>
+  {ad.is_featured && "⭐ "}
+  {ad.company_name}
+</div>
 
   <div className="text-xs text-gray-500">
     {ad.package_name ?? "Advertentie"}
