@@ -92,6 +92,9 @@ const [editCompanyName, setEditCompanyName] =
 const [editWebsite, setEditWebsite] =
   useState("");
 
+  const [editJobTitle, setEditJobTitle] =
+  useState("");
+
 const [editVacancyUrl, setEditVacancyUrl] =
   useState("");
 
@@ -180,20 +183,15 @@ async function saveAdvertisement() {
       },
 
       body: JSON.stringify({
-  advertisementId:
-    editingAd.id,
+  advertisementId: editingAd.id,
 
-  companyName:
-    editCompanyName,
+  jobTitle: editJobTitle,
 
-  companyWebsite:
-    editWebsite,
+  companyName: editCompanyName,
 
-  vacancyUrl:
-    editVacancyUrl,
+  vacancyUrl: editVacancyUrl,
 
-  packageName:
-    editPackageName,
+  packageName: editPackageName,
 }),
     }
   );
@@ -798,18 +796,19 @@ a.status !== "archived"
   onClick={() => {
     setEditingAd(ad);
 
-    setEditCompanyName(
-      ad.company_name ?? ""
-    );
+setEditJobTitle(
+  ad.job_title ?? ""
+);
 
-    setEditWebsite(
-      ad.company_website ?? ""
-    );
+setEditCompanyName(
+  ad.company_name ?? ""
+);
 
-    setEditVacancyUrl(
-      ad.vacancy_url ?? ""
-    );
-    setEditPackageName(
+setEditVacancyUrl(
+  ad.vacancy_url ?? ""
+);
+
+setEditPackageName(
   ad.package_name ?? ""
 );
   }}
@@ -873,36 +872,52 @@ a.status !== "archived"
         Advertentie bewerken
       </h2>
 
-      <input
-        value={editCompanyName}
-        onChange={(e) =>
-          setEditCompanyName(
-            e.target.value
-          )
-        }
-        placeholder="Bedrijfsnaam"
-        className="w-full border rounded p-2 mb-3"
-      />
+      <label className="block text-sm font-medium mb-1">
+  Vacaturetitel
+</label>
 
-      <input
-        value={editWebsite}
-        onChange={(e) =>
-          setEditWebsite(
-            e.target.value
-          )
-        }
-        placeholder="Website"
-        className="w-full border rounded p-2 mb-3"
-      />
-
-      <select
-  value={editPackageName}
+<input
+  value={editJobTitle}
   onChange={(e) =>
-    setEditPackageName(
-      e.target.value
-    )
+    setEditJobTitle(e.target.value)
   }
   className="w-full border rounded p-2 mb-3"
+/>
+
+<label className="block text-sm font-medium mb-1">
+  Bedrijfsnaam
+</label>
+
+<input
+  value={editCompanyName}
+  onChange={(e) =>
+    setEditCompanyName(e.target.value)
+  }
+  className="w-full border rounded p-2 mb-3"
+/>
+
+<label className="block text-sm font-medium mb-1">
+  Vacature URL
+</label>
+
+<input
+  value={editVacancyUrl}
+  onChange={(e) =>
+    setEditVacancyUrl(e.target.value)
+  }
+  className="w-full border rounded p-2 mb-3"
+/>
+
+<label className="block text-sm font-medium mb-1">
+  Pakket
+</label>
+
+<select
+  value={editPackageName}
+  onChange={(e) =>
+    setEditPackageName(e.target.value)
+  }
+  className="w-full border rounded p-2 mb-4"
 >
   <option value="partner">
     Partner
@@ -916,17 +931,6 @@ a.status !== "archived"
     Premium
   </option>
 </select>
-
-      <input
-        value={editVacancyUrl}
-        onChange={(e) =>
-          setEditVacancyUrl(
-            e.target.value
-          )
-        }
-        placeholder="Vacature URL"
-        className="w-full border rounded p-2 mb-4"
-      />
 
       <div className="flex justify-end gap-2">
 

@@ -8,18 +8,11 @@ export async function POST(
 
     const {
   advertisementId,
+  jobTitle,
   companyName,
-  companyWebsite,
   vacancyUrl,
   packageName,
 } = await req.json();
-
-    console.log("UPDATE REQUEST:", {
-      advertisementId,
-      companyName,
-      companyWebsite,
-      vacancyUrl,
-    });
 
     /* ===============================
    Advertentie updaten
@@ -28,8 +21,8 @@ export async function POST(
 await supabaseAdmin
   .from("company_advertisements")
   .update({
+    job_title: jobTitle,
     company_name: companyName,
-    company_website: companyWebsite,
     vacancy_url: vacancyUrl,
   })
   .eq("id", advertisementId);
