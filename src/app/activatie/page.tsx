@@ -332,13 +332,11 @@ export default function ActivatiePage() {
         <div className="mt-10">
 
           <Link
-  href="/contact"
-  target="_blank"
-  rel="noopener noreferrer"
-  className="bg-[#1f9d55] px-8 py-4 rounded-2xl font-semibold hover:bg-[#15803d] transition"
->
-  Plan een activatiegesprek
-</Link>
+            href="/contact"
+            className="bg-[#1f9d55] px-10 py-5 rounded-2xl font-semibold hover:bg-[#15803d] transition"
+          >
+            Vraag een activatiegesprek aan
+          </Link>
 
         </div>
 

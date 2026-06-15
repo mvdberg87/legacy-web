@@ -828,8 +828,6 @@ async function connectStripe() {
         <div className="mt-2 mb-4">
           <a
             href={publicUrl}
-            target="_blank"
-            rel="noopener noreferrer"
             className="text-blue-600 hover:underline text-sm font-medium"
           >
             Bekijk publieke pagina →

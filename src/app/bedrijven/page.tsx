@@ -595,12 +595,25 @@ const startCheckout = async () => {
 
         <div className="mt-10">
 
-          <Link
-            href="/signup"
-            className="bg-[#1f9d55] px-8 py-4 rounded-2xl font-semibold hover:bg-[#15803d] transition"
-          >
-            Start jouw recruitment activatie
-          </Link>
+          <div className="mt-10 flex flex-col md:flex-row gap-4 justify-center">
+
+  <Link
+    href="/signup"
+    className="bg-[#1f9d55] px-8 py-4 rounded-2xl font-semibold hover:bg-[#15803d] transition"
+  >
+    Start jouw recruitment activatie
+  </Link>
+
+  <Link
+    href="/contact"
+    target="_blank"
+    rel="noopener noreferrer"
+    className="border border-white px-8 py-4 rounded-2xl font-semibold hover:bg-white hover:text-[#0d1b2a] transition"
+  >
+    Plan een activatiegesprek
+  </Link>
+
+</div>
 
         </div>
 
