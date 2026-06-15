@@ -28,20 +28,28 @@ type Club = {
 export default function AdminDashboardPage() {
   const supabase = useMemo(() => getSupabaseBrowser(), []);
   const [clubs, setClubs] = useState<Club[]>([]);
+  const [advertisementRows, setAdvertisementRows] =
+  useState<any[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    (async () => {
-      const { data } = await supabase
-        .from("clubs")
-        .select(
-  "id, active_package, subscription_status, subscription_start, subscription_end, subscription_cancelled_at"
-);
+  (async () => {
+    const { data } = await supabase
+      .from("clubs")
+      .select(
+        "id, active_package, subscription_status, subscription_start, subscription_end, subscription_cancelled_at"
+      );
 
-      setClubs(data ?? []);
-      setLoading(false);
-    })();
-  }, []);
+    const { data: ads } = await supabase
+      .from("admin_advertisements_overview")
+      .select("*");
+
+    setClubs(data ?? []);
+    setAdvertisementRows(ads ?? []);
+
+    setLoading(false);
+  })();
+}, []);
 
   if (loading) {
     return (
@@ -225,16 +233,68 @@ const clubGrowthData = Object.entries(clubGrowth).map(
   })
 );
 
+const totalAdRevenue = advertisementRows.reduce(
+  (sum, row) => sum + (row.amount || 0),
+  0
+);
+
+const totalClubShare = advertisementRows.reduce(
+  (sum, row) => sum + (row.club_amount || 0),
+  0
+);
+
+const totalSponsulsShare = advertisementRows.reduce(
+  (sum, row) => sum + (row.platform_amount || 0),
+  0
+);
+
+const activeAds = advertisementRows.filter(
+  (row) => !row.deleted_at
+).length;
+
+const adRevenueByClub = advertisementRows.reduce(
+  (acc, row) => {
+    const club =
+      row.club_name || "Onbekend";
+
+    if (!acc[club]) {
+      acc[club] = {
+        revenue: 0,
+        clubAmount: 0,
+        platformAmount: 0,
+      };
+    }
+
+    acc[club].revenue += row.amount || 0;
+    acc[club].clubAmount += row.club_amount || 0;
+    acc[club].platformAmount +=
+      row.platform_amount || 0;
+
+    return acc;
+  },
+  {} as Record<
+    string,
+    {
+      revenue: number;
+      clubAmount: number;
+      platformAmount: number;
+    }
+  >
+);
+
+const totalPlatformRevenue =
+  mrr + totalSponsulsShare;
+
   return (
     <main className="min-h-screen bg-[#0d1b2a] text-white p-8">
       <div className="max-w-7xl mx-auto">
 
         <h1 className="text-3xl font-semibold mb-10">
-          📊 Sponsorjobs SaaS Intelligence
+          Sponsorjobs SaaS Intelligence
         </h1>
 
         {/* KPI GRID */}
-        <div className="grid grid-cols-2 md:grid-cols-7 gap-6 mb-12">
+        <div className="grid grid-cols-2 md:grid-cols-4 xl:grid-cols-8 gap-6 mb-12">
           <Kpi label="MRR" value={`€${mrr}`} />
           <Kpi label="ARR" value={`€${arr}`} />
           <Kpi label="ARPU" value={`€${arpu.toFixed(0)}`} />
@@ -244,6 +304,33 @@ const clubGrowthData = Object.entries(clubGrowth).map(
           <Kpi label="Conversion %" value={`${conversionRate}%`} />
           <Kpi label="Opgezegd (loopt nog)" value={pendingCancellation} />
         </div>
+
+        <div className="grid grid-cols-2 md:grid-cols-5 gap-6 mb-12">
+  <Kpi
+    label="Advertentie omzet"
+    value={`€${totalAdRevenue}`}
+  />
+
+  <Kpi
+    label="Club aandeel"
+    value={`€${totalClubShare}`}
+  />
+
+  <Kpi
+    label="Sponsuls aandeel"
+    value={`€${totalSponsulsShare}`}
+  />
+
+  <Kpi
+    label="Actieve advertenties"
+    value={activeAds}
+  />
+
+  <Kpi
+  label="Totale platform omzet"
+  value={`€${totalPlatformRevenue}`}
+/>
+</div>
 
         {/* FUNNEL */}
 <div className="bg-[#132a44] rounded-2xl p-8 mb-12">
@@ -328,6 +415,60 @@ const clubGrowthData = Object.entries(clubGrowth).map(
   </ResponsiveContainer>
 </div>
 
+<div className="bg-[#132a44] rounded-2xl p-8 mt-12">
+  <h2 className="text-xl font-semibold mb-6">
+    Advertentie omzet per club
+  </h2>
+
+  <table className="w-full text-sm">
+    <thead className="bg-[#0d1b2a] text-white">
+      <tr>
+        <th className="px-4 py-3 text-left">Club</th>
+<th className="px-4 py-3 text-right">Omzet</th>
+<th className="px-4 py-3 text-right">Club aandeel</th>
+<th className="px-4 py-3 text-right">Sponsuls aandeel</th>
+      </tr>
+    </thead>
+
+    <tbody>
+      {(
+  Object.entries(adRevenueByClub) as [
+    string,
+    {
+      revenue: number;
+      clubAmount: number;
+      platformAmount: number;
+    }
+  ][]
+)
+  .sort(
+    ([, a], [, b]) =>
+      b.revenue - a.revenue
+  )
+  .map(([club, values]) => (
+          <tr
+  key={club}
+  className="border-t border-slate-600"
+>
+            <td className="px-4 py-3">{club}</td>
+
+<td className="px-4 py-3 text-right">
+  € {values.revenue.toLocaleString("nl-NL")}
+</td>
+
+<td className="px-4 py-3 text-right text-green-400">
+  € {values.clubAmount.toLocaleString("nl-NL")}
+</td>
+
+<td className="px-4 py-3 text-right text-blue-400">
+  € {values.platformAmount.toLocaleString("nl-NL")}
+</td>
+          </tr>
+        ))}
+    </tbody>
+  </table>
+</div>
+
       </div>
     </main>
   );
@@ -341,14 +482,14 @@ function Kpi({
   value: string | number;
 }) {
   return (
-    <div className="bg-[#132a44] rounded-2xl p-6 text-center">
-      <div className="text-2xl font-semibold mb-2">
+    <div className="bg-[#132a44] rounded-2xl p-6 h-full flex flex-col justify-center">
+      <div className="text-2xl font-semibold break-words">
         {value}
       </div>
-      <div className="text-sm text-gray-400 uppercase">
+
+      <div className="text-sm text-gray-400 mt-2">
         {label}
       </div>
     </div>
   );
 }
-
