@@ -44,7 +44,7 @@ export default function Footer() {
       </div>
 
       <div>
-        © {new Date().getFullYear()} SponsorJobs
+        © {new Date().getFullYear()} Sponsorjobs
       </div>
     </footer>
   );

@@ -204,6 +204,11 @@ export default function SignupPage() {
               : "Start gratis (2 maanden)"}
           </button>
 
+          <p className="mt-3 text-center text-xs text-white/60">
+  Let op: ontvang je geen activatiecode? Controleer dan ook je
+  ongewenste e-mail of spamfolder.
+</p>
+
           {/* STATUS */}
           {status && (
             <p className="text-sm text-center text-gray-600">
