@@ -316,14 +316,6 @@ export default function SubscriptionsTable() {
         {STATUS_LABELS[computedStatus]}
       </span>
 
-      {c.billing_override && (
-        <div className="mt-1">
-          <span className="px-2 py-1 rounded text-xs font-medium bg-purple-100 text-purple-800">
-            🟣 Override actief
-          </span>
-        </div>
-      )}
-
       {computedStatus === "pending_payment" && (
         <div className="text-xs text-gray-500 mt-1">
           Upgrade toegekend, betaling nog niet voldaan
