@@ -18,7 +18,7 @@ export default function AdminRevenuePage() {
     <div className="space-y-6">
 
       <h1 className="text-xl font-semibold">
-        Revenue management
+        Abonnementen
       </h1>
 
       <div className="flex gap-4">
@@ -27,14 +27,14 @@ export default function AdminRevenuePage() {
           onClick={() => setTab("subscriptions")}
           className="px-4 py-2 border rounded"
         >
-          Subscriptions
+          Abonnementen
         </button>
 
         <button
           onClick={() => setTab("upgrades")}
           className="px-4 py-2 border rounded"
         >
-          Upgrade requests
+          Upgrade aanvragen
         </button>
 
         <button
@@ -43,7 +43,7 @@ export default function AdminRevenuePage() {
   }
   className="px-4 py-2 border rounded"
 >
-  Advertisements
+  Advertenties
 </button>
 
       </div>

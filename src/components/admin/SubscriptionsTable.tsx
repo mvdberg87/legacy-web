@@ -123,25 +123,25 @@ export default function SubscriptionsTable() {
     load();
   }
 
-  async function extendSubscription(clubId: string) {
-    if (!confirm("Abonnement met 1 jaar verlengen?")) return;
-    await fetch("/api/admin/subscriptions/extend", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ clubId }),
-    });
-    load();
-  }
+  async function blockClub(clubId: string) {
+  if (!confirm("Club blokkeren?")) return;
 
-  async function cancelSubscription(clubId: string) {
-    if (!confirm("Abonnement opzeggen?")) return;
-    await fetch("/api/admin/subscriptions/cancel", {
+  await fetch(
+    "/api/admin/subscriptions/block",
+    {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ clubId }),
-    });
-    load();
-  }
+      headers: {
+        "Content-Type":
+          "application/json",
+      },
+      body: JSON.stringify({
+        clubId,
+      }),
+    }
+  );
+
+  load();
+}
 
   async function adminOverrideActivate(clubId: string) {
     if (
@@ -301,46 +301,44 @@ export default function SubscriptionsTable() {
                         : "—"}
                     </td>
 
-                    <td className="px-3 py-3 text-center space-x-2">
-                      {computedStatus === "blocked" ? (
-                        <button
-                          onClick={() => unblockClub(c.id)}
-                          className="px-3 py-1 text-sm rounded bg-green-600 text-white"
-                        >
-                          🔓 Deblokkeren
-                        </button>
-                      ) : computedStatus ===
-                        "pending_payment" ? (
-                        <button
-                          onClick={() =>
-                            adminOverrideActivate(c.id)
-                          }
-                          className="px-3 py-1 text-sm rounded bg-orange-600 text-white"
-                        >
-                          ⚡ Activeer zonder betaling
-                        </button>
-                      ) : (
-                        <>
-                          <button
-                            onClick={() =>
-                              extendSubscription(c.id)
-                            }
-                            className="px-3 py-1 text-sm rounded bg-blue-600 text-white"
-                          >
-                            🔁 Verlengen
-                          </button>
+                   <td className="px-3 py-3 text-center space-x-2">
 
-                          <button
-                            onClick={() =>
-                              cancelSubscription(c.id)
-                            }
-                            className="px-3 py-1 text-sm rounded bg-red-600 text-white"
-                          >
-                            ⛔ Opzeggen
-                          </button>
-                        </>
-                      )}
-                    </td>
+  {computedStatus === "blocked" ? (
+
+    <button
+      onClick={() =>
+        unblockClub(c.id)
+      }
+      className="px-3 py-1 text-sm rounded bg-green-600 text-white"
+    >
+      🔓 Deblokkeren
+    </button>
+
+  ) : computedStatus === "pending_payment" ? (
+
+    <button
+      onClick={() =>
+        adminOverrideActivate(c.id)
+      }
+      className="px-3 py-1 text-sm rounded bg-orange-600 text-white"
+    >
+      ⚡ Activeer zonder betaling
+    </button>
+
+  ) : (
+
+    <button
+      onClick={() =>
+        blockClub(c.id)
+      }
+      className="px-3 py-1 text-sm rounded bg-red-600 text-white"
+    >
+      🔒 Blokkeren
+    </button>
+
+  )}
+
+</td>
                   </tr>
 
                   {openClubId === c.id && (

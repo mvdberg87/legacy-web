@@ -19,12 +19,12 @@ export default function AdminNavbar() {
      Navigatie
      =============================== */
   const links = [
-  { label: "🏠 Dashboard", path: "/admin/dashboard" },
-  { label: "📥 Clubaanvragen", path: "/admin/club-aanvragen" },
-  { label: "📢 Advertenties", path: "/admin/advertisements" },
-  { label: "👥 Profielen", path: "/admin/profiles" },
-  { label: "💰 Revenue", path: "/admin/revenue" },
-  { label: "📊 Analytics", path: "/admin/analytics" },
+  { label: "Dashboard", path: "/admin/dashboard" },
+  { label: "Clubaanvragen", path: "/admin/club-aanvragen" },
+  { label: "Advertenties", path: "/admin/advertisements" },
+  { label: "Profielen", path: "/admin/profiles" },
+  { label: "Abonnementen", path: "/admin/revenue" },
+  { label: "Analytics", path: "/admin/analytics" },
 ];
 
   /* ===============================
@@ -103,7 +103,7 @@ export default function AdminNavbar() {
             onClick={handleLogout}
             className="px-4 py-2 text-sm rounded-full border font-medium text-red-600 hover:bg-red-50 border-red-300 transition-all"
           >
-            🚪 Uitloggen
+            Uitloggen
           </button>
         </nav>
 
@@ -158,7 +158,7 @@ export default function AdminNavbar() {
               onClick={handleLogout}
               className="w-full text-left px-4 py-2 rounded-lg border font-medium hover:bg-red-50 border-red-300 text-red-600"
             >
-              🚪 Uitloggen
+              Uitloggen
             </motion.button>
           </motion.div>
         )}
