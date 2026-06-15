@@ -58,12 +58,11 @@ export async function POST(req: Request) {
   await supabaseAdmin
     .from("clubs")
     .update({
-      billing_override: true,
-      has_paid_subscription: false,
-      subscription_status: "active",
-      subscription_start: startDate,
-      subscription_end: endDate,
-    })
+  billing_override: true,
+  subscription_status: null,
+  subscription_start: startDate,
+  subscription_end: endDate,
+})
     .eq("id", clubId);
 
     if (updateError) {

@@ -14,9 +14,8 @@ export async function POST(req: Request) {
   await supabaseAdmin
     .from("clubs")
     .update({
-      subscription_status: "active",
-      subscription_cancelled_at: null,
-    })
+  subscription_status: null,
+})
     .eq("id", clubId);
 
   return NextResponse.json({ success: true });

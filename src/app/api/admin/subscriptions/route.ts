@@ -4,17 +4,17 @@ import { supabaseAdmin } from "@/lib/supabaseAdmin";
 export async function GET() {
   const { data, error } = await supabaseAdmin
     .from("clubs")
-    .select(
-      `
-      id,
-      name,
-      email,
-      active_package,
-      subscription_status,
-      subscription_start,
-      subscription_end
-    `
-    )
+    .select(`
+  id,
+  name,
+  email,
+  active_package,
+  subscription_status,
+  subscription_start,
+  subscription_end,
+  has_paid_subscription,
+  billing_override
+`)
     .in("subscription_status", [
       "trial",
       "blocked",
