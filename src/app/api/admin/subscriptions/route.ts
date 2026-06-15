@@ -15,20 +15,21 @@ export async function GET() {
   has_paid_subscription,
   billing_override
 `)
-    .in("subscription_status", [
-      "trial",
-      "blocked",
-      "expired",
-      "cancelled",
-    ])
     .order("subscription_end", { ascending: true });
 
   if (error) {
-    return NextResponse.json(
-      { error: "Database error" },
-      { status: 500 }
-    );
-  }
+  console.error(error);
+
+  return NextResponse.json(
+    {
+      error: error.message,
+      code: error.code,
+      details: error.details,
+      hint: error.hint,
+    },
+    { status: 500 }
+  );
+}
 
   return NextResponse.json({ clubs: data });
 }
