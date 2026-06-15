@@ -311,7 +311,7 @@ export default function AdminSponsorsPage() {
                 />
               </div>
 
-              <div className="grid grid-cols-2 gap-3">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                 <div>
                   <label className="text-sm block mb-1">
                     Website
@@ -358,7 +358,7 @@ export default function AdminSponsorsPage() {
               <h3 className="font-medium mb-2">
                 Bestaande sponsor koppelen
               </h3>
-              <div className="flex gap-2">
+              <div className="flex flex-col sm:flex-row gap-2">
                 <input
                   value={searchTerm}
                   onChange={(e) =>

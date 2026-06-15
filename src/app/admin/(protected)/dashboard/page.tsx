@@ -250,9 +250,9 @@ const leaderboard = [...clubs]
   <div className="space-y-2">
     {leaderboard.map((club, index) => (
       <div
-        key={club.id}
-        className="flex justify-between text-sm"
-      >
+  key={club.id}
+  className="flex justify-between gap-2 text-sm"
+>
         <span>
           {index === 0 && "🥇 "}
           {index === 1 && "🥈 "}
@@ -270,7 +270,7 @@ const leaderboard = [...clubs]
 </div>
 
       <div className="overflow-x-auto">
-  <table className="min-w-[1400px] text-sm">
+  <table className="w-full text-sm">
         <thead className="bg-[#0d1b2a] text-white text-xs uppercase">
   <tr>
 <th className="px-4 py-3 text-left">Club</th>

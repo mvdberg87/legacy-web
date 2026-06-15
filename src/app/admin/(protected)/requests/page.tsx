@@ -173,7 +173,7 @@ export default function AdminRequestsPage() {
               placeholder="Zoeken op club of e-mail"
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              className="border rounded-lg px-3 py-2 text-sm w-52"
+              className="border rounded-lg px-3 py-2 text-sm w-full sm:w-52"
             />
 
             <select
@@ -242,7 +242,7 @@ export default function AdminRequestsPage() {
                     <td className="px-4 py-3">
                       <a
                         href={`mailto:${req.contact_email}`}
-                        className="text-blue-600 hover:underline"
+                        className="text-blue-600 hover:underline break-all"
                       >
                         {req.contact_email}
                       </a>

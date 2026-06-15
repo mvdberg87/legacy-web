@@ -169,7 +169,7 @@ export default function InsightsPage() {
     <div className="space-y-8">
       <div className="bg-white text-black rounded-2xl shadow p-6">
         {/* Header */}
-        <div className="flex items-center justify-between mb-6">
+        <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between mb-6">
           <div>
             <h1 className="text-xl font-semibold">
               Insights
@@ -181,7 +181,7 @@ export default function InsightsPage() {
             </p>
           </div>
 
-          <div className="flex items-center gap-2">
+          <div className="flex flex-col sm:flex-row sm:items-center gap-2">
             <select
               value={range}
               onChange={(e) =>

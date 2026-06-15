@@ -154,7 +154,7 @@ if (!res.ok) {
             />
           </div>
 
-          <div className="flex justify-between items-center pt-4">
+          <div className="flex flex-col gap-3 sm:flex-row sm:justify-between sm:items-center pt-4">
 
             <button
               type="button"

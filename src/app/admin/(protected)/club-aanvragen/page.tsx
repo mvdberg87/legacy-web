@@ -148,14 +148,16 @@ function ClubSignupRequestsPanel() {
                 <td className="px-3 py-2 font-medium">
                   {r.club_name}
                 </td>
-                <td className="px-3 py-2">{r.email}</td>
+                <td className="px-3 py-2 break-all">
+  {r.email}
+</td>
                 <td className="px-3 py-2 text-center text-xs">
                   {new Date(
                     r.created_at
                   ).toLocaleDateString("nl-NL")}
                 </td>
                 <td className="px-3 py-2 text-center">
-  <div className="flex justify-center gap-2">
+  <div className="flex flex-wrap justify-center gap-2">
 
     <button
       onClick={() => approve(r.id)}

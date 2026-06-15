@@ -286,7 +286,7 @@ const totalPlatformRevenue =
   mrr + totalSponsulsShare;
 
   return (
-    <main className="min-h-screen bg-[#0d1b2a] text-white p-8">
+    <main className="min-h-screen bg-[#0d1b2a] text-white p-4 md:p-8">
       <div className="max-w-7xl mx-auto">
 
         <h1 className="text-3xl font-semibold mb-10">
@@ -305,7 +305,7 @@ const totalPlatformRevenue =
           <Kpi label="Opgezegd (loopt nog)" value={pendingCancellation} />
         </div>
 
-        <div className="grid grid-cols-2 md:grid-cols-5 gap-6 mb-12">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-6 mb-12">
   <Kpi
     label="Advertentie omzet"
     value={`€${totalAdRevenue}`}
@@ -420,6 +420,7 @@ const totalPlatformRevenue =
     Advertentie omzet per club
   </h2>
 
+<div className="overflow-x-auto">
   <table className="w-full text-sm">
     <thead className="bg-[#0d1b2a] text-white">
       <tr>
@@ -450,7 +451,9 @@ const totalPlatformRevenue =
   key={club}
   className="border-t border-slate-600"
 >
-            <td className="px-4 py-3">{club}</td>
+            <td className="px-4 py-3 break-words">
+  {club}
+</td>
 
 <td className="px-4 py-3 text-right">
   € {values.revenue.toLocaleString("nl-NL")}
@@ -467,6 +470,7 @@ const totalPlatformRevenue =
         ))}
     </tbody>
   </table>
+</div>
 </div>
 
       </div>

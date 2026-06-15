@@ -488,7 +488,7 @@ return ad.status === filter;
 
 </div>
 
-<div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 xl:grid-cols-9 gap-4 mb-6">
+<div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-4 mb-6">
 
   <div className="border rounded p-4">
     <div className="text-2xl font-bold">
@@ -586,7 +586,7 @@ a.status !== "archived"
 
       <div className="overflow-x-auto">
 
-        <table className="min-w-[1400px] text-sm">
+        <table className="min-w-[1000px] text-sm">
 
           <thead className="bg-[#0d1b2a] text-white text-xs uppercase">
 
@@ -725,7 +725,7 @@ a.status !== "archived"
 
   {ad.status === "pending_activation" && (
 
-    <div className="flex justify-center gap-2">
+    <div className="flex flex-wrap justify-center gap-2">
 
   <button
     onClick={() =>
