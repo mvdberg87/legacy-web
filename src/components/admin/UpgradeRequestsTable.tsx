@@ -207,7 +207,7 @@ export default function UpgradeRequestsTable() {
 
                       <td className="px-4 py-3">
                         {r.status === "pending" && (
-                          <div className="flex gap-4">
+                          <div className="flex flex-wrap gap-4">
                             <button
                               disabled={actionId === r.id}
                               onClick={() => approve(r)}

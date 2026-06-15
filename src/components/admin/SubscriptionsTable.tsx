@@ -242,12 +242,12 @@ export default function SubscriptionsTable() {
     <div className="space-y-8">
       <div className="bg-white text-black rounded-2xl shadow p-6">
         {/* Header */}
-        <div className="flex items-center justify-between mb-6">
+        <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between mb-6">
           <h1 className="text-xl font-semibold">
             Abonnementen & proefperiodes
           </h1>
 
-          <div className="flex items-center gap-3">
+          <div className="flex flex-col sm:flex-row sm:items-center gap-3">
             <label className="text-sm font-medium">
               Filter op status:
             </label>
@@ -317,7 +317,7 @@ export default function SubscriptionsTable() {
       </span>
 
       {computedStatus === "pending_payment" && (
-        <div className="text-xs text-gray-500 mt-1">
+        <div className="text-xs text-gray-500 mt-1 break-words max-w-[180px] mx-auto">
           Upgrade toegekend, betaling nog niet voldaan
         </div>
       )}
@@ -356,7 +356,8 @@ export default function SubscriptionsTable() {
                         : "—"}
                     </td>
 
-                   <td className="px-3 py-3 text-center space-x-2">
+                   <td className="px-3 py-3 text-center">
+  <div className="flex flex-wrap justify-center gap-2">
 
   {computedStatus === "blocked" ? (
 
@@ -393,6 +394,8 @@ export default function SubscriptionsTable() {
 
   )}
 
+  </div>
+
 </td>
                   </tr>
 
@@ -404,7 +407,8 @@ export default function SubscriptionsTable() {
                             Geschiedenis laden…
                           </p>
                         ) : (
-                          <table className="w-full text-xs border">
+                          <div className="overflow-x-auto">
+  <table className="w-full text-xs border">
                             <thead className="bg-gray-200">
                               <tr>
                                 <th className="px-2 py-1">
@@ -463,6 +467,7 @@ export default function SubscriptionsTable() {
                               ))}
                             </tbody>
                           </table>
+                          </div>
                         )}
                       </td>
                     </tr>
@@ -474,5 +479,6 @@ export default function SubscriptionsTable() {
         </div>
       </div>
     </div>
+    
   );
 }

@@ -307,7 +307,7 @@ async function toggleManagedAds(
     <div className="space-y-8">
       <div className="bg-white text-black rounded-2xl shadow p-6">
         {/* Header */}
-        <div className="flex items-center justify-between mb-6">
+        <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between mb-6">
           <h1 className="text-xl font-semibold">
             Profielbeheer
           </h1>
@@ -347,7 +347,7 @@ async function toggleManagedAds(
             placeholder="Zoek op e-mail, club of rol"
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            className="border rounded-lg px-3 py-2 text-sm w-72"
+            className="border rounded-lg px-3 py-2 text-sm w-full md:w-72"
           />
         </div>
 
@@ -405,7 +405,7 @@ async function toggleManagedAds(
                     >
                       <td className="px-3 py-3">
   {club ? (
-    <div className="flex flex-col">
+    <div className="flex flex-col break-words">
       <Link
         href={`/admin/clubs/${club.slug}`}
         prefetch={false}
@@ -439,7 +439,7 @@ async function toggleManagedAds(
   )}
 </td>
 
-<td className="px-3 py-3">
+<td className="px-3 py-3 max-w-[200px] break-all">
   {p.email}
 </td>
 
@@ -504,7 +504,7 @@ async function toggleManagedAds(
 
                       <td className="px-3 py-3 text-center">
                         {club && (
-                          <div className="flex justify-center gap-2">
+                          <div className="flex flex-wrap justify-center gap-2">
 
   {club.status === "pending" && (
     <>

@@ -21,7 +21,7 @@ export default function AdminRevenuePage() {
         Abonnementen
       </h1>
 
-      <div className="flex gap-4">
+      <div className="flex flex-col sm:flex-row gap-2">
 
         <button
           onClick={() => setTab("subscriptions")}

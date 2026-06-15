@@ -25,7 +25,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="nl" suppressHydrationWarning>
-      <body className="antialiased flex flex-col min-h-screen">
+      <body className="antialiased flex flex-col min-h-screen overflow-x-hidden">
 
         <LayoutWrapper>
           {children}

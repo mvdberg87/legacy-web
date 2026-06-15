@@ -99,7 +99,7 @@ const clubRevenueEntries =
   return (
     <div className="space-y-6">
 
-      <div className="grid grid-cols-3 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
 
         <div className="border rounded-xl p-4">
           <div className="text-2xl font-semibold">
@@ -131,7 +131,8 @@ const clubRevenueEntries =
       </div>
 
       <div className="border rounded-xl overflow-hidden">
-  <table className="w-full text-sm">
+  <div className="overflow-x-auto">
+    <table className="w-full text-sm">
     <thead className="bg-[#0d1b2a] text-white">
       <tr>
         <th className="px-4 py-3 text-left">
@@ -202,6 +203,7 @@ const clubRevenueEntries =
   </table>
 </div>
 
+    </div>
     </div>
   );
 }
