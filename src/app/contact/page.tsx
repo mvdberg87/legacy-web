@@ -40,10 +40,17 @@ export default function ContactPage() {
     return (
       <main className="min-h-screen bg-[#0d1b2a] flex items-center justify-center text-white px-6">
         <div className="bg-[#0f2233] p-12 rounded-2xl text-center max-w-lg">
-          <h1 className="text-3xl font-bold">Aanvraag ontvangen</h1>
-          <p className="mt-4 opacity-80">
-            We nemen zo spoedig mogelijk contact met jullie op.
-          </p>
+          <h1 className="text-3xl font-bold">
+  Bedankt voor jullie aanvraag!
+</h1>
+
+<p className="mt-4 opacity-80">
+  We hebben een bevestiging gestuurd naar het opgegeven e-mailadres.
+</p>
+
+<p className="mt-2 opacity-80">
+  Binnen 3 werkdagen nemen wij contact met jullie op.
+</p>
         </div>
       </main>
     );
@@ -66,10 +73,6 @@ export default function ContactPage() {
     ? "Vul onderstaande gegevens in en wij nemen contact met jullie op."
     : "Benieuwd hoe Sponsorjobs werkt? Plan vrijblijvend een demo en ontdek hoe jouw vereniging extra sponsorwaarde kan creëren."}
 </p>
-
-          <p className="mt-4 text-center opacity-70 text-sm">
-            Vul onderstaande gegevens in en wij nemen contact met jullie op.
-          </p>
 
           <form onSubmit={handleSubmit} className="mt-10 space-y-6">
 

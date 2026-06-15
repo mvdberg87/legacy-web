@@ -237,11 +237,13 @@ Sponsorjobs helpt sportverenigingen om vacatures van sponsoren zichtbaar te make
     </Link>
 
     <Link
-      href="/contact"
-      className="border border-white px-8 py-4 rounded-2xl font-semibold hover:bg-white hover:text-[#0d1b2a] transition"
-    >
-      Plan een demo
-    </Link>
+  href="/contact"
+  target="_blank"
+  rel="noopener noreferrer"
+  className="border border-white px-8 py-4 rounded-2xl font-semibold hover:bg-white hover:text-[#0d1b2a] transition"
+>
+  Plan een demo
+</Link>
 
   </div>
 </section>

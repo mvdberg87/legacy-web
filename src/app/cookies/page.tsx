@@ -4,7 +4,7 @@ export default function CookiesPage() {
       <h1 className="text-3xl font-bold">Cookiebeleid</h1>
 
       <p className="mt-6">
-        SponsorJobs gebruikt cookies om het platform goed te laten werken en
+        Sponsorjobs gebruikt cookies om het platform goed te laten werken en
         inzicht te krijgen in het gebruik van de website.
       </p>
 

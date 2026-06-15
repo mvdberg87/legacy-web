@@ -2,7 +2,7 @@ export default function TermsPage() {
   return (
     <main className="max-w-3xl mx-auto py-16 px-6 space-y-6">
       <h1 className="text-3xl font-bold">
-        Platformvoorwaarden – SponsorJobs
+        Platformvoorwaarden – Sponsorjobs
       </h1>
 
       <p className="text-sm text-gray-500">
@@ -10,15 +10,15 @@ export default function TermsPage() {
       </p>
 
       <p>
-        Door gebruik te maken van het platform SponsorJobs ga je akkoord met
+        Door gebruik te maken van het platform Sponsorjobs ga je akkoord met
         deze platformvoorwaarden. Wanneer een organisatie een abonnement
         afsluit via Stripe, geldt dit automatisch als acceptatie van deze
         voorwaarden.
       </p>
 
-      <h2 className="text-xl font-semibold">1. Over SponsorJobs</h2>
+      <h2 className="text-xl font-semibold">1. Over Sponsorjobs</h2>
       <p>
-        SponsorJobs is een online platform dat sportverenigingen, sponsoren en
+        Sponsorjobs is een online platform dat sportverenigingen, sponsoren en
         werkzoekenden met elkaar verbindt via vacatures en netwerkrelaties.
       </p>
 
@@ -32,7 +32,7 @@ export default function TermsPage() {
       <h2 className="text-xl font-semibold">2. Doel van het platform</h2>
 
       <p>
-        SponsorJobs biedt sportverenigingen de mogelijkheid om vacatures van
+        Sponsorjobs biedt sportverenigingen de mogelijkheid om vacatures van
         sponsoren en partnerbedrijven zichtbaar te maken binnen hun netwerk.
       </p>
 
@@ -43,14 +43,14 @@ export default function TermsPage() {
       </ul>
 
       <p>
-        SponsorJobs fungeert uitsluitend als technisch platform en is geen
+        Sponsorjobs fungeert uitsluitend als technisch platform en is geen
         werkgever, recruiter of bemiddelingsbureau.
       </p>
 
       <h2 className="text-xl font-semibold">3. Vacature disclaimer</h2>
 
       <p>
-        SponsorJobs faciliteert vacatures maar is geen partij in
+        Sponsorjobs faciliteert vacatures maar is geen partij in
         arbeidscontracten tussen werkgevers en kandidaten.
       </p>
 
@@ -85,7 +85,7 @@ export default function TermsPage() {
       </p>
 
       <p>
-        SponsorJobs behoudt zich het recht voor accounts te blokkeren of te
+        Sponsorjobs behoudt zich het recht voor accounts te blokkeren of te
         verwijderen wanneer misbruik wordt vastgesteld.
       </p>
 
@@ -104,14 +104,14 @@ export default function TermsPage() {
       </ul>
 
       <p>
-        SponsorJobs kan content verwijderen wanneer deze onjuist, misleidend of
+        Sponsorjobs kan content verwijderen wanneer deze onjuist, misleidend of
         in strijd met wet- en regelgeving is.
       </p>
 
       <h2 className="text-xl font-semibold">6. Abonnementen</h2>
 
       <p>
-        SponsorJobs werkt met abonnementen voor verenigingen, waaronder
+        Sponsorjobs werkt met abonnementen voor verenigingen, waaronder
         bijvoorbeeld:
       </p>
 
@@ -142,7 +142,7 @@ export default function TermsPage() {
       <h2 className="text-xl font-semibold">8. Beschikbaarheid van het platform</h2>
 
       <p>
-        SponsorJobs streeft naar een stabiel en betrouwbaar platform, maar kan
+        Sponsorjobs streeft naar een stabiel en betrouwbaar platform, maar kan
         geen ononderbroken beschikbaarheid garanderen.
       </p>
 
@@ -171,7 +171,7 @@ export default function TermsPage() {
       <h2 className="text-xl font-semibold">11. Beëindiging van accounts</h2>
 
       <p>
-        SponsorJobs kan accounts beëindigen bij misbruik van het platform of
+        Sponsorjobs kan accounts beëindigen bij misbruik van het platform of
         bij het uitblijven van betalingen.
       </p>
 
@@ -179,7 +179,7 @@ export default function TermsPage() {
 
       <p>
         Alle rechten met betrekking tot het platform, de software en het
-        ontwerp van SponsorJobs blijven eigendom van Sponsuls.
+        ontwerp van Sponsorjobs blijven eigendom van Sponsuls.
       </p>
 
       <p>
@@ -190,7 +190,7 @@ export default function TermsPage() {
       <h2 className="text-xl font-semibold">13. Aansprakelijkheid</h2>
 
       <p>
-        SponsorJobs is niet aansprakelijk voor arbeidsrelaties tussen
+        Sponsorjobs is niet aansprakelijk voor arbeidsrelaties tussen
         werkgevers en kandidaten of voor de inhoud van geplaatste vacatures.
       </p>
 
@@ -201,14 +201,14 @@ export default function TermsPage() {
       <h2 className="text-xl font-semibold">14. Privacy</h2>
 
       <p>
-        SponsorJobs verwerkt persoonsgegevens volgens de privacyverklaring die
+        Sponsorjobs verwerkt persoonsgegevens volgens de privacyverklaring die
         op de website beschikbaar is.
       </p>
 
       <h2 className="text-xl font-semibold">15. Wijzigingen van voorwaarden</h2>
 
       <p>
-        SponsorJobs kan deze voorwaarden aanpassen wanneer wetgeving of het
+        Sponsorjobs kan deze voorwaarden aanpassen wanneer wetgeving of het
         platform verandert. De meest recente versie is altijd beschikbaar op de
         website.
       </p>
@@ -220,7 +220,7 @@ export default function TermsPage() {
       </p>
 
       <p className="pt-10 text-sm text-gray-500">
-        © 2026 SponsorJobs – een initiatief van Sponsuls
+        © 2026 Sponsorjobs – een initiatief van Sponsuls
       </p>
     </main>
   );

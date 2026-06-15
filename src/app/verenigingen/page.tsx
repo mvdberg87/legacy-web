@@ -69,7 +69,7 @@ export default function VerenigingenPage() {
 
     <div>
       <h2 className="text-2xl font-bold">
-        SponsorJobs verbindt die werelden.
+        Sponsorjobs verbindt die werelden.
       </h2>
 
       <p className="mt-4 text-gray-600">
@@ -86,7 +86,7 @@ export default function VerenigingenPage() {
         <div className="max-w-5xl mx-auto px-6 text-center">
 
           <h2 className="text-3xl font-bold">
-            Hoe werkt SponsorJobs?
+            Hoe werkt Sponsorjobs?
           </h2>
 
           <p className="mt-6 opacity-70">
