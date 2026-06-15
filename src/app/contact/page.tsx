@@ -56,8 +56,16 @@ export default function ContactPage() {
         <div className="bg-[#0f2233] rounded-2xl p-10 shadow-xl">
 
           <h1 className="text-3xl font-bold text-center">
-            Aanvraag {pakket.toUpperCase()}
-          </h1>
+  {pakket
+    ? `Aanvraag ${pakket.toUpperCase()}`
+    : "Plan een demo"}
+</h1>
+
+<p className="mt-4 text-center opacity-70 text-sm">
+  {pakket
+    ? "Vul onderstaande gegevens in en wij nemen contact met jullie op."
+    : "Benieuwd hoe Sponsorjobs werkt? Plan vrijblijvend een demo en ontdek hoe jouw vereniging extra sponsorwaarde kan creëren."}
+</p>
 
           <p className="mt-4 text-center opacity-70 text-sm">
             Vul onderstaande gegevens in en wij nemen contact met jullie op.

@@ -10,7 +10,7 @@ export default function HomePage() {
       {/* HERO */}
       <section className="max-w-6xl mx-auto px-6 pt-32 md:pt-40 pb-24 text-center">
         <h1 className="text-4xl md:text-5xl font-bold leading-tight">
-  Recruitment via sportclubs.
+  Maak van sponsoring een recruitmentkanaal.
   <br />
   <span className="text-[#1f9d55]">
     Extra waarde voor sponsors.
@@ -18,9 +18,9 @@ export default function HomePage() {
 </h1>
 
 <p>
-Sponsorjobs helpt sportverenigingen om recruitment onderdeel te maken
-van hun sponsorpropositie. Clubs plaatsen vacatures van sponsors,
-die zichtbaar worden binnen het clubnetwerk en via de clubkanalen.
+Help sponsors aan personeel en geef je vereniging een onderscheidende sponsorpropositie.
+
+Sponsorjobs helpt sportverenigingen om vacatures van sponsoren zichtbaar te maken binnen hun eigen netwerk. Zo creëer je extra sponsorwaarde, versterk je sponsorrelaties en genereer je nieuwe commerciële kansen.
 </p>
 
 
@@ -41,7 +41,7 @@ die zichtbaar worden binnen het clubnetwerk en via de clubkanalen.
   className="border border-white px-6 py-3 rounded-xl font-semibold 
            hover:bg-white hover:text-[#0d1b2a] transition duration-200"
 >
-  Meld je club aan
+  Start gratis met je club
 </Link>
         </div>
       </section>
@@ -53,21 +53,19 @@ die zichtbaar worden binnen het clubnetwerk en via de clubkanalen.
 
           <div>
             <h2 className="text-2xl font-bold">
-              Sponsoring levert vaak alleen zichtbaarheid op.
+              Sponsors hebben personeel nodig.
             </h2>
             <p className="mt-4 opacity-70">
-              Bedrijven zoeken personeel. Clubs zoeken duurzame sponsoring.
-              Toch blijven beide werelden los van elkaar.
+              Arbeidsmarktkrapte raakt vrijwel iedere branche. Veel sponsoren zijn continu op zoek naar nieuwe medewerkers, maar traditionele vacatures leveren steeds minder resultaat op.
             </p>
           </div>
 
           <div>
             <h2 className="text-2xl font-bold text-[#0d1b2a]">
-              Sponsorjobs verbindt die werelden.
+              Verenigingen hebben een uniek netwerk.
             </h2>
             <p className="mt-4 opacity-70">
-              Vacatures van sponsors worden zichtbaar binnen het clubnetwerk.
-              Zo wordt sponsoring een recruitmentkanaal.
+              Leden, ouders, vrijwilligers, supporters en zakelijke relaties vormen samen een krachtig lokaal netwerk. Sponsorjobs maakt dit netwerk toegankelijk voor sponsoren en verandert sponsoring in een concrete business-oplossing.
             </p>
           </div>
 
@@ -99,7 +97,7 @@ die zichtbaar worden binnen het clubnetwerk en via de clubkanalen.
       <div>
         <div className="text-4xl font-bold text-[#1f9d55]">02</div>
         <h3 className="mt-4 font-semibold text-lg">
-          Vacature zichtbaar op clubwebsite
+          Vacaturepagina gekoppeld aan de clubwebsite
         </h3>
         <p className="mt-2 opacity-80 text-sm">
           Iedere club heeft een eigen vacaturepagina
@@ -110,11 +108,10 @@ die zichtbaar worden binnen het clubnetwerk en via de clubkanalen.
       <div>
         <div className="text-4xl font-bold text-[#1f9d55]">03</div>
         <h3 className="mt-4 font-semibold text-lg">
-          Extra activatie via social media
+          Club activeert het netwerk
         </h3>
         <p className="mt-2 opacity-80 text-sm">
-          Vacatures kunnen versterkt worden via
-          LinkedIn en Instagram van de club.
+          Website, social media, nieuwsbrief en narrowcasting
         </p>
       </div>
 
@@ -138,7 +135,7 @@ die zichtbaar worden binnen het clubnetwerk en via de clubkanalen.
   <div className="max-w-6xl mx-auto px-6 text-center">
 
     <h2 className="text-3xl font-bold">
-      Wat levert dit verenigingen op?
+      Van reclamebord naar business-oplossing
     </h2>
 
     <p className="mt-6 max-w-3xl mx-auto opacity-70">
@@ -151,41 +148,35 @@ die zichtbaar worden binnen het clubnetwerk en via de clubkanalen.
 
       <div className="bg-slate-50 p-8 rounded-2xl">
         <h3 className="font-semibold text-lg">
-          Vacature als sponsoractivatie
+          Recruitmentactivatie
         </h3>
         <p className="mt-3 text-sm opacity-70">
-          Sponsors krijgen de mogelijkheid om een vacature
-          via de club te publiceren op de clubpagina.
+          Vacatures als onderdeel van een sponsorpakket
         </p>
       </div>
 
       <div className="bg-slate-50 p-8 rounded-2xl">
         <h3 className="font-semibold text-lg">
-          Highlight als advertentie
+          Employer branding
         </h3>
         <p className="mt-3 text-sm opacity-70">
-          Clubs kunnen vacatures extra zichtbaar maken
-          door deze uit te lichten als advertentie.
-          Dit kan als premium optie binnen het sponsorcontract.
+          Laat sponsoren zichtbaar zijn als aantrekkelijke werkgever
         </p>
       </div>
 
       <div className="bg-slate-50 p-8 rounded-2xl">
         <h3 className="font-semibold text-lg">
-          Extra social activatie
+          Extra activaties
         </h3>
         <p className="mt-3 text-sm opacity-70">
-          Vacatures kunnen aanvullend gepromoot worden via
-          LinkedIn en Instagram van de club.
-          Zo ontstaat een extra inkomstenstroom.
+          Social media, narrowcasting en uitgelichte vacatures
         </p>
       </div>
 
     </div>
 
     <p className="mt-16 max-w-2xl mx-auto font-medium">
-      Zo wordt sponsoring niet alleen zichtbaar,
-      maar ook meetbaar en commercieel aantrekkelijk.
+      Sponsorjobs helpt verenigingen om sponsoring te verschuiven van zichtbaarheid naar aantoonbare impact.
     </p>
 
   </div>
@@ -200,22 +191,24 @@ die zichtbaar worden binnen het clubnetwerk en via de clubkanalen.
               Voor bedrijven
             </h3>
             <ul className="mt-6 space-y-3 text-sm opacity-80">
-              <li>✓ Bereik betrokken doelgroepen</li>
-              <li>✓ Recruitment via lokale community</li>
-              <li>✓ Meetbare sponsoractivatie</li>
+              <li>✓ Bereik lokaal talent</li>
               <li>✓ Versterk werkgeversmerk</li>
+              <li>✓ Recruitment via vertrouwde communities</li>
+              <li>✓ Meer rendement uit sponsoring</li>
+              <li>✓ Meetbare resultaten</li>
             </ul>
           </div>
 
           <div className="bg-white p-8 rounded-2xl shadow">
             <h3 className="text-xl font-bold">
-              Voor sportclubs
+              Voor sportverenigingen
             </h3>
             <ul className="mt-6 space-y-3 text-sm opacity-80">
-              <li>✓ Extra sponsorwaarde</li>
-              <li>✓ Verhoog retentie van sponsoren</li>
+              <li>✓ Meer sponsorwaarde</li>
+              <li>✓ Hogere sponsorretentie</li>
               <li>✓ Nieuwe inkomstenstromen</li>
-              <li>✓ Professionalisering van sponsoring</li>
+              <li>✓ Professionelere sponsorpropositie</li>
+              <li>✓ Geen technische kennis nodig</li>
             </ul>
           </div>
 
@@ -224,22 +217,34 @@ die zichtbaar worden binnen het clubnetwerk en via de clubkanalen.
 
 
       {/* CTA */}
-      <section className="py-24 text-center">
-        <h2 className="text-3xl font-bold">
-          Maak van sponsoring een recruitmentkanaal.
-        </h2>
+<section className="py-24 text-center">
+  <h2 className="text-3xl font-bold">
+    Geef sponsoren een reden om langer partner te blijven.
+  </h2>
 
-        <div className="mt-10">
-          <Link
-  href="/signup"
-  target="_blank"
-  rel="noopener noreferrer"
-  className="bg-[#1f9d55] px-8 py-4 rounded-2xl font-semibold hover:bg-[#15803d] transition"
->
-  Start met Sponsorjobs
-</Link>
-        </div>
-      </section>
+  <p className="mt-4 max-w-2xl mx-auto opacity-80">
+    Ontdek hoe jouw vereniging recruitment kan inzetten als sponsoractivatie
+    en extra waarde kan creëren voor sponsoren.
+  </p>
+
+  <div className="mt-10 flex flex-col md:flex-row gap-4 justify-center">
+
+    <Link
+      href="/signup"
+      className="bg-[#1f9d55] px-8 py-4 rounded-2xl font-semibold hover:bg-[#15803d] transition"
+    >
+      Start gratis met je club
+    </Link>
+
+    <Link
+      href="/contact"
+      className="border border-white px-8 py-4 rounded-2xl font-semibold hover:bg-white hover:text-[#0d1b2a] transition"
+    >
+      Plan een demo
+    </Link>
+
+  </div>
+</section>
 
     </main>
   );

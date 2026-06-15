@@ -14,7 +14,7 @@ export default function ActivatiePage() {
         </h1>
 
         <p className="mt-6 text-lg text-white/80 max-w-3xl mx-auto leading-relaxed">
-          Sponsorjobs en Sponsuls helpen verenigingen om vacatures van sponsoren
+          Sponsorjobs helpt verenigingen om vacatures van sponsoren
           actief zichtbaar te maken binnen het netwerk van de club via social media,
           recruitmentcampagnes en sponsoractivatie.
         </p>
@@ -67,7 +67,7 @@ export default function ActivatiePage() {
             </h2>
 
             <p className="mt-6 text-black/70 leading-relaxed">
-              Met Sponsorjobs en Sponsuls worden vacatures actief gepromoot via:
+              Met Sponsorjobs worden vacatures actief gepromoot via:
             </p>
 
             <ul className="mt-6 space-y-4 text-black/80">
@@ -98,7 +98,7 @@ export default function ActivatiePage() {
           </h2>
 
           <p className="mt-6 text-white/70 max-w-2xl mx-auto">
-            Sponsorjobs verzorgt het platform. Sponsuls ondersteunt
+            Sponsorjobs verzorgt het platform en ondersteunt
             verenigingen met de commerciële activatie en uitvoering.
           </p>
 
@@ -125,11 +125,11 @@ export default function ActivatiePage() {
               </div>
 
               <h3 className="mt-4 font-semibold text-lg">
-                Sponsuls activeert
+                Sponsorjobs activeert
               </h3>
 
               <p className="mt-3 text-white/70 text-sm leading-relaxed">
-                Sponsuls ondersteunt bij sponsorverkoop,
+                Sponsorjobs ondersteunt bij verkoopadministratie,
                 contentcreatie en recruitment activatie.
               </p>
             </div>
@@ -194,11 +194,11 @@ export default function ActivatiePage() {
           <div className="text-center">
 
             <h2 className="text-4xl font-bold">
-              Wat verzorgt Sponsuls?
+              Wat verzorgt Sponsorjobs?
             </h2>
 
             <p className="mt-6 text-white/70 max-w-3xl mx-auto">
-              Sponsuls ondersteunt verenigingen volledig bij de activatie
+              Sponsorjobs ondersteunt verenigingen volledig bij de activatie
               van recruitmentcampagnes en sponsorvacatures.
             </p>
 
@@ -213,10 +213,10 @@ export default function ActivatiePage() {
               </h3>
 
               <ul className="mt-6 space-y-3 text-white/70 text-sm">
-                <li>✓ Sponsorverkoop</li>
                 <li>✓ Recruitmentpropositie</li>
                 <li>✓ Activatie gesprekken</li>
                 <li>✓ Sponsoropvolging</li>
+                <li>✓ Verkoopadministratie</li>
               </ul>
 
             </div>
@@ -297,12 +297,12 @@ export default function ActivatiePage() {
               </div>
 
               <h3 className="mt-4 text-2xl font-bold text-black">
-                Naar Sponsuls
+                Naar Sponsorjobs
               </h3>
 
               <p className="mt-4 opacity-80 leading-relaxed">
-                Sponsuls verzorgt de commerciële activatie,
-                contentcreatie, recruitmentcampagnes en sponsorbegeleiding.
+                Sponsorjobs verzorgt de verkoopadministratie,
+                contentcreatie, recruitmentcampagnes en sponsorbegeleiding. Desgewenst staat Sponsorjobs open voor invulling van advertentieverkoop.
               </p>
 
             </div>
