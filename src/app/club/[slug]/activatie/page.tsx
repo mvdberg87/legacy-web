@@ -474,39 +474,42 @@ async function downloadPackage() {
 
 </div>
 
-            <button
-  onClick={generatePost}
-              className="
-                bg-[#0d1b2a]
-                text-white
-                px-6
-                py-3
-                rounded-lg
-                hover:opacity-90
-              "
-            >
-              {generating
-  ? "Genereren..."
-  : "Genereer post"}
-            </button>
+            <div className="flex flex-col sm:flex-row gap-3">
+  <button
+    onClick={generatePost}
+    className="
+      bg-[#0d1b2a]
+      text-white
+      px-6
+      py-3
+      rounded-lg
+      hover:opacity-90
+      w-full sm:w-auto
+    "
+  >
+    {generating
+      ? "Genereren..."
+      : "Genereer post"}
+  </button>
 
-            <button
-  onClick={generateImage}
-  disabled={generatingImage}
-  className="
-    bg-green-700
-    text-white
-    px-6
-    py-3
-    rounded-lg
-    ml-3
-    disabled:opacity-60
-  "
->
-  {generatingImage
-    ? "Afbeelding genereren..."
-    : "Genereer afbeelding"}
-</button>
+  <button
+    onClick={generateImage}
+    disabled={generatingImage}
+    className="
+      bg-green-700
+      text-white
+      px-6
+      py-3
+      rounded-lg
+      disabled:opacity-60
+      w-full sm:w-auto
+    "
+  >
+    {generatingImage
+      ? "Afbeelding genereren..."
+      : "Genereer afbeelding"}
+  </button>
+</div>
 
 <p className="text-xs text-gray-500 mt-3">
   Als er bij de vacature geen eigen achtergrondfoto is toegevoegd,
@@ -571,44 +574,45 @@ async function downloadPackage() {
         rounded-xl
       "
     />
-<button
-  onClick={downloadImage}
-  className="
-    inline-block
-    mt-4
-    bg-[#0d1b2a]
-    text-white
-    px-4
-    py-2
-    rounded-lg
-  "
->
-  {imageDownloaded
-    ? "✓ Download gestart"
-    : "Download afbeelding"}
-</button>
+<div className="flex flex-col sm:flex-row gap-3 mt-4">
 
-    <button
-  onClick={downloadPackage}
-  disabled={packageDownloading}
-  className="
-    inline-block
-    mt-4
-    ml-3
-    bg-green-700
-    text-white
-    px-4
-    py-2
-    rounded-lg
-    disabled:opacity-60
-  "
->
-  {packageDownloading
-    ? "Pakket maken..."
-    : packageDownloaded
-    ? "✓ Download gestart"
-    : "Download activatiepakket"}
-</button>
+  <button
+    onClick={downloadImage}
+    className="
+      bg-[#0d1b2a]
+      text-white
+      px-4
+      py-2
+      rounded-lg
+      w-full sm:w-auto
+    "
+  >
+    {imageDownloaded
+      ? "✓ Download gestart"
+      : "Download afbeelding"}
+  </button>
+
+  <button
+    onClick={downloadPackage}
+    disabled={packageDownloading}
+    className="
+      bg-green-700
+      text-white
+      px-4
+      py-2
+      rounded-lg
+      disabled:opacity-60
+      w-full sm:w-auto
+    "
+  >
+    {packageDownloading
+      ? "Pakket maken..."
+      : packageDownloaded
+      ? "✓ Download gestart"
+      : "Download activatiepakket"}
+  </button>
+
+</div>
 
   </div>
 
