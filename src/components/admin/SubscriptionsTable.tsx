@@ -23,6 +23,7 @@ type Club = {
   subscription_start: string | null;
   subscription_end: string | null;
   has_paid_subscription: boolean;
+  billing_override: boolean;
 };
 
 type SubscriptionEvent = {
@@ -70,20 +71,50 @@ function getComputedStatus(
 
   // 👇 Upgrade toegekend maar nog niet betaald
   if (
-    club.active_package !== "basic" &&
-    !club.has_paid_subscription
-  ) {
+  club.active_package !== "basic" &&
+  !club.has_paid_subscription &&
+  !club.billing_override
+) {
     return "pending_payment";
   }
 
-  if (!club.has_paid_subscription) return "trial";
-
+  if (
+  club.has_paid_subscription ||
+  club.billing_override
+) {
   return "active";
+}
+
+return "trial";
 }
 
 /* ===============================
    Page
    =============================== */
+
+   function getSubscriptionType(club: Club) {
+  if (club.billing_override) {
+  return {
+    label: "🟣 Override",
+    className:
+      "bg-purple-100 text-purple-800",
+  };
+}
+
+  if (club.has_paid_subscription) {
+    return {
+      label: "Betaald",
+      className:
+        "bg-green-100 text-green-800",
+    };
+  }
+
+  return {
+    label: "Trial",
+    className:
+      "bg-yellow-100 text-yellow-800",
+  };
+}
 
 export default function SubscriptionsTable() {
   const [clubs, setClubs] = useState<Club[]>([]);
@@ -240,7 +271,8 @@ export default function SubscriptionsTable() {
                 <th className="px-3 py-3 text-left">Club</th>
                 <th className="px-3 py-3 text-center">Pakket</th>
                 <th className="px-3 py-3 text-center">Status</th>
-                <th className="px-3 py-3 text-center">Start</th>
+<th className="px-3 py-3 text-center">Type</th>
+<th className="px-3 py-3 text-center">Start</th>
                 <th className="px-3 py-3 text-center">Einde</th>
                 <th className="px-3 py-3 text-center">Acties</th>
               </tr>
@@ -266,24 +298,45 @@ export default function SubscriptionsTable() {
                     </td>
 
                     <td className="px-3 py-3 text-center">
-                      {computedStatus && (
-                        <>
-                          <span
-                            className={`px-2 py-1 rounded text-xs font-medium ${STATUS_STYLES[computedStatus]}`}
-                          >
-                            {STATUS_LABELS[computedStatus]}
-                          </span>
+  {computedStatus && (
+    <>
+      <span
+        className={`px-2 py-1 rounded text-xs font-medium ${STATUS_STYLES[computedStatus]}`}
+      >
+        {STATUS_LABELS[computedStatus]}
+      </span>
 
-                          {computedStatus ===
-                            "pending_payment" && (
-                            <div className="text-xs text-gray-500 mt-1">
-                              Upgrade toegekend, betaling nog
-                              niet voldaan
-                            </div>
-                          )}
-                        </>
-                      )}
-                    </td>
+      {c.billing_override && (
+        <div className="mt-1">
+          <span className="px-2 py-1 rounded text-xs font-medium bg-purple-100 text-purple-800">
+            🟣 Override actief
+          </span>
+        </div>
+      )}
+
+      {computedStatus === "pending_payment" && (
+        <div className="text-xs text-gray-500 mt-1">
+          Upgrade toegekend, betaling nog niet voldaan
+        </div>
+      )}
+    </>
+  )}
+</td>
+
+                    <td className="px-3 py-3 text-center">
+  {(() => {
+    const type =
+      getSubscriptionType(c);
+
+    return (
+      <span
+        className={`px-2 py-1 rounded text-xs font-medium ${type.className}`}
+      >
+        {type.label}
+      </span>
+    );
+  })()}
+</td>
 
                     <td className="px-3 py-3 text-center">
                       {c.subscription_start
@@ -322,7 +375,7 @@ export default function SubscriptionsTable() {
       }
       className="px-3 py-1 text-sm rounded bg-orange-600 text-white"
     >
-      ⚡ Activeer zonder betaling
+      Admin Override
     </button>
 
   ) : (
@@ -343,7 +396,7 @@ export default function SubscriptionsTable() {
 
                   {openClubId === c.id && (
                     <tr className="bg-gray-50">
-                      <td colSpan={6} className="p-4">
+                      <td colSpan={7} className="p-4">
                         {eventsLoading === c.id ? (
                           <p className="text-sm">
                             Geschiedenis laden…

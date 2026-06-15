@@ -55,15 +55,16 @@ export async function POST(req: Request) {
        =============================== */
 
     const { error: updateError } =
-      await supabaseAdmin
-        .from("clubs")
-        .update({
-          has_paid_subscription: true,
-          subscription_status: "active",
-          subscription_start: startDate,
-          subscription_end: endDate,
-        })
-        .eq("id", clubId);
+  await supabaseAdmin
+    .from("clubs")
+    .update({
+      billing_override: true,
+      has_paid_subscription: false,
+      subscription_status: "active",
+      subscription_start: startDate,
+      subscription_end: endDate,
+    })
+    .eq("id", clubId);
 
     if (updateError) {
       console.error("Override update error:", updateError);
