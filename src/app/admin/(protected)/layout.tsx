@@ -23,8 +23,8 @@ export default function AdminLayout({
     <div className={`${adminFont.className} min-h-screen bg-[#0d1b2a] text-white`}>
       <AdminNavbar />
 
-      <main className="py-10">
-        <div className="max-w-7xl mx-auto px-6">
+      <main className="py-6 md:py-10 overflow-x-hidden">
+        <div className="w-full max-w-7xl mx-auto px-4 sm:px-6">
           {children}
         </div>
       </main>

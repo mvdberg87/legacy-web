@@ -120,7 +120,7 @@ export default function AdminProfilesPanel() {
           placeholder="🔍 Zoek op e-mail, club of rol..."
           value={search}
           onChange={(e) => setSearch(e.target.value)}
-          className="border rounded-lg px-3 py-2 text-sm w-72"
+          className="border rounded-lg px-3 py-2 text-sm w-full md:w-72"
         />
       </div>
 
@@ -130,7 +130,7 @@ export default function AdminProfilesPanel() {
         <p className="text-gray-500 italic">Geen profielen gevonden.</p>
       ) : (
         <div className="overflow-x-auto">
-          <table className="min-w-full text-sm border rounded-xl overflow-hidden">
+          <table className="min-w-[800px] text-sm border rounded-xl overflow-hidden">
             <thead className="bg-[#0d1b2a] text-white text-xs uppercase">
               <tr>
                 <th className="px-3 py-2 text-left font-medium">Email</th>
@@ -150,7 +150,9 @@ export default function AdminProfilesPanel() {
                   transition={{ delay: i * 0.02 }}
                   className="border-b hover:bg-blue-50/40 transition"
                 >
-                  <td className="px-3 py-2">{p.email}</td>
+                  <td className="px-3 py-2 break-all max-w-[220px]">
+  {p.email}
+</td>
                   <td className="px-3 py-2">{p.club_name || <em className="text-gray-400">-</em>}</td>
                   <td className="px-3 py-2 text-center capitalize">
                     {p.role === "rejected" ? (
@@ -170,7 +172,7 @@ export default function AdminProfilesPanel() {
                       : "-"}
                   </td>
                   <td className="px-3 py-2 text-center">
-                    <div className="flex gap-2 justify-center">
+                    <div className="flex flex-wrap gap-2 justify-center">
                       <button
                         onClick={() => approveUser(p)}
                         disabled={refreshing}
