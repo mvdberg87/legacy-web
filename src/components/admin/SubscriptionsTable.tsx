@@ -18,11 +18,17 @@ type Club = {
   id: string;
   name: string;
   email: string | null;
+
   active_package: string;
+
   subscription_status: SubscriptionStatus | null;
+  billing_status: string | null;
+
   subscription_start: string | null;
   subscription_end: string | null;
-  has_paid_subscription: boolean;
+
+  trial_active: boolean | null;
+
   billing_override: boolean;
 };
 
@@ -65,28 +71,32 @@ const STATUS_STYLES: Record<SubscriptionStatus, string> = {
 function getComputedStatus(
   club: Club
 ): SubscriptionStatus | null {
-  if (club.subscription_status === "blocked") return "blocked";
-  if (club.subscription_status === "cancelled") return "cancelled";
-  if (club.subscription_status === "expired") return "expired";
 
-  // 👇 Upgrade toegekend maar nog niet betaald
+  if (club.subscription_status === "blocked")
+    return "blocked";
+
+  if (club.subscription_status === "cancelled")
+    return "cancelled";
+
+  if (club.subscription_status === "expired")
+    return "expired";
+
+  if (club.billing_override)
+    return "active";
+
   if (
-  club.active_package !== "basic" &&
-  !club.has_paid_subscription &&
-  !club.billing_override
-) {
+    club.active_package !== "basic" &&
+    club.billing_status !== "active"
+  ) {
     return "pending_payment";
   }
 
-  if (
-  club.has_paid_subscription ||
-  club.billing_override
-) {
-  return "active";
+  if (club.billing_status === "active")
+    return "active";
+
+  return "trial";
 }
 
-return "trial";
-}
 
 /* ===============================
    Page
@@ -101,7 +111,7 @@ return "trial";
   };
 }
 
-  if (club.has_paid_subscription) {
+  if (club.billing_status === "active") {
     return {
       label: "Betaald",
       className:
