@@ -201,6 +201,7 @@ export default function VerenigingenPage() {
         <p className="text-sm opacity-60">2 maanden proef</p>
 
         <ul className="mt-6 space-y-3 text-sm opacity-80">
+          <li>✓ Tot 10 vacatures</li>
           <li>✓ Geen advertentiemogelijkheden</li>
           <li>✓ 2 maanden proefversie</li>
           <li>✓ Maandelijkse mailrapportage</li>
@@ -233,6 +234,7 @@ export default function VerenigingenPage() {
         <p className="text-sm opacity-60">per maand</p>
 
         <ul className="mt-6 space-y-3 text-sm opacity-80">
+          <li>✓ Tot 25 vacatures</li>
           <li>✓ 1 highlight advertentie</li>
           <li>✓ Maandelijkse mailrapportage</li>
           <li>✓ Sponsor dashboard</li>
@@ -257,6 +259,7 @@ export default function VerenigingenPage() {
         <p className="text-sm opacity-60">per maand</p>
 
         <ul className="mt-6 space-y-3 text-sm opacity-80">
+          <li>✓ Tot 50 vacatures</li>
           <li>✓ 3 highlight advertenties</li>
           <li>✓ Maandelijkse mailrapportage</li>
           <li>✓ Sponsor dashboard</li>
@@ -283,6 +286,7 @@ export default function VerenigingenPage() {
         <p className="text-sm opacity-60">per maand</p>
 
         <ul className="mt-6 space-y-3 text-sm opacity-80">
+          <li>✓ Tot 100 vacatures</li>
           <li>✓ 5 highlight advertenties</li>
           <li>✓ Maandelijkse mailrapportage</li>
           <li>✓ Sponsor dashboard</li>
@@ -301,8 +305,12 @@ export default function VerenigingenPage() {
 
     </div>
 
-    <p className="mt-12 text-white/70">
-Wil je vacatures van sponsoren ook actief promoten via social media en recruitmentcampagnes?
+<div className="mt-8 text-center text-sm text-white/70">
+  Meer vacatures promoten? Extra highlight advertenties zijn eenvoudig toe te voegen aan ieder pakket.
+</div>
+
+<p className="mt-12 text-white/70">
+  Wil je vacatures van sponsoren ook actief promoten via social media en recruitmentcampagnes?
 </p>
 
 <Link
