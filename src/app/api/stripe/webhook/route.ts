@@ -51,14 +51,24 @@ try {
    IDEMPOTENCY CHECK
 =============================== */
 
-const { data: existing } = await supabaseAdmin
-  .from("stripe_events")
-  .select("id")
-  .eq("id", event.id)
-  .maybeSingle();
+const { error: eventError } =
+  await supabaseAdmin
+    .from("stripe_events")
+    .insert({
+      id: event.id,
+      type: event.type,
+      payload: event,
+    });
 
-if (existing) {
-  return NextResponse.json({ received: true });
+if (eventError) {
+  console.log(
+    "⚠️ Stripe event al verwerkt:",
+    event.id
+  );
+
+  return NextResponse.json({
+    received: true,
+  });
 }
 
     /* ===============================
@@ -615,7 +625,8 @@ if (!packageKey) {
     subscription_status: "cancelled",
     billing_status: "canceled",
     stripe_subscription_id: null,
-    deleted_at: new Date().toISOString(), // 🔥 TOEVOEGEN
+    subscription_cancelled_at:
+      new Date().toISOString(),
   })
   .eq("stripe_subscription_id", subscription.id);
     }
@@ -632,13 +643,6 @@ if (!packageKey) {
   );
 }
 
-  await supabaseAdmin
-  .from("stripe_events")
-  .upsert({
-    id: event.id,
-    type: event.type,
-    payload: event,
-  });
-
-  return NextResponse.json({ received: true });
-}
+  return NextResponse.json({
+  received: true,
+});}

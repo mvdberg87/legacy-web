@@ -43,12 +43,30 @@ export async function GET(req: NextRequest) {
     }
 
     for (const club of expiredPaid ?? []) {
-      await supabaseAdmin
-        .from("clubs")
-        .update({
-          subscription_status: "expired",
-        })
-        .eq("id", club.id);
+      const { error: updateError } =
+  await supabaseAdmin
+    .from("clubs")
+    .update({
+      subscription_status: "expired",
+    })
+    .eq("id", club.id);
+
+if (updateError) {
+  console.error(updateError);
+  continue;
+}
+
+        const { error: eventError } =
+  await supabaseAdmin
+    .from("subscription_events")
+    .insert({
+      club_id: club.id,
+      event_type: "subscription_expired",
+    });
+
+if (eventError) {
+  console.error(eventError);
+}
 
       /* ===============================
          📩 Mail – abonnement verlopen

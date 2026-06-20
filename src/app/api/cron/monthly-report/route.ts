@@ -45,6 +45,10 @@ console.log(
   clubsError
 );
 
+if (clubsError) {
+  throw clubsError;
+}
+
     for (const club of clubs ?? []) {
       console.log("PROCESSING CLUB:", club.name);
 
@@ -375,43 +379,63 @@ advertisementsSold,
       if (mailError) {
         console.error(mailError);
 
-        await supabaseAdmin.from("monthly_reports").insert({
-          club_id: club.id,
-          month: monthKey,
-          status: "failed",
-        });
+        const { error: reportError } =
+  await supabaseAdmin
+    .from("monthly_reports")
+    .insert({
+      club_id: club.id,
+      month: monthKey,
+      status: "failed",
+    });
+
+if (reportError) {
+  console.error(
+    "MONTHLY REPORT INSERT FAILED:",
+    reportError
+  );
+}
 
         continue;
       }
 
-      await supabaseAdmin.from("monthly_reports").insert({
-  club_id: club.id,
-  month: monthKey,
+      const { error: reportError } =
+  await supabaseAdmin
+    .from("monthly_reports")
+    .insert({
+      club_id: club.id,
+      month: monthKey,
 
-  total_clicks: totalClicksLastMonth,
-  total_pageviews: totalPageviewsLastMonth,
-  total_shares: totalSharesLastMonth,
+      total_clicks: totalClicksLastMonth,
+      total_pageviews: totalPageviewsLastMonth,
+      total_shares: totalSharesLastMonth,
 
-  ctr: Number(
-    ctrLastMonth.toFixed(1)
-  ),
+      ctr: Number(
+        ctrLastMonth.toFixed(1)
+      ),
 
-  share_rate: Number(
-    shareRate.toFixed(1)
-  ),
+      share_rate: Number(
+        shareRate.toFixed(1)
+      ),
 
-  growth,
+      growth,
 
-  advertisements_sold:
-    advertisementsSold,
+      advertisements_sold:
+        advertisementsSold,
 
-  advertisement_revenue:
-    advertisementRevenue,
+      advertisement_revenue:
+        advertisementRevenue,
 
-  status: "sent",
+      status: "sent",
 
-  sent_at: new Date(),
-});
+      sent_at: new Date(),
+    });
+
+if (reportError) {
+  console.error(
+    "MONTHLY REPORT INSERT FAILED:",
+    reportError
+  );
+}
     }
 
     return NextResponse.json({ success: true });

@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { supabaseAdmin } from "@/lib/supabaseAdmin";
 import { resend } from "@/lib/resend";
 import crypto from "crypto";
+import { createServerClient } from "@supabase/ssr";
 
 export async function POST(req: NextRequest) {
   const { requestId } = await req.json();
@@ -9,6 +10,53 @@ export async function POST(req: NextRequest) {
   if (!requestId) {
     return NextResponse.json({ error: "requestId ontbreekt" }, { status: 400 });
   }
+
+  /* ===============================
+   ADMIN AUTH CHECK
+=============================== */
+
+const supabase = createServerClient(
+  process.env.NEXT_PUBLIC_SUPABASE_URL!,
+  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+  {
+    cookies: {
+      get(name) {
+        return req.cookies.get(name)?.value;
+      },
+    },
+  }
+);
+
+const {
+  data: { user: adminUser },
+} = await supabase.auth.getUser();
+
+if (!adminUser) {
+  return NextResponse.json(
+    { error: "Unauthorized" },
+    { status: 401 }
+  );
+}
+
+const {
+  data: profile,
+  error: profileError,
+} = await supabaseAdmin
+  .from("profiles")
+  .select("role")
+  .eq("user_id", adminUser.id)
+  .single();
+
+if (
+  profileError ||
+  !profile ||
+  profile.role !== "admin"
+) {
+  return NextResponse.json(
+    { error: "Admin only" },
+    { status: 403 }
+  );
+}
 
   // 1. haal signup request op
   const { data: signup } = await supabaseAdmin
@@ -27,10 +75,20 @@ export async function POST(req: NextRequest) {
   // 2. nieuwe token
   const token = crypto.randomUUID();
 
-  await supabaseAdmin
-    .from("club_signup_requests")
-    .update({ token })
-    .eq("id", signup.id);
+  const { error: tokenError } = await supabaseAdmin
+  .from("club_signup_requests")
+  .update({
+    token,
+    updated_at: new Date().toISOString(),
+  })
+  .eq("id", signup.id);
+
+if (tokenError) {
+  return NextResponse.json(
+    { error: "Token update mislukt" },
+    { status: 500 }
+  );
+}
 
   // 3. mail opnieuw
   const baseUrl =

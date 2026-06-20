@@ -5,6 +5,7 @@ import { supabaseAdmin } from "@/lib/supabaseAdmin";
 import { resend } from "@/lib/resend";
 import type { User } from "@supabase/supabase-js";
 import crypto from "crypto";
+import { createServerClient } from "@supabase/ssr";
 
 export const runtime = "nodejs";
 
@@ -36,14 +37,56 @@ export async function POST(req: NextRequest) {
   try {
     console.log("🚀 approve-club START");
 
-    const { requestId } = (await req.json()) as { requestId?: string };
+    const { requestId } = (await req.json()) as {
+  requestId?: string;
+};
 
-    if (!requestId) {
-      return NextResponse.json(
-        { error: "requestId ontbreekt" },
-        { status: 400 }
-      );
-    }
+if (!requestId) {
+  return NextResponse.json(
+    { error: "requestId ontbreekt" },
+    { status: 400 }
+  );
+}
+
+/* ===============================
+   ADMIN AUTH CHECK
+=============================== */
+
+const supabase = createServerClient(
+  process.env.NEXT_PUBLIC_SUPABASE_URL!,
+  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+  {
+    cookies: {
+      get(name) {
+        return req.cookies.get(name)?.value;
+      },
+    },
+  }
+);
+
+const {
+  data: { user: adminUser },
+} = await supabase.auth.getUser();
+
+if (!adminUser) {
+  return NextResponse.json(
+    { error: "Unauthorized" },
+    { status: 401 }
+  );
+}
+
+const { data: profile, error: profileError } = await supabaseAdmin
+  .from("profiles")
+  .select("role")
+  .eq("user_id", adminUser.id)
+  .single();
+
+if (profileError || !profile || profile.role !== "admin") {
+  return NextResponse.json(
+    { error: "Admin only" },
+    { status: 403 }
+  );
+}
 
     /* ======================================================
        1. Signup request ophalen

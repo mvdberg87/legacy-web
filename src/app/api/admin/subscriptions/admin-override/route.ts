@@ -1,11 +1,12 @@
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
+import { createServerClient } from "@supabase/ssr";
 import { supabaseAdmin } from "@/lib/supabaseAdmin";
 
 /* ===============================
    POST: Admin override → active
    =============================== */
 
-export async function POST(req: Request) {
+export async function POST(req: NextRequest) {
   try {
     const body = await req.json();
     const { clubId } = body;
@@ -18,6 +19,53 @@ export async function POST(req: Request) {
     }
 
     /* ===============================
+   ADMIN AUTH CHECK
+=============================== */
+
+const supabase = createServerClient(
+  process.env.NEXT_PUBLIC_SUPABASE_URL!,
+  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+  {
+    cookies: {
+      get(name) {
+        return req.cookies.get(name)?.value;
+      },
+    },
+  }
+);
+
+const {
+  data: { user: adminUser },
+} = await supabase.auth.getUser();
+
+if (!adminUser) {
+  return NextResponse.json(
+    { error: "Unauthorized" },
+    { status: 401 }
+  );
+}
+
+const {
+  data: profile,
+  error: profileError,
+} = await supabaseAdmin
+  .from("profiles")
+  .select("role")
+  .eq("user_id", adminUser.id)
+  .single();
+
+if (
+  profileError ||
+  !profile ||
+  profile.role !== "admin"
+) {
+  return NextResponse.json(
+    { error: "Admin only" },
+    { status: 403 }
+  );
+}
+
+    /* ===============================
        1️⃣ Club ophalen
        =============================== */
 
@@ -28,6 +76,7 @@ export async function POST(req: Request) {
           `
           id,
           active_package,
+          billing_override,
           subscription_start,
           subscription_end
         `
@@ -36,11 +85,18 @@ export async function POST(req: Request) {
         .maybeSingle();
 
     if (clubError || !club) {
+      if (club.billing_override) {
+  return NextResponse.json(
+    { error: "Override is al actief" },
+    { status: 400 }
+  );
+}
       return NextResponse.json(
         { error: "Club niet gevonden" },
         { status: 404 }
       );
     }
+
 
     const now = new Date();
     const startDate = now.toISOString();
@@ -82,7 +138,7 @@ export async function POST(req: Request) {
       .insert({
         club_id: clubId,
         event_type: "admin_override_activated",
-        old_package: null,
+        old_package: club.active_package,
         new_package: club.active_package,
         period_start: startDate,
         period_end: endDate,

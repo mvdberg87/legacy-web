@@ -1,12 +1,8 @@
-import { NextResponse } from "next/server";
-import { createClient } from "@supabase/supabase-js";
+import { NextRequest, NextResponse } from "next/server";
+import { createServerClient } from "@supabase/ssr";
+import { supabaseAdmin } from "@/lib/supabaseAdmin";
 
-const supabase = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL!,
-  process.env.SUPABASE_SERVICE_ROLE_KEY!
-);
-
-export async function POST(req: Request) {
+export async function POST(req: NextRequest) {
   try {
     const { jobId } = await req.json();
 
@@ -17,24 +13,90 @@ export async function POST(req: Request) {
       );
     }
 
-    // Eerst gekoppelde advertenties verwijderen
-    const { error: adsError } = await supabase
-      .from("club_ads")
-      .delete()
-      .eq("job_id", jobId);
+    /* ===============================
+   ADMIN AUTH CHECK
+=============================== */
 
-    if (adsError) {
-      return NextResponse.json(
-        { error: adsError.message },
-        { status: 500 }
-      );
-    }
+const supabase = createServerClient(
+  process.env.NEXT_PUBLIC_SUPABASE_URL!,
+  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+  {
+    cookies: {
+      get(name) {
+        return req.cookies.get(name)?.value;
+      },
+    },
+  }
+);
 
-    // Daarna vacature verwijderen
-    const { error: jobError } = await supabase
-      .from("jobs")
-      .delete()
-      .eq("id", jobId);
+const {
+  data: { user: adminUser },
+} = await supabase.auth.getUser();
+
+if (!adminUser) {
+  return NextResponse.json(
+    { error: "Unauthorized" },
+    { status: 401 }
+  );
+}
+
+const {
+  data: profile,
+  error: profileError,
+} = await supabaseAdmin
+  .from("profiles")
+  .select("role")
+  .eq("user_id", adminUser.id)
+  .single();
+
+if (
+  profileError ||
+  !profile ||
+  profile.role !== "admin"
+) {
+  return NextResponse.json(
+    { error: "Admin only" },
+    { status: 403 }
+  );
+}
+
+const { data: job } = await supabaseAdmin
+  .from("jobs")
+  .select("id, club_id")
+  .eq("id", jobId)
+  .maybeSingle();
+
+if (!job) {
+  return NextResponse.json(
+    { error: "Vacature niet gevonden" },
+    { status: 404 }
+  );
+}
+
+    // Eerst gekoppelde advertenties archiveren
+const { error: adsError } = await supabaseAdmin
+  .from("club_ads")
+  .update({
+    archived_at: new Date().toISOString(),
+    is_active: false,
+  })
+  .eq("job_id", jobId);
+
+if (adsError) {
+  return NextResponse.json(
+    { error: adsError.message },
+    { status: 500 }
+  );
+}
+
+// Daarna vacature archiveren
+const { error: jobError } = await supabaseAdmin
+  .from("jobs")
+  .update({
+    archived_at: new Date().toISOString(),
+    is_active: false,
+  })
+  .eq("id", jobId);
 
     if (jobError) {
       return NextResponse.json(
@@ -42,6 +104,13 @@ export async function POST(req: Request) {
         { status: 500 }
       );
     }
+
+    await supabaseAdmin
+  .from("subscription_events")
+  .insert({
+    club_id: job.club_id,
+    event_type: "job_deleted",
+  });
 
     return NextResponse.json({
       success: true,

@@ -5,7 +5,20 @@ const siteUrl =
   process.env.NEXT_PUBLIC_SITE_URL ??
   "https://www.sponsorjobs.nl";
 
-export async function GET() {
+export async function GET(req: Request) {
+
+  const auth = req.headers.get("authorization");
+
+  if (
+    auth !== `Bearer ${process.env.CRON_SECRET}`
+  ) {
+    return NextResponse.json(
+      { error: "Unauthorized" },
+      { status: 401 }
+    );
+  }
+
+  try {
 
   const today = new Date();
 
@@ -239,7 +252,7 @@ if (error) {
      VERLOPEN
   ========================= */
 
-  if (diff < 0) {
+  if (diff < 0)
 
   /* =========================
      AUTO RENEW
@@ -273,6 +286,15 @@ if (error) {
           false,
       })
       .eq("id", ad.id);
+
+      if (ad.club_id) {
+  await supabaseAdmin
+    .from("subscription_events")
+    .insert({
+      club_id: ad.club_id,
+      event_type: "advertisement_renewed",
+    });
+}
 
     await fetch(
       `${siteUrl}/api/send-email`,
@@ -322,11 +344,29 @@ if (error) {
       })
       .eq("id", ad.id);
 
+      if (ad.club_id) {
+  await supabaseAdmin
+    .from("subscription_events")
+    .insert({
+      club_id: ad.club_id,
+      event_type: "advertisement_expired",
+    });
+}
+
     result.expired.push(
       `${ad.company_name} expired`
     );
   }
 }
 
-  return NextResponse.json(result);
-}}
+    return NextResponse.json(result);
+
+  } catch (err) {
+    console.error(err);
+
+    return NextResponse.json(
+      { error: "Server error" },
+      { status: 500 }
+    );
+  }
+}

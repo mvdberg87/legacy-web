@@ -1,14 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
-import { createClient } from "@supabase/supabase-js";
 import slugify from "@/lib/slugify";
-
-function getSupabaseAdmin() {
-  return createClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.SUPABASE_SERVICE_ROLE_KEY!,
-    { auth: { persistSession: false } }
-  );
-}
+import { createServerClient } from "@supabase/ssr";
+import { supabaseAdmin } from "@/lib/supabaseAdmin";
 
 export async function POST(req: NextRequest) {
   try {
@@ -17,12 +10,57 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: "userId en email zijn verplicht" }, { status: 400 });
     }
 
-    const supabase = getSupabaseAdmin();
+    /* ===============================
+   ADMIN AUTH CHECK
+=============================== */
+
+const supabase = createServerClient(
+  process.env.NEXT_PUBLIC_SUPABASE_URL!,
+  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+  {
+    cookies: {
+      get(name) {
+        return req.cookies.get(name)?.value;
+      },
+    },
+  }
+);
+
+const {
+  data: { user: adminUser },
+} = await supabase.auth.getUser();
+
+if (!adminUser) {
+  return NextResponse.json(
+    { error: "Unauthorized" },
+    { status: 401 }
+  );
+}
+
+const { data: profile, error: profileError } =
+  await supabaseAdmin
+    .from("profiles")
+    .select("role")
+    .eq("user_id", adminUser.id)
+    .single();
+
+if (
+  profileError ||
+  !profile ||
+  profile.role !== "admin"
+) {
+  return NextResponse.json(
+    { error: "Admin only" },
+    { status: 403 }
+  );
+}
+
+    const adminDb = supabaseAdmin;
     const slug = slugify(clubName || email.split("@")[0]);
 
     // 🏗️ Controleer of club al bestaat
-    const { data: existing } = await supabase
-      .from("clubs")
+    const { data: existing } = await adminDb
+  .from("clubs")
       .select("id")
       .eq("slug", slug)
       .maybeSingle();
@@ -31,8 +69,8 @@ export async function POST(req: NextRequest) {
 
     if (!clubId) {
       // Nieuwe club aanmaken
-      const { data: newClub, error: clubError } = await supabase
-        .from("clubs")
+      const { data: newClub, error: clubError } = await adminDb
+  .from("clubs")
         .insert({
           name: clubName || slug,
           slug,
@@ -45,20 +83,22 @@ export async function POST(req: NextRequest) {
       clubId = newClub.id;
     } else {
       // Bestaande club updaten naar approved
-      const { error: updateError } = await supabase
-        .from("clubs")
+      const { error: updateError } = await adminDb
+  .from("clubs")
         .update({ status: "approved" })
         .eq("id", clubId);
       if (updateError) throw updateError;
     }
 
     // 🔗 Profiel koppelen
-    const { error: profileError } = await supabase
-      .from("profiles")
-      .update({ club_id: clubId })
-      .eq("user_id", userId);
+    const { error: updateProfileError } = await adminDb
+  .from("profiles")
+  .update({ club_id: clubId })
+  .eq("user_id", userId);
 
-    if (profileError) throw profileError;
+if (updateProfileError) {
+  throw updateProfileError;
+}
 
     // ✅ Alles geslaagd
     return NextResponse.json({ ok: true, message: "Club goedgekeurd en gekoppeld" });

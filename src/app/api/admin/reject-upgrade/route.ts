@@ -3,6 +3,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { supabaseAdmin } from "@/lib/supabaseAdmin";
 import { resend } from "@/lib/resend";
+import { createServerClient } from "@supabase/ssr";
 
 export const runtime = "nodejs";
 
@@ -19,6 +20,51 @@ export async function POST(req: NextRequest) {
         { status: 400 }
       );
     }
+
+    /* ===============================
+   ADMIN AUTH CHECK
+=============================== */
+
+const supabase = createServerClient(
+  process.env.NEXT_PUBLIC_SUPABASE_URL!,
+  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+  {
+    cookies: {
+      get(name) {
+        return req.cookies.get(name)?.value;
+      },
+    },
+  }
+);
+
+const {
+  data: { user },
+} = await supabase.auth.getUser();
+
+if (!user) {
+  return NextResponse.json(
+    { error: "Unauthorized" },
+    { status: 401 }
+  );
+}
+
+const { data: profile, error: profileError } =
+  await supabaseAdmin
+    .from("profiles")
+    .select("role")
+    .eq("user_id", user.id)
+    .single();
+
+if (
+  profileError ||
+  !profile ||
+  profile.role !== "admin"
+) {
+  return NextResponse.json(
+    { error: "Admin only" },
+    { status: 403 }
+  );
+}
 
     /* ===============================
        1. Upgrade request ophalen
@@ -103,14 +149,19 @@ export async function POST(req: NextRequest) {
     /* ===============================
        4. Event loggen
        =============================== */
-    await supabaseAdmin
-      .from("subscription_events")
-      .insert({
-        club_id: club.id,
-        event_type: "upgrade_rejected",
-        old_package: club.subscription_status,
-        new_package: null,
-      });
+    const { error: eventError } =
+  await supabaseAdmin
+    .from("subscription_events")
+    .insert({
+      club_id: club.id,
+      event_type: "upgrade_rejected",
+      old_package: club.subscription_status,
+      new_package: null,
+    });
+
+if (eventError) {
+  throw eventError;
+}
 
     /* ===============================
        5. Mail naar club

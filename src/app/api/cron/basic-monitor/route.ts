@@ -9,7 +9,7 @@ export const runtime = "nodejs";
 export async function GET(req: Request) {
   try {
     const auth = req.headers.get("authorization");
-    if (auth !== `Bearer ${process.env.ADMIN_SECRET}`) {
+    if (auth !== `Bearer ${process.env.CRON_SECRET}`) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
@@ -47,10 +47,18 @@ export async function GET(req: Request) {
         );
 
         await supabaseAdmin
+  .from("subscription_events")
+  .insert({
+    club_id: club.id,
+    event_type: "trial_warning_14_days",
+  });
+
+        await supabaseAdmin
           .from("clubs")
           .update({ basic_mail_14_sent_at: now.toISOString() })
           .eq("id", club.id);
       }
+
 
       /* ===============================
          📩 MAIL 2 – 7 dagen
@@ -67,10 +75,19 @@ export async function GET(req: Request) {
         );
 
         await supabaseAdmin
+  .from("subscription_events")
+  .insert({
+    club_id: club.id,
+    event_type: "trial_warning_7_days",
+  });
+
+        await supabaseAdmin
           .from("clubs")
           .update({ basic_mail_7_sent_at: now.toISOString() })
           .eq("id", club.id);
       }
+
+      
 
       /* ===============================
          🚫 BASIC VERLOPEN
@@ -82,12 +99,27 @@ export async function GET(req: Request) {
           mailExpired(club.name)
         );
 
-        await supabaseAdmin
-          .from("clubs")
-          .update({
-            basic_mail_expired_sent_at: now.toISOString(),
-          })
-          .eq("id", club.id);
+        const { error: expireError } =
+  await supabaseAdmin
+    .from("clubs")
+    .update({
+      basic_mail_expired_sent_at:
+        now.toISOString(),
+      subscription_status: "expired",
+    })
+    .eq("id", club.id);
+
+if (expireError) {
+  console.error(expireError);
+  continue;
+}
+
+await supabaseAdmin
+  .from("subscription_events")
+  .insert({
+    club_id: club.id,
+    event_type: "trial_expired",
+  });
       }
     }
 
