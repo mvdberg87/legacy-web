@@ -5,9 +5,9 @@ import { createServerClient } from "@supabase/ssr";
 
 export const runtime = "nodejs";
 
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
-  apiVersion: "2025-12-15.clover",
-});
+const stripe = new Stripe(
+  process.env.STRIPE_SECRET_KEY!
+);
 
 export async function POST(req: NextRequest) {
 
@@ -57,10 +57,13 @@ export async function POST(req: NextRequest) {
   =============================== */
 
   const { data: club } = await supabaseAdmin
-    .from("clubs")
-    .select("stripe_subscription_id")
-    .eq("id", profile.club_id)
-    .maybeSingle();
+  .from("clubs")
+  .select(`
+    stripe_subscription_id,
+    slug
+  `)
+  .eq("id", profile.club_id)
+  .maybeSingle();
 
   if (!club?.stripe_subscription_id) {
     return NextResponse.json(
@@ -88,11 +91,15 @@ export async function POST(req: NextRequest) {
      5️⃣ Portal session aanmaken
   =============================== */
 
-  const portalSession =
-    await stripe.billingPortal.sessions.create({
-      customer: subscription.customer as string,
-      return_url: `${process.env.NEXT_PUBLIC_SITE_URL}/club`,
-    });
+  const returnUrl = club?.slug
+  ? `${process.env.NEXT_PUBLIC_SITE_URL}/club/${club.slug}/dashboard`
+  : process.env.NEXT_PUBLIC_SITE_URL!;
+
+const portalSession =
+  await stripe.billingPortal.sessions.create({
+    customer: subscription.customer as string,
+    return_url: returnUrl,
+  });
 
   return NextResponse.json({ url: portalSession.url });
 }

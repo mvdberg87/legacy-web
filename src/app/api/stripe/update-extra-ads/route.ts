@@ -1,10 +1,11 @@
 import { NextRequest, NextResponse } from "next/server";
 import Stripe from "stripe";
 import { supabaseAdmin } from "@/lib/supabaseAdmin";
+import { createServerClient } from "@supabase/ssr";
 
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
-  apiVersion: "2025-12-15.clover",
-});
+const stripe = new Stripe(
+  process.env.STRIPE_SECRET_KEY!
+);
 
 export async function POST(req: NextRequest) {
   try {
@@ -13,6 +14,51 @@ export async function POST(req: NextRequest) {
     if (!clubId || quantity === undefined) {
       return NextResponse.json({ error: "Missing data" }, { status: 400 });
     }
+
+    const supabase = createServerClient(
+  process.env.NEXT_PUBLIC_SUPABASE_URL!,
+  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+  {
+    cookies: {
+      get(name) {
+        return req.cookies.get(name)?.value;
+      },
+    },
+  }
+);
+
+const {
+  data: { user },
+} = await supabase.auth.getUser();
+
+if (!user) {
+  return NextResponse.json(
+    { error: "Unauthorized" },
+    { status: 401 }
+  );
+}
+
+const { data: profile } = await supabaseAdmin
+  .from("profiles")
+  .select("club_id, role")
+  .eq("user_id", user.id)
+  .single();
+
+if (!profile) {
+  return NextResponse.json(
+    { error: "No profile" },
+    { status: 403 }
+  );
+}
+
+const isAdmin = profile.role === "admin";
+
+if (!isAdmin && profile.club_id !== clubId) {
+  return NextResponse.json(
+    { error: "Forbidden" },
+    { status: 403 }
+  );
+}
 
     // 1. club ophalen
     const { data: club } = await supabaseAdmin
@@ -66,3 +112,4 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "Failed" }, { status: 500 });
   }
 }
+

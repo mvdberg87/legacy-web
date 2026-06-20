@@ -7,9 +7,9 @@ import { supabaseAdmin } from "@/lib/supabaseAdmin";
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic"; // 🔥 TOEVOEGEN
 
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
-  apiVersion: "2025-12-15.clover",
-});
+const stripe = new Stripe(
+  process.env.STRIPE_SECRET_KEY!
+);
 
 /**
  * Stripe v14+ haalt `subscription` uit Invoice typing.
