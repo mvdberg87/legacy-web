@@ -36,11 +36,6 @@ export async function POST(req: Request) {
 
   let customerId = club?.stripe_customer_id;
 
-  // 🔥 voorkom dubbele subscriptions
-if (club?.stripe_subscription_id) {
-  return new Response("Subscription already exists", { status: 400 });
-}
-
   /* ===============================
      2️⃣ Agreement opslaan
   =============================== */
