@@ -57,7 +57,7 @@ if (profileError || !profile || profile.role !== "admin") {
        =============================== */
     const { data: club, error: clubError } = await supabaseAdmin
       .from("clubs")
-      .select("id, name")
+      .select("id, name, status")
       .eq("id", clubId)
       .single();
 
@@ -68,18 +68,30 @@ if (profileError || !profile || profile.role !== "admin") {
       );
     }
 
+    if (club.status === "archived") {
+  return NextResponse.json(
+    { error: "Club is al gearchiveerd" },
+    { status: 400 }
+  );
+}
+
     const now = new Date().toISOString();
 
     /* ===============================
        2. Club archiveren
        =============================== */
-    await supabaseAdmin
-      .from("clubs")
-      .update({
-        status: "archived",
-        archived_at: now,
-      })
-      .eq("id", clubId);
+    const { error: archiveError } =
+  await supabaseAdmin
+    .from("clubs")
+    .update({
+      status: "archived",
+      archived_at: now,
+    })
+    .eq("id", clubId);
+
+if (archiveError) {
+  throw archiveError;
+}
 
     /* ===============================
        3. Gerelateerde data archiveren
@@ -104,6 +116,13 @@ if (profileError || !profile || profile.role !== "admin") {
         reviewed_at: now,
       })
       .eq("club_id", clubId);
+
+      await supabaseAdmin
+  .from("subscription_events")
+  .insert({
+    club_id: clubId,
+    event_type: "club_archived",
+  });
 
     return NextResponse.json({
       success: true,

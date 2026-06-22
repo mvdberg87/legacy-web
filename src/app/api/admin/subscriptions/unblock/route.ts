@@ -58,7 +58,7 @@ if (
 
 const { data: club } = await supabaseAdmin
   .from("clubs")
-  .select("subscription_status")
+  .select("subscription_status, billing_status")
   .eq("id", clubId)
   .maybeSingle();
 
@@ -69,7 +69,10 @@ if (!club) {
   );
 }
 
-if (club.subscription_status !== "blocked") {
+if (
+  club.subscription_status !== "blocked" &&
+  club.billing_status !== "blocked"
+) {
   return NextResponse.json(
     { error: "Club is niet geblokkeerd" },
     { status: 400 }
@@ -79,8 +82,10 @@ if (club.subscription_status !== "blocked") {
   const { error } = await supabaseAdmin
   .from("clubs")
   .update({
-    subscription_status: null,
-  })
+  subscription_status: "active",
+  billing_status: "active",
+  blocked_at: null,
+})
   .eq("id", clubId);
 
 if (error) throw error;
@@ -91,7 +96,7 @@ if (error) throw error;
     club_id: clubId,
     event_type: "unblocked",
     old_package: "blocked",
-    new_package: null,
+new_package: "active",
   });
 
   return NextResponse.json({ success: true });

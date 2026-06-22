@@ -184,7 +184,7 @@ if (
   /* ===============================
      Cancelled
   =============================== */
-  if (club.billing_status === "canceled") {
+  if (club.billing_status === "cancelled") {
     return NextResponse.redirect(
       new URL("/billing-blocked", origin)
     );

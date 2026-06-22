@@ -201,6 +201,30 @@ export default function SubscriptionsTable() {
     load();
   }
 
+  async function removeOverride(clubId: string) {
+  if (
+    !confirm(
+      "Admin override verwijderen?"
+    )
+  ) return;
+
+  await fetch(
+    "/api/admin/subscriptions/remove-override",
+    {
+      method: "POST",
+      headers: {
+        "Content-Type":
+          "application/json",
+      },
+      body: JSON.stringify({
+        clubId,
+      }),
+    }
+  );
+
+  load();
+}
+
   async function toggleHistory(clubId: string) {
     if (openClubId === clubId) {
       setOpenClubId(null);
@@ -359,7 +383,18 @@ export default function SubscriptionsTable() {
                    <td className="px-3 py-3 text-center">
   <div className="flex flex-wrap justify-center gap-2">
 
-  {computedStatus === "blocked" ? (
+  {c.billing_override ? (
+
+  <button
+    onClick={() =>
+      removeOverride(c.id)
+    }
+    className="px-3 py-1 text-sm rounded bg-purple-600 text-white"
+  >
+    ❌ Override uit
+  </button>
+
+) : computedStatus === "blocked" ? (
 
     <button
       onClick={() =>

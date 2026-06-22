@@ -66,46 +66,48 @@ export async function POST(req: NextRequest) {
        CLUB CHECK
     =============================== */
 
-    const { data: club } = await supabaseAdmin
-      .from("clubs")
-      .select("subscription_status, billing_status")
-      .eq("id", clubId)
-      .maybeSingle();
+    const { data: club, error: clubError } =
+      await supabaseAdmin
+        .from("clubs")
+        .select(`
+          id,
+          active_package,
+          billing_override,
+          billing_status,
+          subscription_status
+        `)
+        .eq("id", clubId)
+        .maybeSingle();
 
-    if (!club) {
+    if (clubError || !club) {
       return NextResponse.json(
         { error: "Club niet gevonden" },
         { status: 404 }
       );
     }
 
-    if (
-  club.subscription_status === "cancelled" ||
-  club.billing_status === "cancelled"
-) {
-  return NextResponse.json(
-    { error: "Abonnement is al geannuleerd" },
-    { status: 400 }
-  );
-}
+    if (!club.billing_override) {
+      return NextResponse.json(
+        { error: "Override is niet actief" },
+        { status: 400 }
+      );
+    }
 
     /* ===============================
-       CANCEL
+       OVERRIDE VERWIJDEREN
     =============================== */
 
-    const { error } = await supabaseAdmin
-      .from("clubs")
-      .update({
-  subscription_status: "cancelled",
-  billing_status: "cancelled",
-  subscription_cancelled_at:
-    new Date().toISOString(),
-  cancelled_at:
-    new Date().toISOString(),
-})
-      .eq("id", clubId);
+    const { error: updateError } =
+      await supabaseAdmin
+        .from("clubs")
+        .update({
+          billing_override: false,
+        })
+        .eq("id", clubId);
 
-    if (error) throw error;
+    if (updateError) {
+      throw updateError;
+    }
 
     /* ===============================
        EVENT LOG
@@ -115,11 +117,9 @@ export async function POST(req: NextRequest) {
       .from("subscription_events")
       .insert({
         club_id: clubId,
-        event_type: "admin_cancelled",
-        old_package:
-  club.subscription_status ??
-  club.billing_status,
-        new_package: "cancelled",
+        event_type: "admin_override_removed",
+        old_package: "override",
+        new_package: club.active_package,
       });
 
     return NextResponse.json({
@@ -128,7 +128,7 @@ export async function POST(req: NextRequest) {
 
   } catch (err) {
     console.error(
-      "cancel subscription error",
+      "Remove override error:",
       err
     );
 

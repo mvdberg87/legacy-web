@@ -85,17 +85,18 @@ if (
         .maybeSingle();
 
     if (clubError || !club) {
-      if (club.billing_override) {
+  return NextResponse.json(
+    { error: "Club niet gevonden" },
+    { status: 404 }
+  );
+}
+
+if (club.billing_override) {
   return NextResponse.json(
     { error: "Override is al actief" },
     { status: 400 }
   );
 }
-      return NextResponse.json(
-        { error: "Club niet gevonden" },
-        { status: 404 }
-      );
-    }
 
 
     const now = new Date();
@@ -114,11 +115,12 @@ if (
   await supabaseAdmin
     .from("clubs")
     .update({
-  billing_override: true,
-  subscription_status: null,
-  subscription_start: startDate,
-  subscription_end: endDate,
-})
+      billing_override: true,
+      subscription_status: "active",
+      billing_status: "active",
+      subscription_start: startDate,
+      subscription_end: endDate,
+    })
     .eq("id", clubId);
 
     if (updateError) {
