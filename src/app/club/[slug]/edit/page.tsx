@@ -333,28 +333,20 @@ setTimeout(() => {
               }
               className="w-full border rounded-lg px-3 py-2 text-sm"
             />
-          </div>
-
-          <button
+            <button
   type="button"
   onClick={() =>
-  setClub({
-    ...club,
-
-    jobs_intro_text:
-      DEFAULT_PUBLIC_JOBS_INTRO,
-
-    jobs_cta_title:
-      DEFAULT_PUBLIC_JOBS_CTA_TITLE,
-
-    jobs_cta_text:
-      DEFAULT_PUBLIC_JOBS_CTA_TEXT,
-  })
-}
+    setClub({
+      ...club,
+      jobs_intro_text:
+        DEFAULT_PUBLIC_JOBS_INTRO,
+    })
+  }
   className="text-xs text-blue-600 underline mt-2"
 >
-  Standaardtekst herstellen
+  Introductietekst herstellen
 </button>
+          </div>
 
 <div>
   <label className="block text-sm font-medium mb-1">
@@ -372,6 +364,19 @@ setTimeout(() => {
     }
     className="w-full border rounded-lg px-3 py-2"
   />
+  <button
+  type="button"
+  onClick={() =>
+    setClub({
+      ...club,
+      jobs_cta_title:
+        DEFAULT_PUBLIC_JOBS_CTA_TITLE,
+    })
+  }
+  className="text-xs text-blue-600 underline mt-2"
+>
+  CTA titel herstellen
+</button>
 </div>
 
 <div>
@@ -390,6 +395,19 @@ setTimeout(() => {
     }
     className="w-full border rounded-lg px-3 py-2 text-sm"
   />
+  <button
+  type="button"
+  onClick={() =>
+    setClub({
+      ...club,
+      jobs_cta_text:
+        DEFAULT_PUBLIC_JOBS_CTA_TEXT,
+    })
+  }
+  className="text-xs text-blue-600 underline mt-2"
+>
+  CTA tekst herstellen
+</button>
 </div>
 
           {/* Logo upload */}
