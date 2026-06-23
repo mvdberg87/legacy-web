@@ -75,6 +75,12 @@ console.log("BACKGROUND:", backgroundImage);
     const templateFile =
   `${activationTemplate ?? "1"}-${platform}.png`;
 
+  console.log({
+  platform,
+  activationTemplate,
+  templateFile,
+});
+
 let templatePath =
   path.join(
     process.cwd(),
@@ -95,15 +101,8 @@ try {
     );
 }
 
-    const templateImage =
-  await loadImage(
-    path.join(
-      process.cwd(),
-      "public",
-      "templates",
-      templateFile
-    )
-  );
+const templateImage =
+  await loadImage(templatePath);
 
     const canvas =
       createCanvas(
