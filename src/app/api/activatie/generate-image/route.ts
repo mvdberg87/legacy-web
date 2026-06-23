@@ -37,9 +37,13 @@ export async function POST(
   clubLogo,
   companyLogo,
   backgroundImage,
+
   primaryColor,
   secondaryColor,
-  template,
+  accentColor,
+
+  platform,
+  activationTemplate,
 } = await req.json();
 
 console.log("BACKGROUND:", backgroundImage);
@@ -69,11 +73,11 @@ console.log("BACKGROUND:", backgroundImage);
     );
 
     const templateFile =
-  template === "instagram"
+  platform === "instagram"
     ? "instagram.png"
-    : template === "story"
+    : platform === "story"
     ? "story.png"
-    : template === "narrowcasting"
+    : platform === "narrowcasting"
     ? "narrowcasting.png"
     : "linkedin.png";
 
@@ -118,7 +122,7 @@ let clubLogoY = 1000;
 
 // STORY
 
-if (template === "story") {
+if (platform === "story") {
 
   // foto volledig vullen
   photoX = 0;
@@ -147,7 +151,7 @@ if (template === "story") {
 
 // NARROWCASTING
 
-if (template === "narrowcasting") {
+if (platform === "narrowcasting") {
 
   // foto volledig achter sponsorvlak
   photoX = 60;
@@ -241,20 +245,21 @@ ctx.fillRect(
     // TITEL FUNCTIE
 
     ctx.fillStyle =
+  accentColor ??
   primaryColor ??
   "#4D9F5D";
 
 ctx.textAlign = "left";
 
 const titleMaxWidth =
-  template === "narrowcasting"
+  platform === "narrowcasting"
     ? 700
-    : template === "story"
+    : platform === "story"
     ? 700
     : 650;
 
 const startFontSize =
-  template === "narrowcasting"
+  platform === "narrowcasting"
     ? 78
     : 52;
 
@@ -281,9 +286,9 @@ ctx.fillText(
     ctx.textAlign = "left";
 
 const companyFontSize =
-  template === "story"
+  platform === "story"
     ? jobTitleSize
-    : template === "narrowcasting"
+    : platform === "narrowcasting"
     ? jobTitleSize
     : 34;
 

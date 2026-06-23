@@ -20,9 +20,17 @@ type Club = {
   logo_url: string | null;
   activation_image_url: string | null;
   slug: string;
+
   jobs_intro_text: string;
   jobs_cta_title?: string | null;
-jobs_cta_text?: string | null;
+  jobs_cta_text?: string | null;
+
+  primary_color?: string | null;
+  secondary_color?: string | null;
+  activation_accent_color?: string | null;
+
+  activation_template?: string | null;
+
   advertising_sales_enabled?: boolean | null;
 };
 
@@ -69,6 +77,12 @@ export default function ClubEditPage() {
   jobs_cta_text:
     data.jobs_cta_text ??
     DEFAULT_PUBLIC_JOBS_CTA_TEXT,
+
+    activation_template:
+  data.activation_template ?? "1",
+
+activation_accent_color:
+  data.activation_accent_color ?? "#22c55e",
 });
       }
 
@@ -238,6 +252,18 @@ const { data: updateData, error: updateError } = await supabase
     DEFAULT_PUBLIC_JOBS_CTA_TEXT
       ? null
       : cleanedCtaText,
+
+        primary_color:
+    club.primary_color,
+
+  secondary_color:
+    club.secondary_color,
+
+  activation_accent_color:
+    club.activation_accent_color,
+
+  activation_template:
+    club.activation_template,
 })
   .eq("id", club.id)
   .select();
@@ -408,6 +434,102 @@ setTimeout(() => {
 >
   CTA tekst herstellen
 </button>
+</div>
+
+<div>
+  <label className="block text-sm font-medium mb-1">
+    Primaire kleur
+  </label>
+
+  <input
+    type="color"
+    value={club.primary_color ?? "#0d1b2a"}
+    onChange={(e) =>
+      setClub({
+        ...club,
+        primary_color: e.target.value,
+      })
+    }
+    className="h-12 w-full border rounded-lg"
+  />
+</div>
+
+<div>
+  <label className="block text-sm font-medium mb-1">
+    Secundaire kleur
+  </label>
+
+  <input
+    type="color"
+    value={club.secondary_color ?? "#ffffff"}
+    onChange={(e) =>
+      setClub({
+        ...club,
+        secondary_color: e.target.value,
+      })
+    }
+    className="h-12 w-full border rounded-lg"
+  />
+</div>
+
+<div>
+  <label className="block text-sm font-medium mb-1">
+    Accentkleur
+  </label>
+
+  <input
+    type="color"
+    value={
+      club.activation_accent_color ??
+      "#22c55e"
+    }
+    onChange={(e) =>
+      setClub({
+        ...club,
+        activation_accent_color:
+          e.target.value,
+      })
+    }
+    className="h-12 w-full border rounded-lg"
+  />
+</div>
+
+<div>
+  <label className="block text-sm font-medium mb-2">
+    Activatietemplate
+  </label>
+
+  <select
+    value={
+      club.activation_template ?? "1"
+    }
+    onChange={(e) =>
+      setClub({
+        ...club,
+        activation_template:
+          e.target.value,
+      })
+    }
+    className="
+      w-full
+      border
+      rounded-lg
+      px-3
+      py-2
+    "
+  >
+    <option value="1">
+      Template #1
+    </option>
+
+    <option value="2">
+      Template #2
+    </option>
+
+    <option value="3">
+      Template #3
+    </option>
+  </select>
 </div>
 
           {/* Logo upload */}

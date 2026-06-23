@@ -20,8 +20,15 @@ type ClubData = {
   name: string;
   logo_url: string | null;
   activation_image_url: string | null;
+
   primary_color: string | null;
   secondary_color: string | null;
+
+  activation_accent_color:
+    string | null;
+
+  activation_template:
+    string | null;
 };
 
 export default function ActivatiePage() {
@@ -91,8 +98,12 @@ const [packageDownloaded, setPackageDownloaded] =
   name,
   logo_url,
   activation_image_url,
+
   primary_color,
-  secondary_color
+  secondary_color,
+
+  activation_accent_color,
+  activation_template
 `)
           .eq("slug", slug)
           .single();
@@ -224,33 +235,39 @@ async function generateImage() {
           },
 
           body: JSON.stringify({
-            template: activationType,
+  platform: activationType,
 
-            primaryColor:
-              clubData?.primary_color,
+  activationTemplate:
+    clubData?.activation_template ?? "1",
 
-            secondaryColor:
-              clubData?.secondary_color,
+  primaryColor:
+    clubData?.primary_color,
 
-            clubLogo:
-              clubData?.logo_url,
+  secondaryColor:
+    clubData?.secondary_color,
 
-            companyLogo:
-              getCompanyLogo(
-                job.apply_url,
-                job.company_logo_url
-              ),
+  accentColor:
+    clubData?.activation_accent_color,
 
-            backgroundImage:
-              job.activation_image_url ??
-              clubData?.activation_image_url,
+  clubLogo:
+    clubData?.logo_url,
 
-            companyName:
-              job.company_name,
+  companyLogo:
+    getCompanyLogo(
+      job.apply_url,
+      job.company_logo_url
+    ),
 
-            jobTitle:
-              job.title,
-          }),
+  backgroundImage:
+    job.activation_image_url ??
+    clubData?.activation_image_url,
+
+  companyName:
+    job.company_name,
+
+  jobTitle:
+    job.title,
+}),
         }
       );
 
