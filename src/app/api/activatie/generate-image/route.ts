@@ -73,13 +73,27 @@ console.log("BACKGROUND:", backgroundImage);
     );
 
     const templateFile =
-  platform === "instagram"
-    ? "instagram.png"
-    : platform === "story"
-    ? "story.png"
-    : platform === "narrowcasting"
-    ? "narrowcasting.png"
-    : "linkedin.png";
+  `${activationTemplate ?? "1"}-${platform}.png`;
+
+let templatePath =
+  path.join(
+    process.cwd(),
+    "public",
+    "templates",
+    templateFile
+  );
+
+try {
+  await loadImage(templatePath);
+} catch {
+  templatePath =
+    path.join(
+      process.cwd(),
+      "public",
+      "templates",
+      "1-linkedin.png"
+    );
+}
 
     const templateImage =
   await loadImage(
