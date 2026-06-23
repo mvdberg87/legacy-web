@@ -306,6 +306,7 @@ if (profileCheck.data) {
       `,
     });
 
+
     console.log("✅ approve-club DONE");
 
     return NextResponse.json({ success: true });
