@@ -41,6 +41,8 @@ type Ad = {
 type Props = {
   club: Club;
   introText: string;
+  ctaTitle?: string;
+ctaText?: string;
   jobs: Job[];
   ads: Ad[];
   adminEmail?: string | null;
@@ -51,6 +53,8 @@ type Props = {
 export default function ClientPage({
   club,
   introText,
+  ctaTitle,
+  ctaText,
   jobs,
   ads,
   adminEmail,
@@ -528,21 +532,46 @@ onShare={() => {
             </div>
           </section>
         )}
-<footer className="text-center text-sm text-white mt-12 opacity-80">
-  <p className="mb-2 font-medium">
-    Heb je vragen over Sponsorjobs? Of wil je als bedrijf ook toegang tot regionaal talent?
+<section
+  className="
+    mt-12
+    bg-white
+    rounded-2xl
+    p-6 sm:p-8
+    text-center
+    shadow-lg
+  "
+>
+  <h3 className="text-xl font-bold text-gray-900 mb-3">
+    {ctaTitle ??
+      "Op zoek naar werk of nieuw talent?"}
+  </h3>
+
+  <p className="text-gray-700 whitespace-pre-line mb-6">
+    {ctaText}
   </p>
-  {adminEmail ? (
+
+  {adminEmail && (
     <a
       href={`mailto:${adminEmail}`}
-      className="underline text-blue-300"
+      className="
+        inline-flex
+        px-6
+        py-3
+        rounded-xl
+        text-white
+        font-semibold
+      "
+      style={{
+        backgroundColor:
+          club.primary_color ??
+          "#1d4ed8",
+      }}
     >
-      Neem gerust contact op via {adminEmail}
+      Neem contact op
     </a>
-  ) : (
-    <p>Neem gerust contact op met het clubbestuur.</p>
   )}
-</footer>
+</section>
       </div>
     </main>
   );

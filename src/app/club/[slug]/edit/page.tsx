@@ -5,7 +5,11 @@ import { useEffect, useMemo, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 import { getSupabaseBrowser } from "@/lib/supabaseBrowser";
 import ClubNavbar from "@/components/club/ClubNavbar";
-import { DEFAULT_PUBLIC_JOBS_INTRO } from "@/lib/defaultTexts";
+import {
+  DEFAULT_PUBLIC_JOBS_INTRO,
+  DEFAULT_PUBLIC_JOBS_CTA_TITLE,
+  DEFAULT_PUBLIC_JOBS_CTA_TEXT,
+} from "@/lib/defaultTexts";
 
 /* ---------- Types ---------- */
 
@@ -17,6 +21,8 @@ type Club = {
   activation_image_url: string | null;
   slug: string;
   jobs_intro_text: string;
+  jobs_cta_title?: string | null;
+jobs_cta_text?: string | null;
   advertising_sales_enabled?: boolean | null;
 };
 
@@ -50,10 +56,20 @@ export default function ClubEditPage() {
         setError("Kon clubgegevens niet laden.");
       } else {
         setClub({
-          ...data,
-          jobs_intro_text:
-  data.jobs_intro_text ?? DEFAULT_PUBLIC_JOBS_INTRO,
-        });
+  ...data,
+
+  jobs_intro_text:
+    data.jobs_intro_text ??
+    DEFAULT_PUBLIC_JOBS_INTRO,
+
+  jobs_cta_title:
+    data.jobs_cta_title ??
+    DEFAULT_PUBLIC_JOBS_CTA_TITLE,
+
+  jobs_cta_text:
+    data.jobs_cta_text ??
+    DEFAULT_PUBLIC_JOBS_CTA_TEXT,
+});
       }
 
       setLoading(false);
@@ -187,20 +203,41 @@ async function handleActivationImageUpload(
     setError(null);
     setSuccess(null);
 
-    const cleanedText = club.jobs_intro_text.trim();
+    const cleanedText =
+  club.jobs_intro_text.trim();
+
+const cleanedCtaTitle =
+  club.jobs_cta_title?.trim() ?? "";
+
+const cleanedCtaText =
+  club.jobs_cta_text?.trim() ?? "";
 
 const { data: updateData, error: updateError } = await supabase
   .from("clubs")
   .update({
   name: club.name,
   logo_url: club.logo_url,
+
   activation_image_url:
     club.activation_image_url,
+
   jobs_intro_text:
     cleanedText ===
     DEFAULT_PUBLIC_JOBS_INTRO
       ? null
       : cleanedText,
+
+  jobs_cta_title:
+    cleanedCtaTitle ===
+    DEFAULT_PUBLIC_JOBS_CTA_TITLE
+      ? null
+      : cleanedCtaTitle,
+
+  jobs_cta_text:
+    cleanedCtaText ===
+    DEFAULT_PUBLIC_JOBS_CTA_TEXT
+      ? null
+      : cleanedCtaText,
 })
   .eq("id", club.id)
   .select();
@@ -301,15 +338,59 @@ setTimeout(() => {
           <button
   type="button"
   onClick={() =>
-    setClub({
-      ...club,
-      jobs_intro_text: DEFAULT_PUBLIC_JOBS_INTRO,
-    })
-  }
+  setClub({
+    ...club,
+
+    jobs_intro_text:
+      DEFAULT_PUBLIC_JOBS_INTRO,
+
+    jobs_cta_title:
+      DEFAULT_PUBLIC_JOBS_CTA_TITLE,
+
+    jobs_cta_text:
+      DEFAULT_PUBLIC_JOBS_CTA_TEXT,
+  })
+}
   className="text-xs text-blue-600 underline mt-2"
 >
   Standaardtekst herstellen
 </button>
+
+<div>
+  <label className="block text-sm font-medium mb-1">
+    CTA titel onderaan
+  </label>
+
+  <input
+    type="text"
+    value={club.jobs_cta_title ?? ""}
+    onChange={(e) =>
+      setClub({
+        ...club,
+        jobs_cta_title: e.target.value,
+      })
+    }
+    className="w-full border rounded-lg px-3 py-2"
+  />
+</div>
+
+<div>
+  <label className="block text-sm font-medium mb-1">
+    CTA tekst onderaan
+  </label>
+
+  <textarea
+    rows={6}
+    value={club.jobs_cta_text ?? ""}
+    onChange={(e) =>
+      setClub({
+        ...club,
+        jobs_cta_text: e.target.value,
+      })
+    }
+    className="w-full border rounded-lg px-3 py-2 text-sm"
+  />
+</div>
 
           {/* Logo upload */}
           <div>

@@ -1,7 +1,11 @@
 import { getSupabaseServer } from "@/lib/supabase.server";
 import ClientPage from "./ClientPage";
 import { supabaseAdmin } from "@/lib/supabaseAdmin";
-import { DEFAULT_PUBLIC_JOBS_INTRO } from "@/lib/defaultTexts";
+import {
+  DEFAULT_PUBLIC_JOBS_INTRO,
+  DEFAULT_PUBLIC_JOBS_CTA_TITLE,
+  DEFAULT_PUBLIC_JOBS_CTA_TEXT,
+} from "@/lib/defaultTexts";
 
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
@@ -21,7 +25,17 @@ export default async function PublicJobsPage({ params }: PageProps) {
   const { data: club } = await supabase
   .from("clubs")
   .select(
-  "id, name, slug, logo_url, primary_color, secondary_color, jobs_intro_text"
+  `
+    id,
+    name,
+    slug,
+    logo_url,
+    primary_color,
+    secondary_color,
+    jobs_intro_text,
+    jobs_cta_title,
+    jobs_cta_text
+  `
 )
   .eq("slug", slug)
   .maybeSingle();
@@ -223,10 +237,18 @@ const marketplaceJobsMapped =
     club.jobs_intro_text?.trim() ||
     DEFAULT_PUBLIC_JOBS_INTRO
   }
+  ctaTitle={
+    club.jobs_cta_title?.trim() ||
+    DEFAULT_PUBLIC_JOBS_CTA_TITLE
+  }
+  ctaText={
+    club.jobs_cta_text?.trim() ||
+    DEFAULT_PUBLIC_JOBS_CTA_TEXT
+  }
   jobs={[
-  ...jobsMapped,
-  ...marketplaceJobsMapped,
-]}
+    ...jobsMapped,
+    ...marketplaceJobsMapped,
+  ]}
   ads={combinedAds}
 />
   );
