@@ -104,6 +104,8 @@ try {
 const templateImage =
   await loadImage(templatePath);
 
+  console.log("TEMPLATE LOADED");
+
     const canvas =
       createCanvas(
         templateImage.width,
@@ -325,8 +327,12 @@ if (companyLogo) {
 
   try {
 
-    const logo =
-      await loadImage(companyLogo);
+    console.log("COMPANY LOGO START");
+
+const logo =
+  await loadImage(companyLogo);
+
+console.log("COMPANY LOGO SUCCESS");
 
     // wit vlak
 
@@ -378,10 +384,12 @@ companyLogoCenterY - logoHeight / 2,
 
 if (clubLogo) {
 
-  const logo =
-    await loadImage(
-      clubLogo
-    );
+  console.log("CLUB LOGO START");
+
+const logo =
+  await loadImage(clubLogo);
+
+console.log("CLUB LOGO SUCCESS");
 
   const maxSize = 180;
 
