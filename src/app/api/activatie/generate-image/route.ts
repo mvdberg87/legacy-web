@@ -223,10 +223,10 @@ photoHeight = 820;
   companyLogoBoxX = 140;
 companyLogoBoxY = 40;
 
-companyLogoCenterX = 215;
-companyLogoCenterY = 115;
+companyLogoCenterX = 205;
+companyLogoCenterY = 105;
 
-companyLogoBoxSize = 170;
+companyLogoBoxSize = 130;
 
   // CLUBLOGO
 
@@ -359,10 +359,10 @@ ctx.drawImage(
 
 ctx.beginPath();
 
-ctx.moveTo(0, 180);      // start links waar foto begint
-ctx.lineTo(880, 180);    // bovenkant
-ctx.lineTo(520, 320);    // schuine lijn volgt foto
-ctx.lineTo(0, 460);      // linkerkant
+ctx.moveTo(0, 180);
+ctx.lineTo(940, 180);
+ctx.lineTo(560, 330);
+ctx.lineTo(0, 470);
 
 ctx.closePath();
 ctx.fill();
@@ -372,29 +372,14 @@ ctx.fillStyle =
 
 ctx.beginPath();
 
-ctx.moveTo(450, 820);     // schuine foto-rand
+ctx.moveTo(450, 820);
 ctx.lineTo(1200, 680);
 
-ctx.lineTo(1200, 1200);   // rechtsonder
-ctx.lineTo(0, 1200);      // linksonder
+ctx.lineTo(1200, 980);
+ctx.lineTo(620, 980);
 
 ctx.closePath();
 ctx.fill();
-
-ctx.strokeStyle = "#FFFFFF";
-ctx.lineWidth = 8;
-
-// bovenste lijn
-ctx.beginPath();
-ctx.moveTo(0, 460);
-ctx.lineTo(1200, 180);
-ctx.stroke();
-
-// onderste lijn
-ctx.beginPath();
-ctx.moveTo(450, 820);
-ctx.lineTo(1200, 680);
-ctx.stroke();
 
    // TITEL FUNCTIE
 
@@ -491,7 +476,7 @@ console.log("COMPANY LOGO SUCCESS");
     ? 220
     : platform === "narrowcasting"
     ? 150
-    : 220;
+    : 110;
 
     const ratio =
       Math.min(
@@ -538,8 +523,6 @@ companyLogoCenterY - logoHeight / 2,
 }
 
 if (clubLogo) {
-
-  console.log("CLUB LOGO START");
 
 const logo =
   await loadImage(clubLogo);
