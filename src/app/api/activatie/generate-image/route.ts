@@ -195,35 +195,35 @@ if (
 
   // FOTO
 
-  photoX = 60;
- photoY = 250;
-  photoWidth = 1080;
-  photoHeight = 660;
+  photoX = 0;
+photoY = 180;
+photoWidth = 1200;
+photoHeight = 820;
 
   // TITEL
 
-  titleX = 340;
+  titleX = 380;
   titleY = 105;
 
   // BEDRIJFSNAAM
 
-  companyX = 340;
+  companyX = 380;
   companyY = 160;
 
   // BEDRIJFSLOGO
 
-  companyLogoBoxX = 90;
-  companyLogoBoxY = 60;
+  companyLogoBoxX = 140;
+companyLogoBoxY = 40;
 
-  companyLogoCenterX = 165;
-  companyLogoCenterY = 115;
+companyLogoCenterX = 215;
+companyLogoCenterY = 115;
 
-  companyLogoBoxSize = 150;
+companyLogoBoxSize = 170;
 
   // CLUBLOGO
 
-  clubLogoX = 1090;
-  clubLogoY = 940;
+  clubLogoX = 1080;
+  clubLogoY = 1030;
 }
 
 if (platform === "story") {
@@ -233,8 +233,8 @@ if (platform === "story") {
   photoWidth = 1080;
   photoHeight = 1200;
 
-  titleX = 240;
-  titleY = 230;
+  titleX = 380;
+  titleY = 380;
 
   companyX = 240;
   companyY = 310;
@@ -347,10 +347,10 @@ ctx.fillStyle =
 
 ctx.beginPath();
 
-ctx.moveTo(700, 210);
-ctx.lineTo(1200, 210);
-ctx.lineTo(1200, 290);
-ctx.lineTo(770, 260);
+ctx.moveTo(760, 220);
+ctx.lineTo(1200, 220);
+ctx.lineTo(1200, 280);
+ctx.lineTo(810, 255);
 
 ctx.closePath();
 ctx.fill();
@@ -360,10 +360,10 @@ ctx.fillStyle =
 
 ctx.beginPath();
 
-ctx.moveTo(430, 860);
-ctx.lineTo(1200, 720);
-ctx.lineTo(1200, 1020);
-ctx.lineTo(620, 1020);
+ctx.moveTo(430, 910);
+ctx.lineTo(1200, 760);
+ctx.lineTo(1200, 1040);
+ctx.lineTo(620, 1040);
 
 ctx.closePath();
 ctx.fill();
@@ -371,11 +371,11 @@ ctx.strokeStyle = "#FFFFFF";
 ctx.lineWidth = 8;
 
 ctx.beginPath();
-ctx.moveTo(80, 520);
-ctx.lineTo(1200, 250);
+ctx.moveTo(810, 255);
+ctx.lineTo(1200, 280);
 ctx.stroke();
 ctx.beginPath();
-ctx.moveTo(420, 900);
+ctx.moveTo(430, 910);
 ctx.lineTo(1200, 760);
 ctx.stroke();
 
@@ -471,10 +471,10 @@ console.log("COMPANY LOGO SUCCESS");
 
     const maxSize =
   platform === "story"
-    ? 130
+    ? 220
     : platform === "narrowcasting"
-    ? 110
-    : 110;
+    ? 150
+    : 170;
 
     const ratio =
       Math.min(
