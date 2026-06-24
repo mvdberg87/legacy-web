@@ -49,29 +49,7 @@ export async function POST(
 
 console.log("BACKGROUND:", backgroundImage);
 
-    registerFont(
-      path.join(
-        process.cwd(),
-        "public",
-        "fonts",
-        "Montserrat-ExtraBold.ttf"
-      ),
-      {
-        family: "MontserratBold",
-      }
-    );
-
-    registerFont(
-      path.join(
-        process.cwd(),
-        "public",
-        "fonts",
-        "Montserrat-SemiBold.ttf"
-      ),
-      {
-        family: "MontserratSemi",
-      }
-    );
+    console.log("SKIP FONT LOAD");
 
     const templateFile =
   `${activationTemplate ?? "1"}-${platform}.png`;
@@ -303,7 +281,7 @@ const jobTitleSize =
   );
 
 ctx.font =
-  `${jobTitleSize}px MontserratBold`;
+  `${jobTitleSize}px sans-serif`;
 
 ctx.fillText(
   jobTitle ?? "",
@@ -323,7 +301,7 @@ const companyFontSize =
     : 34;
 
 ctx.font =
-  `${companyFontSize}px MontserratSemi`;
+  `${companyFontSize}px sans-serif`;
 
 ctx.fillStyle =
   "#ffffff";
