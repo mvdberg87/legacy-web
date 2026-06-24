@@ -196,9 +196,9 @@ if (
   // FOTO
 
   photoX = 40;
- photoY = 260;
+ photoY = 220;
   photoWidth = 1120;
-  photoHeight = 620;
+  photoHeight = 700;
 
   // TITEL
 
@@ -215,15 +215,15 @@ if (
   companyLogoBoxX = 60;
   companyLogoBoxY = 60;
 
-  companyLogoCenterX = 125;
-  companyLogoCenterY = 125;
+  companyLogoCenterX = 115;
+  companyLogoCenterY = 115;
 
   companyLogoBoxSize = 110;
 
   // CLUBLOGO
 
-  clubLogoX = 1080;
-  clubLogoY = 110;
+  clubLogoX = 1050;
+  clubLogoY = 900;
 }
 
 if (platform === "story") {
@@ -325,7 +325,7 @@ ctx.drawImage(
 ctx.restore();
 
 ctx.fillStyle =
-  "rgba(0,0,0,0.25)";
+  "rgba(0,0,0,0.12)";
 
 ctx.fillRect(
   photoX,
@@ -340,25 +340,6 @@ if (
   platform === "facebook" ||
   platform === "instagram"
 ) {
-  // groene bovenlijn
-
-ctx.strokeStyle = clubColor;
-ctx.lineWidth = 12;
-
-ctx.beginPath();
-ctx.moveTo(650, 250);
-ctx.lineTo(1200, 120);
-ctx.stroke();
-
-// blauwe onderlijn
-
-ctx.strokeStyle = secondaryColor;
-ctx.lineWidth = 12;
-
-ctx.beginPath();
-ctx.moveTo(150, 820);
-ctx.lineTo(1200, 550);
-ctx.stroke();
 }
 
     ctx.drawImage(
@@ -366,6 +347,43 @@ ctx.stroke();
   0,
   0
 );
+
+ctx.fillStyle =
+  primaryColor ?? "#4D9F5D";
+
+ctx.beginPath();
+
+ctx.moveTo(650, 200);
+ctx.lineTo(1200, 200);
+ctx.lineTo(1200, 320);
+ctx.lineTo(760, 280);
+
+ctx.closePath();
+ctx.fill();
+
+ctx.fillStyle =
+  secondaryColor ?? "#003B70";
+
+ctx.beginPath();
+
+ctx.moveTo(500, 850);
+ctx.lineTo(1200, 720);
+ctx.lineTo(1200, 980);
+ctx.lineTo(650, 980);
+
+ctx.closePath();
+ctx.fill();
+ctx.strokeStyle = "#FFFFFF";
+ctx.lineWidth = 8;
+
+ctx.beginPath();
+ctx.moveTo(760, 280);
+ctx.lineTo(1200, 320);
+ctx.stroke();
+ctx.beginPath();
+ctx.moveTo(500, 850);
+ctx.lineTo(1200, 720);
+ctx.stroke();
 
    // TITEL FUNCTIE
 
@@ -386,7 +404,7 @@ const startFontSize =
     ? 78
     : platform === "story"
     ? 64
-    : 62;
+    : 56;
 
 const jobTitleSize =
   fitFontSize(
