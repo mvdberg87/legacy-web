@@ -1,5 +1,6 @@
 import { createCanvas, loadImage, registerFont } from "canvas";
 import path from "path";
+import fs from "fs";
 
 function fitFontSize(
   ctx: any,
@@ -88,6 +89,16 @@ let templatePath =
     "templates",
     templateFile
   );
+
+  console.log(
+  "TEMPLATE PATH:",
+  templatePath
+);
+
+console.log(
+  "TEMPLATE EXISTS:",
+  fs.existsSync(templatePath)
+);
 
 try {
   await loadImage(templatePath);
