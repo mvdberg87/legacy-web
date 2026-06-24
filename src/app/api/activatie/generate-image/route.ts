@@ -192,12 +192,16 @@ if (platform === "narrowcasting") {
   clubLogoY = 930;
 }
 
-      if (backgroundImage) {
+      if (false && backgroundImage) {
+
+        console.log("LOAD BACKGROUND START");
 
   const bg =
     await loadImage(
       backgroundImage
     );
+
+    console.log("LOAD BACKGROUND SUCCESS");
 
 const scale =
   Math.max(
