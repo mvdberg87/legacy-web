@@ -360,9 +360,9 @@ ctx.drawImage(
 ctx.beginPath();
 
 ctx.moveTo(0, 180);
-ctx.lineTo(940, 180);
-ctx.lineTo(560, 330);
-ctx.lineTo(0, 470);
+ctx.lineTo(1200, 180);
+ctx.lineTo(720, 360);
+ctx.lineTo(0, 520);
 
 ctx.closePath();
 ctx.fill();
@@ -372,11 +372,11 @@ ctx.fillStyle =
 
 ctx.beginPath();
 
-ctx.moveTo(450, 820);
+ctx.moveTo(420, 820);
 ctx.lineTo(1200, 680);
 
-ctx.lineTo(1200, 980);
-ctx.lineTo(620, 980);
+ctx.lineTo(1200, 1200);
+ctx.lineTo(0, 1200);
 
 ctx.closePath();
 ctx.fill();
@@ -532,7 +532,7 @@ const logo =
     ? 220
     : platform === "narrowcasting"
     ? 150
-    : 170;
+    : 230;
 
   const ratio =
     Math.min(
