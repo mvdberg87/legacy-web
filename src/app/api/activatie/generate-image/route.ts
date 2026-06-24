@@ -126,83 +126,142 @@ templateImage.height
     const ctx =
       canvas.getContext("2d");
 
-      let photoX = 80;
-let photoY = 250;
-let photoWidth = 1050;
-let photoHeight = 950;
+      let photoX = 0;
+let photoY = 0;
+let photoWidth = 0;
+let photoHeight = 0;
 
-let titleX = 390;
-let titleY = 180;
+let titleX = 0;
+let titleY = 0;
 
-let companyX = 390;
-let companyY = 230;
+let companyX = 0;
+let companyY = 0;
 
-let companyLogoBoxX = 235;
-let companyLogoBoxY = 120;
+let companyLogoBoxX = 0;
+let companyLogoBoxY = 0;
 
-let companyLogoCenterX = 305;
-let companyLogoCenterY = 180;
+let companyLogoCenterX = 0;
+let companyLogoCenterY = 0;
+let companyLogoBoxSize = 130;
 
-let clubLogoX = 915;
-let clubLogoY = 1000;
+let clubLogoX = 0;
+let clubLogoY = 0;
 
-// STORY
+if (platform === "linkedin") {
+
+  photoX = 40;
+  photoY = 190;
+  photoWidth = 1120;
+  photoHeight = 395;
+
+  titleX = 350;
+  titleY = 95;
+
+  companyX = 350;
+  companyY = 150;
+
+  companyLogoBoxX = 200;
+  companyLogoBoxY = 35;
+
+  companyLogoCenterX = 265;
+  companyLogoCenterY = 100;
+
+  clubLogoX = 1080;
+  clubLogoY = 90;
+}
+
+if (platform === "facebook") {
+
+  photoX = 40;
+  photoY = 190;
+  photoWidth = 1120;
+  photoHeight = 400;
+
+  titleX = 350;
+  titleY = 95;
+
+  companyX = 350;
+  companyY = 150;
+
+  companyLogoBoxX = 200;
+  companyLogoBoxY = 35;
+
+  companyLogoCenterX = 265;
+  companyLogoCenterY = 100;
+
+  clubLogoX = 1080;
+  clubLogoY = 90;
+}
+
+if (platform === "instagram") {
+
+  photoX = 40;
+  photoY = 250;
+  photoWidth = 1000;
+  photoHeight = 700;
+
+  titleX = 300;
+  titleY = 120;
+
+  companyX = 300;
+  companyY = 180;
+
+  companyLogoBoxX = 120;
+  companyLogoBoxY = 50;
+
+  companyLogoCenterX = 185;
+  companyLogoCenterY = 115;
+
+  clubLogoX = 950;
+  clubLogoY = 110;
+}
 
 if (platform === "story") {
 
-  // foto volledig vullen
   photoX = 0;
-  photoY = 480;
-  photoWidth = canvas.width;
-  photoHeight = 1100;
+  photoY = 520;
+  photoWidth = 1080;
+  photoHeight = 1200;
 
-  // bedrijfslogo lager
-  companyLogoBoxX = 70;
-  companyLogoBoxY = 260;
+  titleX = 250;
+  titleY = 230;
 
-  companyLogoCenterX = 135;
-  companyLogoCenterY = 325;
+  companyX = 250;
+  companyY = 310;
 
-  // titel + bedrijfsnaam lager
-  titleX = 260;
-  titleY = 310;
+  companyLogoBoxX = 80;
+  companyLogoBoxY = 130;
+  companyLogoBoxSize = 160;
 
-  companyX = 260;
-  companyY = 390;
+  companyLogoCenterX = 145;
+  companyLogoCenterY = 195;
 
-  // clublogo hoger
-  clubLogoX = 850;
-  clubLogoY = 1450;
+  clubLogoX = 920;
+  clubLogoY = 180;
 }
-
-// NARROWCASTING
 
 if (platform === "narrowcasting") {
 
-  // foto volledig achter sponsorvlak
-  photoX = 60;
+  photoX = 40;
   photoY = 220;
+  photoWidth = 1840;
+  photoHeight = 800;
 
-  photoWidth = 1860;
-  photoHeight = 900;
+  titleX = 1100;
+  titleY = 120;
 
-  // bedrijfslogo verder naar links
+  companyX = 1100;
+  companyY = 190;
+
   companyLogoBoxX = 930;
-  companyLogoBoxY = 75;
+  companyLogoBoxY = 40;
 
   companyLogoCenterX = 995;
-  companyLogoCenterY = 140;
+  companyLogoCenterY = 105;
+  companyLogoBoxSize = 150;
 
-  // functietitel groter en dichter bij logo
-  titleX = 1090;
-  titleY = 125;
-
-  companyX = 1090;
-  companyY = 205;
-
-  // clublogo midden in sponsorvak
-  clubLogoX = 1560;
-  clubLogoY = 930;
+  clubLogoX = 1750;
+  clubLogoY = 100;
 }
 
       if (backgroundImage) {
@@ -268,9 +327,26 @@ ctx.fillRect(
 
     ctx.drawImage(
   templateImage,
-      0,
-      0
-    );
+  0,
+  0
+);
+
+// Clubkleur toepassen op donkere vlakken
+ctx.globalCompositeOperation = "multiply";
+
+ctx.fillStyle =
+  accentColor ??
+  primaryColor ??
+  "#4D9F5D";
+
+ctx.fillRect(
+  0,
+  0,
+  canvas.width,
+  canvas.height
+);
+
+ctx.globalCompositeOperation = "source-over";
 
     // TITEL FUNCTIE
 
@@ -282,15 +358,19 @@ ctx.fillRect(
 ctx.textAlign = "left";
 
 const titleMaxWidth =
-  platform === "narrowcasting"
+  platform === "story"
     ? 700
-    : platform === "story"
-    ? 700
-    : 650;
+    : platform === "narrowcasting"
+    ? 750
+    : platform === "instagram"
+    ? 650
+    : 600;
 
 const startFontSize =
   platform === "narrowcasting"
     ? 78
+    : platform === "story"
+    ? 64
     : 52;
 
 const jobTitleSize =
@@ -355,14 +435,19 @@ console.log("COMPANY LOGO SUCCESS");
     ctx.roundRect(
   companyLogoBoxX,
   companyLogoBoxY,
-  130,
-  130,
+  companyLogoBoxSize,
+  companyLogoBoxSize,
   20
 );
 
     ctx.fill();
 
-    const maxSize = 90;
+    const maxSize =
+  platform === "story"
+    ? 130
+    : platform === "narrowcasting"
+    ? 110
+    : 90;
 
     const ratio =
       Math.min(
@@ -402,7 +487,14 @@ const logo =
 
 console.log("CLUB LOGO SUCCESS");
 
-  const maxSize = 180;
+  const maxSize =
+  platform === "story"
+    ? 220
+    : platform === "narrowcasting"
+    ? 150
+    : platform === "instagram"
+    ? 140
+    : 160;
 
   const ratio =
     Math.min(
