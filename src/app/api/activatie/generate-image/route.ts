@@ -161,6 +161,14 @@ templateImage.height
     const ctx =
       canvas.getContext("2d");
 
+      ctx.fillStyle = "#FFFFFF";
+ctx.fillRect(
+  0,
+  0,
+  canvas.width,
+  canvas.height
+);
+
       const clubColor =
   accentColor ??
   primaryColor ??
@@ -222,8 +230,8 @@ companyLogoBoxSize = 170;
 
   // CLUBLOGO
 
-  clubLogoX = 1080;
-  clubLogoY = 1030;
+  clubLogoX = 1060;
+clubLogoY = 1080;
 }
 
 if (platform === "story") {
@@ -276,14 +284,10 @@ if (platform === "narrowcasting") {
 
       if (backgroundImage) {
 
-        console.log("LOAD BACKGROUND START");
-
   const bg =
     await loadImage(
       backgroundImage
     );
-
-    console.log("LOAD BACKGROUND SUCCESS");
 
 const scale =
   Math.max(
@@ -342,15 +346,23 @@ if (
 ) {
 }
 
-ctx.fillStyle =
+ctx.drawImage(
+  templateImage,
+  0,
+  0,
+  canvas.width,
+  canvas.height
+);
+
+        ctx.fillStyle =
   primaryColor ?? "#4D9F5D";
 
 ctx.beginPath();
 
-ctx.moveTo(760, 220);
-ctx.lineTo(1200, 220);
-ctx.lineTo(1200, 280);
-ctx.lineTo(810, 255);
+ctx.moveTo(760, 180);
+ctx.lineTo(1200, 180);
+ctx.lineTo(1200, 250);
+ctx.lineTo(810, 225);
 
 ctx.closePath();
 ctx.fill();
@@ -360,10 +372,10 @@ ctx.fillStyle =
 
 ctx.beginPath();
 
-ctx.moveTo(430, 910);
-ctx.lineTo(1200, 760);
-ctx.lineTo(1200, 1040);
-ctx.lineTo(620, 1040);
+ctx.moveTo(430, 820);
+ctx.lineTo(1200, 670);
+ctx.lineTo(1200, 980);
+ctx.lineTo(620, 980);
 
 ctx.closePath();
 ctx.fill();
@@ -474,7 +486,7 @@ console.log("COMPANY LOGO SUCCESS");
     ? 220
     : platform === "narrowcasting"
     ? 150
-    : 170;
+    : 220;
 
     const ratio =
       Math.min(
@@ -527,14 +539,12 @@ if (clubLogo) {
 const logo =
   await loadImage(clubLogo);
 
-console.log("CLUB LOGO SUCCESS");
-
   const maxSize =
   platform === "story"
     ? 220
     : platform === "narrowcasting"
     ? 150
-    : 130;
+    : 170;
 
   const ratio =
     Math.min(
