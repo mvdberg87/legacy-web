@@ -27,6 +27,41 @@ function fitFontSize(
   return 20;
 }
 
+function getContrastColor(color: string) {
+
+  const hex =
+    color.replace("#", "");
+
+  const r =
+    parseInt(
+      hex.substring(0, 2),
+      16
+    );
+
+  const g =
+    parseInt(
+      hex.substring(2, 4),
+      16
+    );
+
+  const b =
+    parseInt(
+      hex.substring(4, 6),
+      16
+    );
+
+  const brightness =
+    (
+      r * 299 +
+      g * 587 +
+      b * 114
+    ) / 1000;
+
+  return brightness > 150
+    ? "#000000"
+    : "#FFFFFF";
+}
+
 export async function POST(
   req: Request
 ) {
@@ -152,7 +187,7 @@ if (platform === "linkedin") {
   photoX = 40;
   photoY = 190;
   photoWidth = 1120;
-  photoHeight = 395;
+  photoHeight = 450;
 
   titleX = 350;
   titleY = 95;
@@ -331,29 +366,15 @@ ctx.fillRect(
   0
 );
 
-// Clubkleur toepassen op donkere vlakken
-ctx.globalCompositeOperation = "multiply";
+   // TITEL FUNCTIE
+
+const clubColor =
+  accentColor ??
+  primaryColor ??
+  "#4D9F5D";
 
 ctx.fillStyle =
-  accentColor ??
-  primaryColor ??
-  "#4D9F5D";
-
-ctx.fillRect(
-  0,
-  0,
-  canvas.width,
-  canvas.height
-);
-
-ctx.globalCompositeOperation = "source-over";
-
-    // TITEL FUNCTIE
-
-    ctx.fillStyle =
-  accentColor ??
-  primaryColor ??
-  "#4D9F5D";
+  getContrastColor(clubColor);
 
 ctx.textAlign = "left";
 
@@ -406,7 +427,7 @@ ctx.font =
   `${companyFontSize}px MontserratSemi`;
 
 ctx.fillStyle =
-  "#ffffff";
+  getContrastColor(clubColor);
 
 ctx.fillText(
   companyName ?? "",
