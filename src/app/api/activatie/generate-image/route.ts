@@ -161,6 +161,11 @@ templateImage.height
     const ctx =
       canvas.getContext("2d");
 
+      const clubColor =
+  accentColor ??
+  primaryColor ??
+  "#4D9F5D";
+
       let photoX = 0;
 let photoY = 0;
 let photoWidth = 0;
@@ -182,72 +187,42 @@ let companyLogoBoxSize = 130;
 let clubLogoX = 0;
 let clubLogoY = 0;
 
-if (platform === "linkedin") {
+if (
+  platform === "linkedin" ||
+  platform === "facebook" ||
+  platform === "instagram"
+) {
+
+  // FOTO
 
   photoX = 40;
-  photoY = 190;
+ photoY = 260;
   photoWidth = 1120;
-  photoHeight = 450;
+  photoHeight = 620;
 
-  titleX = 350;
-  titleY = 95;
+  // TITEL
 
-  companyX = 350;
-  companyY = 150;
+  titleX = 220;
+  titleY = 105;
 
-  companyLogoBoxX = 200;
-  companyLogoBoxY = 35;
+  // BEDRIJFSNAAM
 
-  companyLogoCenterX = 265;
-  companyLogoCenterY = 100;
+  companyX = 220;
+  companyY = 160;
+
+  // BEDRIJFSLOGO
+
+  companyLogoBoxX = 60;
+  companyLogoBoxY = 60;
+
+  companyLogoCenterX = 125;
+  companyLogoCenterY = 125;
+
+  companyLogoBoxSize = 110;
+
+  // CLUBLOGO
 
   clubLogoX = 1080;
-  clubLogoY = 90;
-}
-
-if (platform === "facebook") {
-
-  photoX = 40;
-  photoY = 190;
-  photoWidth = 1120;
-  photoHeight = 400;
-
-  titleX = 350;
-  titleY = 95;
-
-  companyX = 350;
-  companyY = 150;
-
-  companyLogoBoxX = 200;
-  companyLogoBoxY = 35;
-
-  companyLogoCenterX = 265;
-  companyLogoCenterY = 100;
-
-  clubLogoX = 1080;
-  clubLogoY = 90;
-}
-
-if (platform === "instagram") {
-
-  photoX = 40;
-  photoY = 250;
-  photoWidth = 1000;
-  photoHeight = 700;
-
-  titleX = 300;
-  titleY = 120;
-
-  companyX = 300;
-  companyY = 180;
-
-  companyLogoBoxX = 120;
-  companyLogoBoxY = 50;
-
-  companyLogoCenterX = 185;
-  companyLogoCenterY = 115;
-
-  clubLogoX = 950;
   clubLogoY = 110;
 }
 
@@ -258,10 +233,10 @@ if (platform === "story") {
   photoWidth = 1080;
   photoHeight = 1200;
 
-  titleX = 250;
+  titleX = 240;
   titleY = 230;
 
-  companyX = 250;
+  companyX = 240;
   companyY = 310;
 
   companyLogoBoxX = 80;
@@ -360,6 +335,32 @@ ctx.fillRect(
 );
 }
 
+if (
+  platform === "linkedin" ||
+  platform === "facebook" ||
+  platform === "instagram"
+) {
+  // groene bovenlijn
+
+ctx.strokeStyle = clubColor;
+ctx.lineWidth = 12;
+
+ctx.beginPath();
+ctx.moveTo(650, 250);
+ctx.lineTo(1200, 120);
+ctx.stroke();
+
+// blauwe onderlijn
+
+ctx.strokeStyle = secondaryColor;
+ctx.lineWidth = 12;
+
+ctx.beginPath();
+ctx.moveTo(150, 820);
+ctx.lineTo(1200, 550);
+ctx.stroke();
+}
+
     ctx.drawImage(
   templateImage,
   0,
@@ -368,13 +369,8 @@ ctx.fillRect(
 
    // TITEL FUNCTIE
 
-const clubColor =
-  accentColor ??
-  primaryColor ??
-  "#4D9F5D";
-
 ctx.fillStyle =
-  getContrastColor(clubColor);
+  clubColor;
 
 ctx.textAlign = "left";
 
@@ -382,17 +378,15 @@ const titleMaxWidth =
   platform === "story"
     ? 700
     : platform === "narrowcasting"
-    ? 750
-    : platform === "instagram"
-    ? 650
-    : 600;
+    ? 1100
+    : 800;
 
 const startFontSize =
   platform === "narrowcasting"
     ? 78
     : platform === "story"
     ? 64
-    : 52;
+    : 62;
 
 const jobTitleSize =
   fitFontSize(
@@ -421,13 +415,13 @@ const companyFontSize =
     ? jobTitleSize
     : platform === "narrowcasting"
     ? jobTitleSize
-    : 34;
+    : 26;
 
 ctx.font =
   `${companyFontSize}px MontserratSemi`;
 
 ctx.fillStyle =
-  getContrastColor(clubColor);
+  "#222222";
 
 ctx.fillText(
   companyName ?? "",
@@ -468,7 +462,7 @@ console.log("COMPANY LOGO SUCCESS");
     ? 130
     : platform === "narrowcasting"
     ? 110
-    : 90;
+    : 70;
 
     const ratio =
       Math.min(
@@ -489,6 +483,21 @@ companyLogoCenterY - logoHeight / 2,
       logoWidth,
       logoHeight
     );
+
+    if (
+  platform === "linkedin" ||
+  platform === "facebook" ||
+  platform === "instagram"
+) {
+
+  ctx.strokeStyle = "#D0D0D0";
+  ctx.lineWidth = 2;
+
+  ctx.beginPath();
+  ctx.moveTo(180, 60);
+  ctx.lineTo(180, 170);
+  ctx.stroke();
+}
 
   } catch (error) {
 
@@ -513,9 +522,7 @@ console.log("CLUB LOGO SUCCESS");
     ? 220
     : platform === "narrowcasting"
     ? 150
-    : platform === "instagram"
-    ? 140
-    : 160;
+    : 90;
 
   const ratio =
     Math.min(
