@@ -359,10 +359,10 @@ ctx.drawImage(
 
 ctx.beginPath();
 
-ctx.moveTo(760, 180);
-ctx.lineTo(1200, 180);
-ctx.lineTo(1200, 250);
-ctx.lineTo(810, 225);
+ctx.moveTo(0, 180);      // start links waar foto begint
+ctx.lineTo(880, 180);    // bovenkant
+ctx.lineTo(520, 320);    // schuine lijn volgt foto
+ctx.lineTo(0, 460);      // linkerkant
 
 ctx.closePath();
 ctx.fill();
@@ -372,23 +372,28 @@ ctx.fillStyle =
 
 ctx.beginPath();
 
-ctx.moveTo(430, 820);
-ctx.lineTo(1200, 670);
-ctx.lineTo(1200, 980);
-ctx.lineTo(620, 980);
+ctx.moveTo(450, 820);     // schuine foto-rand
+ctx.lineTo(1200, 680);
+
+ctx.lineTo(1200, 1200);   // rechtsonder
+ctx.lineTo(0, 1200);      // linksonder
 
 ctx.closePath();
 ctx.fill();
+
 ctx.strokeStyle = "#FFFFFF";
 ctx.lineWidth = 8;
 
+// bovenste lijn
 ctx.beginPath();
-ctx.moveTo(810, 255);
-ctx.lineTo(1200, 280);
+ctx.moveTo(0, 460);
+ctx.lineTo(1200, 180);
 ctx.stroke();
+
+// onderste lijn
 ctx.beginPath();
-ctx.moveTo(430, 910);
-ctx.lineTo(1200, 760);
+ctx.moveTo(450, 820);
+ctx.lineTo(1200, 680);
 ctx.stroke();
 
    // TITEL FUNCTIE
