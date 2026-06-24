@@ -49,7 +49,29 @@ export async function POST(
 
 console.log("BACKGROUND:", backgroundImage);
 
-    console.log("SKIP FONT LOAD");
+    registerFont(
+  path.join(
+    process.cwd(),
+    "public",
+    "fonts",
+    "Montserrat-ExtraBold.ttf"
+  ),
+  {
+    family: "MontserratBold",
+  }
+);
+
+registerFont(
+  path.join(
+    process.cwd(),
+    "public",
+    "fonts",
+    "Montserrat-SemiBold.ttf"
+  ),
+  {
+    family: "MontserratSemi",
+  }
+);
 
     const templateFile =
   `${activationTemplate ?? "1"}-${platform}.png`;
@@ -183,7 +205,7 @@ if (platform === "narrowcasting") {
   clubLogoY = 930;
 }
 
-      if (false && backgroundImage) {
+      if (backgroundImage) {
 
         console.log("LOAD BACKGROUND START");
 
@@ -281,7 +303,7 @@ const jobTitleSize =
   );
 
 ctx.font =
-  `${jobTitleSize}px sans-serif`;
+  `${jobTitleSize}px MontserratBold`;
 
 ctx.fillText(
   jobTitle ?? "",
@@ -301,7 +323,7 @@ const companyFontSize =
     : 34;
 
 ctx.font =
-  `${companyFontSize}px sans-serif`;
+  `${companyFontSize}px MontserratSemi`;
 
 ctx.fillStyle =
   "#ffffff";
