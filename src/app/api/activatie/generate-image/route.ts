@@ -195,35 +195,35 @@ if (
 
   // FOTO
 
-  photoX = 40;
- photoY = 220;
-  photoWidth = 1120;
-  photoHeight = 700;
+  photoX = 60;
+ photoY = 250;
+  photoWidth = 1080;
+  photoHeight = 660;
 
   // TITEL
 
-  titleX = 220;
+  titleX = 340;
   titleY = 105;
 
   // BEDRIJFSNAAM
 
-  companyX = 220;
+  companyX = 340;
   companyY = 160;
 
   // BEDRIJFSLOGO
 
-  companyLogoBoxX = 60;
+  companyLogoBoxX = 90;
   companyLogoBoxY = 60;
 
-  companyLogoCenterX = 115;
+  companyLogoCenterX = 165;
   companyLogoCenterY = 115;
 
-  companyLogoBoxSize = 110;
+  companyLogoBoxSize = 150;
 
   // CLUBLOGO
 
-  clubLogoX = 1050;
-  clubLogoY = 900;
+  clubLogoX = 1090;
+  clubLogoY = 940;
 }
 
 if (platform === "story") {
@@ -342,21 +342,15 @@ if (
 ) {
 }
 
-    ctx.drawImage(
-  templateImage,
-  0,
-  0
-);
-
 ctx.fillStyle =
   primaryColor ?? "#4D9F5D";
 
 ctx.beginPath();
 
-ctx.moveTo(650, 200);
-ctx.lineTo(1200, 200);
-ctx.lineTo(1200, 320);
-ctx.lineTo(760, 280);
+ctx.moveTo(700, 210);
+ctx.lineTo(1200, 210);
+ctx.lineTo(1200, 290);
+ctx.lineTo(770, 260);
 
 ctx.closePath();
 ctx.fill();
@@ -366,10 +360,10 @@ ctx.fillStyle =
 
 ctx.beginPath();
 
-ctx.moveTo(500, 850);
+ctx.moveTo(430, 860);
 ctx.lineTo(1200, 720);
-ctx.lineTo(1200, 980);
-ctx.lineTo(650, 980);
+ctx.lineTo(1200, 1020);
+ctx.lineTo(620, 1020);
 
 ctx.closePath();
 ctx.fill();
@@ -377,12 +371,12 @@ ctx.strokeStyle = "#FFFFFF";
 ctx.lineWidth = 8;
 
 ctx.beginPath();
-ctx.moveTo(760, 280);
-ctx.lineTo(1200, 320);
+ctx.moveTo(80, 520);
+ctx.lineTo(1200, 250);
 ctx.stroke();
 ctx.beginPath();
-ctx.moveTo(500, 850);
-ctx.lineTo(1200, 720);
+ctx.moveTo(420, 900);
+ctx.lineTo(1200, 760);
 ctx.stroke();
 
    // TITEL FUNCTIE
@@ -480,7 +474,7 @@ console.log("COMPANY LOGO SUCCESS");
     ? 130
     : platform === "narrowcasting"
     ? 110
-    : 70;
+    : 110;
 
     const ratio =
       Math.min(
@@ -512,8 +506,8 @@ companyLogoCenterY - logoHeight / 2,
   ctx.lineWidth = 2;
 
   ctx.beginPath();
-  ctx.moveTo(180, 60);
-  ctx.lineTo(180, 170);
+  ctx.moveTo(240, 60);
+  ctx.lineTo(240, 170);
   ctx.stroke();
 }
 
@@ -540,7 +534,7 @@ console.log("CLUB LOGO SUCCESS");
     ? 220
     : platform === "narrowcasting"
     ? 150
-    : 90;
+    : 130;
 
   const ratio =
     Math.min(
