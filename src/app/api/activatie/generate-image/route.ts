@@ -354,32 +354,29 @@ ctx.drawImage(
   canvas.height
 );
 
-        ctx.fillStyle =
+      // Bovenste balk (Primary color)
+
+ctx.fillStyle =
   primaryColor ?? "#4D9F5D";
 
-ctx.beginPath();
+ctx.fillRect(
+  0,
+  180,
+  canvas.width,
+  30
+);
 
-ctx.moveTo(0, 180);
-ctx.lineTo(1200, 180);
-ctx.lineTo(720, 360);
-ctx.lineTo(0, 520);
-
-ctx.closePath();
-ctx.fill();
+// Onderste balk (Secondary color)
 
 ctx.fillStyle =
   secondaryColor ?? "#003B70";
 
-ctx.beginPath();
-
-ctx.moveTo(420, 820);
-ctx.lineTo(1200, 680);
-
-ctx.lineTo(1200, 1200);
-ctx.lineTo(0, 1200);
-
-ctx.closePath();
-ctx.fill();
+ctx.fillRect(
+  0,
+  970,
+  canvas.width,
+  30
+);  
 
    // TITEL FUNCTIE
 
