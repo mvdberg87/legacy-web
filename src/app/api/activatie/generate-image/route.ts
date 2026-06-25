@@ -62,6 +62,57 @@ function getContrastColor(color: string) {
     : "#FFFFFF";
 }
 
+const BASE_LAYOUT = {
+  photoX: 0,
+  photoY: 180,
+  photoWidth: 1200,
+  photoHeight: 820,
+
+  titleX: 380,
+  titleY: 105,
+
+  companyX: 380,
+  companyY: 160,
+
+  companyLogoBoxX: 135,
+  companyLogoBoxY: 40,
+  companyLogoCenterX: 205,
+  companyLogoCenterY: 105,
+  companyLogoBoxSize: 140,
+
+  clubLogoX: 1000,
+  clubLogoY: 1040,
+
+  stripeWidth: 80,
+  topStripeAngle: -0.185,
+  topStripeY: 435,
+
+  bottomStripeAngle: -0.145,
+  bottomStripeY: 943,
+
+  titleMaxWidth: 800,
+  startFontSize: 56,
+
+  companyFontSize: 26,
+
+  companyLogoMaxSize: 110,
+  clubLogoMaxSize: 230,
+};
+
+const LAYOUTS = {
+  square: {
+    ...BASE_LAYOUT,
+  },
+
+  story: {
+    ...BASE_LAYOUT,
+  },
+
+  narrowcasting: {
+    ...BASE_LAYOUT,
+  },
+};
+
 export async function POST(
   req: Request
 ) {
@@ -174,6 +225,13 @@ ctx.fillRect(
   primaryColor ??
   "#4D9F5D";
 
+  const layout =
+  platform === "story"
+    ? LAYOUTS.story
+    : platform === "narrowcasting"
+    ? LAYOUTS.narrowcasting
+    : LAYOUTS.square;
+
       let photoX = 0;
 let photoY = 0;
 let photoWidth = 0;
@@ -205,8 +263,8 @@ if (
 
   photoX = 0;
 photoY = 180;
-photoWidth = 1200;
-photoHeight = 820;
+layout.photoWidth = 1200;
+layout.photoHeight = 820;
 
   // TITEL
 
@@ -223,10 +281,10 @@ photoHeight = 820;
   companyLogoBoxX = 135;
 companyLogoBoxY = 40;
 
-companyLogoCenterX = 205;
-companyLogoCenterY = 105;
+layout.companyLogoCenterX = 205;
+layout.companyLogoCenterY = 105;
 
-companyLogoBoxSize = 140;
+layout.companyLogoBoxSize = 140;
 
   // CLUBLOGO
 
@@ -238,8 +296,8 @@ if (platform === "story") {
 
   photoX = 0;
   photoY = 520;
-  photoWidth = 1080;
-  photoHeight = 1200;
+  layout.photoWidth = 1080;
+  layout.photoHeight = 1200;
 
   titleX = 380;
   titleY = 380;
@@ -262,8 +320,8 @@ if (platform === "narrowcasting") {
 
   photoX = 40;
   photoY = 220;
-  photoWidth = 1840;
-  photoHeight = 800;
+  layout.photoWidth = 1840;
+  layout.photoHeight = 800;
 
   titleX = 1100;
   titleY = 120;
@@ -291,29 +349,29 @@ if (platform === "narrowcasting") {
 
 const scale =
   Math.max(
-    photoWidth / bg.width,
-    photoHeight / bg.height
+    layout.photoWidth / bg.width,
+    layout.photoHeight / bg.height
   ) * 1.02;
 
 const width = bg.width * scale;
 const height = bg.height * scale;
 
 const x =
-  photoX +
-  (photoWidth - width) / 2;
+  layout.photoX +
+  (layout.photoWidth - width) / 2;
 
 const y =
-  photoY +
-  (photoHeight - height) / 2;
+  layout.photoY +
+  (layout.photoHeight - height) / 2;
 
 ctx.save();
 
 ctx.beginPath();
 ctx.rect(
-  photoX,
-  photoY,
-  photoWidth,
-  photoHeight
+  layout.photoX,
+  layout.photoY,
+  layout.photoWidth,
+  layout.photoHeight
 );
 
 ctx.clip();
@@ -332,10 +390,10 @@ ctx.fillStyle =
   "rgba(0,0,0,0.12)";
 
 ctx.fillRect(
-  photoX,
-  photoY,
-  photoWidth,
-  photoHeight
+  layout.photoX,
+  layout.photoY,
+  layout.photoWidth,
+  layout.photoHeight
 );
 }
 
@@ -354,11 +412,9 @@ ctx.drawImage(
   canvas.height
 );
 
-      const stripeWidth = 80;
-
-// Hoek gelijk aan de foto
-const topStripeAngle = -0.185;
-const bottomStripeAngle = -0.145;
+      const stripeWidth = layout.stripeWidth;
+const topStripeAngle = layout.topStripeAngle;
+const bottomStripeAngle = layout.bottomStripeAngle;
 
 // ===== BOVENSTE BALK =====
 
@@ -367,7 +423,7 @@ ctx.fillStyle =
 
 ctx.save();
 
-ctx.translate(0, 435);
+ctx.translate(0, layout.topStripeY);
 
 ctx.rotate(topStripeAngle);
 
@@ -387,7 +443,7 @@ ctx.fillStyle =
 
 ctx.save();
 
-ctx.translate(0, 943);
+ctx.translate(0, layout.bottomStripeY);
 
 ctx.rotate(bottomStripeAngle);
 
@@ -407,19 +463,8 @@ ctx.fillStyle =
 
 ctx.textAlign = "left";
 
-const titleMaxWidth =
-  platform === "story"
-    ? 700
-    : platform === "narrowcasting"
-    ? 1100
-    : 800;
-
-const startFontSize =
-  platform === "narrowcasting"
-    ? 78
-    : platform === "story"
-    ? 64
-    : 56;
+const titleMaxWidth = layout.titleMaxWidth;
+const startFontSize = layout.startFontSize;
 
 const jobTitleSize =
   fitFontSize(
@@ -435,20 +480,15 @@ ctx.font =
 
 ctx.fillText(
   jobTitle ?? "",
-  titleX,
-  titleY
+  layout.titleX,
+  layout.titleY
 );
 
     // BEDRIJFSNAAM
 
     ctx.textAlign = "left";
 
-const companyFontSize =
-  platform === "story"
-    ? jobTitleSize
-    : platform === "narrowcasting"
-    ? jobTitleSize
-    : 26;
+const companyFontSize = layout.companyFontSize;
 
 ctx.font =
   `${companyFontSize}px MontserratSemi`;
@@ -458,8 +498,8 @@ ctx.fillStyle =
 
 ctx.fillText(
   companyName ?? "",
-  companyX,
-  companyY
+  layout.companyX,
+  layout.companyY
 );
 
 if (companyLogo) {
@@ -481,21 +521,16 @@ console.log("COMPANY LOGO SUCCESS");
     ctx.beginPath();
 
     ctx.roundRect(
-  companyLogoBoxX,
-  companyLogoBoxY,
-  companyLogoBoxSize,
-  companyLogoBoxSize,
+  layout.companyLogoBoxX,
+  layout.companyLogoBoxY,
+  layout.companyLogoBoxSize,
+  layout.companyLogoBoxSize,
   20
 );
 
     ctx.fill();
 
-    const maxSize =
-  platform === "story"
-    ? 220
-    : platform === "narrowcasting"
-    ? 150
-    : 110;
+    const maxSize = layout.companyLogoMaxSize;
 
     const ratio =
       Math.min(
@@ -511,8 +546,8 @@ console.log("COMPANY LOGO SUCCESS");
 
     ctx.drawImage(
       logo,
-      companyLogoCenterX - logoWidth / 2,
-companyLogoCenterY - logoHeight / 2,
+      layout.companyLogoCenterX - logoWidth / 2,
+layout.companyLogoCenterY - logoHeight / 2,
       logoWidth,
       logoHeight
     );
@@ -539,12 +574,7 @@ if (clubLogo) {
 const logo =
   await loadImage(clubLogo);
 
-  const maxSize =
-  platform === "story"
-    ? 220
-    : platform === "narrowcasting"
-    ? 150
-    : 230;
+  const maxSize = layout.clubLogoMaxSize;
 
   const ratio =
     Math.min(
@@ -560,8 +590,8 @@ const logo =
 
   ctx.drawImage(
   logo,
-  clubLogoX - logoWidth / 2,
-  clubLogoY - logoHeight / 2,
+  layout.clubLogoX - logoWidth / 2,
+  layout.clubLogoY - logoHeight / 2,
   logoWidth,
   logoHeight
 );
