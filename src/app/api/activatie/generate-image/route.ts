@@ -220,13 +220,13 @@ photoHeight = 820;
 
   // BEDRIJFSLOGO
 
-  companyLogoBoxX = 140;
+  companyLogoBoxX = 135;
 companyLogoBoxY = 40;
 
 companyLogoCenterX = 205;
 companyLogoCenterY = 105;
 
-companyLogoBoxSize = 130;
+companyLogoBoxSize = 140;
 
   // CLUBLOGO
 
@@ -357,7 +357,7 @@ ctx.drawImage(
       const stripeWidth = 80;
 
 // Hoek gelijk aan de foto
-const topStripeAngle = -0.18;
+const topStripeAngle = -0.185;
 const bottomStripeAngle = -0.145;
 
 // ===== BOVENSTE BALK =====
