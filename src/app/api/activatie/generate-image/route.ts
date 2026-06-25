@@ -354,29 +354,48 @@ ctx.drawImage(
   canvas.height
 );
 
-      // Bovenste balk (Primary color)
+      const stripeWidth = 80;
+
+// ===== BOVENSTE BALK =====
 
 ctx.fillStyle =
   primaryColor ?? "#4D9F5D";
 
+ctx.save();
+
+ctx.translate(0, 180);
+
+// ongeveer dezelfde hoek als de foto
+ctx.rotate(-0.22);
+
 ctx.fillRect(
-  0,
-  180,
-  canvas.width,
-  30
+  -200,
+  -stripeWidth / 2,
+  canvas.width + 400,
+  stripeWidth
 );
 
-// Onderste balk (Secondary color)
+ctx.restore();
+
+// ===== ONDERSTE BALK =====
 
 ctx.fillStyle =
   secondaryColor ?? "#003B70";
 
+ctx.save();
+
+ctx.translate(0, 970);
+
+ctx.rotate(-0.22);
+
 ctx.fillRect(
-  0,
-  970,
-  canvas.width,
-  30
-);  
+  -200,
+  -stripeWidth / 2,
+  canvas.width + 400,
+  stripeWidth
+);
+
+ctx.restore();
 
    // TITEL FUNCTIE
 
