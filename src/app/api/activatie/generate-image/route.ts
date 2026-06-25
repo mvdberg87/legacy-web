@@ -356,6 +356,10 @@ ctx.drawImage(
 
       const stripeWidth = 80;
 
+// De hoek van de foto
+const topStripeAngle = -0.18;
+const bottomStripeAngle = -0.16;
+
 // ===== BOVENSTE BALK =====
 
 ctx.fillStyle =
@@ -363,15 +367,13 @@ ctx.fillStyle =
 
 ctx.save();
 
-ctx.translate(0, 180);
-
-// ongeveer dezelfde hoek als de foto
-ctx.rotate(-0.22);
+ctx.translate(0, 285);   // ongeveer 100 px lager
+ctx.rotate(topStripeAngle);
 
 ctx.fillRect(
-  -200,
+  -400,
   -stripeWidth / 2,
-  canvas.width + 400,
+  canvas.width + 800,
   stripeWidth
 );
 
@@ -384,14 +386,13 @@ ctx.fillStyle =
 
 ctx.save();
 
-ctx.translate(0, 970);
-
-ctx.rotate(-0.22);
+ctx.translate(0, 965);   // vrijwel gelijk houden
+ctx.rotate(bottomStripeAngle);
 
 ctx.fillRect(
-  -200,
+  -400,
   -stripeWidth / 2,
-  canvas.width + 400,
+  canvas.width + 800,
   stripeWidth
 );
 
