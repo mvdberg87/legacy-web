@@ -231,7 +231,7 @@ companyLogoBoxSize = 130;
   // CLUBLOGO
 
   clubLogoX = 1000;
-clubLogoY = 1000;
+clubLogoY = 1040;
 }
 
 if (platform === "story") {
@@ -358,7 +358,7 @@ ctx.drawImage(
 
 // Hoek gelijk aan de foto
 const topStripeAngle = -0.18;
-const bottomStripeAngle = -0.14;
+const bottomStripeAngle = -0.145;
 
 // ===== BOVENSTE BALK =====
 
@@ -387,7 +387,7 @@ ctx.fillStyle =
 
 ctx.save();
 
-ctx.translate(0, 960);
+ctx.translate(0, 945);
 
 ctx.rotate(bottomStripeAngle);
 
