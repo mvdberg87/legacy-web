@@ -356,9 +356,9 @@ ctx.drawImage(
 
       const stripeWidth = 80;
 
-// De hoek van de foto
+// Hoek gelijk aan de foto
 const topStripeAngle = -0.18;
-const bottomStripeAngle = -0.16;
+const bottomStripeAngle = -0.145;
 
 // ===== BOVENSTE BALK =====
 
@@ -367,7 +367,8 @@ ctx.fillStyle =
 
 ctx.save();
 
-ctx.translate(0, 285);   // ongeveer 100 px lager
+ctx.translate(0, 395);
+
 ctx.rotate(topStripeAngle);
 
 ctx.fillRect(
@@ -386,7 +387,8 @@ ctx.fillStyle =
 
 ctx.save();
 
-ctx.translate(0, 965);   // vrijwel gelijk houden
+ctx.translate(0, 960);
+
 ctx.rotate(bottomStripeAngle);
 
 ctx.fillRect(
