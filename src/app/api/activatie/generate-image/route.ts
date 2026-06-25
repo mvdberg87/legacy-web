@@ -387,7 +387,7 @@ ctx.fillStyle =
 
 ctx.save();
 
-ctx.translate(0, 945);
+ctx.translate(0, 943);
 
 ctx.rotate(bottomStripeAngle);
 
@@ -523,13 +523,6 @@ companyLogoCenterY - logoHeight / 2,
   platform === "instagram"
 ) {
 
-  ctx.strokeStyle = "#D0D0D0";
-  ctx.lineWidth = 2;
-
-  ctx.beginPath();
-  ctx.moveTo(240, 60);
-  ctx.lineTo(240, 170);
-  ctx.stroke();
 }
 
   } catch (error) {
