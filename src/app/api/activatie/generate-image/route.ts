@@ -105,13 +105,126 @@ const LAYOUTS = {
   },
 
   story: {
-    ...BASE_LAYOUT,
-  },
+  ...BASE_LAYOUT,
+
+  photoX: 0,
+  photoY: 520,
+  photoWidth: 1080,
+  photoHeight: 1200,
+
+  titleX: 380,
+  titleY: 380,
+
+  companyX: 240,
+  companyY: 310,
+
+  companyLogoBoxX: 80,
+  companyLogoBoxY: 130,
+  companyLogoCenterX: 145,
+  companyLogoCenterY: 195,
+  companyLogoBoxSize: 160,
+
+  clubLogoX: 920,
+  clubLogoY: 180,
+
+  titleMaxWidth: 700,
+  startFontSize: 64,
+
+  companyFontSize: 64,
+
+  companyLogoMaxSize: 220,
+  clubLogoMaxSize: 220,
+},
 
   narrowcasting: {
-    ...BASE_LAYOUT,
-  },
+  ...BASE_LAYOUT,
+
+  photoX: 40,
+  photoY: 220,
+  photoWidth: 1840,
+  photoHeight: 800,
+
+  titleX: 1100,
+  titleY: 120,
+
+  companyX: 1100,
+  companyY: 190,
+
+  companyLogoBoxX: 930,
+  companyLogoBoxY: 40,
+  companyLogoCenterX: 995,
+  companyLogoCenterY: 105,
+  companyLogoBoxSize: 150,
+
+  clubLogoX: 1750,
+  clubLogoY: 100,
+
+  titleMaxWidth: 1100,
+  startFontSize: 78,
+
+  companyFontSize: 78,
+
+  companyLogoMaxSize: 150,
+  clubLogoMaxSize: 150,
+},
 };
+
+async function drawBackground(
+  ctx: any,
+  backgroundImage: string,
+  layout: any
+) {
+  const bg = await loadImage(backgroundImage);
+
+  const scale =
+    Math.max(
+      layout.photoWidth / bg.width,
+      layout.photoHeight / bg.height
+    ) * 1.02;
+
+  const width = bg.width * scale;
+  const height = bg.height * scale;
+
+  const x =
+    layout.photoX +
+    (layout.photoWidth - width) / 2;
+
+  const y =
+    layout.photoY +
+    (layout.photoHeight - height) / 2;
+
+  ctx.save();
+
+  ctx.beginPath();
+
+  ctx.rect(
+    layout.photoX,
+    layout.photoY,
+    layout.photoWidth,
+    layout.photoHeight
+  );
+
+  ctx.clip();
+
+  ctx.drawImage(
+    bg,
+    x,
+    y,
+    width,
+    height
+  );
+
+  ctx.restore();
+
+  ctx.fillStyle = "rgba(0,0,0,0.12)";
+
+  ctx.fillRect(
+    layout.photoX,
+    layout.photoY,
+    layout.photoWidth,
+    layout.photoHeight
+  );
+}
 
 export async function POST(
   req: Request
@@ -232,176 +345,13 @@ ctx.fillRect(
     ? LAYOUTS.narrowcasting
     : LAYOUTS.square;
 
-      let photoX = 0;
-let photoY = 0;
-let photoWidth = 0;
-let photoHeight = 0;
-
-let titleX = 0;
-let titleY = 0;
-
-let companyX = 0;
-let companyY = 0;
-
-let companyLogoBoxX = 0;
-let companyLogoBoxY = 0;
-
-let companyLogoCenterX = 0;
-let companyLogoCenterY = 0;
-let companyLogoBoxSize = 130;
-
-let clubLogoX = 0;
-let clubLogoY = 0;
-
-if (
-  platform === "linkedin" ||
-  platform === "facebook" ||
-  platform === "instagram"
-) {
-
-  // FOTO
-
-  photoX = 0;
-photoY = 180;
-layout.photoWidth = 1200;
-layout.photoHeight = 820;
-
-  // TITEL
-
-  titleX = 380;
-  titleY = 105;
-
-  // BEDRIJFSNAAM
-
-  companyX = 380;
-  companyY = 160;
-
-  // BEDRIJFSLOGO
-
-  companyLogoBoxX = 135;
-companyLogoBoxY = 40;
-
-layout.companyLogoCenterX = 205;
-layout.companyLogoCenterY = 105;
-
-layout.companyLogoBoxSize = 140;
-
-  // CLUBLOGO
-
-  clubLogoX = 1000;
-clubLogoY = 1040;
-}
-
-if (platform === "story") {
-
-  photoX = 0;
-  photoY = 520;
-  layout.photoWidth = 1080;
-  layout.photoHeight = 1200;
-
-  titleX = 380;
-  titleY = 380;
-
-  companyX = 240;
-  companyY = 310;
-
-  companyLogoBoxX = 80;
-  companyLogoBoxY = 130;
-  companyLogoBoxSize = 160;
-
-  companyLogoCenterX = 145;
-  companyLogoCenterY = 195;
-
-  clubLogoX = 920;
-  clubLogoY = 180;
-}
-
-if (platform === "narrowcasting") {
-
-  photoX = 40;
-  photoY = 220;
-  layout.photoWidth = 1840;
-  layout.photoHeight = 800;
-
-  titleX = 1100;
-  titleY = 120;
-
-  companyX = 1100;
-  companyY = 190;
-
-  companyLogoBoxX = 930;
-  companyLogoBoxY = 40;
-
-  companyLogoCenterX = 995;
-  companyLogoCenterY = 105;
-  companyLogoBoxSize = 150;
-
-  clubLogoX = 1750;
-  clubLogoY = 100;
-}
-
       if (backgroundImage) {
 
-  const bg =
-    await loadImage(
-      backgroundImage
-    );
-
-const scale =
-  Math.max(
-    layout.photoWidth / bg.width,
-    layout.photoHeight / bg.height
-  ) * 1.02;
-
-const width = bg.width * scale;
-const height = bg.height * scale;
-
-const x =
-  layout.photoX +
-  (layout.photoWidth - width) / 2;
-
-const y =
-  layout.photoY +
-  (layout.photoHeight - height) / 2;
-
-ctx.save();
-
-ctx.beginPath();
-ctx.rect(
-  layout.photoX,
-  layout.photoY,
-  layout.photoWidth,
-  layout.photoHeight
+  await drawBackground(
+  ctx,
+  backgroundImage,
+  layout
 );
-
-ctx.clip();
-
-ctx.drawImage(
-  bg,
-  x,
-  y,
-  width,
-  height
-);
-
-ctx.restore();
-
-ctx.fillStyle =
-  "rgba(0,0,0,0.12)";
-
-ctx.fillRect(
-  layout.photoX,
-  layout.photoY,
-  layout.photoWidth,
-  layout.photoHeight
-);
-}
-
-if (
-  platform === "linkedin" ||
-  platform === "facebook" ||
-  platform === "instagram"
-) {
 }
 
 ctx.drawImage(
@@ -412,10 +362,6 @@ ctx.drawImage(
   canvas.height
 );
 
-      const stripeWidth = layout.stripeWidth;
-const topStripeAngle = layout.topStripeAngle;
-const bottomStripeAngle = layout.bottomStripeAngle;
-
 // ===== BOVENSTE BALK =====
 
 ctx.fillStyle =
@@ -425,13 +371,13 @@ ctx.save();
 
 ctx.translate(0, layout.topStripeY);
 
-ctx.rotate(topStripeAngle);
+ctx.rotate(layout.topStripeAngle);
 
 ctx.fillRect(
   -400,
-  -stripeWidth / 2,
+  -layout.stripeWidth / 2,
   canvas.width + 800,
-  stripeWidth
+  layout.stripeWidth
 );
 
 ctx.restore();
@@ -445,13 +391,13 @@ ctx.save();
 
 ctx.translate(0, layout.bottomStripeY);
 
-ctx.rotate(bottomStripeAngle);
+ctx.rotate(layout.bottomStripeAngle);
 
 ctx.fillRect(
   -400,
-  -stripeWidth / 2,
+  -layout.stripeWidth / 2,
   canvas.width + 800,
-  stripeWidth
+  layout.stripeWidth
 );
 
 ctx.restore();
@@ -463,17 +409,13 @@ ctx.fillStyle =
 
 ctx.textAlign = "left";
 
-const titleMaxWidth = layout.titleMaxWidth;
-const startFontSize = layout.startFontSize;
-
-const jobTitleSize =
-  fitFontSize(
-    ctx,
-    jobTitle ?? "",
-    titleMaxWidth,
-    startFontSize,
-    "MontserratBold"
-  );
+const jobTitleSize = fitFontSize(
+  ctx,
+  jobTitle ?? "",
+  layout.titleMaxWidth,
+  layout.startFontSize,
+  "MontserratBold"
+);
 
 ctx.font =
   `${jobTitleSize}px MontserratBold`;
@@ -488,10 +430,7 @@ ctx.fillText(
 
     ctx.textAlign = "left";
 
-const companyFontSize = layout.companyFontSize;
-
-ctx.font =
-  `${companyFontSize}px MontserratSemi`;
+ctx.font = `${layout.companyFontSize}px MontserratSemi`;
 
 ctx.fillStyle =
   "#222222";
@@ -551,14 +490,6 @@ layout.companyLogoCenterY - logoHeight / 2,
       logoWidth,
       logoHeight
     );
-
-    if (
-  platform === "linkedin" ||
-  platform === "facebook" ||
-  platform === "instagram"
-) {
-
-}
 
   } catch (error) {
 
