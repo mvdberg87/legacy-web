@@ -1,9 +1,33 @@
 import { createCanvas, loadImage, registerFont } from "canvas";
 import path from "path";
-import fs from "fs";
+import { CanvasRenderingContext2D } from "canvas";
+
+registerFont(
+  path.join(
+    process.cwd(),
+    "public",
+    "fonts",
+    "Montserrat-ExtraBold.ttf"
+  ),
+  {
+    family: "MontserratBold",
+  }
+);
+
+registerFont(
+  path.join(
+    process.cwd(),
+    "public",
+    "fonts",
+    "Montserrat-SemiBold.ttf"
+  ),
+  {
+    family: "MontserratSemi",
+  }
+);
 
 function fitFontSize(
-  ctx: any,
+  ctx: CanvasRenderingContext2D,
   text: string,
   maxWidth: number,
   startSize: number,
@@ -25,41 +49,6 @@ function fitFontSize(
   }
 
   return 20;
-}
-
-function getContrastColor(color: string) {
-
-  const hex =
-    color.replace("#", "");
-
-  const r =
-    parseInt(
-      hex.substring(0, 2),
-      16
-    );
-
-  const g =
-    parseInt(
-      hex.substring(2, 4),
-      16
-    );
-
-  const b =
-    parseInt(
-      hex.substring(4, 6),
-      16
-    );
-
-  const brightness =
-    (
-      r * 299 +
-      g * 587 +
-      b * 114
-    ) / 1000;
-
-  return brightness > 150
-    ? "#000000"
-    : "#FFFFFF";
 }
 
 const BASE_LAYOUT = {
@@ -98,6 +87,8 @@ const BASE_LAYOUT = {
   companyLogoMaxSize: 110,
   clubLogoMaxSize: 230,
 };
+
+type Layout = typeof LAYOUTS.square;
 
 const LAYOUTS = {
   square: {
@@ -170,9 +161,9 @@ const LAYOUTS = {
 };
 
 async function drawBackground(
-  ctx: any,
+  ctx: CanvasRenderingContext2D,
   backgroundImage: string,
-  layout: any
+  layout: Layout
 ) {
   const bg = await loadImage(backgroundImage);
 
@@ -226,6 +217,218 @@ async function drawBackground(
   );
 }
 
+function drawStripes(
+  ctx: CanvasRenderingContext2D,
+  width: number,
+  layout: Layout,
+  primaryColor: string,
+  secondaryColor: string
+) {
+  // bovenste balk
+  ctx.fillStyle = primaryColor ?? "#4D9F5D";
+
+  ctx.save();
+
+  ctx.translate(0, layout.topStripeY);
+
+  ctx.rotate(layout.topStripeAngle);
+
+  ctx.fillRect(
+  -400,
+  -layout.stripeWidth / 2,
+  width + 800,
+  layout.stripeWidth
+);
+
+  ctx.restore();
+
+  // onderste balk
+  ctx.fillStyle = secondaryColor ?? "#003B70";
+
+  ctx.save();
+
+  ctx.translate(0, layout.bottomStripeY);
+
+  ctx.rotate(layout.bottomStripeAngle);
+
+  ctx.fillRect(
+  -400,
+  -layout.stripeWidth / 2,
+  width + 800,
+  layout.stripeWidth
+);
+
+  ctx.restore();
+}
+
+function drawTitle(
+  ctx: CanvasRenderingContext2D,
+  jobTitle: string,
+  clubColor: string,
+  layout: Layout
+) {
+  ctx.fillStyle = clubColor;
+
+  ctx.textAlign = "left";
+
+  const jobTitleSize = fitFontSize(
+    ctx,
+    jobTitle ?? "",
+    layout.titleMaxWidth,
+    layout.startFontSize,
+    "MontserratBold"
+  );
+
+  ctx.font = `${jobTitleSize}px MontserratBold`;
+
+  ctx.fillText(
+    jobTitle ?? "",
+    layout.titleX,
+    layout.titleY
+  );
+}
+
+function drawCompany(
+  ctx: CanvasRenderingContext2D,
+  companyName: string,
+  layout: Layout
+) {
+  ctx.textAlign = "left";
+
+  ctx.font = `${layout.companyFontSize}px MontserratSemi`;
+
+  ctx.fillStyle = "#222222";
+
+  ctx.fillText(
+    companyName ?? "",
+    layout.companyX,
+    layout.companyY
+  );
+}
+
+async function drawLogo(
+  ctx: CanvasRenderingContext2D,
+  logoUrl: string,
+  options: {
+    centerX: number;
+    centerY: number;
+    maxSize: number;
+    background?: boolean;
+    boxX?: number;
+    boxY?: number;
+    boxSize?: number;
+  }
+) {
+  try {
+
+    const logo = await loadImage(logoUrl);
+
+    if (options.background) {
+      ctx.fillStyle = "#FFFFFF";
+
+      ctx.beginPath();
+
+      ctx.roundRect(
+        options.boxX!,
+        options.boxY!,
+        options.boxSize!,
+        options.boxSize!,
+        20
+      );
+
+      ctx.fill();
+    }
+
+    const ratio = Math.min(
+      options.maxSize / logo.width,
+      options.maxSize / logo.height
+    );
+
+    const logoWidth = logo.width * ratio;
+    const logoHeight = logo.height * ratio;
+
+    ctx.drawImage(
+      logo,
+      options.centerX - logoWidth / 2,
+      options.centerY - logoHeight / 2,
+      logoWidth,
+      logoHeight
+    );
+
+  } catch (error) {
+
+    console.log("Logo kon niet geladen worden");
+
+  }
+}
+
+async function loadTemplate(
+  platform: string,
+  activationTemplate?: string
+) {
+  const templateFile =
+    `${activationTemplate ?? "1"}-${platform}.png`;
+
+  const templatePath = path.join(
+    process.cwd(),
+    "public",
+    "templates",
+    templateFile
+  );
+
+  try {
+    return await loadImage(templatePath);
+  } catch {
+    return await loadImage(
+      path.join(
+        process.cwd(),
+        "public",
+        "templates",
+        "1-linkedin.png"
+      )
+    );
+  }
+}
+
+async function createCanvasFromTemplate(
+  platform: string,
+  activationTemplate?: string
+) {
+  const templateImage = await loadTemplate(
+    platform,
+    activationTemplate
+  );
+
+  const canvas = createCanvas(
+    templateImage.width,
+    templateImage.height
+  );
+
+  const ctx = canvas.getContext("2d");
+
+  return {
+    canvas,
+    ctx,
+    templateImage,
+  };
+}
+
+function getLayout(platform: string): Layout {
+  const layoutMap = {
+    linkedin: LAYOUTS.square,
+    facebook: LAYOUTS.square,
+    instagram: LAYOUTS.square,
+    story: LAYOUTS.story,
+    narrowcasting: LAYOUTS.narrowcasting,
+  } as const;
+
+  return (
+    layoutMap[
+      platform as keyof typeof layoutMap
+    ] ?? LAYOUTS.square
+  );
+}
+
 export async function POST(
   req: Request
 ) {
@@ -246,84 +449,14 @@ export async function POST(
   activationTemplate,
 } = await req.json();
 
-console.log("BACKGROUND:", backgroundImage);
-
-    registerFont(
-  path.join(
-    process.cwd(),
-    "public",
-    "fonts",
-    "Montserrat-ExtraBold.ttf"
-  ),
-  {
-    family: "MontserratBold",
-  }
-);
-
-registerFont(
-  path.join(
-    process.cwd(),
-    "public",
-    "fonts",
-    "Montserrat-SemiBold.ttf"
-  ),
-  {
-    family: "MontserratSemi",
-  }
-);
-
-    const templateFile =
-  `${activationTemplate ?? "1"}-${platform}.png`;
-
-  console.log({
+    const {
+  canvas,
+  ctx,
+  templateImage,
+} = await createCanvasFromTemplate(
   platform,
-  activationTemplate,
-  templateFile,
-});
-
-let templatePath =
-  path.join(
-    process.cwd(),
-    "public",
-    "templates",
-    templateFile
-  );
-
-  console.log(
-  "TEMPLATE PATH:",
-  templatePath
+  activationTemplate
 );
-
-console.log(
-  "TEMPLATE EXISTS:",
-  fs.existsSync(templatePath)
-);
-
-try {
-  await loadImage(templatePath);
-} catch {
-  templatePath =
-    path.join(
-      process.cwd(),
-      "public",
-      "templates",
-      "1-linkedin.png"
-    );
-}
-
-const templateImage =
-  await loadImage(templatePath);
-
-  console.log("TEMPLATE LOADED");
-
-    const canvas =
-      createCanvas(
-        templateImage.width,
-templateImage.height
-      );
-
-    const ctx =
-      canvas.getContext("2d");
 
       ctx.fillStyle = "#FFFFFF";
 ctx.fillRect(
@@ -338,12 +471,7 @@ ctx.fillRect(
   primaryColor ??
   "#4D9F5D";
 
-  const layout =
-  platform === "story"
-    ? LAYOUTS.story
-    : platform === "narrowcasting"
-    ? LAYOUTS.narrowcasting
-    : LAYOUTS.square;
+  const layout = getLayout(platform);
 
       if (backgroundImage) {
 
@@ -362,170 +490,54 @@ ctx.drawImage(
   canvas.height
 );
 
-// ===== BOVENSTE BALK =====
-
-ctx.fillStyle =
-  primaryColor ?? "#4D9F5D";
-
-ctx.save();
-
-ctx.translate(0, layout.topStripeY);
-
-ctx.rotate(layout.topStripeAngle);
-
-ctx.fillRect(
-  -400,
-  -layout.stripeWidth / 2,
-  canvas.width + 800,
-  layout.stripeWidth
+drawStripes(
+  ctx,
+  canvas.width,
+  layout,
+  primaryColor ?? "#4D9F5D",
+  secondaryColor ?? "#003B70"
 );
 
-ctx.restore();
-
-// ===== ONDERSTE BALK =====
-
-ctx.fillStyle =
-  secondaryColor ?? "#003B70";
-
-ctx.save();
-
-ctx.translate(0, layout.bottomStripeY);
-
-ctx.rotate(layout.bottomStripeAngle);
-
-ctx.fillRect(
-  -400,
-  -layout.stripeWidth / 2,
-  canvas.width + 800,
-  layout.stripeWidth
-);
-
-ctx.restore();
-
-   // TITEL FUNCTIE
-
-ctx.fillStyle =
-  clubColor;
-
-ctx.textAlign = "left";
-
-const jobTitleSize = fitFontSize(
+drawTitle(
   ctx,
   jobTitle ?? "",
-  layout.titleMaxWidth,
-  layout.startFontSize,
-  "MontserratBold"
+  clubColor,
+  layout
 );
 
-ctx.font =
-  `${jobTitleSize}px MontserratBold`;
-
-ctx.fillText(
-  jobTitle ?? "",
-  layout.titleX,
-  layout.titleY
-);
-
-    // BEDRIJFSNAAM
-
-    ctx.textAlign = "left";
-
-ctx.font = `${layout.companyFontSize}px MontserratSemi`;
-
-ctx.fillStyle =
-  "#222222";
-
-ctx.fillText(
+drawCompany(
+  ctx,
   companyName ?? "",
-  layout.companyX,
-  layout.companyY
+  layout
 );
 
 if (companyLogo) {
+  await drawLogo(
+    ctx,
+    companyLogo,
+    {
+      centerX: layout.companyLogoCenterX,
+      centerY: layout.companyLogoCenterY,
+      maxSize: layout.companyLogoMaxSize,
 
-  try {
-
-    console.log("COMPANY LOGO START");
-
-const logo =
-  await loadImage(companyLogo);
-
-console.log("COMPANY LOGO SUCCESS");
-
-    // wit vlak
-
-    ctx.fillStyle =
-      "#ffffff";
-
-    ctx.beginPath();
-
-    ctx.roundRect(
-  layout.companyLogoBoxX,
-  layout.companyLogoBoxY,
-  layout.companyLogoBoxSize,
-  layout.companyLogoBoxSize,
-  20
-);
-
-    ctx.fill();
-
-    const maxSize = layout.companyLogoMaxSize;
-
-    const ratio =
-      Math.min(
-        maxSize / logo.width,
-        maxSize / logo.height
-      );
-
-    const logoWidth =
-      logo.width * ratio;
-
-    const logoHeight =
-      logo.height * ratio;
-
-    ctx.drawImage(
-      logo,
-      layout.companyLogoCenterX - logoWidth / 2,
-layout.companyLogoCenterY - logoHeight / 2,
-      logoWidth,
-      logoHeight
-    );
-
-  } catch (error) {
-
-    console.log(
-      "Company logo kon niet geladen worden"
-    );
-
-  }
+      background: true,
+      boxX: layout.companyLogoBoxX,
+      boxY: layout.companyLogoBoxY,
+      boxSize: layout.companyLogoBoxSize,
+    }
+  );
 }
 
 if (clubLogo) {
-
-const logo =
-  await loadImage(clubLogo);
-
-  const maxSize = layout.clubLogoMaxSize;
-
-  const ratio =
-    Math.min(
-      maxSize / logo.width,
-      maxSize / logo.height
-    );
-
-  const logoWidth =
-    logo.width * ratio;
-
-  const logoHeight =
-    logo.height * ratio;
-
-  ctx.drawImage(
-  logo,
-  layout.clubLogoX - logoWidth / 2,
-  layout.clubLogoY - logoHeight / 2,
-  logoWidth,
-  logoHeight
-);
+  await drawLogo(
+    ctx,
+    clubLogo,
+    {
+      centerX: layout.clubLogoX,
+      centerY: layout.clubLogoY,
+      maxSize: layout.clubLogoMaxSize,
+    }
+  );
 }
 
     const buffer =
