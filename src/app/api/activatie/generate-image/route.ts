@@ -103,28 +103,23 @@ const LAYOUTS = {
   photoWidth: 1080,
   photoHeight: 1200,
 
-  titleX: 380,
-  titleY: 380,
+  companyLogoBoxX: 60,
+  companyLogoBoxY: 70,
+  companyLogoCenterX: 140,
+  companyLogoCenterY: 150,
 
-  companyX: 240,
-  companyY: 310,
+  companyX: 250,
+  companyY: 185,
 
-  companyLogoBoxX: 80,
-  companyLogoBoxY: 130,
-  companyLogoCenterX: 145,
-  companyLogoCenterY: 195,
-  companyLogoBoxSize: 160,
+  titleX: 250,
+  titleY: 295,
 
   clubLogoX: 920,
-  clubLogoY: 180,
+  clubLogoY: 140,
 
+  companyFontSize: 44,
+  startFontSize: 60,
   titleMaxWidth: 700,
-  startFontSize: 64,
-
-  companyFontSize: 64,
-
-  companyLogoMaxSize: 220,
-  clubLogoMaxSize: 220,
 },
 
   narrowcasting: {
@@ -135,28 +130,23 @@ const LAYOUTS = {
   photoWidth: 1840,
   photoHeight: 800,
 
-  titleX: 1100,
-  titleY: 120,
+  companyLogoBoxX: 880,
+  companyLogoBoxY: 25,
+  companyLogoCenterX: 955,
+  companyLogoCenterY: 100,
 
-  companyX: 1100,
-  companyY: 190,
+  companyX: 1040,
+  companyY: 175,
 
-  companyLogoBoxX: 930,
-  companyLogoBoxY: 40,
-  companyLogoCenterX: 995,
-  companyLogoCenterY: 105,
-  companyLogoBoxSize: 150,
+  titleX: 1040,
+  titleY: 95,
 
-  clubLogoX: 1750,
-  clubLogoY: 100,
+  clubLogoX: 1720,
+  clubLogoY: 95,
 
-  titleMaxWidth: 1100,
-  startFontSize: 78,
-
-  companyFontSize: 78,
-
-  companyLogoMaxSize: 150,
-  clubLogoMaxSize: 150,
+  companyFontSize: 56,
+  startFontSize: 68,
+  titleMaxWidth: 760,
 },
 };
 
