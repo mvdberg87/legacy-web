@@ -88,8 +88,6 @@ const BASE_LAYOUT = {
   clubLogoMaxSize: 230,
 };
 
-type Layout = typeof LAYOUTS.square;
-
 const LAYOUTS = {
   square: {
     ...BASE_LAYOUT,
@@ -115,7 +113,7 @@ const LAYOUTS = {
   titleY: 295,
 
   clubLogoX: 920,
-  clubLogoY: 140,
+  clubLogoY: 180,
 
   companyFontSize: 44,
   startFontSize: 60,
@@ -149,6 +147,8 @@ const LAYOUTS = {
   titleMaxWidth: 760,
 },
 };
+
+type Layout = typeof LAYOUTS.square;
 
 async function drawBackground(
   ctx: CanvasRenderingContext2D,
@@ -439,6 +439,11 @@ export async function POST(
   activationTemplate,
 } = await req.json();
 
+console.log({
+  platform,
+  activationTemplate,
+});
+
     const {
   canvas,
   ctx,
@@ -530,26 +535,22 @@ if (clubLogo) {
   );
 }
 
-    const buffer =
-      canvas.toBuffer(
-        "image/png"
-      );
+    const buffer = canvas.toBuffer("image/png");
 
-    return new Response(
-      Uint8Array.from(buffer),
-      {
-        headers: {
-          "Content-Type":
-            "image/png",
-        },
-      }
-    );
+return new Response(
+  new Uint8Array(buffer),
+  {
+    headers: {
+      "Content-Type": "image/png",
+    },
+  }
+);
 
     } catch (error) {
 
-    console.error(error);
+  console.error("IMAGE API ERROR:", error);
 
-    return Response.json(
+  return Response.json(
       {
         error:
           "Image generation failed",
