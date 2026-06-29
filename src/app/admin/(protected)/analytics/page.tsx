@@ -16,6 +16,10 @@ import {
   Bar,
 } from "recharts";
 
+import ExecutiveDashboard from "@/components/admin/intelligence/ExecutiveDashboard";
+
+import { buildExecutiveDashboard } from "@/lib/admin/intelligence/buildExecutiveDashboard";
+
 type Club = {
   id: string;
   active_package: "basic" | "plus" | "pro" | "unlimited";
@@ -31,25 +35,42 @@ export default function AdminDashboardPage() {
   const [advertisementRows, setAdvertisementRows] =
   useState<any[]>([]);
   const [loading, setLoading] = useState(true);
+  const [executiveDashboard, setExecutiveDashboard] =
+  useState<Awaited<
+    ReturnType<typeof buildExecutiveDashboard>
+  > | null>(null);
 
   useEffect(() => {
   (async () => {
-    const { data } = await supabase
-      .from("clubs")
-      .select(
-        "id, active_package, subscription_status, subscription_start, subscription_end, subscription_cancelled_at"
-      );
+    const [
+      dashboard,
+      clubsResult,
+      adsResult,
+    ] = await Promise.all([
+      buildExecutiveDashboard(),
 
-    const { data: ads } = await supabase
-      .from("admin_advertisements_overview")
-      .select("*");
+      supabase
+        .from("clubs")
+        .select(
+          "id, active_package, subscription_status, subscription_start, subscription_end, subscription_cancelled_at"
+        ),
 
-    setClubs(data ?? []);
-    setAdvertisementRows(ads ?? []);
+      supabase
+        .from("admin_advertisements_overview")
+        .select("*"),
+    ]);
+
+    setExecutiveDashboard(dashboard);
+
+    setClubs(clubsResult.data ?? []);
+
+    setAdvertisementRows(
+      adsResult.data ?? []
+    );
 
     setLoading(false);
   })();
-}, []);
+}, [supabase]);
 
   if (loading) {
     return (
@@ -293,7 +314,14 @@ const totalPlatformRevenue =
           Sponsorjobs SaaS Intelligence
         </h1>
 
+        {executiveDashboard && (
+  <ExecutiveDashboard
+    dashboard={executiveDashboard}
+  />
+)}
+
         {/* KPI GRID */}
+        
         <div className="grid grid-cols-2 md:grid-cols-4 xl:grid-cols-8 gap-6 mb-12">
           <Kpi label="MRR" value={`€${mrr}`} />
           <Kpi label="ARR" value={`€${arr}`} />
