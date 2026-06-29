@@ -122,41 +122,41 @@ const LAYOUTS = {
   startFontSize: 64,
   titleMaxWidth: 700,
 
-  topStripeY: 510,
-  bottomStripeY: 1565,
+  topStripeY: 560,
+  bottomStripeY: 1505,
 },
 
   narrowcasting: {
   ...BASE_LAYOUT,
 
-  photoX: 40,
+  photoX: -40,
   photoY: 180,
-  photoWidth: 1880,
+  photoWidth: 1920,
   photoHeight: 840,
 
-  companyLogoBoxX: 600,
+  companyLogoBoxX: 400,
   companyLogoBoxY: 25,
-  companyLogoCenterX: 685,
+  companyLogoCenterX: 485,
   companyLogoCenterY: 105,
   companyLogoBoxSize: 165,
   companyLogoMaxSize: 135,
 
-  companyX: 780,
+  companyX: 580,
   companyY: 165,
 
-  titleX: 780,
+  titleX: 580,
   titleY: 90,
 
   clubLogoX: 1650,
-  clubLogoY: 1120,
+  clubLogoY: 930,
   clubLogoMaxSize: 220,
 
-  companyFontSize: 76,
-  startFontSize: 48,
+  companyFontSize: 50,
+  startFontSize: 60,
   titleMaxWidth: 800,
 
-  topStripeY: 310,
-  bottomStripeY: 1015,
+  topStripeY: 410,
+  bottomStripeY: 1005,
 },
 };
 
