@@ -155,7 +155,7 @@ const LAYOUTS = {
   startFontSize: 60,
   titleMaxWidth: 800,
 
-  topStripeY: 3750,
+  topStripeY: 375,
   bottomStripeY: 985,
 },
 };
