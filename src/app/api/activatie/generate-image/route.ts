@@ -122,14 +122,14 @@ const LAYOUTS = {
   startFontSize: 64,
   titleMaxWidth: 700,
 
-  topStripeY: 560,
-  bottomStripeY: 1505,
+  topStripeY: 600,
+  bottomStripeY: 1475,
 },
 
   narrowcasting: {
   ...BASE_LAYOUT,
 
-  photoX: -40,
+  photoX: 0,
   photoY: 180,
   photoWidth: 1920,
   photoHeight: 840,
@@ -155,8 +155,8 @@ const LAYOUTS = {
   startFontSize: 60,
   titleMaxWidth: 800,
 
-  topStripeY: 410,
-  bottomStripeY: 1005,
+  topStripeY: 440,
+  bottomStripeY: 995,
 },
 };
 

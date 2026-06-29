@@ -581,16 +581,17 @@ async function downloadPackage() {
       Preview afbeelding
     </h2>
 
-    <img
-      src={imageUrl}
-      alt="Preview"
-      className="
-        max-w-[600px]
-        w-full
-        border-2
-        rounded-xl
-      "
-    />
+    <div className="flex justify-center bg-gray-100 rounded-xl p-6">
+  <img
+    src={imageUrl}
+    alt="Preview"
+    className="
+      max-w-full
+      max-h-[450px]
+      object-contain
+    "
+  />
+</div>
 <div className="flex flex-col sm:flex-row gap-3 mt-4">
 
   <button
