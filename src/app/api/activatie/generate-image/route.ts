@@ -132,19 +132,19 @@ const LAYOUTS = {
   photoX: 0,
   photoY: 180,
   photoWidth: 1920,
-  photoHeight: 840,
+  photoHeight: 910,
 
-  companyLogoBoxX: 400,
+  companyLogoBoxX: 200,
   companyLogoBoxY: 25,
-  companyLogoCenterX: 485,
+  companyLogoCenterX: 285,
   companyLogoCenterY: 105,
   companyLogoBoxSize: 165,
   companyLogoMaxSize: 135,
 
-  companyX: 580,
+  companyX: 370,
   companyY: 165,
 
-  titleX: 580,
+  titleX: 3700,
   titleY: 90,
 
   clubLogoX: 1650,
@@ -155,8 +155,8 @@ const LAYOUTS = {
   startFontSize: 60,
   titleMaxWidth: 800,
 
-  topStripeY: 440,
-  bottomStripeY: 995,
+  topStripeY: 490,
+  bottomStripeY: 985,
 },
 };
 
