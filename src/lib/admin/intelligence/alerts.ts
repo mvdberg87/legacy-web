@@ -8,27 +8,12 @@
  * ============================================================
  */
 
-import { BenchmarkClub } from "./benchmarks";
+import type { BenchmarkClub } from "./benchmarks";
 import {
   calculateCTR,
   calculateShareRate,
 } from "./scores";
-
-export type AlertSeverity =
-  | "success"
-  | "info"
-  | "warning"
-  | "danger";
-
-export type ExecutiveAlert = {
-  severity: AlertSeverity;
-
-  title: string;
-
-  description: string;
-
-  action?: string;
-};
+import type { ExecutiveAlert } from "./types";
 
 export function generateAlerts(
   clubs: BenchmarkClub[]
@@ -42,13 +27,19 @@ export function generateAlerts(
 
   if (inactiveClubs.length > 0) {
     alerts.push({
-      severity: "warning",
-      title: `${inactiveClubs.length} clubs zonder vacatures`,
-      description:
-        "Deze clubs halen momenteel weinig waarde uit Sponsorjobs.",
-      action:
-        "Neem contact op en help de eerste vacatures online zetten.",
-    });
+  severity: "warning",
+  category: "activation",
+
+  title: `${inactiveClubs.length} clubs zonder vacatures`,
+
+  description:
+    "Deze clubs halen momenteel weinig waarde uit Sponsorjobs.",
+
+  action:
+    "Neem contact op en help de eerste vacatures online zetten.",
+
+  confidence: 98,
+});
   }
 
   const lowTraffic = clubs.filter(
@@ -57,13 +48,19 @@ export function generateAlerts(
 
   if (lowTraffic.length > 0) {
     alerts.push({
-      severity: "warning",
-      title: `${lowTraffic.length} clubs met weinig bereik`,
-      description:
-        "Deze clubs hebben minder dan 25 pageviews.",
-      action:
-        "Stimuleer social sharing of plaats extra vacatures.",
-    });
+  severity: "warning",
+  category: "growth",
+
+  title: `${lowTraffic.length} clubs met weinig bereik`,
+
+  description:
+    "Deze clubs hebben minder dan 25 pageviews.",
+
+  action:
+    "Stimuleer social sharing of plaats extra vacatures.",
+
+  confidence: 92,
+});
   }
 
   const highCTR = clubs.filter((club) => {
@@ -77,13 +74,19 @@ export function generateAlerts(
 
   if (highCTR.length > 0) {
     alerts.push({
-      severity: "success",
-      title: `${highCTR.length} clubs presteren bovengemiddeld`,
-      description:
-        "Deze clubs behalen een uitzonderlijk hoge CTR.",
-      action:
-        "Onderzoek welke factoren bijdragen aan dit succes.",
-    });
+  severity: "success",
+  category: "platform",
+
+  title: `${highCTR.length} clubs presteren bovengemiddeld`,
+
+  description:
+    "Deze clubs behalen een uitzonderlijk hoge CTR.",
+
+  action:
+    "Onderzoek welke factoren bijdragen aan dit succes.",
+
+  confidence: 95,
+});
   }
 
   const lowShareRate = clubs.filter((club) => {
@@ -97,13 +100,19 @@ export function generateAlerts(
 
   if (lowShareRate.length > 0) {
     alerts.push({
-      severity: "info",
-      title: `${lowShareRate.length} clubs delen nauwelijks vacatures`,
-      description:
-        "Een lage share rate beperkt het organisch bereik.",
-      action:
-        "Adviseer clubs om vacatures via LinkedIn en social media te delen.",
-    });
+  severity: "info",
+  category: "growth",
+
+  title: `${lowShareRate.length} clubs delen nauwelijks vacatures`,
+
+  description:
+    "Een lage share rate beperkt het organisch bereik.",
+
+  action:
+    "Adviseer clubs om vacatures via LinkedIn en social media te delen.",
+
+  confidence: 90,
+});
   }
 
   return alerts;

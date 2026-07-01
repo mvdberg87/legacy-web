@@ -1,20 +1,17 @@
 "use client";
 
 import SectionCard from "./SectionCard";
-
-export type BriefingItem = {
-  severity: "good" | "warning" | "info" | "critical";
-  title: string;
-  description: string;
-};
+import type {
+  BriefingItem,
+} from "@/lib/admin/intelligence/types";
 
 type Props = {
   score: number;
   items: BriefingItem[];
 };
 
-const COLORS = {
-  good: "bg-green-500",
+const COLORS: Record<BriefingItem["severity"], string> = {
+  success: "bg-green-500",
   info: "bg-blue-500",
   warning: "bg-yellow-500",
   critical: "bg-red-500",

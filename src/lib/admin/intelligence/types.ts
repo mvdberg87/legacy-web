@@ -48,3 +48,124 @@ export type ExecutiveData = {
   advertisements: ExecutiveAdvertisement[];
 
 };
+
+/* ============================================================
+   Executive Intelligence
+============================================================ */
+
+export type Severity =
+  | "success"
+  | "warning"
+  | "info"
+  | "critical";
+
+  /* ============================================================
+   Alerts
+============================================================ */
+
+export type ExecutiveAlert = {
+  severity: Severity;
+
+  category: Category;
+
+  title: string;
+
+  description: string;
+
+  action: string;
+
+  confidence: number;
+};
+
+export type Priority =
+  | "critical"
+  | "high"
+  | "medium"
+  | "low";
+
+export type Category =
+  | "growth"
+  | "revenue"
+  | "activation"
+  | "retention"
+  | "platform";
+
+/* ============================================================
+   Executive Briefing
+============================================================ */
+
+export type BriefingItem = {
+  severity: Severity;
+  title: string;
+  description: string;
+};
+
+export type ExecutiveBriefing = {
+  score: number;
+  items: BriefingItem[];
+};
+
+/* ============================================================
+   Recommendations
+============================================================ */
+
+export type Recommendation = {
+  priority: Priority;
+  category: Category;
+
+  title: string;
+  description: string;
+  impact: string;
+};
+
+/* ============================================================
+   Insights
+============================================================ */
+
+export type Insight = {
+  title: string;
+  finding: string;
+  confidence: number;
+  impact: string;
+  recommendation: string;
+};
+
+/* ============================================================
+   Success Factors
+============================================================ */
+
+export type SuccessFactor = {
+  title: string;
+  description: string;
+  recommendation: string;
+  confidence: number;
+  impact: string;
+};
+
+/* ============================================================
+   Executive Dashboard
+============================================================ */
+
+import type { Correlation } from "./correlations";
+
+export type ExecutiveDashboardData = {
+
+  executive: any;
+
+  alerts: ExecutiveAlert[];
+
+  briefing: ExecutiveBriefing;
+
+  recommendations: Recommendation[];
+
+  insights: Insight[];
+
+  sponsorjobsIQ: Insight[];
+
+  successFactors: SuccessFactor[];
+
+  raw: ExecutiveData;
+
+  correlations: Correlation[];
+
+};
