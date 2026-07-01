@@ -9,9 +9,17 @@ import {
   buildRevenueDashboard,
 } from "@/lib/admin/intelligence/revenue/engine";
 
+import {
+  buildPlatformDashboard,
+} from "@/lib/admin/intelligence/platform/engine";
+
+import PlatformDashboard from "@/components/admin/platform/PlatformDashboard";
+
 import ExecutiveDashboard from "@/components/admin/intelligence/ExecutiveDashboard";
 
 import { buildExecutiveDashboard } from "@/lib/admin/intelligence/buildExecutiveDashboard";
+
+import CEOAssistant from "@/components/admin/assistant/CEOAssistant";
 
 type Club = {
   id: string;
@@ -79,6 +87,14 @@ export default function AdminDashboardPage() {
     advertisementRows
   );
 
+  const platform =
+  buildPlatformDashboard(
+    executiveDashboard?.executive.summary.intelligenceScore ?? 0,
+    revenue.health.score,
+    revenue.metrics.mrr,
+    clubs.length
+  );
+
   return (
   <main className="min-h-screen bg-[#0d1b2a] text-white p-4 md:p-8">
     <div className="max-w-7xl mx-auto">
@@ -87,11 +103,21 @@ export default function AdminDashboardPage() {
         Sponsorjobs SaaS Intelligence
       </h1>
 
+      <PlatformDashboard
+  platform={platform}
+/>
+
       {executiveDashboard && (
-        <ExecutiveDashboard
-          dashboard={executiveDashboard}
-        />
-      )}
+  <>
+    <ExecutiveDashboard
+      dashboard={executiveDashboard}
+    />
+
+    <CEOAssistant
+      assistant={executiveDashboard.assistant}
+    />
+  </>
+)}
 
       <RevenueDashboard
         revenue={revenue}

@@ -8,6 +8,9 @@ import { generateExecutiveBriefing } from "./briefing";
 import { generateSponsorjobsIQ } from "./sponsorjobsIQ";
 import { generateCorrelations } from "./correlations";
 import { generateSuccessFactors } from "./successFactors";
+import { buildPlatformDashboard } from "./platform/engine";
+import { buildAssistantDashboard } from "./assistant/engine";
+import { buildPredictionDashboard } from "./prediction/engine";
 
 export async function buildExecutiveDashboard() {
 
@@ -68,9 +71,33 @@ const successFactors =
         insights
     );
 
+    const platform =
+  buildPlatformDashboard(
+    intelligence.summary.intelligenceScore,
+    90, // tijdelijke Revenue Score
+    0,  // tijdelijke MRR
+    clubs.length
+  );
+
+  const predictions =
+  buildPredictionDashboard(
+    clubs
+  );
+
+const assistant =
+  buildAssistantDashboard(
+    platform
+  );
+
   return {
 
   executive: intelligence,
+
+  platform,
+
+  assistant,
+
+  predictions,
 
   alerts,
 
