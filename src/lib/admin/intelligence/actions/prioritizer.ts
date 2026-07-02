@@ -1,23 +1,33 @@
-import type { Action } from "./types";
+import { scoreAction }
+from "../scoring/engine";
+
+import type {
+  Action,
+} from "./types";
 
 export function prioritizeActions(
   actions: Action[]
 ) {
 
-  return actions.sort(
+  return [...actions]
 
-    (a, b) =>
+    .map(action => ({
 
-      (
-        b.impact *
-        b.confidence
-      ) -
+      ...action,
 
-      (
-        a.impact *
-        a.confidence
-      )
+      scoring:
+        scoreAction(action),
 
-  );
+    }))
+
+    .sort(
+
+      (a, b) =>
+
+        b.scoring.finalScore -
+
+        a.scoring.finalScore
+
+    );
 
 }

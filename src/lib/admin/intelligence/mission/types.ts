@@ -3,6 +3,9 @@ import type { PlatformDashboard } from "../platform/types";
 import type { BenchmarkDashboard } from "../benchmark/types";
 import type { ActionDashboard } from "../actions/types";
 import type { AssistantDashboard } from "../assistant/types";
+import type {
+  DiscoveryDashboard,
+} from "../discovery/types";
 
 export type MissionControlDashboard = {
 
@@ -13,6 +16,8 @@ export type MissionControlDashboard = {
   platform: PlatformDashboard;
 
   benchmark: BenchmarkDashboard;
+
+  discovery: DiscoveryDashboard;
 
   actions: ActionDashboard;
 

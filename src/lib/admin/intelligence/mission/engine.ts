@@ -4,15 +4,33 @@ import { buildBenchmarkDashboard } from "../benchmark/engine";
 import { buildActionDashboard } from "../actions/engine";
 import { buildAssistantDashboard } from "../assistant/engine";
 
-export function buildMissionControl(
+import type { MissionControlDashboard } from "./types";
+import { buildDiscoveryDashboard }
+from "../discovery/engine";
 
-  executive: any,
+import { loadMissionData } from "@/lib/admin/data/loadMissionData";
+import { buildExecutiveDashboard } from "../buildExecutiveDashboard";
 
-  clubs: any[],
+export async function buildMissionControl(): Promise<MissionControlDashboard> {
 
-  advertisements: any[]
+const [
+  executiveDashboard,
+  missionData,
+] = await Promise.all([
 
-) {
+  buildExecutiveDashboard(),
+
+  loadMissionData(),
+
+]);
+
+const clubs = missionData.clubs;
+
+const advertisements =
+  missionData.advertisements;
+
+  const executiveData =
+  executiveDashboard;
 
   const revenue =
     buildRevenueDashboard(
@@ -25,50 +43,54 @@ export function buildMissionControl(
       clubs
     );
 
+    const discovery =
+  buildDiscoveryDashboard(clubs);
+
   const platform =
     buildPlatformDashboard(
 
-      executive.summary.intelligenceScore,
+  executiveData.executive.summary.intelligenceScore,
 
-      revenue.health.score,
+  revenue.health.score,
 
-      revenue.metrics.mrr,
+  revenue.metrics.mrr,
 
-      clubs.length
+  clubs.length
 
-    );
+);
 
   const actions =
-    buildActionDashboard(
+  buildActionDashboard(
 
-      platform.decisions,
+    platform.decisions,
 
-      [],
-
-      revenue,
-
-      benchmark,
-
-      platform
-
-    );
-
-  const assistant =
-    buildAssistantDashboard(
-
-      platform,
-
-      actions
-
-    );
-
-  return {
-
-    executive,
+    [],
 
     revenue,
 
     benchmark,
+
+    platform,
+
+    discovery
+
+  );
+
+  const assistant =
+    buildAssistantDashboard(
+      platform,
+      actions
+    );
+
+  return {
+
+    executive: executiveData,
+
+    revenue,
+
+    benchmark,
+
+    discovery,
 
     platform,
 

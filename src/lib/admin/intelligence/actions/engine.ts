@@ -10,12 +10,16 @@ import type {
   ActionDashboard,
 } from "./types";
 
+import { buildDiscoveryActions }
+from "./discoveryBuilder";
+
 export function buildActionDashboard(
   decisions: any[],
   predictions: any[] = [],
   revenue?: any,
   benchmark?: any,
-  platform?: any
+  platform?: any,
+  discovery?: any
 ): ActionDashboard {
 
   const actions = [
@@ -38,6 +42,10 @@ export function buildActionDashboard(
 
     ...(platform
       ? buildPlatformActions(platform)
+      : []),
+
+    ...(discovery
+      ? buildDiscoveryActions(discovery)
       : []),
 
   ];
