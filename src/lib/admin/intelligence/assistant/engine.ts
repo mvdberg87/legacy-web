@@ -3,9 +3,11 @@ import { generatePriorities } from "./priorities";
 
 import type { PlatformDashboard } from "../platform/types";
 import type { AssistantDashboard } from "./types";
+import type { ActionDashboard } from "../actions/types";
 
 export function buildAssistantDashboard(
-  platform: PlatformDashboard
+  platform: PlatformDashboard,
+  actions: ActionDashboard
 ): AssistantDashboard {
 
   return {
@@ -15,6 +17,8 @@ export function buildAssistantDashboard(
 
     priorities:
       generatePriorities(platform),
+
+      actions,
 
   };
 

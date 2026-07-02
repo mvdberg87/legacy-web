@@ -20,6 +20,8 @@ export default function CEOAssistant({
         {assistant.summary.description}
       </p>
 
+      {/* Bestaande prioriteiten */}
+
       <div className="mt-8 space-y-4">
 
         {assistant.priorities.map(
@@ -46,6 +48,45 @@ export default function CEOAssistant({
 
           )
         )}
+
+      </div>
+
+      {/* Nieuwe Action Engine */}
+
+      <div className="mt-10">
+
+        <h2 className="text-xl font-semibold mb-4">
+          🎯 Vandaag aanbevolen
+        </h2>
+
+        <div className="space-y-4">
+
+          {assistant.actions.actions
+            .slice(0, 5)
+            .map((action: any) => (
+
+              <div
+                key={action.id}
+                className="rounded-xl bg-[#0d1b2a] p-5"
+              >
+
+                <div className="font-semibold text-white">
+                  {action.title}
+                </div>
+
+                <div className="text-gray-400 mt-2">
+                  {action.description}
+                </div>
+
+                <div className="text-green-400 mt-3">
+                  Impact {action.impact} · Confidence {action.confidence}%
+                </div>
+
+              </div>
+
+            ))}
+
+        </div>
 
       </div>
 

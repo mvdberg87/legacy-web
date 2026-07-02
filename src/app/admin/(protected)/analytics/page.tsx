@@ -1,7 +1,8 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
-import { getSupabaseBrowser } from "@/lib/supabaseBrowser";
+import { useEffect, useState } from "react";
+
+import { loadMissionData } from "@/lib/admin/data/loadMissionData";
 
 import RevenueDashboard from "@/components/admin/revenue/RevenueDashboard";
 
@@ -21,6 +22,9 @@ import { buildExecutiveDashboard } from "@/lib/admin/intelligence/buildExecutive
 
 import CEOAssistant from "@/components/admin/assistant/CEOAssistant";
 
+import BenchmarkDashboard
+from "@/components/admin/benchmark/BenchmarkDashboard";
+
 type Club = {
   id: string;
   active_package: "basic" | "plus" | "pro" | "unlimited";
@@ -31,7 +35,6 @@ type Club = {
 };
 
 export default function AdminDashboardPage() {
-  const supabase = useMemo(() => getSupabaseBrowser(), []);
   const [clubs, setClubs] = useState<Club[]>([]);
   const [advertisementRows, setAdvertisementRows] =
   useState<any[]>([]);
@@ -44,34 +47,29 @@ export default function AdminDashboardPage() {
   useEffect(() => {
   (async () => {
     const [
-      dashboard,
-      clubsResult,
-      adsResult,
-    ] = await Promise.all([
-      buildExecutiveDashboard(),
+  dashboard,
+  missionData,
+] = await Promise.all([
 
-      supabase
-        .from("clubs")
-        .select(
-          "id, active_package, subscription_status, subscription_start, subscription_end, subscription_cancelled_at"
-        ),
+  buildExecutiveDashboard(),
 
-      supabase
-        .from("admin_advertisements_overview")
-        .select("*"),
-    ]);
+  loadMissionData(),
+
+]);
 
     setExecutiveDashboard(dashboard);
 
-    setClubs(clubsResult.data ?? []);
+    setClubs(
+  missionData.clubs
+);
 
-    setAdvertisementRows(
-      adsResult.data ?? []
-    );
+setAdvertisementRows(
+  missionData.advertisements
+);
 
     setLoading(false);
   })();
-}, [supabase]);
+}, []);
 
   if (loading) {
     return (
@@ -111,6 +109,10 @@ export default function AdminDashboardPage() {
   <>
     <ExecutiveDashboard
       dashboard={executiveDashboard}
+    />
+
+    <BenchmarkDashboard
+      benchmark={executiveDashboard.benchmark}
     />
 
     <CEOAssistant

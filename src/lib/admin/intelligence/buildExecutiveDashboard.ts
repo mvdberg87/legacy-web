@@ -11,6 +11,8 @@ import { generateSuccessFactors } from "./successFactors";
 import { buildPlatformDashboard } from "./platform/engine";
 import { buildAssistantDashboard } from "./assistant/engine";
 import { buildPredictionDashboard } from "./prediction/engine";
+import { buildBenchmarkDashboard } from "./benchmark/engine";
+import { buildActionDashboard } from "./actions/engine";
 
 export async function buildExecutiveDashboard() {
 
@@ -40,6 +42,9 @@ export async function buildExecutiveDashboard() {
 
   const intelligence =
     getExecutiveIntelligence(clubs);
+
+    const benchmark =
+  buildBenchmarkDashboard(clubs);
 
   const alerts =
     generateAlerts(clubs);
@@ -84,14 +89,24 @@ const successFactors =
     clubs
   );
 
+const actions =
+  buildActionDashboard(
+    platform.decisions
+  );
+
 const assistant =
   buildAssistantDashboard(
-    platform
+    platform,
+    actions
   );
 
   return {
 
   executive: intelligence,
+
+  benchmark,
+
+  actions,
 
   platform,
 

@@ -1,3 +1,7 @@
+import type {
+  ActionDashboard,
+} from "../actions/types";
+
 export type AssistantPriority = {
   title: string;
   description: string;
@@ -12,5 +16,8 @@ export type AssistantSummary = {
 
 export type AssistantDashboard = {
   summary: AssistantSummary;
+
   priorities: AssistantPriority[];
+
+  actions: ActionDashboard;
 };
