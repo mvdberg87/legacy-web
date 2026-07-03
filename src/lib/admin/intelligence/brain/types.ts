@@ -1,18 +1,28 @@
 export type BrainContext = {
 
-  executive: any;
+  missionScore: number;
 
-  revenue: any;
+  platformHealth: number;
 
-  benchmark: any;
+  revenueHealth: number;
 
-  discovery: any;
+  benchmarkScore: number;
 
-  platform: any;
+  opportunities: number;
 
-  actions: any;
+  actions: any[];
 
-  assistant: any;
+  actionCount: number;
+
+  risks: number;
+
+  confidence: number;
+
+  topAction: any;
+
+  strongestDiscovery: any;
+
+  weakestMetric: string;
 
 };
 

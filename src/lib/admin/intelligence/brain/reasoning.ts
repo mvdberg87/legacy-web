@@ -1,31 +1,33 @@
 import type {
   BrainDecision,
+  BrainContext,
 } from "./types";
 
 export function buildReasoning(
-  actions:any[]
+  context: BrainContext
 ): BrainDecision[] {
 
-  return actions.map(
+  const decisions: BrainDecision[] = [];
 
-    action=>({
+  if (context.topAction) {
 
-      id: action.id,
+    decisions.push({
 
-      title: action.title,
+      id: context.topAction.id,
+
+      title: context.topAction.title,
 
       explanation:
+        `Deze actie heeft momenteel de hoogste strategische waarde. Er zijn ${context.opportunities} commerciële kansen ontdekt en de platformscore bedraagt ${context.platformHealth}.`,
 
-      `Deze actie heeft een ROI-score van ${action.scoring.finalScore} en is daarom één van de belangrijkste acties.`,
+      priority: 1,
 
-      priority:
-        action.priority,
+      confidence: context.confidence,
 
-      confidence:
-        action.confidence,
+    });
 
-    })
+  }
 
-  );
+  return decisions;
 
 }

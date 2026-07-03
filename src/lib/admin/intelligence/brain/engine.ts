@@ -17,15 +17,18 @@ export function buildBrain(
       mission
     );
 
-  const priorities=
-    rankBrainPriorities(
-      context.actions.actions
-    );
+  const priorities =
+  rankBrainPriorities(
+    context.actions
+  );
 
-  const decisions=
-    buildReasoning(
-      priorities
-    );
+context.topAction =
+  priorities[0] ?? null;
+
+const decisions =
+  buildReasoning(
+    context
+  );
 
   const confidence=
     calculateBrainConfidence(
