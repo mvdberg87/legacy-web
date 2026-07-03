@@ -10,6 +10,8 @@ from "../discovery/engine";
 
 import { loadMissionData } from "@/lib/admin/data/loadMissionData";
 import { buildExecutiveDashboard } from "../buildExecutiveDashboard";
+import { buildTimeline }
+from "../timeline/engine";
 
 export async function buildMissionControl(): Promise<MissionControlDashboard> {
 
@@ -82,6 +84,9 @@ const advertisements =
       actions
     );
 
+    const timeline =
+  buildTimeline();
+
   return {
 
     executive: executiveData,
@@ -97,6 +102,8 @@ const advertisements =
     actions,
 
     assistant,
+
+    timeline,
 
   };
 

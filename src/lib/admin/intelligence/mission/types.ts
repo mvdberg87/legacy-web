@@ -6,6 +6,9 @@ import type { AssistantDashboard } from "../assistant/types";
 import type {
   DiscoveryDashboard,
 } from "../discovery/types";
+import type {
+  TimelineDashboard,
+} from "../timeline/types";
 
 export type MissionControlDashboard = {
 
@@ -22,5 +25,7 @@ export type MissionControlDashboard = {
   actions: ActionDashboard;
 
   assistant: AssistantDashboard;
+
+  timeline: TimelineDashboard;
 
 };

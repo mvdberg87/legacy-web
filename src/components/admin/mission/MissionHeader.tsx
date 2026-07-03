@@ -1,5 +1,9 @@
 "use client";
 
+import MissionCard from "./ui/MissionCard";
+import MissionBadge from "./ui/MissionBadge";
+import MissionMetric from "./ui/MissionMetric";
+
 type Props = {
   assistant: any;
   platform: any;
@@ -12,47 +16,45 @@ export default function MissionHeader({
 
   return (
 
-    <div className="bg-[#08111d] rounded-3xl p-8">
+    <MissionCard>
 
-      <div className="flex justify-between items-center">
+      <div className="flex flex-col lg:flex-row justify-between gap-8">
 
-        <div>
+        <div className="flex-1">
 
-          <div className="text-gray-400 uppercase text-sm">
-            AI Mission Briefing
-          </div>
+          <MissionBadge text="AI Mission Briefing" />
 
-          <div className="text-3xl font-bold mt-2">
+          <h1 className="text-4xl font-bold mt-4">
 
             {assistant.summary.title}
 
-          </div>
+          </h1>
 
-          <div className="text-gray-400 mt-4">
+          <p className="text-gray-400 mt-4 max-w-3xl">
 
             {assistant.summary.description}
 
-          </div>
+          </p>
 
         </div>
 
-        <div className="text-right">
+        <div className="min-w-[220px]">
 
-          <div className="text-gray-400">
-            Mission Score
-          </div>
+          <MissionMetric
 
-          <div className="text-6xl font-bold text-green-400">
+            label="Mission Score"
 
-            {platform.health.score}
+            value={platform.health.score}
 
-          </div>
+            trend={platform.health.label}
+
+          />
 
         </div>
 
       </div>
 
-    </div>
+    </MissionCard>
 
   );
 
