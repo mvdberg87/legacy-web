@@ -13,6 +13,8 @@ import type {
   MissionControlDashboard,
 } from "@/lib/admin/intelligence/mission/types";
 
+import LoadingCard from "@/components/ui/LoadingCard";
+
 
 export default function AdminDashboardPage() {
   const [mission, setMission] =
@@ -32,12 +34,14 @@ export default function AdminDashboardPage() {
 }, []);
 
   if (loading) {
-    return (
-      <main className="min-h-screen flex items-center justify-center">
-        Laden…
-      </main>
-    );
-  }
+  return (
+    <main className="min-h-screen bg-[#0d1b2a] p-8">
+      <div className="max-w-7xl mx-auto">
+        <LoadingCard rows={6} />
+      </div>
+    </main>
+  );
+}
 
   return (
   <main className="min-h-screen bg-[#0d1b2a] text-white p-4 md:p-8">

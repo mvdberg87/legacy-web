@@ -3,6 +3,9 @@
 import { useEffect, useMemo, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 import { getSupabaseBrowser } from "@/lib/supabaseBrowser";
+import LoadingCard from "@/components/ui/LoadingCard";
+import EmptyState from "@/components/ui/EmptyState";
+import ErrorCard from "@/components/ui/ErrorCard";
 
 type Advertisement = {
   id: string;
@@ -24,6 +27,7 @@ export default function EditAdvertisementPage() {
   const id = params.id as string;
 
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
   const [saving, setSaving] = useState(false);
 
   const [ad, setAd] = useState<Advertisement | null>(null);
@@ -35,16 +39,35 @@ export default function EditAdvertisementPage() {
   }, []);
 
   async function load() {
-    const { data } = await supabase
+
+  setLoading(true);
+
+  try {
+
+    const { data, error } = await supabase
       .from("company_advertisements")
       .select("*")
       .eq("id", id)
       .single();
 
+    if (error) throw error;
+
     setAd(data);
     setJobTitle(data.job_title ?? "");
+
+  } catch (err: any) {
+
+    setError(
+      err.message ?? "Er ging iets mis."
+    );
+
+  } finally {
+
     setLoading(false);
+
   }
+
+}
 
   async function save() {
     if (!ad) return;
@@ -66,17 +89,47 @@ export default function EditAdvertisementPage() {
     setSaving(false);
 
     if (error) {
-      alert(error.message);
-      return;
-    }
+  setError(error.message);
+  setSaving(false);
+  return;
+}
 
     alert("Advertentie opgeslagen");
 
     router.push(`/admin/clubs/${slug}`);
   }
 
-  if (loading) return <p>Laden...</p>;
-  if (!ad) return <p>Advertentie niet gevonden</p>;
+  if (loading) {
+
+  return (
+    <div className="max-w-3xl mx-auto p-4 md:p-6">
+      <LoadingCard rows={6} />
+    </div>
+  );
+
+}
+
+if (error) {
+
+  return (
+    <div className="max-w-3xl mx-auto p-4 md:p-6">
+      <ErrorCard message={error} />
+    </div>
+  );
+
+}
+  if (!ad) {
+
+  return (
+    <div className="max-w-3xl mx-auto p-4 md:p-6">
+      <EmptyState
+        title="Advertentie niet gevonden"
+        description="Deze advertentie bestaat niet meer of is verwijderd."
+      />
+    </div>
+  );
+
+}
 
   return (
     <div className="max-w-3xl mx-auto p-4 md:p-6">

@@ -2,6 +2,9 @@
 
 import { useEffect, useMemo, useState } from "react";
 import { getSupabaseBrowser } from "@/lib/supabaseBrowser";
+import LoadingCard from "@/components/ui/LoadingCard";
+import EmptyState from "@/components/ui/EmptyState";
+import ErrorCard from "@/components/ui/ErrorCard";
 
 type Advertisement = {
   id: string;
@@ -82,6 +85,9 @@ export default function AdminAdvertisementsPage() {
 
   const [loading, setLoading] =
     useState(true);
+
+    const [error, setError] =
+  useState<string | null>(null);
 
     const [editingAd, setEditingAd] =
   useState<Advertisement | null>(null);
@@ -322,27 +328,39 @@ await load();
 }
 
   async function load() {
-    setLoading(true);
+
+  setLoading(true);
+
+  try {
 
     const { data, error } =
       await supabase
-        .from(
-          "admin_advertisements_overview"
-        )
+        .from("admin_advertisements_overview")
         .select("*")
         .order("end_date", {
           ascending: true,
         });
 
-    if (error) {
-      console.error(error);
-      setAds([]);
-    } else {
-      setAds(data ?? []);
-    }
+    if (error) throw error;
+
+    setAds(data ?? []);
+
+  } catch (err: any) {
+
+    setError(
+      err.message ??
+      "Er ging iets mis."
+    );
+
+    setAds([]);
+
+  } finally {
 
     setLoading(false);
+
   }
+
+}
 
   useEffect(() => {
     load();
@@ -431,8 +449,26 @@ return ad.status === filter;
 );
 
   if (loading) {
-    return <p>Laden...</p>;
-  }
+
+  return (
+
+    <LoadingCard rows={8} />
+
+  );
+
+}
+
+if (error) {
+
+  return (
+
+    <ErrorCard
+      message={error}
+    />
+
+  );
+
+}
 
   return (
     <div className="bg-white text-black rounded-2xl shadow p-6">
@@ -640,7 +676,27 @@ a.status !== "archived"
 
           <tbody>
 
-            {filteredAds.map((ad) => (
+  {filteredAds.length === 0 ? (
+
+    <tr>
+
+      <td
+        colSpan={11}
+        className="p-6"
+      >
+
+        <EmptyState
+          title="Geen advertenties"
+          description="Er zijn geen advertenties gevonden."
+        />
+
+      </td>
+
+    </tr>
+
+  ) : (
+
+    filteredAds.map((ad) => (
 
               <tr
                 key={ad.id}
@@ -854,9 +910,11 @@ setEditPackageName(
 
               </tr>
 
-            ))}
+))
 
-          </tbody>
+  )}
+            
+            </tbody> 
 
         </table>
 
@@ -956,7 +1014,7 @@ setEditPackageName(
 
   </div>
 
-)}
+      )}
 
     </div>
   );

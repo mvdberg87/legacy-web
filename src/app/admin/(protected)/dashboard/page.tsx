@@ -3,6 +3,9 @@
 import { useEffect, useMemo, useState } from "react";
 import { getSupabaseBrowser } from "@/lib/supabaseBrowser";
 import { useRouter } from "next/navigation";
+import LoadingCard from "@/components/ui/LoadingCard";
+import EmptyState from "@/components/ui/EmptyState";
+import ErrorCard from "@/components/ui/ErrorCard";
 
 function ClubStatusBadge({ status }: { status?: string }) {
   const styles: Record<string, string> = {
@@ -122,6 +125,7 @@ export default function AdminClubsPage() {
 
   const [clubs, setClubs] = useState<Club[]>([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
   const [totals, setTotals] = useState({
   clubs: 0,
   jobs: 0,
@@ -139,12 +143,15 @@ const leaderboard = [...clubs]
 
   async function load() {
   const { data, error } = await supabase
-    .from("club_admin_overview")
-    .select("*")
-    .order("name");
+  .from("club_admin_overview")
+  .select("*")
+  .order("name");
 
-  console.log("CLUB ADMIN DATA:", data);
-  console.log("CLUB ADMIN ERROR:", error);
+if (error) {
+  setError(error.message);
+  setLoading(false);
+  return;
+}
 
   const clubsData = data ?? [];
 
@@ -185,7 +192,35 @@ const leaderboard = [...clubs]
     load();
   }, []);
 
-  if (loading) return <p>Laden...</p>;
+  if (loading) {
+
+  return (
+
+    <div className="p-6">
+
+      <LoadingCard rows={8} />
+
+    </div>
+
+  );
+
+}
+
+if (error) {
+
+  return (
+
+    <div className="p-6">
+
+      <ErrorCard
+        message={error}
+      />
+
+    </div>
+
+  );
+
+}
 
   return (
     <div className="bg-white text-black rounded-2xl shadow p-6">
@@ -289,9 +324,36 @@ const leaderboard = [...clubs]
 </thead>
 
         <tbody>
-          {clubs.map((club) => (
-            <tr key={club.id} className="border-b">
-              <td className="px-4 py-3 font-medium">
+
+  {clubs.length === 0 ? (
+
+    <tr>
+
+      <td
+        colSpan={12}
+        className="p-6"
+      >
+
+        <EmptyState
+          title="Nog geen clubs"
+          description="Er zijn nog geen clubs beschikbaar."
+        />
+
+      </td>
+
+    </tr>
+
+  ) : (
+
+    clubs.map((club) => (
+
+  <tr
+    key={club.id}
+    className="border-b"
+  >
+
+    <td className="px-4 py-3 font-medium">
+
   <button
     onClick={() =>
       router.push(`/admin/clubs/${club.slug}`)
@@ -365,7 +427,9 @@ const leaderboard = [...clubs]
 </td>
 
 </tr>
-))}
+))
+
+  )}
 
 </tbody>
 </table>

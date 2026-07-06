@@ -5,6 +5,9 @@ import { useParams } from "next/navigation";
 import ClubNavbar from "@/components/club/ClubNavbar";
 import { getSupabaseBrowser } from "@/lib/supabaseBrowser";
 import { getCompanyLogo } from "@/lib/companyLogo";
+import LoadingCard from "@/components/ui/LoadingCard";
+import EmptyState from "@/components/ui/EmptyState";
+import ErrorCard from "@/components/ui/ErrorCard";
 
 type Job = {
   id: string;
@@ -53,6 +56,9 @@ export default function ActivatiePage() {
 
   const [loading, setLoading] =
     useState(true);
+
+    const [error, setError] =
+  useState<string | null>(null);
 
 const [tone, setTone] =
   useState("Professioneel");
@@ -141,10 +147,18 @@ setClubData(club);
           jobsData[0].id
         );
       }
-    } finally {
-      setLoading(false);
-    }
-  }
+    } catch (err: any) {
+
+  setError(
+    err.message ??
+    "Er ging iets mis."
+  );
+
+} finally {
+
+  setLoading(false);
+
+}}
 
   function slugifyFileName(value: string) {
   return value
@@ -384,6 +398,48 @@ async function downloadPackage() {
   }
 }
 
+if (loading) {
+
+  return (
+
+    <main className="min-h-screen p-6 bg-[#0d1b2a]">
+
+      <ClubNavbar slug={slug} />
+
+      <div className="max-w-6xl mx-auto mt-6">
+
+        <LoadingCard rows={6} />
+
+      </div>
+
+    </main>
+
+  );
+
+}
+
+if (error) {
+
+  return (
+
+    <main className="min-h-screen p-6 bg-[#0d1b2a]">
+
+      <ClubNavbar slug={slug} />
+
+      <div className="max-w-6xl mx-auto mt-6">
+
+        <ErrorCard
+          message={error}
+        />
+
+      </div>
+
+    </main>
+
+  );
+
+}
+
   return (
     <main className="min-h-screen p-6 bg-[#0d1b2a]">
 
@@ -399,9 +455,7 @@ async function downloadPackage() {
           Genereer social media content en narrowcasting voor vacatures.
         </p>
 
-        {loading ? (
-          <p>Laden...</p>
-        ) : (
+        <></>
           <>
             <div className="mb-6">
 
@@ -409,26 +463,37 @@ async function downloadPackage() {
                 Kies een vacature
               </label>
 
-              <select
-                value={selectedJob}
-                onChange={(e) =>
-                  setSelectedJob(
-                    e.target.value
-                  )
-                }
-                className="w-full border-2 rounded-lg p-3"
-              >
-                {jobs.map((job) => (
-                  <option
-                    key={job.id}
-                    value={job.id}
-                  >
-                    {job.company_name}
-                    {" - "}
-                    {job.title}
-                  </option>
-                ))}
-              </select>
+              {jobs.length === 0 ? (
+
+  <EmptyState
+    title="Nog geen vacatures"
+    description="Voeg eerst een vacature toe voordat je een activatie kunt genereren."
+  />
+
+) : (
+
+  <select
+    value={selectedJob}
+    onChange={(e) =>
+      setSelectedJob(e.target.value)
+    }
+    className="w-full border-2 rounded-lg p-3"
+  >
+
+    {jobs.map((job) => (
+
+      <option
+        key={job.id}
+        value={job.id}
+      >
+        {job.company_name} - {job.title}
+      </option>
+
+    ))}
+
+  </select>
+
+)}
 
             </div>
 
@@ -637,7 +702,6 @@ async function downloadPackage() {
 )}
 
         </>
-)}
 
 </div>
 

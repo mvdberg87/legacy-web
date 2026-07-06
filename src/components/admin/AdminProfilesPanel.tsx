@@ -3,6 +3,9 @@
 import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import { getSupabaseBrowser } from "@/lib/supabaseBrowser";
+import LoadingCard from "@/components/ui/LoadingCard";
+import EmptyState from "@/components/ui/EmptyState";
+import ErrorCard from "@/components/ui/ErrorCard";
 
 
 type Profile = {
@@ -18,6 +21,7 @@ export default function AdminProfilesPanel() {
   const supabase = getSupabaseBrowser();
   const [profiles, setProfiles] = useState<Profile[]>([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
   const [refreshing, setRefreshing] = useState(false);
   const [search, setSearch] = useState("");
 
@@ -28,7 +32,11 @@ export default function AdminProfilesPanel() {
       .from("profiles_overview")
       .select("*")
       .order("created_at", { ascending: false });
-    if (error) console.error("❌ Fout bij ophalen profielen:", error);
+    if (error) {
+  setError(error.message);
+  setLoading(false);
+  return;
+}
     setProfiles(data ?? []);
     setLoading(false);
   }
@@ -106,6 +114,18 @@ export default function AdminProfilesPanel() {
       (p.role ?? "").toLowerCase().includes(search.toLowerCase())
   );
 
+  if (error) {
+
+  return (
+
+    <ErrorCard
+      message={error}
+    />
+
+  );
+
+}
+
   return (
     <motion.div
       className="bg-white border rounded-2xl p-6 shadow mt-10"
@@ -125,9 +145,12 @@ export default function AdminProfilesPanel() {
       </div>
 
       {loading ? (
-        <p>Laden...</p>
+        <LoadingCard rows={6} />
       ) : filteredProfiles.length === 0 ? (
-        <p className="text-gray-500 italic">Geen profielen gevonden.</p>
+        <EmptyState
+  title="Geen profielen gevonden"
+  description="Er zijn momenteel geen gebruikers die aan deze zoekopdracht voldoen."
+/>
       ) : (
         <div className="overflow-x-auto">
           <table className="min-w-[800px] text-sm border rounded-xl overflow-hidden">

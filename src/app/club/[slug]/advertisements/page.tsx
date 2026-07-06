@@ -4,6 +4,9 @@ import { useEffect, useState } from "react";
 import { getSupabaseBrowser } from "@/lib/supabaseBrowser";
 import { useParams } from "next/navigation";
 import ClubNavbar from "@/components/club/ClubNavbar";
+import LoadingCard from "@/components/ui/LoadingCard";
+import EmptyState from "@/components/ui/EmptyState";
+import ErrorCard from "@/components/ui/ErrorCard";
 
 type Advertisement = {
   id: string;
@@ -51,12 +54,17 @@ export default function AdvertisementsPage() {
   const [loading, setLoading] =
     useState(true);
 
+    const [error, setError] =
+  useState<string | null>(null);
+
     const [
   advertisingSalesEnabled,
   setAdvertisingSalesEnabled,
 ] = useState<boolean | null>(null);
 
   async function load() {
+
+  try {
 
     const { data: club } =
   await supabase
@@ -112,8 +120,6 @@ const statsMap =
       (row) => [row.id, row]
     )
   );
-
-console.log("STATS", stats);
 
 const enrichedAds =
   (data ?? []).map((ad) => {
@@ -178,8 +184,6 @@ setLifetimeStats({
     totalClubRevenue,
 });
 
-setLoading(false);
-
   const { data: reports } =
   await supabase
     .from("monthly_reports")
@@ -197,7 +201,21 @@ setLoading(false);
 setMonthlyReports(
   reports ?? []
 );
+
+  } catch (err: any) {
+
+    setError(
+      err.message ??
+      "Er ging iets mis."
+    );
+
+  } finally {
+
+    setLoading(false);
+
   }
+
+}
 
   async function toggleFeatured(
   advertisementId: string
@@ -232,8 +250,46 @@ setMonthlyReports(
   }, []);
 
   if (loading) {
-    return <p>Laden...</p>;
-  }
+
+  return (
+
+    <main className="min-h-screen p-6 bg-[#0d1b2a]">
+
+      <ClubNavbar slug={slug} />
+
+      <div className="max-w-6xl mx-auto mt-6">
+
+        <LoadingCard rows={8} />
+
+      </div>
+
+    </main>
+
+  );
+
+}
+
+if (error) {
+
+  return (
+
+    <main className="min-h-screen p-6 bg-[#0d1b2a]">
+
+      <ClubNavbar slug={slug} />
+
+      <div className="max-w-6xl mx-auto mt-6">
+
+        <ErrorCard
+          message={error}
+        />
+
+      </div>
+
+    </main>
+
+  );
+
+}
 
   if (
   advertisingSalesEnabled === false
@@ -443,7 +499,27 @@ const expectedRenewalRevenue =
 
           <tbody>
 
-            {ads.map((ad) => (
+  {ads.length === 0 ? (
+
+    <tr>
+
+      <td
+        colSpan={11}
+        className="p-6"
+      >
+
+        <EmptyState
+          title="Nog geen advertenties"
+          description="Er zijn nog geen advertenties verkocht."
+        />
+
+      </td>
+
+    </tr>
+
+  ) : (
+
+    ads.map((ad) => (
 
               <tr
   key={ad.id}
@@ -520,7 +596,10 @@ const expectedRenewalRevenue =
 
               </tr>
 
-            ))}
+                        ))
+
+  )}
+
 
           </tbody>
 
@@ -592,8 +671,10 @@ const expectedRenewalRevenue =
               )}
             </td>
           </tr>
-        )
-      )}
+                    ))
+
+                  }
+
 
     </tbody>
 
