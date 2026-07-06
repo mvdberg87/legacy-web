@@ -12,17 +12,65 @@ export default function CEOAssistant({
 
     <div className="bg-[#132a44] rounded-2xl p-8 mb-12">
 
-      <h2 className="text-2xl font-semibold text-white">
-        🧠 CEO Briefing
-      </h2>
+      <div className="space-y-6">
 
-      <p className="text-gray-400 mt-2">
-        {assistant.summary.description}
-      </p>
+  <div>
 
-      {/* Bestaande prioriteiten */}
+    <div className="inline-flex rounded-full bg-blue-500/20 px-3 py-1 text-xs font-semibold text-blue-300">
 
-      <div className="mt-8 space-y-4">
+  AI CEO Briefing
+
+</div>
+
+    <h2 className="text-3xl font-bold text-white">
+
+      {assistant.summary.greeting}
+
+    </h2>
+
+  </div>
+
+  <div className="rounded-xl bg-[#0d1b2a] p-5">
+
+    <div className="text-sm uppercase tracking-wide text-gray-400">
+
+      Platformstatus
+
+    </div>
+
+    <p className="text-white mt-2">
+
+      {assistant.summary.platformStatus}
+
+    </p>
+
+  </div>
+
+  <div className="rounded-xl bg-[#0d1b2a] p-5">
+
+    <div className="text-sm uppercase tracking-wide text-gray-400">
+
+      Mijn advies
+
+    </div>
+
+    <p className="text-white mt-2">
+
+      {assistant.summary.recommendation}
+
+    </p>
+
+  </div>
+
+</div>
+
+      <h3 className="text-xl font-semibold mt-10 mb-4">
+
+  📋 Belangrijkste inzichten
+
+</h3>
+
+      <div className="space-y-4">
 
         {assistant.priorities.map(
           (priority: any, index: number) => (
@@ -56,19 +104,32 @@ export default function CEOAssistant({
       <div className="mt-10">
 
         <h2 className="text-xl font-semibold mb-4">
-          🎯 Vandaag aanbevolen
-        </h2>
+
+  🎯 Top 3 acties voor vandaag
+
+</h2>
 
         <div className="space-y-4">
 
+
           {assistant.actions.actions
-            .slice(0, 5)
-            .map((action: any) => (
+  .slice(0, 3)
+  .map((action: any, index: number) => (
 
               <div
                 key={action.id}
                 className="rounded-xl bg-[#0d1b2a] p-5"
               >
+
+                {index === 0 && (
+
+  <div className="mb-3 inline-flex rounded-full bg-green-500/20 px-3 py-1 text-xs font-semibold text-green-300">
+
+    Hoogste prioriteit
+
+  </div>
+
+)}
 
                 <div className="font-semibold text-white">
                   {action.title}

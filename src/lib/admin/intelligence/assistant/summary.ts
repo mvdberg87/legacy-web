@@ -7,13 +7,15 @@ export function generateAssistantSummary(
 
   return {
 
-    title: "CEO Briefing",
+  greeting:
+    "Goedemorgen Michiel 👋",
 
-    description:
-      `Platform Health bedraagt ${platform.health.score}/100. ` +
-      `Er zijn ${platform.opportunities.length} groeikansen en ` +
-      `${platform.risks.length} risico's die aandacht vragen.`,
+  platformStatus:
+    "Het platform is gezond. Er zijn vandaag 3 nieuwe kansen.",
 
-  };
+  recommendation:
+    "Bel vandaag VV Naaldwijk. Dit is momenteel de kans met de hoogste verwachte impact.",
+
+};
 
 }

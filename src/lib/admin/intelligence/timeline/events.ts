@@ -7,51 +7,39 @@ export function buildTimelineEvents(): TimelineEvent[] {
   return [
 
     {
-
       id: "1",
-
-      time: "09:15",
-
-      title:
-        "Nieuwe upgradekans",
-
-      description:
-        "VV Naaldwijk heeft nu 96% upgradekans.",
-
-      type: "Discovery",
-
+      time: "09:14",
+      title: "Nieuwe commerciële kans",
+      description: "VV Naaldwijk voldoet aan meerdere upgrade-indicatoren.",
+      icon: "🟢",
+      color: "green",
     },
 
     {
-
       id: "2",
-
-      time: "10:03",
-
-      title:
-        "Nieuwe MRR",
-
-      description:
-        "€49 extra maandelijkse omzet.",
-
-      type: "Revenue",
-
+      time: "09:43",
+      title: "Advertentie verkocht",
+      description: "Een Premium advertentie is succesvol geplaatst.",
+      icon: "💰",
+      color: "yellow",
     },
 
     {
-
       id: "3",
+      time: "10:12",
+      title: "Benchmark bijgewerkt",
+      description: "De nieuwste platformvergelijking is verwerkt.",
+      icon: "📈",
+      color: "blue",
+    },
 
-      time: "11:42",
-
-      title:
-        "Benchmark gewijzigd",
-
-      description:
-        "FC 's-Gravenzande behoort nu tot de top 5%.",
-
-      type: "Learning",
-
+    {
+      id: "4",
+      time: "11:28",
+      title: "Nieuwe AI-prioriteit",
+      description: "De Action Engine heeft de prioriteiten opnieuw berekend.",
+      icon: "🤖",
+      color: "purple",
     },
 
   ];

@@ -12,22 +12,44 @@ export default function MissionTimeline({
 
   return (
 
-    <div className="space-y-4">
+  <div className="space-y-4">
 
-      {items.map((item) => (
+    {items.length === 0 ? (
+
+      <div className="rounded-xl bg-[#0d1b2a] p-6 text-center">
+
+        <div className="text-lg font-semibold text-white">
+
+          Nog geen AI-activiteiten
+
+        </div>
+
+        <div className="mt-2 text-sm text-gray-400">
+
+          Nieuwe analyses en gebeurtenissen verschijnen hier automatisch.
+
+        </div>
+
+      </div>
+
+    ) : (
+
+      items.map((item) => (
 
         <TimelineItem
 
-          key={`${item.time}-${item.title}`}
+          key={item.id}
 
           item={item}
 
         />
 
-      ))}
+      ))
 
-    </div>
+    )}
 
-  );
+  </div>
+
+);
 
 }

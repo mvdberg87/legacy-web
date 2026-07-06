@@ -8,12 +8,9 @@ export type TimelineEvent = {
 
   description: string;
 
-  type:
-    | "Discovery"
-    | "Revenue"
-    | "Learning"
-    | "Prediction"
-    | "Action";
+  icon: string;
+
+  color: string;
 
 };
 

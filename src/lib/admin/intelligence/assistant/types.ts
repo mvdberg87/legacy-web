@@ -10,8 +10,9 @@ export type AssistantPriority = {
 };
 
 export type AssistantSummary = {
-  title: string;
-  description: string;
+  greeting: string;
+  platformStatus: string;
+  recommendation: string;
 };
 
 export type AssistantDashboard = {

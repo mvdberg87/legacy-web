@@ -5,11 +5,13 @@ import MissionBadge from "../ui/MissionBadge";
 
 type Props = {
   item: {
-    time: string;
-    title: string;
-    description: string;
-    type: string;
-  };
+  id: string;
+  time: string;
+  title: string;
+  description: string;
+  icon: string;
+  color: string;
+};
 };
 
 export default function TimelineItem({
@@ -22,17 +24,27 @@ export default function TimelineItem({
 
       <div className="flex justify-between items-start">
 
-        <div>
+        <div className="flex-1 pr-4">
 
-          <MissionBadge text={item.type} />
+          <div className="flex items-center gap-2">
 
-          <div className="font-semibold mt-3">
+  <span className="text-xl">
+
+    {item.icon}
+
+  </span>
+
+  <MissionBadge text={item.color} />
+
+</div>
+
+          <div className="mt-3 text-white font-semibold">
 
             {item.title}
 
           </div>
 
-          <div className="text-gray-400 mt-2">
+          <div className="mt-2 text-sm leading-6 text-gray-400">
 
             {item.description}
 
@@ -40,11 +52,11 @@ export default function TimelineItem({
 
         </div>
 
-        <div className="text-sm text-gray-500">
+        <div className="shrink-0 text-sm font-medium text-gray-500">
 
-          {item.time}
+  {item.time}
 
-        </div>
+</div>
 
       </div>
 
