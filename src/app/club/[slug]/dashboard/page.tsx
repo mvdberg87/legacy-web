@@ -11,6 +11,7 @@ import {
   SUBSCRIPTIONS,
   type PackageKey,
 } from "@/lib/subscriptions";
+import { toast } from "sonner";
 
 /* ===============================
    Types
@@ -512,7 +513,7 @@ const needsUpdate =
     const priceId = priceMap[targetPackage];
 
     if (!priceId) {
-      alert("Geen priceId gevonden");
+      toast.error("Geen priceId gevonden");
       return;
     }
 
@@ -534,7 +535,7 @@ const needsUpdate =
     const data = await res.json();
 
     if (!res.ok) {
-      alert(data.error || "Checkout mislukt");
+      toast.error(data.error || "Checkout mislukt");
       return;
     }
 
@@ -545,12 +546,12 @@ const needsUpdate =
     "noopener,noreferrer"
   );
 } else {
-  alert("Geen Stripe checkout URL ontvangen");
+  toast.error("Geen Stripe checkout URL ontvangen");
 }
 
   } catch (err) {
     console.error("Checkout error:", err);
-    alert("Server fout bij checkout.");
+    toast.error("Server fout bij checkout.");
   }
 }
 
@@ -560,7 +561,7 @@ async function updateExtraAds(newQuantity: number) {
 
   if (newQuantity < 0) return;
   if (newQuantity > 10) {
-    alert("Maximaal 10 extra advertenties");
+    toast.error("Maximaal 10 extra advertenties");
     return;
   }
 
@@ -579,7 +580,7 @@ async function updateExtraAds(newQuantity: number) {
     const data = await res.json();
 
     if (!res.ok) {
-      alert(data.error || "Fout bij aanpassen");
+      toast.error(data.error || "Fout bij aanpassen");
       return;
     }
 
@@ -590,7 +591,7 @@ async function updateExtraAds(newQuantity: number) {
 
   } catch (err) {
     console.error(err);
-    alert("Server fout");
+    toast.error("Server fout");
   }
 }
 
@@ -617,17 +618,17 @@ async function cancelSubscription() {
     const data = await res.json();
 
     if (!res.ok) {
-      alert(data.error || "Opzeggen mislukt");
+      toast.error(data.error || "Opzeggen mislukt");
       return;
     }
 
-    alert("Je abonnement is opgezegd en loopt door tot het einde van de periode.");
+    toast.success("Je abonnement is opgezegd en loopt door tot het einde van de periode.");
 
     window.location.reload();
 
   } catch (err) {
     console.error(err);
-    alert("Server fout");
+    toast.error("Server fout");
   }
 }
 
@@ -648,17 +649,17 @@ async function reactivateSubscription() {
     const data = await res.json();
 
     if (!res.ok) {
-      alert(data.error || "Reactiveren mislukt");
+      toast.error(data.error || "Reactiveren mislukt");
       return;
     }
 
-    alert("Je opzegging is geannuleerd 🙌");
+    toast.success("Je opzegging is geannuleerd 🙌");
 
     window.location.reload();
 
   } catch (err) {
     console.error(err);
-    alert("Server fout");
+    toast.error("Server fout");
   }
 }
 
@@ -702,7 +703,7 @@ async function connectStripe() {
     }
   } catch (err) {
     console.error(err);
-    alert("Stripe onboarding mislukt");
+    toast.error("Stripe onboarding mislukt");
   }
 }
       

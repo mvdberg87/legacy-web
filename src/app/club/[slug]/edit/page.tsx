@@ -10,6 +10,7 @@ import {
   DEFAULT_PUBLIC_JOBS_CTA_TITLE,
   DEFAULT_PUBLIC_JOBS_CTA_TEXT,
 } from "@/lib/defaultTexts";
+import { toast } from "sonner";
 
 /* ---------- Types ---------- */
 
@@ -103,9 +104,7 @@ activation_accent_color:
       "image/jpeg",
     ].includes(file.type)
   ) {
-    alert(
-      "Alleen PNG of JPG toegestaan."
-    );
+    toast.error("Alleen PNG of JPG toegestaan.");
     return;
   }
 
@@ -128,7 +127,7 @@ activation_accent_color:
     );
 
   if (uploadError) {
-    alert("Upload mislukt.");
+    toast.error("Upload mislukt.");
     setUploadingLogo(false);
     return;
   }
@@ -176,7 +175,7 @@ async function handleActivationImageUpload(
       );
 
   if (error) {
-    alert("Upload mislukt");
+    toast.error("Upload mislukt");
     setUploadingLogo(false);
     return;
   }
@@ -271,9 +270,9 @@ const { data: updateData, error: updateError } = await supabase
 console.log("UPDATE RESULT:", updateData, updateError);
 
     if (updateError) {
-      setError("Fout bij opslaan.");
+      toast.error("Fout bij opslaan.");
     } else {
-      setSuccess("Clubgegevens succesvol opgeslagen.");
+      toast.success("Clubgegevens succesvol opgeslagen.");
       setSaved(true);
 
 setTimeout(() => {

@@ -6,6 +6,7 @@ import { getSupabaseBrowser } from "@/lib/supabaseBrowser";
 import LoadingCard from "@/components/ui/LoadingCard";
 import EmptyState from "@/components/ui/EmptyState";
 import ErrorCard from "@/components/ui/ErrorCard";
+import { toast } from "sonner";
 
 type Advertisement = {
   id: string;
@@ -94,7 +95,7 @@ export default function EditAdvertisementPage() {
   return;
 }
 
-    alert("Advertentie opgeslagen");
+    toast.success("Advertentie opgeslagen");
 
     router.push(`/admin/clubs/${slug}`);
   }

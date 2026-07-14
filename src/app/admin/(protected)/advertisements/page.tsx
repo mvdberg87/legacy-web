@@ -5,6 +5,21 @@ import { getSupabaseBrowser } from "@/lib/supabaseBrowser";
 import LoadingCard from "@/components/ui/LoadingCard";
 import EmptyState from "@/components/ui/EmptyState";
 import ErrorCard from "@/components/ui/ErrorCard";
+import { toast } from "sonner";
+import { useConfirm } from "@/components/providers/confirm-provider";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+  DialogFooter,
+} from "@/components/ui/dialog";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import { Label } from "@/components/ui/label";
+import { Badge } from "@/components/ui/badge";
 
 type Advertisement = {
   id: string;
@@ -41,35 +56,41 @@ function StatusBadge({
 }: {
   status: string;
 }) {
-  const styles: Record<string, string> = {
+  const variants: Record<string, string> = {
     pending_activation:
-      "bg-yellow-100 text-yellow-800",
+      "bg-yellow-100 text-yellow-800 hover:bg-yellow-100",
 
     active:
-      "bg-green-100 text-green-800",
+      "bg-green-100 text-green-800 hover:bg-green-100",
 
     expired:
-      "bg-red-100 text-red-800",
+      "bg-red-100 text-red-800 hover:bg-red-100",
 
-      rejected:
-  "bg-red-100 text-red-800",
+    rejected:
+      "bg-red-100 text-red-800 hover:bg-red-100",
 
-  archived:
-  "bg-gray-200 text-gray-700",
+    archived:
+      "bg-gray-200 text-gray-700 hover:bg-gray-200",
 
-  inactive:
-  "bg-gray-100 text-gray-700",
+    inactive:
+      "bg-gray-100 text-gray-700 hover:bg-gray-100",
+  };
+
+  const labels: Record<string, string> = {
+    pending_activation: "Pending",
+    active: "Actief",
+    expired: "Verlopen",
+    rejected: "Afgekeurd",
+    archived: "Gearchiveerd",
+    inactive: "Inactief",
   };
 
   return (
-    <span
-      className={`px-2 py-1 rounded text-xs font-medium ${
-        styles[status] ??
-        "bg-gray-100 text-gray-600"
-      }`}
+    <Badge
+      className={variants[status] ?? ""}
     >
-      {status}
-    </span>
+      {labels[status] ?? status}
+    </Badge>
   );
 }
 
@@ -92,10 +113,13 @@ export default function AdminAdvertisementsPage() {
     const [editingAd, setEditingAd] =
   useState<Advertisement | null>(null);
 
-const [editCompanyName, setEditCompanyName] =
+  const [rejectingAd, setRejectingAd] =
+  useState<Advertisement | null>(null);
+
+const [rejectionReason, setRejectionReason] =
   useState("");
 
-const [editWebsite, setEditWebsite] =
+const [editCompanyName, setEditCompanyName] =
   useState("");
 
   const [editJobTitle, setEditJobTitle] =
@@ -115,63 +139,74 @@ const [editVacancyUrl, setEditVacancyUrl] =
   | "archived"
 >("all");
 
-    async function rejectAdvertisement(
-  advertisementId: string
-) {
+const { confirm } = useConfirm();
 
-  const reason = prompt(
-    "Reden van afkeuren?"
-  );
+    function rejectAdvertisement(ad: Advertisement) {
+  setRejectingAd(ad);
+  setRejectionReason("");
+}
 
-  if (!reason) return;
+async function confirmRejectAdvertisement() {
+  if (!rejectingAd) return;
+
+  if (!rejectionReason.trim()) {
+    toast.error("Vul een reden in.");
+    return;
+  }
 
   const response = await fetch(
     "/api/admin/advertisements/reject",
     {
       method: "POST",
-
       headers: {
-        "Content-Type":
-          "application/json",
+        "Content-Type": "application/json",
       },
-
       body: JSON.stringify({
-        advertisementId,
-        rejectionReason: reason,
+        advertisementId: rejectingAd.id,
+        rejectionReason: rejectionReason,
       }),
     }
   );
 
   if (!response.ok) {
-    alert("Afkeuren mislukt");
+    toast.error("Afkeuren mislukt.");
     return;
   }
 
-  alert("Advertentie afgekeurd");
-
   await load();
+
+  setRejectingAd(null);
+  setRejectionReason("");
+
+  toast.success("Advertentie afgekeurd.");
 }
 
 async function toggleFeatured(
   advertisementId: string,
   currentValue: boolean
 ) {
-  await fetch(
-    "/api/admin/advertisements/highlight",
-    {
-      method: "POST",
-      headers: {
-        "Content-Type":
-          "application/json",
-      },
-      body: JSON.stringify({
-        advertisementId,
-        isFeatured: !currentValue,
-      }),
-    }
-  );
+  const response = await fetch(
+  "/api/admin/advertisements/highlight",
+  {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      advertisementId,
+      isFeatured: !currentValue,
+    }),
+  }
+);
 
-  await load();
+if (!response.ok) {
+  toast.error("Bijwerken mislukt.");
+  return;
+}
+
+await load();
+
+toast.success("Featured-status bijgewerkt.");
 }
 
 async function saveAdvertisement() {
@@ -203,61 +238,77 @@ async function saveAdvertisement() {
   );
 
   if (!response.ok) {
-    alert("Opslaan mislukt");
+    toast.error("Opslaan mislukt");
     return;
   }
 
-  setEditingAd(null);
-
   await load();
+
+setEditingAd(null);
+
+toast.success("Advertentie opgeslagen.");
 }
 
 async function archiveAdvertisement(
   advertisementId: string
 ) {
-  const confirmed = confirm(
-    "Advertentie archiveren?"
-  );
+  const confirmed = await confirm({
+  title: "Advertentie archiveren",
+  description:
+    "Weet je zeker dat je deze advertentie wilt archiveren?",
+  confirmText: "Archiveren",
+  cancelText: "Annuleren",
+});
 
-  if (!confirmed) return;
+if (!confirmed) return;
 
-  await fetch(
-    "/api/admin/advertisements/archive",
-    {
-      method: "POST",
-      headers: {
-        "Content-Type":
-          "application/json",
-      },
-      body: JSON.stringify({
-        advertisementId,
-      }),
-    }
-  );
+  const response = await fetch(
+  "/api/admin/advertisements/archive",
+  {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      advertisementId,
+    }),
+  }
+);
 
-  await load();
+if (!response.ok) {
+  toast.error("Archiveren mislukt.");
+  return;
+}
+
+await load();
+
+toast.success("Advertentie gearchiveerd.");
 }
 
 async function restoreAdvertisement(
   advertisementId: string
 ) {
-  await fetch(
-    "/api/admin/advertisements/restore",
-    {
-      method: "POST",
+  const response = await fetch(
+  "/api/admin/advertisements/restore",
+  {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      advertisementId,
+    }),
+  }
+);
 
-      headers: {
-        "Content-Type":
-          "application/json",
-      },
+if (!response.ok) {
+  toast.error("Herstellen mislukt.");
+  return;
+}
 
-      body: JSON.stringify({
-        advertisementId,
-      }),
-    }
-  );
+await load();
 
-  await load();
+toast.success("Advertentie hersteld.");
 }
 
 async function toggleRenewal(
@@ -265,7 +316,7 @@ async function toggleRenewal(
   currentValue: boolean
 ) {
 
-  await fetch(
+  const response = await fetch(
     "/api/admin/advertisements/toggle-renewal",
     {
       method: "POST",
@@ -282,17 +333,28 @@ async function toggleRenewal(
     }
   );
 
-  await load();
+  if (!response.ok) {
+  toast.error("Wijzigen mislukt.");
+  return;
+}
+
+await load();
+
+toast.success("Automatische verlenging bijgewerkt.");
 }
 
     async function activateAdvertisement(
   advertisementId: string
 ) {
-  const confirmed = confirm(
-    "Advertentie activeren?"
-  );
+  const confirmed = await confirm({
+  title: "Advertentie activeren",
+  description:
+    "Wil je deze advertentie activeren?",
+  confirmText: "Activeren",
+  cancelText: "Annuleren",
+});
 
-  if (!confirmed) return;
+if (!confirmed) return;
 
   const response = await fetch(
   "/api/admin/advertisements/activate",
@@ -314,7 +376,7 @@ const result =
   await response.json();
 
 if (!response.ok) {
-  alert(
+  toast.error(
     result.error ||
     "Activatie mislukt"
   );
@@ -322,9 +384,9 @@ if (!response.ok) {
   return;
 }
 
-  alert("Advertentie geactiveerd");
+  await load();
 
-await load();
+toast.success("Advertentie geactiveerd");
 }
 
   async function load() {
@@ -479,48 +541,52 @@ if (error) {
 
       <div className="flex gap-2 mb-6 flex-wrap">
 
-  <button
-    onClick={() => setFilter("all")}
-    className="px-4 py-2 border rounded"
-  >
-    Alle
-  </button>
+  <Button
+  variant={filter === "all" ? "default" : "outline"}
+  onClick={() => setFilter("all")}
+>
+  Alle
+</Button>
 
-  <button
-    onClick={() =>
-      setFilter("pending_activation")
-    }
-    className="px-4 py-2 border rounded"
-  >
-    Pending
-  </button>
+  <Button
+  variant={
+    filter === "pending_activation"
+      ? "default"
+      : "outline"
+  }
+  onClick={() => setFilter("pending_activation")}
+>
+  Pending
+</Button>
 
-  <button
-    onClick={() =>
-      setFilter("active")
-    }
-    className="px-4 py-2 border rounded"
-  >
+  <Button
+    variant={filter === "active" ? "default" : "outline"}
+    onClick={() => setFilter("active")}
+>
     Actief
-  </button>
+</Button>
 
-  <button
-    onClick={() =>
-      setFilter("rejected")
-    }
-    className="px-4 py-2 border rounded"
-  >
-    Afgekeurd
-  </button>
+  <Button
+  variant={
+    filter === "rejected"
+      ? "default"
+      : "outline"
+  }
+  onClick={() => setFilter("rejected")}
+>
+  Afgekeurd
+</Button>
 
-  <button
-    onClick={() =>
-      setFilter("archived")
-    }
-    className="px-4 py-2 border rounded"
-  >
-    Gearchiveerd
-  </button>
+  <Button
+  variant={
+    filter === "archived"
+      ? "default"
+      : "outline"
+  }
+  onClick={() => setFilter("archived")}
+>
+  Gearchiveerd
+</Button>
 
 </div>
 
@@ -732,21 +798,15 @@ a.status !== "archived"
 </td>
 
 <td className="px-4 py-3 text-center">
-  <button
+  <Button
+    size="sm"
+    variant={ad.auto_renew ? "default" : "secondary"}
     onClick={() =>
-      toggleRenewal(
-        ad.id,
-        ad.auto_renew
-      )
+        toggleRenewal(ad.id, ad.auto_renew)
     }
-    className={`px-3 py-1 rounded text-xs font-medium ${
-      ad.auto_renew
-        ? "bg-green-100 text-green-800"
-        : "bg-red-100 text-red-800"
-    }`}
-  >
+>
     {ad.auto_renew ? "AAN" : "UIT"}
-  </button>
+</Button>
 </td>
 
                 <td className="px-4 py-3 text-center">
@@ -783,44 +843,41 @@ a.status !== "archived"
 
     <div className="flex flex-wrap justify-center gap-2">
 
-  <button
-    onClick={() =>
-      activateAdvertisement(ad.id)
-    }
-    className="bg-green-600 text-white px-3 py-1 rounded text-xs hover:bg-green-700"
-  >
-    Activeer
-  </button>
+  <Button
+  size="sm"
+  className="bg-green-600 hover:bg-green-700"
+  onClick={() => activateAdvertisement(ad.id)}
+>
+  Activeer
+</Button>
 
-  <button
-    onClick={() =>
-      rejectAdvertisement(ad.id)
-    }
-    className="bg-red-600 text-white px-3 py-1 rounded text-xs hover:bg-red-700"
-  >
+  <Button
+    size="sm"
+    variant="destructive"
+    onClick={() => rejectAdvertisement(ad)}
+>
     Afkeuren
-  </button>
+</Button>
 
-  <button
-  onClick={() =>
-    toggleFeatured(
-      ad.id,
-      ad.is_featured
-    )
-  }
-  className="bg-yellow-500 text-white px-3 py-1 rounded text-xs hover:bg-yellow-600"
+  <Button
+    size="icon"
+    variant="secondary"
+    onClick={() =>
+        toggleFeatured(ad.id, ad.is_featured)
+    }
 >
-  ⭐
-</button>
+    ⭐
+</Button>
 
-<button
-  onClick={() =>
-    archiveAdvertisement(ad.id)
-  }
-  className="bg-gray-700 text-white px-3 py-1 rounded text-xs hover:bg-gray-800"
+<Button
+    size="icon"
+    variant="secondary"
+    onClick={() =>
+        archiveAdvertisement(ad.id)
+    }
 >
-  🗑️
-</button>
+    🗑️
+</Button>
 
 </div>
 
@@ -832,56 +889,40 @@ a.status !== "archived"
 
   <div className="flex justify-center gap-2">
 
-    <button
-      onClick={() =>
-        toggleFeatured(
-          ad.id,
-          ad.is_featured
-        )
-      }
-      className={`px-3 py-1 rounded text-xs text-white ${
-        ad.is_featured
-          ? "bg-yellow-600"
-          : "bg-yellow-500"
-      }`}
-    >
-      ⭐
-    </button>
+    <Button
+  size="icon"
+  variant="secondary"
+  onClick={() =>
+    toggleFeatured(ad.id, ad.is_featured)
+  }
+>
+  ⭐
+</Button>
 
-    <button
+    <Button
+  size="icon"
+  variant="outline"
   onClick={() => {
     setEditingAd(ad);
 
-setEditJobTitle(
-  ad.job_title ?? ""
-);
-
-setEditCompanyName(
-  ad.company_name ?? ""
-);
-
-setEditVacancyUrl(
-  ad.vacancy_url ?? ""
-);
-
-setEditPackageName(
-  ad.package_name ?? ""
-);
+    setEditJobTitle(ad.job_title ?? "");
+    setEditCompanyName(ad.company_name ?? "");
+    setEditVacancyUrl(ad.vacancy_url ?? "");
+    setEditPackageName(ad.package_name ?? "");
   }}
-  className="bg-blue-600 text-white px-3 py-1 rounded text-xs"
 >
   ✏️
+</Button>
 
-</button>
-
-    <button
-  onClick={() =>
-    archiveAdvertisement(ad.id)
-  }
-  className="bg-gray-700 text-white px-3 py-1 rounded text-xs"
+    <Button
+    size="icon"
+    variant="secondary"
+    onClick={() =>
+        archiveAdvertisement(ad.id)
+    }
 >
-  📦
-</button>
+    📦
+</Button>
 
   </div>
 
@@ -895,14 +936,15 @@ setEditPackageName(
 
 {ad.status === "archived" && (
 
-  <button
+  <Button
+    size="sm"
+    variant="default"
     onClick={() =>
-      restoreAdvertisement(ad.id)
+        restoreAdvertisement(ad.id)
     }
-    className="bg-green-600 text-white px-3 py-1 rounded text-xs hover:bg-green-700"
-  >
+>
     ↩️ Herstel
-  </button>
+</Button>
 
 )}
 
@@ -920,55 +962,51 @@ setEditPackageName(
 
       </div>
 
-      {editingAd && (
+      <Dialog
+  open={!!editingAd}
+  onOpenChange={(open) => {
+    if (!open) setEditingAd(null);
+  }}
+>
 
-  <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
+<DialogContent className="max-w-lg">
 
-    <div className="bg-white rounded-xl p-6 w-full max-w-lg">
+  <div className="space-y-4">
 
-      <h2 className="text-lg font-semibold mb-4">
-        Advertentie bewerken
-      </h2>
+<DialogHeader>
 
-      <label className="block text-sm font-medium mb-1">
-  Vacaturetitel
-</label>
+  <DialogTitle>
+    Advertentie bewerken
+  </DialogTitle>
 
-<input
+  <DialogDescription>
+    Pas de vacaturegegevens hieronder aan.
+  </DialogDescription>
+
+</DialogHeader>
+
+      <Label>Vacaturetitel</Label>
+
+<Input
   value={editJobTitle}
-  onChange={(e) =>
-    setEditJobTitle(e.target.value)
-  }
-  className="w-full border rounded p-2 mb-3"
+  onChange={(e) => setEditJobTitle(e.target.value)}
 />
 
-<label className="block text-sm font-medium mb-1">
-  Bedrijfsnaam
-</label>
+<Label>Bedrijfsnaam</Label>
 
-<input
+<Input
   value={editCompanyName}
-  onChange={(e) =>
-    setEditCompanyName(e.target.value)
-  }
-  className="w-full border rounded p-2 mb-3"
+  onChange={(e) => setEditCompanyName(e.target.value)}
 />
 
-<label className="block text-sm font-medium mb-1">
-  Vacature URL
-</label>
+<Label>Vacature URL</Label>
 
-<input
+<Input
   value={editVacancyUrl}
-  onChange={(e) =>
-    setEditVacancyUrl(e.target.value)
-  }
-  className="w-full border rounded p-2 mb-3"
+  onChange={(e) => setEditVacancyUrl(e.target.value)}
 />
 
-<label className="block text-sm font-medium mb-1">
-  Pakket
-</label>
+<Label>Pakket</Label>
 
 <select
   value={editPackageName}
@@ -990,31 +1028,77 @@ setEditPackageName(
   </option>
 </select>
 
-      <div className="flex justify-end gap-2">
+      <DialogFooter>
 
-        <button
-          onClick={() =>
-            setEditingAd(null)
-          }
-          className="px-4 py-2 border rounded"
-        >
-          Annuleren
-        </button>
+<Button
+  variant="outline"
+  onClick={() => setEditingAd(null)}
+>
+  Annuleren
+</Button>
 
-        <button
-          onClick={saveAdvertisement}
-          className="px-4 py-2 bg-green-600 text-white rounded"
-        >
-          Opslaan
-        </button>
+<Button onClick={saveAdvertisement}>
+  Opslaan
+</Button>
 
-      </div>
+</DialogFooter>
 
-    </div>
+</div>
 
-  </div>
+    </DialogContent>
 
-      )}
+</Dialog>
+
+<Dialog
+  open={!!rejectingAd}
+  onOpenChange={(open) => {
+    if (!open) {
+      setRejectingAd(null);
+      setRejectionReason("");
+    }
+  }}
+>
+  <DialogContent className="max-w-lg">
+
+    <DialogHeader>
+      <DialogTitle>
+        Advertentie afkeuren
+      </DialogTitle>
+
+      <DialogDescription>
+        Geef de reden op waarom deze advertentie wordt afgekeurd.
+      </DialogDescription>
+    </DialogHeader>
+
+    <Textarea
+  rows={5}
+  value={rejectionReason}
+  onChange={(e) => setRejectionReason(e.target.value)}
+/>
+
+    <DialogFooter>
+
+      <Button
+  variant="outline"
+  onClick={() => {
+    setRejectingAd(null);
+    setRejectionReason("");
+  }}
+>
+  Annuleren
+</Button>
+
+<Button
+  variant="destructive"
+  onClick={confirmRejectAdvertisement}
+>
+  Afkeuren
+</Button>
+
+    </DialogFooter>
+
+  </DialogContent>
+</Dialog>
 
     </div>
   );

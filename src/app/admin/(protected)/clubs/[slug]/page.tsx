@@ -4,6 +4,7 @@ import { useEffect, useMemo, useState } from "react";
 import { motion } from "framer-motion";
 import { useParams, useRouter } from "next/navigation";
 import { getSupabaseBrowser } from "@/lib/supabaseBrowser";
+import { toast } from "sonner";
 
 /* ---------- Types ---------- */
 
@@ -369,7 +370,7 @@ setTopJobs({
     });
 
     if (!res.ok) {
-      alert("Uitlichten mislukt");
+      toast.error("Uitlichten mislukt");
       return;
     }
 
@@ -397,7 +398,7 @@ setTopJobs({
   const data = await res.json();
 
   if (!res.ok) {
-    alert(data.error ?? "Uitlichten mislukt");
+    toast.error(data.error ?? "Uitlichten mislukt");
     return;
   }
 
@@ -429,7 +430,7 @@ async function archiveAd(adId: string) {
   const data = await res.json();
 
   if (!res.ok) {
-    alert(data.error ?? "Archiveren mislukt");
+    toast.error(data.error ?? "Archiveren mislukt");
     return;
   }
 
@@ -453,7 +454,7 @@ async function restoreAd(adId: string) {
   const data = await res.json();
 
   if (!res.ok) {
-    alert(data.error ?? "Herstellen mislukt");
+    toast.error(data.error ?? "Herstellen mislukt");
     return;
   }
 
@@ -485,7 +486,7 @@ async function restoreAd(adId: string) {
   const data = await res.json();
 
   if (!res.ok) {
-    alert(data.error ?? "Verwijderen mislukt");
+    toast.error(data.error ?? "Verwijderen mislukt");
     return;
   }
 
@@ -511,10 +512,10 @@ async function restoreAd(adId: string) {
 
     if (!res.ok) throw new Error();
 
-    alert("Rapport opnieuw verstuurd.");
+    toast.success("Rapport opnieuw verstuurd.");
     load(); // refresh data
   } catch {
-    alert("Opnieuw versturen mislukt.");
+    toast.error("Opnieuw versturen mislukt.");
   }
 }
   /* ---------- Render ---------- */
@@ -1029,7 +1030,7 @@ async function restoreAd(adId: string) {
             const data = await res.json();
 
             if (!res.ok || !data.success) {
-              alert(data.error || "Email wijzigen mislukt");
+              toast.error(data.error || "Email wijzigen mislukt");
               return;
             }
 
@@ -1038,7 +1039,7 @@ async function restoreAd(adId: string) {
               email: data.email,
             });
 
-            alert("E-mail gewijzigd");
+            toast.success("E-mail gewijzigd");
           }}
           className="bg-blue-600 text-white px-4 py-2 rounded-lg text-sm"
         >

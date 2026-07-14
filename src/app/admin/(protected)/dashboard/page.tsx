@@ -363,12 +363,6 @@ if (error) {
   >
     {club.name}
   </button>
-  <button
-  onClick={() => toast.success("Sponsorjobs UI werkt!")}
-  className="bg-green-600 text-white px-4 py-2 rounded-lg"
->
-  Test toast
-</button>
 </td>
 
               <td className="px-4 py-3 text-center">

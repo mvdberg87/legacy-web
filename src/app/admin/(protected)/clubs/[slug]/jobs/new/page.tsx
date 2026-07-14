@@ -4,6 +4,7 @@ import { useEffect, useMemo, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 import { getSupabaseBrowser } from "@/lib/supabaseBrowser";
 import ClubNavbar from "@/components/club/ClubNavbar";
+import { toast } from "sonner";
 
 type Club = {
   id: string;
@@ -52,7 +53,7 @@ setLoading(false);
     e.preventDefault();
 
     if (!title || !companyName || !applyUrl) {
-      alert("Vul alle velden in.");
+      toast.error("Vul alle velden in.");
       return;
     }
 
@@ -76,7 +77,7 @@ setLoading(false);
 setSaving(false);
 
 if (!res.ok) {
-  alert("Vacature aanmaken mislukt");
+  toast.error("Vacature aanmaken mislukt");
   return;
 }
 

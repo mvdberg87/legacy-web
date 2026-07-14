@@ -3,6 +3,19 @@
 import { useEffect, useMemo, useState } from "react";
 import { motion } from "framer-motion";
 import { getSupabaseBrowser } from "@/lib/supabaseBrowser";
+import { toast } from "sonner";
+import { useConfirm } from "@/components/providers/confirm-provider";
+import { Button } from "@/components/ui/button";
+import { Textarea } from "@/components/ui/textarea";
+
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+  DialogFooter,
+} from "@/components/ui/dialog";
 
 
 /* ===============================
@@ -27,6 +40,12 @@ function ClubSignupRequestsPanel() {
   const [loading, setLoading] = useState(true);
   const [approvingId, setApprovingId] = useState<string | null>(null);
   const [rejectingId, setRejectingId] = useState<string | null>(null);
+  const { confirm } = useConfirm();
+  const [rejectingRequest, setRejectingRequest] =
+  useState<SignupRequest | null>(null);
+
+const [rejectionReason, setRejectionReason] =
+  useState("");
 
   async function load() {
     setLoading(true);
@@ -54,7 +73,15 @@ function ClubSignupRequestsPanel() {
 
   async function approve(requestId: string) {
     if (approvingId) return;
-    if (!confirm("Weet je zeker dat je deze club wilt goedkeuren?")) return;
+    const confirmed = await confirm({
+  title: "Club goedkeuren",
+  description:
+    "Weet je zeker dat je deze club wilt goedkeuren?",
+  confirmText: "Goedkeuren",
+  cancelText: "Annuleren",
+});
+
+if (!confirmed) return;
 
     setApprovingId(requestId);
 
@@ -66,7 +93,7 @@ function ClubSignupRequestsPanel() {
       });
 
       if (!res.ok) {
-        alert("Goedkeuren mislukt");
+        toast.error("Goedkeuren mislukt");
         return;
       }
 
@@ -76,16 +103,15 @@ function ClubSignupRequestsPanel() {
     }
   }
 
-  async function reject(requestId: string) {
-  if (rejectingId) return;
+async function confirmReject() {
+  if (!rejectingRequest) return;
 
-  const reason = prompt(
-    "Waarom wordt deze aanvraag afgekeurd?"
-  );
+  if (!rejectionReason.trim()) {
+    toast.error("Vul een reden in.");
+    return;
+  }
 
-  if (!reason) return;
-
-  setRejectingId(requestId);
+  setRejectingId(rejectingRequest.id);
 
   try {
     const res = await fetch("/api/admin/reject-club", {
@@ -94,19 +120,22 @@ function ClubSignupRequestsPanel() {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        requestId,
-        reason,
+        requestId: rejectingRequest.id,
+        reason: rejectionReason,
       }),
     });
 
     if (!res.ok) {
-      const data = await res.json();
-      console.error(data);
-      alert("Afkeuren mislukt");
+      toast.error("Afkeuren mislukt");
       return;
     }
 
     await load();
+
+    setRejectingRequest(null);
+    setRejectionReason("");
+
+    toast.success("Clubaanvraag afgekeurd.");
   } finally {
     setRejectingId(null);
   }
@@ -121,6 +150,7 @@ function ClubSignupRequestsPanel() {
     );
 
   return (
+  <>
     <motion.div
       className="bg-white text-black rounded-2xl shadow p-6"
       initial={{ opacity: 0, y: 8 }}
@@ -159,29 +189,25 @@ function ClubSignupRequestsPanel() {
                 <td className="px-3 py-2 text-center">
   <div className="flex flex-wrap justify-center gap-2">
 
-    <button
-      onClick={() => approve(r.id)}
-      disabled={approvingId === r.id}
-      className={`px-3 py-1 rounded text-xs text-white ${
-        approvingId === r.id
-          ? "bg-gray-400 cursor-not-allowed"
-          : "bg-green-600 hover:bg-green-700"
-      }`}
-    >
-      Goedkeuren
-    </button>
+    <Button
+  size="sm"
+  disabled={approvingId === r.id}
+  onClick={() => approve(r.id)}
+>
+  Goedkeuren
+</Button>
 
-    <button
-      onClick={() => reject(r.id)}
-      disabled={rejectingId === r.id}
-      className={`px-3 py-1 rounded text-xs text-white ${
-        rejectingId === r.id
-          ? "bg-gray-400 cursor-not-allowed"
-          : "bg-red-600 hover:bg-red-700"
-      }`}
-    >
-      Afkeuren
-    </button>
+<Button
+  size="sm"
+  variant="destructive"
+  disabled={rejectingId === r.id}
+  onClick={() => {
+    setRejectingRequest(r);
+    setRejectionReason("");
+  }}
+>
+  Afkeuren
+</Button>
 
   </div>
 </td>
@@ -193,7 +219,61 @@ function ClubSignupRequestsPanel() {
         </table>
       </div>
     </motion.div>
-  );
+
+<Dialog
+  open={!!rejectingRequest}
+  onOpenChange={(open) => {
+    if (!open) {
+      setRejectingRequest(null);
+      setRejectionReason("");
+    }
+  }}
+>
+  <DialogContent>
+
+    <DialogHeader>
+      <DialogTitle>
+        Clubaanvraag afkeuren
+      </DialogTitle>
+
+      <DialogDescription>
+        Geef de reden op waarom deze aanvraag wordt afgekeurd.
+      </DialogDescription>
+    </DialogHeader>
+
+    <Textarea
+      rows={5}
+      value={rejectionReason}
+      onChange={(e) =>
+        setRejectionReason(e.target.value)
+      }
+    />
+
+    <DialogFooter>
+
+      <Button
+        variant="outline"
+        onClick={() => {
+          setRejectingRequest(null);
+          setRejectionReason("");
+        }}
+      >
+        Annuleren
+      </Button>
+
+      <Button
+        variant="destructive"
+        onClick={confirmReject}
+      >
+        Afkeuren
+      </Button>
+
+    </DialogFooter>
+
+  </DialogContent>
+</Dialog>
+</>
+);
 }
 
 /* ===============================

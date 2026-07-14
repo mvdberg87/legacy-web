@@ -4,6 +4,7 @@ import { useEffect, useMemo, useState } from "react";
 import { motion } from "framer-motion";
 import { getSupabaseBrowser } from "@/lib/supabaseBrowser";
 import Link from "next/link";
+import { toast } from "sonner";
 
 /* ---------- Types ---------- */
 
@@ -94,7 +95,7 @@ export default function AdminProfilesPage() {
 
       await loadProfiles();
     } catch {
-      alert("Fout bij aanpassen status");
+      toast.error("Fout bij aanpassen status");
     } finally {
       setRefreshing(false);
     }
@@ -121,7 +122,7 @@ export default function AdminProfilesPage() {
 
       await loadProfiles();
     } catch {
-      alert("Fout bij verwijderen club");
+      toast.error("Fout bij verwijderen club");
     } finally {
       setRefreshing(false);
     }
@@ -155,7 +156,7 @@ export default function AdminProfilesPage() {
 const data = await res.json();
 
 if (!res.ok) {
-  alert(
+  toast.error(
     data.error ??
     "Archiveren mislukt"
   );
@@ -185,7 +186,7 @@ async function restoreClub(
 const data = await res.json();
 
 if (!res.ok) {
-  alert(
+  toast.error(
     data.error ??
     "Herstellen mislukt"
   );
@@ -224,7 +225,7 @@ async function editContactPerson(
   const data = await res.json();
 
   if (!res.ok) {
-    alert(
+    toast.error(
       data.error ??
       "Opslaan mislukt"
     );
@@ -248,9 +249,9 @@ async function resendActivationLink(requestId: string) {
 
     if (!res.ok) throw new Error();
 
-    alert("Activatielink opnieuw verstuurd.");
+    toast.success("Activatielink opnieuw verstuurd.");
   } catch {
-    alert("Fout bij versturen activatielink.");
+    toast.error("Fout bij versturen activatielink.");
   } finally {
     setRefreshing(false);
   }
@@ -271,7 +272,7 @@ async function toggleManagedAds(
       .eq("id", clubId);
 
   if (error) {
-    alert("Opslaan mislukt");
+    toast.error("Opslaan mislukt");
     return;
   }
 

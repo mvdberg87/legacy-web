@@ -4,6 +4,7 @@ import { useEffect, useMemo, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 import { getSupabaseBrowser } from "@/lib/supabaseBrowser";
 import ClubNavbar from "@/components/club/ClubNavbar";
+import { toast } from "sonner";
 
 /* ---------- Types ---------- */
 
@@ -117,7 +118,7 @@ const [uploadingImage, setUploadingImage] =
     });
 
   if (error) {
-    alert("Upload mislukt.");
+    toast.error("Upload mislukt.");
     setUploadingImage(false);
     return;
   }
@@ -135,7 +136,7 @@ const [uploadingImage, setUploadingImage] =
     e.preventDefault();
 
     if (!title || !companyName || !applyUrl) {
-      alert("Vul alle velden in.");
+      toast.error("Vul alle velden in.");
       return;
     }
 
@@ -154,7 +155,7 @@ const [uploadingImage, setUploadingImage] =
     setSaving(false);
 
     if (error) {
-      alert("Fout bij opslaan vacature");
+      toast.error("Fout bij opslaan vacature");
       return;
     }
 

@@ -4,6 +4,7 @@ import { useEffect, useMemo, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 import { getSupabaseBrowser } from "@/lib/supabaseBrowser";
 import ClubNavbar from "@/components/club/ClubNavbar";
+import { toast } from "sonner";
 
 type Club = {
   id: string;
@@ -68,7 +69,7 @@ export default function UpgradePage() {
 
     if (!res.ok) {
       const data = await res.json();
-      alert(data.error || "Upgrade aanvragen mislukt");
+      toast.error(data.error || "Upgrade aanvragen mislukt");
       setSubmitting(false);
       return;
     }

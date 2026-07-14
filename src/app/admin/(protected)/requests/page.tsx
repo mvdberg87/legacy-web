@@ -4,6 +4,7 @@ import { useEffect, useMemo, useState } from "react";
 import { motion } from "framer-motion";
 import { useSearchParams } from "next/navigation";
 import { getSupabaseBrowser } from "@/lib/supabaseBrowser";
+import { toast } from "sonner";
 
 type ClubRequest = {
   id: string;
@@ -74,18 +75,18 @@ export default function AdminRequestsPage() {
       });
 
       if (!res.ok) {
-        alert(
+        toast.error(
           "Aanvraag goedgekeurd, maar de activatiemail kon niet worden verstuurd."
         );
       } else {
-        alert(
+        toast.success(
           `Aanvraag goedgekeurd. Activatiemail verzonden naar ${req.contact_email}.`
         );
       }
 
       await loadRequests();
     } catch (err: any) {
-      alert(err.message || "Er ging iets mis bij het goedkeuren.");
+      toast.error(err.message || "Er ging iets mis bij het goedkeuren.");
     } finally {
       setRefreshing(false);
     }
@@ -108,7 +109,7 @@ export default function AdminRequestsPage() {
       if (error) throw error;
       await loadRequests();
     } catch (err: any) {
-      alert(err.message || "Er ging iets mis bij het weigeren.");
+      toast.error(err.message || "Er ging iets mis bij het weigeren.");
     } finally {
       setRefreshing(false);
     }
@@ -302,9 +303,7 @@ export default function AdminRequestsPage() {
                               navigator.clipboard.writeText(
                                 `${window.location.origin}/onboarding/claim?token=${req.token}`
                               );
-                              alert(
-                                "Activatielink gekopieerd."
-                              );
+                              toast.success("Activatielink gekopieerd.");
                             }}
                             className="text-blue-600 text-xs underline"
                           >

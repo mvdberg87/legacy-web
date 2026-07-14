@@ -10,6 +10,7 @@ import Leadinfo from "@/components/Leadinfo";
 import { Geist } from "next/font/google";
 import { cn } from "@/lib/utils";
 import AppToaster from "@/components/ui/AppToaster";
+import { ConfirmProvider } from "@/components/providers/confirm-provider";
 
 const geist = Geist({subsets:['latin'],variable:'--font-sans'});
 
@@ -32,9 +33,13 @@ export default function RootLayout({
     <html lang="nl" suppressHydrationWarning className={cn("font-sans", geist.variable)}>
       <body className="antialiased flex flex-col min-h-screen overflow-x-hidden">
 
-        <LayoutWrapper>
-          {children}
-        </LayoutWrapper>
+        <ConfirmProvider>
+
+  <LayoutWrapper>
+    {children}
+  </LayoutWrapper>
+
+</ConfirmProvider>
 
         <CookieBanner />
 <GoogleAnalytics />

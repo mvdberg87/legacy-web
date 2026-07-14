@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
 import { getSupabaseBrowser } from "@/lib/supabaseBrowser";
+import { toast } from "sonner";
 
 const supabase = getSupabaseBrowser();
 
@@ -98,7 +99,7 @@ const startCheckout = async () => {
     !companyWebsite ||
     !vacancyUrl
   ) {
-    alert("Vul alle verplichte velden in.");
+    toast.error("Vul alle verplichte velden in.");
     return;
   }
 
@@ -135,13 +136,13 @@ const startCheckout = async () => {
       return;
     }
 
-    alert("Checkout kon niet worden gestart.");
+    toast.error("Checkout kon niet worden gestart.");
 
   } catch (err) {
 
     console.error(err);
 
-    alert("Er ging iets mis.");
+    toast.error("Er ging iets mis.");
 
   } finally {
     setLoading(false);

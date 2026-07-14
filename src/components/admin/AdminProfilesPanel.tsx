@@ -6,6 +6,8 @@ import { getSupabaseBrowser } from "@/lib/supabaseBrowser";
 import LoadingCard from "@/components/ui/LoadingCard";
 import EmptyState from "@/components/ui/EmptyState";
 import ErrorCard from "@/components/ui/ErrorCard";
+import { toast } from "sonner";
+import { useConfirm } from "@/components/providers/confirm-provider";
 
 
 type Profile = {
@@ -24,6 +26,7 @@ export default function AdminProfilesPanel() {
   const [error, setError] = useState<string | null>(null);
   const [refreshing, setRefreshing] = useState(false);
   const [search, setSearch] = useState("");
+  const { confirm } = useConfirm();
 
   /* ---------- Profielen laden ---------- */
   async function loadProfiles() {
@@ -47,7 +50,14 @@ export default function AdminProfilesPanel() {
 
   /* ---------- Gebruiker goedkeuren ---------- */
   async function approveUser(profile: Profile) {
-    if (!confirm(`Wil je ${profile.email} goedkeuren en koppelen aan een club?`)) return;
+    const confirmed = await confirm({
+  title: "Gebruiker goedkeuren",
+  description: `Wil je ${profile.email} goedkeuren en koppelen aan een club?`,
+  confirmText: "Goedkeuren",
+  cancelText: "Annuleren",
+});
+
+if (!confirmed) return;
     try {
       setRefreshing(true);
       const res = await fetch("/api/admin/approve-user", {
@@ -62,10 +72,10 @@ export default function AdminProfilesPanel() {
 
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || "Er ging iets mis.");
-      alert(data.message);
+      toast.success(data.message);
       await loadProfiles();
     } catch (err: any) {
-      alert(err.message);
+      toast.error(err.message);
     } finally {
       setRefreshing(false);
     }
@@ -73,7 +83,15 @@ export default function AdminProfilesPanel() {
 
   /* ---------- Gebruiker afwijzen ---------- */
   async function rejectUser(profile: Profile) {
-    if (!confirm(`Weet je zeker dat je ${profile.email} wilt afwijzen?`)) return;
+    const confirmed = await confirm({
+  title: "Gebruiker afwijzen",
+  description: `Weet je zeker dat je ${profile.email} wilt afwijzen?`,
+  confirmText: "Afwijzen",
+  cancelText: "Annuleren",
+  destructive: true,
+});
+
+if (!confirmed) return;
     try {
       setRefreshing(true);
       const { error } = await supabase
@@ -81,10 +99,10 @@ export default function AdminProfilesPanel() {
         .update({ role: "rejected" })
         .eq("user_id", profile.user_id);
       if (error) throw error;
-      alert(`${profile.email} is afgewezen.`);
+      toast.success(`${profile.email} is afgewezen.`);
       await loadProfiles();
     } catch (err: any) {
-      alert(err.message);
+      toast.error(err.message);
     } finally {
       setRefreshing(false);
     }
@@ -92,15 +110,23 @@ export default function AdminProfilesPanel() {
 
   /* ---------- Gebruiker verwijderen ---------- */
   async function deleteUser(profile: Profile) {
-    if (!confirm(`⚠️ Weet je zeker dat je ${profile.email} volledig wilt verwijderen?`)) return;
+    const confirmed = await confirm({
+  title: "Gebruiker verwijderen",
+  description: `Weet je zeker dat je ${profile.email} volledig wilt verwijderen? Deze actie kan niet ongedaan worden gemaakt.`,
+  confirmText: "Verwijderen",
+  cancelText: "Annuleren",
+  destructive: true,
+});
+
+if (!confirmed) return;
     try {
       setRefreshing(true);
       const { error } = await supabase.from("profiles").delete().eq("user_id", profile.user_id);
       if (error) throw error;
-      alert(`🗑️ ${profile.email} is verwijderd.`);
+      toast.success(`${profile.email} is verwijderd.`);
       await loadProfiles();
     } catch (err: any) {
-      alert(err.message);
+      toast.error(err.message);
     } finally {
       setRefreshing(false);
     }
