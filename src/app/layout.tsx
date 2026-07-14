@@ -7,6 +7,11 @@ import LayoutWrapper from "@/components/LayoutWrapper";
 import CookieBanner from "@/components/CookieBanner";
 import GoogleAnalytics from "@/components/GoogleAnalytics";
 import Leadinfo from "@/components/Leadinfo";
+import { Geist } from "next/font/google";
+import { cn } from "@/lib/utils";
+import AppToaster from "@/components/ui/AppToaster";
+
+const geist = Geist({subsets:['latin'],variable:'--font-sans'});
 
 export const metadata: Metadata = {
   title: "Sponsorjobs Platform",
@@ -24,7 +29,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="nl" suppressHydrationWarning>
+    <html lang="nl" suppressHydrationWarning className={cn("font-sans", geist.variable)}>
       <body className="antialiased flex flex-col min-h-screen overflow-x-hidden">
 
         <LayoutWrapper>
@@ -32,8 +37,10 @@ export default function RootLayout({
         </LayoutWrapper>
 
         <CookieBanner />
-        <GoogleAnalytics />
-        <Leadinfo />
+<GoogleAnalytics />
+<Leadinfo />
+
+<AppToaster />
 
       </body>
     </html>
