@@ -4,6 +4,9 @@ import { useEffect, useMemo, useState } from "react";
 import { motion } from "framer-motion";
 import { useRouter } from "next/navigation";
 import { getSupabaseBrowser } from "@/lib/supabaseBrowser";
+import LoadingCard from "@/components/ui/LoadingCard";
+import EmptyState from "@/components/ui/EmptyState";
+import { Button } from "@/components/ui/button";
 
 
 /* ---------- Types ---------- */
@@ -73,12 +76,12 @@ export default function AdminAdsOverviewPage() {
         </h1>
 
         {loading ? (
-          <p>Laden…</p>
-        ) : rows.length === 0 ? (
-          <p className="text-gray-500 italic">
-            Geen clubs met advertenties gevonden.
-          </p>
-        ) : (
+  <LoadingCard rows={6} />
+) : rows.length === 0 ? (
+  <p className="text-gray-500 italic">
+    Geen clubs met advertenties gevonden.
+  </p>
+) : (
           <div className="overflow-x-auto">
             <table className="min-w-full text-sm">
               <thead className="bg-[#0d1b2a] text-white text-xs uppercase">
@@ -127,16 +130,15 @@ export default function AdminAdsOverviewPage() {
                         👆 {r.total_clicks}
                       </td>
                       <td className="px-3 py-3 text-center">
-                        <button
-                          onClick={() =>
-                            router.push(
-                              `/admin/clubs/${r.slug}`
-                            )
-                          }
-                          className="text-blue-600 hover:underline"
-                        >
-                          Beheer
-                        </button>
+                        <Button
+  variant="link"
+  className="h-auto p-0"
+  onClick={() =>
+    router.push(`/admin/clubs/${r.slug}`)
+  }
+>
+  Beheer
+</Button>
                       </td>
                     </motion.tr>
                   );

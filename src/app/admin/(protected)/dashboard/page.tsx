@@ -6,7 +6,7 @@ import { useRouter } from "next/navigation";
 import LoadingCard from "@/components/ui/LoadingCard";
 import EmptyState from "@/components/ui/EmptyState";
 import ErrorCard from "@/components/ui/ErrorCard";
-import { toast } from "sonner";
+import { Button } from "@/components/ui/button";
 
 function ClubStatusBadge({ status }: { status?: string }) {
   const styles: Record<string, string> = {
@@ -18,9 +18,9 @@ function ClubStatusBadge({ status }: { status?: string }) {
 
   return (
     <span
-      className={`px-2 py-1 rounded text-xs font-medium ${
-        styles[status] ?? "bg-gray-100 text-gray-600"
-      }`}
+      className={`inline-flex items-center rounded-full px-2.5 py-1 text-xs font-medium ${
+  styles[status] ?? "bg-gray-100 text-gray-600"
+}`}
     >
       {status}
     </span>
@@ -111,14 +111,35 @@ type Club = {
 
   active_package: string;
   subscription_status: string | null;
-
-  status: string; // 🔥 TOEVOEGEN
+  status: string;
 
   active_jobs: number | null;
   total_clicks: number | null;
   total_shares: number | null;
   pageviews: number | null;
+
+  score?: number;
 };
+
+function StatCard({
+  value,
+  label,
+}: {
+  value: React.ReactNode;
+  label: string;
+}) {
+  return (
+    <div className="border rounded-xl p-4 text-center">
+      <div className="text-2xl font-semibold">
+        {value}
+      </div>
+
+      <div className="text-xs text-gray-500 uppercase">
+        {label}
+      </div>
+    </div>
+  );
+}
 
 export default function AdminClubsPage() {
   const supabase = useMemo(() => getSupabaseBrowser(), []);
@@ -135,11 +156,7 @@ export default function AdminClubsPage() {
   ctr: 0,
 });
 const leaderboard = [...clubs]
-  .map((club) => ({
-    ...club,
-    score: getClubScore(club),
-  }))
-  .sort((a, b) => b.score - a.score)
+  .sort((a, b) => (b.score ?? 0) - (a.score ?? 0))
   .slice(0, 5);
 
   async function load() {
@@ -154,9 +171,12 @@ if (error) {
   return;
 }
 
-  const clubsData = data ?? [];
+  const clubsData = (data ?? []).map((club) => ({
+  ...club,
+  score: getClubScore(club),
+}));
 
-  setClubs(clubsData);
+setClubs(clubsData);
 
   const totalJobs = clubsData.reduce(
     (sum, c) => sum + (c.active_jobs ?? 0),
@@ -230,55 +250,15 @@ if (error) {
       </h1>
 
 {/* KPI GRID */}
+
 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4 mb-6">
-
-  <div className="border rounded-xl p-4 text-center">
-    <div className="text-2xl font-semibold">
-      {totals.clubs}
-    </div>
-    <div className="text-xs text-gray-500 uppercase">
-      Clubs
-    </div>
-  </div>
-
-  <div className="border rounded-xl p-4 text-center">
-    <div className="text-2xl font-semibold">
-      {totals.jobs}
-    </div>
-    <div className="text-xs text-gray-500 uppercase">
-      Vacatures
-    </div>
-  </div>
-
-  <div className="border rounded-xl p-4 text-center">
-    <div className="text-2xl font-semibold">
-      {totals.clicks}
-    </div>
-    <div className="text-xs text-gray-500 uppercase">
-      Clicks
-    </div>
-  </div>
-
-  <div className="border rounded-xl p-4 text-center">
-    <div className="text-2xl font-semibold">
-      {totals.pageviews}
-    </div>
-    <div className="text-xs text-gray-500 uppercase">
-      Pageviews
-    </div>
-  </div>
-
-  <div className="border rounded-xl p-4 text-center">
-    <div className="text-2xl font-semibold">
-      {totals.ctr}%
-    </div>
-    <div className="text-xs text-gray-500 uppercase">
-      Gem. CTR
-    </div>
-  </div>
-
+  <StatCard value={totals.clubs} label="Clubs" />
+  <StatCard value={totals.jobs} label="Vacatures" />
+  <StatCard value={totals.clicks} label="Clicks" />
+  <StatCard value={totals.pageviews} label="Pageviews" />
+  <StatCard value={`${totals.ctr}%`} label="Gem. CTR" />
 </div>
-
+  
 {/* TOP CLUBS LEADERBOARD */}
 <div className="bg-gray-50 border rounded-xl p-4 mb-6">
   <h2 className="font-semibold mb-3">🏆 Top Clubs</h2>
@@ -287,7 +267,7 @@ if (error) {
     {leaderboard.map((club, index) => (
       <div
   key={club.id}
-  className="flex justify-between gap-2 text-sm"
+  className="flex items-center justify-between gap-2 border-b last:border-0 py-2"
 >
         <span>
           {index === 0 && "🥇 "}
@@ -297,9 +277,9 @@ if (error) {
           {club.name}
         </span>
 
-        <span className="font-semibold">
-          {club.score}
-        </span>
+        <span className="font-semibold text-[#0d1b2a]">
+  {club.score}/100
+</span>
       </div>
     ))}
   </div>
@@ -346,23 +326,30 @@ if (error) {
 
   ) : (
 
-    clubs.map((club) => (
+    clubs.map((club) => {
 
-  <tr
-    key={club.id}
+  const health = getHealthScore(club);
+  const growth = getGrowthScore(club);
+  const score = club.score ?? 0;
+
+  return (
+
+    <tr
+      key={club.id}
     className="border-b"
   >
 
     <td className="px-4 py-3 font-medium">
 
-  <button
-    onClick={() =>
-      router.push(`/admin/clubs/${club.slug}`)
-    }
-    className="text-blue-600 hover:underline"
-  >
-    {club.name}
-  </button>
+  <Button
+  variant="link"
+  className="h-auto p-0"
+  onClick={() =>
+    router.push(`/admin/clubs/${club.slug}`)
+  }
+>
+  {club.name}
+</Button>
 </td>
 
               <td className="px-4 py-3 text-center">
@@ -374,29 +361,19 @@ if (error) {
 </td>
 
 <td className="px-4 py-3 text-center">
-  {(() => {
-    const health = getHealthScore(club);
-    return (
-      <span className={`font-medium ${health.color}`}>
-        {health.label}
-      </span>
-    );
-  })()}
+  <span className={`font-medium ${health.color}`}>
+  {health.label}
+</span>
 </td>
 
 <td className="px-4 py-3 text-center">
-  {(() => {
-    const growth = getGrowthScore(club);
-    return (
-      <span className={`font-medium ${growth.color}`}>
-        {growth.label}
-      </span>
-    );
-  })()}
+  <span className={`font-medium ${growth.color}`}>
+  {growth.label}
+</span>
 </td>
 
-<td className="px-4 py-3 text-center font-semibold">
-  {getClubScore(club)} / 100
+<td className="px-4 py-3 text-center font-semibold text-[#0d1b2a]">
+  {score}/100
 </td>
 
 <td className="px-4 py-3 text-center">
@@ -427,12 +404,13 @@ if (error) {
     : "0%"}
 </td>
 
-</tr>
-))
+        </tr>
 
-  )}
+  );
 
-</tbody>
+}))
+
+}</tbody>
 </table>
 
 </div>

@@ -3,10 +3,23 @@
 import { useEffect, useMemo, useState } from "react";
 import { motion } from "framer-motion";
 import { getSupabaseBrowser } from "@/lib/supabaseBrowser";
-import Link from "next/link";
 import { toast } from "sonner";
 import { useConfirm } from "@/components/providers/confirm-provider";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import LoadingCard from "@/components/ui/LoadingCard";
+import EmptyState from "@/components/ui/EmptyState";
+
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+  DialogFooter,
+} from "@/components/ui/dialog";
+import { useRouter } from "next/navigation";
 
 /* ---------- Types ---------- */
 
@@ -44,6 +57,7 @@ type Profile = {
 
 export default function AdminProfilesPage() {
   const supabase = useMemo(() => getSupabaseBrowser(), []);
+  const router = useRouter();
 
   const [profiles, setProfiles] = useState<Profile[]>([]);
   const [loading, setLoading] = useState(true);
@@ -52,6 +66,12 @@ export default function AdminProfilesPage() {
   useState(false);
   const [refreshing, setRefreshing] = useState(false);
   const { confirm } = useConfirm();
+  const [editingClub, setEditingClub] = useState<{
+  id: string;
+  currentName: string;
+} | null>(null);
+
+const [contactPerson, setContactPerson] = useState("");
 
   /* ---------- Data ophalen ---------- */
 
@@ -227,27 +247,18 @@ async function restoreClub(
   await loadProfiles();
 }
 
-async function editContactPerson(
-  clubId: string,
-  currentName: string | null
-) {
-  const contactPerson = prompt(
-    "Naam contactpersoon",
-    currentName ?? ""
-  );
-
-  if (!contactPerson) return;
+async function saveContactPerson() {
+  if (!editingClub) return;
 
   const res = await fetch(
     "/api/admin/update-contact-person",
     {
       method: "POST",
       headers: {
-        "Content-Type":
-          "application/json",
+        "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        clubId,
+        clubId: editingClub.id,
         contactPerson,
       }),
     }
@@ -256,14 +267,16 @@ async function editContactPerson(
   const data = await res.json();
 
   if (!res.ok) {
-    toast.error(
-      data.error ??
-      "Opslaan mislukt"
-    );
+    toast.error(data.error ?? "Opslaan mislukt");
     return;
   }
 
   await loadProfiles();
+
+  setEditingClub(null);
+  setContactPerson("");
+
+  toast.success("Contactpersoon opgeslagen.");
 }
 
 async function resendActivationLink(requestId: string) {
@@ -352,52 +365,40 @@ async function toggleManagedAds(
             Profielbeheer
           </h1>
 
-          <div className="flex gap-3 mt-4">
+          <div className="flex flex-wrap gap-3 mt-4">
 
-  <button
-    onClick={() =>
-      setShowArchivedClubs(false)
-    }
-    className={
-      !showArchivedClubs
-        ? "bg-[#0d1b2a] text-white px-4 py-2 rounded"
-        : "border px-4 py-2 rounded"
-    }
-  >
-    Actief
-  </button>
+  <Button
+  variant={!showArchivedClubs ? "default" : "outline"}
+  onClick={() => setShowArchivedClubs(false)}
+>
+  Actief
+</Button>
 
-  <button
-    onClick={() =>
-      setShowArchivedClubs(true)
-    }
-    className={
-      showArchivedClubs
-        ? "bg-[#0d1b2a] text-white px-4 py-2 rounded"
-        : "border px-4 py-2 rounded"
-    }
-  >
-    Gearchiveerd
-  </button>
+  <Button
+  variant={showArchivedClubs ? "default" : "outline"}
+  onClick={() => setShowArchivedClubs(true)}
+>
+  Gearchiveerd
+</Button>
 
 </div>
 
-          <input
-            type="text"
-            placeholder="Zoek op e-mail, club of rol"
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-            className="border rounded-lg px-3 py-2 text-sm w-full md:w-72"
-          />
+          <Input
+  placeholder="Zoek..."
+  value={search}
+  onChange={(e) => setSearch(e.target.value)}
+  className="w-full md:w-80"
+/>
         </div>
 
         {/* Content */}
         {loading ? (
-          <p>Laden…</p>
-        ) : filtered.length === 0 ? (
-          <p className="text-gray-500 italic">
-            Geen profielen gevonden.
-          </p>
+  <LoadingCard rows={8} />
+) : filtered.length === 0 ? (
+          <EmptyState
+  title="Geen profielen gevonden"
+  description="Er zijn geen profielen die voldoen aan de huidige filters."
+/>
         ) : (
           <div className="overflow-x-auto">
             <table className="min-w-full text-sm">
@@ -446,13 +447,15 @@ async function toggleManagedAds(
                       <td className="px-3 py-3">
   {club ? (
     <div className="flex flex-col break-words">
-      <Link
-        href={`/admin/clubs/${club.slug}`}
-        prefetch={false}
-        className="text-blue-600 hover:underline"
-      >
-        {club.name}
-      </Link>
+      <Button
+  variant="link"
+  className="h-auto p-0 text-left justify-start"
+  onClick={() =>
+    router.push(`/admin/clubs/${club.slug}`)
+  }
+>
+  {club.name}
+</Button>
 
       <span className="text-xs">
         {p.subscription_cancelled_at ? (
@@ -485,17 +488,22 @@ async function toggleManagedAds(
 
                       <td className="px-3 py-3">
   {club ? (
-    <button
-      onClick={() =>
-        editContactPerson(
-          club.id,
-          p.contact_person ?? null
-        )
-      }
-      className="text-blue-600 hover:underline"
-    >
-      {p.contact_person ?? "—"}
-    </button>
+    <Button
+  size="sm"
+  variant="ghost"
+  onClick={() => {
+    setEditingClub({
+      id: club.id,
+      currentName: p.contact_person ?? "",
+    });
+
+    setContactPerson(
+      p.contact_person ?? ""
+    );
+  }}
+>
+  {p.contact_person ?? "—"}
+</Button>
   ) : (
     "—"
   )}
@@ -513,24 +521,22 @@ async function toggleManagedAds(
 
   {club ? (
 
-    <button
-      onClick={() =>
-        toggleManagedAds(
-          club.id,
-          p.advertising_sales_enabled ??
-            false
-        )
-      }
-      className={`px-3 py-1 rounded text-xs text-white ${
-        p.advertising_sales_enabled
-          ? "bg-green-600"
-          : "bg-gray-500"
-      }`}
-    >
-      {p.advertising_sales_enabled
-        ? "AAN"
-        : "UIT"}
-    </button>
+    <Button
+  size="sm"
+  variant={
+    p.advertising_sales_enabled
+      ? "default"
+      : "secondary"
+  }
+  onClick={() =>
+    toggleManagedAds(
+      club.id,
+      p.advertising_sales_enabled ?? false
+    )
+  }
+>
+  {p.advertising_sales_enabled ? "AAN" : "UIT"}
+</Button>
 
   ) : (
     "—"
@@ -548,82 +554,74 @@ async function toggleManagedAds(
 
   {club.status === "pending" && (
     <>
-      <button
-        onClick={() =>
-          updateClubStatus(
-            club.id,
-            "approved"
-          )
-        }
-        disabled={refreshing}
-        className="bg-green-600 text-white px-2 py-1 rounded text-xs"
-      >
-        ✅
-      </button>
+      <Button
+  size="icon"
+  className="bg-green-600 hover:bg-green-700"
+  onClick={() =>
+    updateClubStatus(club.id, "approved")
+  }
+  disabled={refreshing}
+>
+  ✅
+</Button>
 
-      <button
-        onClick={() =>
-          updateClubStatus(
-            club.id,
-            "rejected"
-          )
-        }
-        disabled={refreshing}
-        className="bg-yellow-500 text-white px-2 py-1 rounded text-xs"
-      >
-        ❌
-      </button>
+      <Button
+  size="icon"
+  variant="secondary"
+  onClick={() =>
+    updateClubStatus(club.id, "rejected")
+  }
+  disabled={refreshing}
+>
+  ❌
+</Button>
     </>
   )}
 
   {p.archived_at ? (
   <>
-    <button
-      onClick={() => restoreClub(club.id)}
-      className="bg-green-600 text-white px-2 py-1 rounded text-xs"
-    >
-      ↩️
-    </button>
+    <Button
+  size="icon"
+  className="bg-green-600 hover:bg-green-700"
+  onClick={() => restoreClub(club.id)}
+>
+  ↩️
+</Button>
 
-    <button
-      onClick={() =>
-        deleteClub(
-          club.id,
-          club.name
-        )
-      }
-      className="bg-red-600 text-white px-2 py-1 rounded text-xs"
-    >
-      🗑️
-    </button>
+   <Button
+  size="icon"
+  variant="destructive"
+  onClick={() =>
+    deleteClub(club.id, club.name)
+  }
+>
+  🗑️
+</Button>
   </>
 ) : (
   <>
     {(club.status === "active" ||
       club.status === "approved") && (
-      <button
-        onClick={() =>
-          archiveClub(club.id)
-        }
-        className="bg-blue-600 text-white px-2 py-1 rounded text-xs"
-      >
-        📦
-      </button>
+      <Button
+  size="icon"
+  variant="secondary"
+  onClick={() => archiveClub(club.id)}
+>
+  📦
+</Button>
     )}
 
     {(club.status === "pending" ||
       club.status === "rejected") && (
-      <button
-        onClick={() =>
-          deleteClub(
-            club.id,
-            club.name
-          )
-        }
-        className="bg-red-600 text-white px-2 py-1 rounded text-xs"
-      >
-        🗑️
-      </button>
+      <Button
+  size="icon"
+  variant="destructive"
+  onClick={() =>
+    deleteClub(club.id, club.name)
+  }
+>
+  🗑️
+</Button>
     )}
   </>
 )}
@@ -639,6 +637,58 @@ async function toggleManagedAds(
           </div>
         )}
       </div>
+      <Dialog
+  open={!!editingClub}
+  onOpenChange={(open) => {
+    if (!open) {
+      setEditingClub(null);
+      setContactPerson("");
+    }
+  }}
+>
+  <DialogContent className="sm:max-w-md">
+
+    <DialogHeader>
+      <DialogTitle>
+        Contactpersoon wijzigen
+      </DialogTitle>
+
+      <DialogDescription>
+        Pas de contactpersoon van deze club aan.
+      </DialogDescription>
+    </DialogHeader>
+
+    <div className="space-y-2">
+      <Label>Naam contactpersoon</Label>
+
+      <Input
+        value={contactPerson}
+        onChange={(e) =>
+          setContactPerson(e.target.value)
+        }
+      />
+    </div>
+
+    <DialogFooter>
+
+      <Button
+        variant="outline"
+        onClick={() => {
+          setEditingClub(null);
+          setContactPerson("");
+        }}
+      >
+        Annuleren
+      </Button>
+
+      <Button onClick={saveContactPerson}>
+        Opslaan
+      </Button>
+
+    </DialogFooter>
+
+  </DialogContent>
+</Dialog>
     </div>
   );
 }

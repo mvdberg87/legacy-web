@@ -2,6 +2,17 @@
 
 import { useEffect, useMemo, useState } from "react";
 import { getSupabaseBrowser } from "@/lib/supabaseBrowser";
+import LoadingCard from "@/components/ui/LoadingCard";
+import EmptyState from "@/components/ui/EmptyState";
+import ErrorCard from "@/components/ui/ErrorCard";
+import { Button } from "@/components/ui/button";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 type Profile = { user_id: string; club_id: string; role: string };
 type Row = {
@@ -182,38 +193,52 @@ export default function InsightsPage() {
           </div>
 
           <div className="flex flex-col sm:flex-row sm:items-center gap-2">
-            <select
-              value={range}
-              onChange={(e) =>
-                setRange(e.target.value as RangeKey)
-              }
-              className="border rounded-lg px-2 py-1 text-sm"
-            >
-              <option value="all">Alles</option>
-              <option value="7d">Laatste 7 dagen</option>
-              <option value="30d">Laatste 30 dagen</option>
-            </select>
+            <Select
+  value={range}
+  onValueChange={(value) =>
+    setRange(value as RangeKey)
+  }
+>
+  <SelectTrigger className="w-48">
+    <SelectValue />
+  </SelectTrigger>
 
-            <button
-              onClick={exportCSV}
-              disabled={loading || rows.length === 0}
-              className="border rounded-lg px-3 py-1.5 text-sm disabled:opacity-50"
-            >
-              Exporteer CSV
-            </button>
+  <SelectContent>
+    <SelectItem value="all">
+      Alles
+    </SelectItem>
+
+    <SelectItem value="7d">
+      Laatste 7 dagen
+    </SelectItem>
+
+    <SelectItem value="30d">
+      Laatste 30 dagen
+    </SelectItem>
+  </SelectContent>
+</Select>
+
+            <Button
+  variant="outline"
+  onClick={exportCSV}
+  disabled={loading || rows.length === 0}
+>
+  Exporteer CSV
+</Button>
           </div>
         </div>
 
         {/* Content */}
         {loading ? (
-          <p>Laden…</p>
+  <LoadingCard rows={5} />
         ) : err ? (
-          <p className="text-red-600">{err}</p>
+  <ErrorCard message={err} />
         ) : rows.length === 0 ? (
-          <p className="text-sm text-gray-500">
-            Geen resultaten voor deze periode.
-          </p>
-        ) : (
+  <EmptyState
+    title="Geen resultaten"
+    description="Er zijn geen inzichten beschikbaar voor deze periode."
+  />
+) : (
           <div className="overflow-x-auto">
             <table className="min-w-full text-sm">
               <thead className="bg-[#0d1b2a] text-white text-xs uppercase">

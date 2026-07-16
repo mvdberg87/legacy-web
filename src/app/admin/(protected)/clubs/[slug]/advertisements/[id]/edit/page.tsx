@@ -7,6 +7,8 @@ import LoadingCard from "@/components/ui/LoadingCard";
 import EmptyState from "@/components/ui/EmptyState";
 import ErrorCard from "@/components/ui/ErrorCard";
 import { toast } from "sonner";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
 
 type Advertisement = {
   id: string;
@@ -145,10 +147,9 @@ if (error) {
   Functietitel
 </label>
 
- <input
+ <Input
   value={jobTitle}
   onChange={(e) => setJobTitle(e.target.value)}
-  className="w-full border rounded-lg px-3 py-2 bg-white text-black"
 />
 </div>
 
@@ -231,13 +232,23 @@ if (error) {
 
         </div>
 
-        <button
-          onClick={save}
-          disabled={saving}
-          className="bg-green-600 text-white px-5 py-2 rounded-lg"
-        >
-          {saving ? "Opslaan..." : "Opslaan"}
-        </button>
+        <div className="flex justify-end gap-3">
+
+  <Button
+    variant="outline"
+    onClick={() => router.back()}
+  >
+    Annuleren
+  </Button>
+
+  <Button
+    onClick={save}
+    disabled={saving}
+  >
+    {saving ? "Opslaan..." : "Opslaan"}
+  </Button>
+
+</div>
 
       </div>
     </div>

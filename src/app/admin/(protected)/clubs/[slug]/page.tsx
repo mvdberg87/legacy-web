@@ -16,6 +16,15 @@ import {
   DialogDescription,
   DialogFooter,
 } from "@/components/ui/dialog";
+import {
+  Select,
+  SelectTrigger,
+  SelectValue,
+  SelectContent,
+  SelectItem,
+} from "@/components/ui/select";
+import LoadingCard from "@/components/ui/LoadingCard";
+import StatCard from "@/components/admin/StatCard";
 
 /* ---------- Types ---------- */
 
@@ -84,20 +93,6 @@ const [stats, setStats] = useState({
 const [editingEmail, setEditingEmail] = useState(false);
 
 const [newEmail, setNewEmail] = useState("");
-
-function StatCard({ label, value }: { label: string; value: any }) {
-  return (
-    <div className="border-2 border-slate-900 rounded-2xl p-4 text-center min-h-[140px]">
-      <div className="text-3xl font-semibold">
-        {value}
-      </div>
-
-      <div className="text-xs text-gray-500 uppercase tracking-wide mt-2 whitespace-normal break-words">
-        {label}
-      </div>
-    </div>
-  );
-}
 
   /* ---------- Data ophalen ---------- */
 
@@ -181,9 +176,6 @@ setReports(reportsData ?? []);
     // ===============================
 // ADMIN PERFORMANCE METRICS
 // ===============================
-
-// Actieve vacatures
-const activeVacancies = jobsData?.length ?? 0;
 
 // Pageviews (clubniveau, gelijk aan club dashboard)
 const { count: pageviews } = await supabase
@@ -522,7 +514,9 @@ if (!confirmed) return;
   load();
 }
 
-  if (loading) return <p>Laden…</p>;
+  if (loading) {
+  return <LoadingCard rows={8} />;
+}
   if (!club) return null;
 
   const primary = club.primary_color || "#0d1b2a";
@@ -600,7 +594,7 @@ async function saveNewEmail() {
   animate={{ opacity: 1, y: 0 }}
 >
   <div className="flex justify-between items-center mb-6">
-    <div>
+  
   <h1 className="text-2xl font-semibold">
     {club?.name} – Performance overzicht
   </h1>
@@ -613,48 +607,39 @@ async function saveNewEmail() {
   <div className="mt-3 flex items-center gap-6">
     <span className="text-sm font-medium">Pakket:</span>
 
-    <select
-      value={club.active_package}
-      onChange={async (e) => {
-        const newPackage = e.target.value;
+    <Select
+  value={club.active_package}
+  onValueChange={async (value) => {
+    const confirmed = await confirm({
+      title: "Pakket wijzigen",
+      description: `Pakket wijzigen naar "${value}"?`,
+      confirmText: "Wijzigen",
+      cancelText: "Annuleren",
+    });
 
-        const confirmed = await confirm({
-  title: "Pakket wijzigen",
-  description: `Pakket wijzigen naar "${newPackage}"?`,
-  confirmText: "Wijzigen",
-  cancelText: "Annuleren",
-});
+    if (!confirmed) return;
 
-if (!confirmed) return;
+    await supabase
+      .from("clubs")
+      .update({
+        active_package: value,
+      })
+      .eq("id", club.id);
 
-        await supabase
-          .from("clubs")
-          .update({ active_package: newPackage })
-          .eq("id", club.id);
+    load();
+  }}
+>
+  <SelectTrigger className="w-48">
+    <SelectValue />
+  </SelectTrigger>
 
-        load();
-      }}
-      className="border rounded px-2 py-1 text-sm"
-    >
-      <option value="basic">Basic</option>
-      <option value="plus">Plus</option>
-      <option value="pro">Pro</option>
-      <option value="unlimited">Unlimited</option>
-    </select>
-
-    <div>
-  <span className="text-sm text-gray-500">
-    Clubopbrengst
-  </span>
-
-  <div className="font-semibold text-green-700">
-    € {clubRevenue.toLocaleString("nl-NL")}
-  </div>
-</div>
-
-    <div className="text-right text-sm">
-  </div>
-</div>
+  <SelectContent>
+    <SelectItem value="basic">Basic</SelectItem>
+    <SelectItem value="plus">Plus</SelectItem>
+    <SelectItem value="pro">Pro</SelectItem>
+    <SelectItem value="unlimited">Unlimited</SelectItem>
+  </SelectContent>
+</Select>
 
       <p className="text-gray-500">Publieke pagina</p>
       <a
@@ -702,21 +687,26 @@ if (!confirmed) return;
 </div>
 
   {/* Stat cards */}
-  <div className="grid grid-cols-2 lg:grid-cols-4 2xl:grid-cols-7 gap-4">
+  <div className="grid grid-cols-2 lg:grid-cols-4 2xl:grid-cols-8 gap-4">
 
   <StatCard label="Pageviews" value={stats.pageviews} />
 
   <StatCard label="Clicks" value={stats.totalClicks} />
 
-  <StatCard label="CTR" value={`${stats.ctr} %`} />
+  <StatCard label="CTR" value={`${stats.ctr}%`} />
 
   <StatCard label="Shares" value={stats.totalShares} />
 
-  <StatCard label="Share rate" value={`${stats.shareRate} %`} />
+  <StatCard label="Share rate" value={`${stats.shareRate}%`} />
 
   <StatCard label="Vacatures" value={stats.totalVacancies} />
 
   <StatCard label="Advertenties" value={stats.totalAds} />
+
+  <StatCard
+    label="Clubopbrengst"
+    value={`€ ${clubRevenue.toLocaleString("nl-NL")}`}
+  />
 
 </div>
 </motion.div>
@@ -831,58 +821,56 @@ if (!confirmed) return;
               <td className="px-4 py-3 text-center space-x-2">
 
                 <Button
-  size="icon"
+  size="sm"
   variant="outline"
   onClick={() =>
-    window.open(ad.vacancy_url, "_blank")
-  }
+  window.open(
+    `/${club.slug}`,
+    "_blank"
+  )
+}
 >
-  👁
+  Bekijk
 </Button>
 
 
 
                 <Button
-  size="icon"
+  size="sm"
   variant="outline"
   onClick={() =>
-    router.push(
-      `/admin/clubs/${club.slug}/advertisements/${ad.id}/edit`
-    )
+    router.push(`/admin/clubs/${club.slug}/advertisements/${ad.id}/edit`)
   }
 >
-  ✏️
+  Bewerken
 </Button>
 
-                <Button
-  size="icon"
-  variant="outline"
+<Button
+  size="sm"
+  variant="secondary"
   onClick={() =>
-    toggleAdFeatured(
-      ad.id,
-      ad.is_featured
-    )
+    toggleAdFeatured(ad.id, ad.is_featured)
   }
 >
-  ⭐
+  Uitlichten
 </Button>
 
-                {ad.deleted_at ? (
+{ad.status === "inactive" ? (
   <Button
-  size="icon"
-  variant="outline"
-  onClick={() => restoreAd(ad.id)}
->
-  ↩️
-</Button>
+    size="sm"
+    variant="outline"
+    onClick={() => restoreAd(ad.id)}
+  >
+    Herstellen
+  </Button>
 ) : (
   <Button
-  size="icon"
-  variant="destructive"
-  onClick={() => archiveAd(ad.id)}
->
-  🗑
-</Button>
+    size="sm"
+    variant="destructive"
+    onClick={() => archiveAd(ad.id)}
+  >
+    Archiveren
+  </Button>
 )}
 
               </td>
@@ -1011,31 +999,34 @@ if (!confirmed) return;
 
                   <td className="px-4 py-3 text-center space-x-2">
                     <Button
-  size="icon"
+  size="sm"
   variant="outline"
   onClick={() =>
-    window.open(`/${club.slug}`, "_blank")
+    window.open(
+  `/${club.slug}/jobs/${job.id}`,
+  "_blank"
+)
   }
 >
-  👁
+  Bekijk
 </Button>
 
-                    <Button
-  size="icon"
-  variant="outline"
+<Button
+  size="sm"
+  variant="secondary"
   onClick={() =>
     toggleFeatured(job.id, job.featured)
   }
 >
-  ⭐
+  Uitlichten
 </Button>
 
-                    <Button
-  size="icon"
+<Button
+  size="sm"
   variant="destructive"
   onClick={() => deleteJob(job.id)}
 >
-  🗑
+  Verwijderen
 </Button>
                   </td>
                 </tr>

@@ -5,6 +5,11 @@ import { useParams, useRouter } from "next/navigation";
 import { getSupabaseBrowser } from "@/lib/supabaseBrowser";
 import ClubNavbar from "@/components/club/ClubNavbar";
 import { toast } from "sonner";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import LoadingCard from "@/components/ui/LoadingCard";
+import EmptyState from "@/components/ui/EmptyState";
+import { Label } from "@/components/ui/label";
 
 type Club = {
   id: string;
@@ -80,25 +85,36 @@ if (!res.ok) {
   toast.error("Vacature aanmaken mislukt");
   return;
 }
-
+toast.success("Vacature toegevoegd.");
     router.push(`/admin/clubs/${slug}`)
   }
 
   if (loading) {
-    return (
-      <main className="min-h-screen flex items-center justify-center">
-        Laden…
-      </main>
-    );
-  }
+  return (
+    <main className="min-h-screen bg-[#0d1b2a] p-6">
+      <ClubNavbar slug={slug} />
+
+      <div className="max-w-3xl mx-auto mt-6">
+        <LoadingCard rows={5} />
+      </div>
+    </main>
+  );
+}
 
   if (!club) {
-    return (
-      <main className="min-h-screen flex items-center justify-center">
-        Club niet gevonden
-      </main>
-    );
-  }
+  return (
+    <main className="min-h-screen bg-[#0d1b2a] p-6">
+      <ClubNavbar slug={slug} />
+
+      <div className="max-w-3xl mx-auto mt-6">
+        <EmptyState
+          title="Club niet gevonden"
+          description="Deze club bestaat niet of is verwijderd."
+        />
+      </div>
+    </main>
+  );
+}
 
   return (
     <main className="min-h-screen bg-[#0d1b2a] p-6">
@@ -114,64 +130,52 @@ if (!res.ok) {
         <form onSubmit={createJob} className="space-y-4">
 
           <div>
-            <label className="block text-sm font-medium mb-1">
-              Bedrijfsnaam
-            </label>
+            <Label>Bedrijfsnaam</Label>
 
-            <input
-              type="text"
-              value={companyName}
-              onChange={(e) => setCompanyName(e.target.value)}
-              className="w-full border rounded-lg px-3 py-2"
-              required
-            />
+            <Input
+  value={companyName}
+  onChange={(e) => setCompanyName(e.target.value)}
+  required
+/>
           </div>
 
           <div>
-            <label className="block text-sm font-medium mb-1">
-              Functietitel
-            </label>
+            <Label>Functietitel</Label>
 
-            <input
-              type="text"
-              value={title}
-              onChange={(e) => setTitle(e.target.value)}
-              className="w-full border rounded-lg px-3 py-2"
-              required
-            />
+            <Input
+  value={title}
+  onChange={(e) => setTitle(e.target.value)}
+  required
+/>
           </div>
 
           <div>
-            <label className="block text-sm font-medium mb-1">
-              Vacaturelink
-            </label>
+            <Label>Vacaturelink</Label>
 
-            <input
-              type="url"
-              value={applyUrl}
-              onChange={(e) => setApplyUrl(e.target.value)}
-              className="w-full border rounded-lg px-3 py-2"
-              required
-            />
+            <Input
+  type="url"
+  value={applyUrl}
+  onChange={(e) => setApplyUrl(e.target.value)}
+  required
+/>
           </div>
 
           <div className="flex flex-col gap-3 sm:flex-row sm:justify-between sm:items-center pt-4">
 
-            <button
-              type="button"
-              onClick={() => router.back()}
-              className="px-4 py-2 rounded-lg border border-gray-300 hover:bg-gray-100 text-sm"
-            >
-              Annuleren
-            </button>
+            <Button
+  type="button"
+  variant="outline"
+  onClick={() => router.back()}
+>
+  Annuleren
+</Button>
 
-            <button
-              type="submit"
-              disabled={saving}
-              className="bg-green-600 text-white px-6 py-2 rounded-lg font-semibold hover:bg-green-700 text-sm"
-            >
-              {saving ? "Opslaan…" : "Vacature toevoegen"}
-            </button>
+            <Button
+  type="submit"
+  disabled={saving}
+>
+  {saving ? "Opslaan..." : "Vacature toevoegen"}
+</Button>
 
           </div>
 
