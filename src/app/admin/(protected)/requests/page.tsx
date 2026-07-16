@@ -5,6 +5,19 @@ import { motion } from "framer-motion";
 import { useSearchParams } from "next/navigation";
 import { getSupabaseBrowser } from "@/lib/supabaseBrowser";
 import { toast } from "sonner";
+import { Button } from "@/components/ui/button";
+import { useConfirm } from "@/components/providers/confirm-provider";
+
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+  DialogFooter,
+} from "@/components/ui/dialog";
+
+import { Textarea } from "@/components/ui/textarea";
 
 type ClubRequest = {
   id: string;
@@ -20,6 +33,7 @@ type ClubRequest = {
 export default function AdminRequestsPage() {
   const supabase = useMemo(() => getSupabaseBrowser(), []);
   const params = useSearchParams();
+  const { confirm } = useConfirm();
   const focusId = params.get("id");
 
   const [requests, setRequests] = useState<ClubRequest[]>([]);
@@ -46,12 +60,14 @@ export default function AdminRequestsPage() {
   }, []);
 
   async function approveRequest(req: ClubRequest) {
-    if (
-      !confirm(
-        `Wil je ${req.club_name} goedkeuren en een activatiemail versturen?`
-      )
-    )
-      return;
+    const confirmed = await confirm({
+  title: "Club goedkeuren",
+  description: `Wil je ${req.club_name} goedkeuren en een activatiemail versturen?`,
+  confirmText: "Goedkeuren",
+  cancelText: "Annuleren",
+});
+
+if (!confirmed) return;
 
     try {
       setRefreshing(true);
@@ -93,12 +109,15 @@ export default function AdminRequestsPage() {
   }
 
   async function rejectRequest(req: ClubRequest) {
-    if (
-      !confirm(
-        `Weet je zeker dat je de aanvraag van ${req.club_name} wilt weigeren?`
-      )
-    )
-      return;
+    const confirmed = await confirm({
+  title: "Clubaanvraag weigeren",
+  description: `Weet je zeker dat je de aanvraag van ${req.club_name} wilt weigeren?`,
+  confirmText: "Weigeren",
+  cancelText: "Annuleren",
+  destructive: true,
+});
+
+if (!confirmed) return;
 
     try {
       setRefreshing(true);
@@ -273,24 +292,21 @@ export default function AdminRequestsPage() {
                     <td className="px-4 py-3">
                       {req.status === "pending" ? (
                         <div className="flex gap-2">
-                          <button
-                            onClick={() =>
-                              approveRequest(req)
-                            }
-                            disabled={refreshing}
-                            className="bg-green-600 text-white px-3 py-1 rounded-md text-xs"
-                          >
-                            Goedkeuren
-                          </button>
-                          <button
-                            onClick={() =>
-                              rejectRequest(req)
-                            }
-                            disabled={refreshing}
-                            className="bg-red-600 text-white px-3 py-1 rounded-md text-xs"
-                          >
-                            Weigeren
-                          </button>
+                          <Button
+  size="sm"
+  disabled={refreshing}
+  onClick={() => approveRequest(req)}
+>
+  Goedkeuren
+</Button>
+                          <Button
+  size="sm"
+  variant="destructive"
+  disabled={refreshing}
+  onClick={() => rejectRequest(req)}
+>
+  Weigeren
+</Button>
                         </div>
                       ) : req.status === "approved" &&
                         req.token ? (

@@ -1,6 +1,9 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { Button } from "@/components/ui/button";
+import { useConfirm } from "@/components/providers/confirm-provider";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
 /* ===============================
    Types
@@ -137,6 +140,7 @@ export default function SubscriptionsTable() {
     Record<string, SubscriptionEvent[]>
   >({});
   const [eventsLoading, setEventsLoading] = useState<string | null>(null);
+  const { confirm } = useConfirm();
 
   async function load() {
     setLoading(true);
@@ -155,7 +159,14 @@ export default function SubscriptionsTable() {
      =============================== */
 
   async function unblockClub(clubId: string) {
-    if (!confirm("Blokkade opheffen voor deze club?")) return;
+    const confirmed = await confirm({
+  title: "Blokkade opheffen",
+  description: "Wil je de blokkade van deze club opheffen?",
+  confirmText: "Deblokkeren",
+  cancelText: "Annuleren",
+});
+
+if (!confirmed) return;
     await fetch("/api/admin/subscriptions/unblock", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -165,7 +176,16 @@ export default function SubscriptionsTable() {
   }
 
   async function blockClub(clubId: string) {
-  if (!confirm("Club blokkeren?")) return;
+  const confirmed = await confirm({
+  title: "Club blokkeren",
+  description:
+    "Weet je zeker dat je deze club wilt blokkeren?",
+  confirmText: "Blokkeren",
+  cancelText: "Annuleren",
+  destructive: true,
+});
+
+if (!confirmed) return;
 
   await fetch(
     "/api/admin/subscriptions/block",
@@ -185,12 +205,15 @@ export default function SubscriptionsTable() {
 }
 
   async function adminOverrideActivate(clubId: string) {
-    if (
-      !confirm(
-        "Abonnement activeren zonder betaling (admin override)?"
-      )
-    )
-      return;
+    const confirmed = await confirm({
+  title: "Admin override",
+  description:
+    "Het abonnement wordt geactiveerd zonder betaling.",
+  confirmText: "Activeren",
+  cancelText: "Annuleren",
+});
+
+if (!confirmed) return;
 
     await fetch("/api/admin/subscriptions/admin-override", {
       method: "POST",
@@ -202,11 +225,16 @@ export default function SubscriptionsTable() {
   }
 
   async function removeOverride(clubId: string) {
-  if (
-    !confirm(
-      "Admin override verwijderen?"
-    )
-  ) return;
+  const confirmed = await confirm({
+  title: "Override verwijderen",
+  description:
+    "Wil je de admin override verwijderen?",
+  confirmText: "Verwijderen",
+  cancelText: "Annuleren",
+  destructive: true,
+});
+
+if (!confirmed) return;
 
   await fetch(
     "/api/admin/subscriptions/remove-override",
@@ -275,25 +303,28 @@ export default function SubscriptionsTable() {
             <label className="text-sm font-medium">
               Filter op status:
             </label>
-            <select
-              value={statusFilter}
-              onChange={(e) =>
-                setStatusFilter(
-                  e.target.value as SubscriptionStatus | "all"
-                )
-              }
-              className="border rounded px-2 py-1 text-sm"
-            >
-              <option value="all">Alles</option>
-              <option value="trial">Proefperiode</option>
-              <option value="pending_payment">
-                Wacht op betaling
-              </option>
-              <option value="active">Actief</option>
-              <option value="blocked">Geblokkeerd</option>
-              <option value="expired">Verlopen</option>
-              <option value="cancelled">Opgezegd</option>
-            </select>
+            <Select
+  value={statusFilter}
+  onValueChange={(value) =>
+    setStatusFilter(value as SubscriptionStatus | "all")
+  }
+>
+  <SelectTrigger className="w-56">
+    <SelectValue placeholder="Filter op status" />
+  </SelectTrigger>
+
+  <SelectContent>
+    <SelectItem value="all">Alles</SelectItem>
+    <SelectItem value="trial">Proefperiode</SelectItem>
+    <SelectItem value="pending_payment">
+      Wacht op betaling
+    </SelectItem>
+    <SelectItem value="active">Actief</SelectItem>
+    <SelectItem value="blocked">Geblokkeerd</SelectItem>
+    <SelectItem value="expired">Verlopen</SelectItem>
+    <SelectItem value="cancelled">Opgezegd</SelectItem>
+  </SelectContent>
+</Select>
           </div>
         </div>
 
@@ -385,47 +416,45 @@ export default function SubscriptionsTable() {
 
   {c.billing_override ? (
 
-  <button
-    onClick={() =>
-      removeOverride(c.id)
-    }
-    className="px-3 py-1 text-sm rounded bg-purple-600 text-white"
-  >
+  <Button
+    size="sm"
+    variant="secondary"
+    onClick={() => removeOverride(c.id)}
+>
     ❌ Override uit
-  </button>
+</Button>
 
 ) : computedStatus === "blocked" ? (
 
-    <button
-      onClick={() =>
-        unblockClub(c.id)
-      }
-      className="px-3 py-1 text-sm rounded bg-green-600 text-white"
-    >
-      🔓 Deblokkeren
-    </button>
+  <Button
+  size="sm"
+  className="bg-green-600 hover:bg-green-700"
+  onClick={() => unblockClub(c.id)}
+>
+  🔓 Deblokkeren
+</Button>
+
+    
 
   ) : computedStatus === "pending_payment" ? (
 
-    <button
-      onClick={() =>
-        adminOverrideActivate(c.id)
-      }
-      className="px-3 py-1 text-sm rounded bg-orange-600 text-white"
-    >
-      Admin Override
-    </button>
+    <Button
+    size="sm"
+    className="bg-orange-600 hover:bg-orange-700"
+    onClick={() => adminOverrideActivate(c.id)}
+>
+    Admin Override
+</Button>
 
   ) : (
 
-    <button
-      onClick={() =>
-        blockClub(c.id)
-      }
-      className="px-3 py-1 text-sm rounded bg-red-600 text-white"
-    >
-      🔒 Blokkeren
-    </button>
+    <Button
+    size="sm"
+    variant="destructive"
+    onClick={() => blockClub(c.id)}
+>
+    🔒 Blokkeren
+</Button>
 
   )}
 

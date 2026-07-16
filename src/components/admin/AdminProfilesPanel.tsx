@@ -8,6 +8,13 @@ import EmptyState from "@/components/ui/EmptyState";
 import ErrorCard from "@/components/ui/ErrorCard";
 import { toast } from "sonner";
 import { useConfirm } from "@/components/providers/confirm-provider";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import {
+  Check,
+  X,
+  Trash2,
+} from "lucide-react";
 
 
 type Profile = {
@@ -161,13 +168,12 @@ if (!confirmed) return;
     >
       <h2 className="font-semibold text-[#0d1b2a] text-lg mb-4">👥 Gebruikers & Clubs</h2>
       <div className="flex justify-end mb-4">
-        <input
-          type="text"
-          placeholder="🔍 Zoek op e-mail, club of rol..."
-          value={search}
-          onChange={(e) => setSearch(e.target.value)}
-          className="border rounded-lg px-3 py-2 text-sm w-full md:w-72"
-        />
+        <Input
+  placeholder="🔍 Zoek op e-mail, club of rol..."
+  value={search}
+  onChange={(e) => setSearch(e.target.value)}
+  className="w-full md:w-72"
+/>
       </div>
 
       {loading ? (
@@ -222,27 +228,17 @@ if (!confirmed) return;
                   </td>
                   <td className="px-3 py-2 text-center">
                     <div className="flex flex-wrap gap-2 justify-center">
-                      <button
-                        onClick={() => approveUser(p)}
-                        disabled={refreshing}
-                        className="bg-green-600 text-white px-2 py-1 rounded-md text-xs hover:bg-green-700"
-                      >
-                        ✅
-                      </button>
-                      <button
-                        onClick={() => rejectUser(p)}
-                        disabled={refreshing}
-                        className="bg-yellow-500 text-white px-2 py-1 rounded-md text-xs hover:bg-yellow-600"
-                      >
-                        ❌
-                      </button>
-                      <button
-                        onClick={() => deleteUser(p)}
-                        disabled={refreshing}
-                        className="bg-red-600 text-white px-2 py-1 rounded-md text-xs hover:bg-red-700"
-                      >
-                        🗑️
-                      </button>
+                      <Button size="icon">
+  <Check className="h-4 w-4" />
+</Button>
+
+<Button size="icon" variant="secondary">
+  <X className="h-4 w-4" />
+</Button>
+
+<Button size="icon" variant="destructive">
+  <Trash2 className="h-4 w-4" />
+</Button>
                     </div>
                   </td>
                 </motion.tr>

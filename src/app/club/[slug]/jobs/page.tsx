@@ -7,6 +7,8 @@ import { getSupabaseBrowser } from "@/lib/supabaseBrowser";
 import { SUBSCRIPTIONS } from "@/lib/subscriptions";
 import ClubNavbar from "@/components/club/ClubNavbar";
 import Link from "next/link";
+import { useConfirm } from "@/components/providers/confirm-provider";
+import { Button } from "@/components/ui/button";
 
 /* ===============================
    Types
@@ -61,6 +63,7 @@ export default function ClubJobsPage() {
   const [activationImage, setActivationImage] =
   useState<File | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const { confirm } = useConfirm();
 
 const [jobAdded, setJobAdded] =
   useState(false);
@@ -320,13 +323,18 @@ loadData();
       const data = await res.json();
 
       if (data.reason === "limit_reached") {
-        const goUpgrade = confirm(
-          `Maximum aantal advertenties bereikt (${data.currentAds}/${data.maxAds}).\n\nKlik op OK om te upgraden.`
-        );
+        const goUpgrade = await confirm({
+  title: "Maximum advertenties bereikt",
+  description: `Maximum aantal advertenties bereikt (${data.currentAds}/${data.maxAds}).
 
-        if (goUpgrade) {
-          router.push(`/club/${slug}/billing`);
-        }
+Wil je nu upgraden?`,
+  confirmText: "Upgrade",
+  cancelText: "Annuleren",
+});
+
+if (goUpgrade) {
+  router.push(`/club/${slug}/billing`);
+}
         return;
       }
     }
@@ -335,7 +343,14 @@ loadData();
   }
 
   async function archiveJob(jobId: string) {
-    if (!confirm("Vacature archiveren?")) return;
+    const confirmed = await confirm({
+  title: "Vacature archiveren",
+  description: "Weet je zeker dat je deze vacature wilt archiveren?",
+  confirmText: "Archiveren",
+  cancelText: "Annuleren",
+});
+
+if (!confirmed) return;
 
     await supabase
       .from("jobs")
@@ -360,7 +375,16 @@ loadData();
 }
 
   async function deleteJob(jobId: string) {
-    if (!confirm("Vacature definitief verwijderen?")) return;
+    const confirmed = await confirm({
+  title: "Vacature verwijderen",
+  description:
+    "Deze vacature wordt definitief verwijderd. Deze actie kan niet ongedaan worden gemaakt.",
+  confirmText: "Verwijderen",
+  cancelText: "Annuleren",
+  destructive: true,
+});
+
+if (!confirmed) return;
 
     await supabase.from("club_ads").delete().eq("job_id", jobId);
     await supabase.from("job_clicks").delete().eq("job_id", jobId);
@@ -465,13 +489,10 @@ loadData();
 </div>
 )}
 
-            <button
+            <Button
+  type="submit"
   disabled={isLimitReached || isSubmitting}
-  className={`rounded-xl py-3 font-semibold ${
-    isLimitReached
-      ? "bg-gray-300 text-gray-500 cursor-not-allowed"
-      : "bg-green-600 text-white"
-  }`}
+  className="w-full"
 >
   {isLimitReached
     ? "Limiet bereikt"
@@ -480,7 +501,7 @@ loadData();
     : jobAdded
     ? "✓ Toegevoegd"
     : "Vacature toevoegen"}
-</button>
+</Button>
 
 {isLimitReached && (
   <div className="text-sm text-orange-600 mt-2">
@@ -550,32 +571,24 @@ loadData();
           Bekijk
         </Link>
 
-        <button
-          onClick={() =>
-            router.push(`/club/${slug}/jobs/${job.id}/edit`)
-          }
-          className="flex-1 border rounded-md py-2 text-sm"
-        >
-          Bewerken
-        </button>
+        <Button
+  variant="outline"
+  className="flex-1"
+  onClick={() =>
+    router.push(`/club/${slug}/jobs/${job.id}/edit`)
+  }
+>
+  Bewerken
+</Button>
 
-        <button
-          onClick={() => toggleFeatured(job.id)}
-          disabled={!canUseAds}
-          className={`flex-1 rounded-md py-2 text-sm border flex items-center justify-center gap-2
-          ${
-            job.featured
-              ? "bg-yellow-100 border-yellow-400 text-yellow-800"
-              : ""
-          }`}
-        >
-          <span
-            className={`w-3 h-3 rounded-full ${
-              job.featured ? "bg-yellow-500" : "bg-gray-300"
-            }`}
-          />
-          Advertentie
-        </button>
+        <Button
+  variant={job.featured ? "default" : "outline"}
+  className="flex-1"
+  disabled={!canUseAds}
+  onClick={() => toggleFeatured(job.id)}
+>
+  Advertentie
+</Button>
 
         <details className="flex-1 relative">
           <summary className="border rounded-md py-2 text-sm text-center cursor-pointer">
@@ -585,29 +598,32 @@ loadData();
           <div className="absolute right-0 mt-2 w-40 bg-white border rounded-lg shadow-lg z-50">
 
             {!showArchived && (
-              <button
-                onClick={() => archiveJob(job.id)}
-                className="block w-full text-left px-3 py-2 hover:bg-gray-100"
-              >
-                Archiveren
-              </button>
+              <Button
+  variant="ghost"
+  className="w-full justify-start"
+  onClick={() => archiveJob(job.id)}
+>
+  Archiveren
+</Button>
             )}
 
             {showArchived && (
-  <button
-    onClick={() => restoreJob(job.id)}
-    className="block w-full text-left px-3 py-2 hover:bg-gray-100"
-  >
-    Terugzetten
-  </button>
+  <Button
+  variant="ghost"
+  className="w-full justify-start"
+  onClick={() => restoreJob(job.id)}
+>
+  Terugzetten
+</Button>
 )}
 
-            <button
-              onClick={() => deleteJob(job.id)}
-              className="block w-full text-left px-3 py-2 text-red-600 hover:bg-gray-100"
-            >
-              Verwijderen
-            </button>
+            <Button
+  variant="destructive"
+  className="w-full"
+  onClick={() => deleteJob(job.id)}
+>
+  Verwijderen
+</Button>
 
           </div>
         </details>
@@ -678,28 +694,25 @@ loadData();
     </Link>
 
     {/* Bewerken */}
-    <button
-      onClick={() =>
-        router.push(`/club/${slug}/jobs/${job.id}/edit`)
-      }
-      className="px-3 py-1 text-sm border rounded-md hover:bg-gray-50"
-    >
-      Bewerken
-    </button>
+    <Button
+  variant="outline"
+  size="sm"
+  onClick={() =>
+    router.push(`/club/${slug}/jobs/${job.id}/edit`)
+  }
+>
+  Bewerken
+</Button>
 
     {/* Advertentie toggle */}
-    <button
-      onClick={() => toggleFeatured(job.id)}
-      disabled={!canUseAds}
-      className={`px-3 py-1 text-sm rounded-md border flex items-center gap-2
-        ${job.featured
-          ? "bg-yellow-100 border-yellow-400 text-yellow-800"
-          : "hover:bg-gray-50"}
-      `}
-    >
-      <span className={`w-3 h-3 rounded-full ${job.featured ? "bg-yellow-500" : "bg-gray-300"}`} />
-      Advertentie
-    </button>
+    <Button
+  variant={job.featured ? "default" : "outline"}
+  size="sm"
+  disabled={!canUseAds}
+  onClick={() => toggleFeatured(job.id)}
+>
+  Advertentie
+</Button>
 
     {/* Dropdown menu */}
     <details className="relative">
@@ -710,29 +723,32 @@ loadData();
       <div className="absolute right-0 mt-2 w-40 bg-white border rounded-lg shadow-lg z-50">
 
         {!showArchived && (
-  <button
-    onClick={() => archiveJob(job.id)}
-    className="block w-full text-left px-3 py-2 hover:bg-gray-100"
-  >
-    Archiveren
-  </button>
+  <Button
+  variant="ghost"
+  className="w-full justify-start"
+  onClick={() => archiveJob(job.id)}
+>
+  Archiveren
+</Button>
 )}
 
 {showArchived && (
-  <button
-    onClick={() => restoreJob(job.id)}
-    className="block w-full text-left px-3 py-2 hover:bg-gray-100"
-  >
-    Terugzetten
-  </button>
+  <Button
+  variant="ghost"
+  className="w-full justify-start"
+  onClick={() => restoreJob(job.id)}
+>
+  Terugzetten
+</Button>
 )}
 
-<button
+<Button
+  variant="destructive"
+  className="w-full"
   onClick={() => deleteJob(job.id)}
-  className="block w-full text-left px-3 py-2 text-red-600 hover:bg-gray-100"
 >
   Verwijderen
-</button>
+</Button>
 
       </div>
     </details>

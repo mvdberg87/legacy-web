@@ -5,6 +5,17 @@ import { motion } from "framer-motion";
 import { useParams, useRouter } from "next/navigation";
 import { getSupabaseBrowser } from "@/lib/supabaseBrowser";
 import { toast } from "sonner";
+import { useConfirm } from "@/components/providers/confirm-provider";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+  DialogFooter,
+} from "@/components/ui/dialog";
 
 /* ---------- Types ---------- */
 
@@ -41,6 +52,7 @@ export default function AdminClubDetailPage() {
   const supabase = useMemo(() => getSupabaseBrowser(), []);
   const router = useRouter();
   const { slug } = useParams<{ slug: string }>();
+  const { confirm } = useConfirm();
 
   console.log("ADMIN SLUG:", slug);
 
@@ -69,6 +81,9 @@ const [stats, setStats] = useState({
   totalShares: 0,
   shareRate: 0,
 });
+const [editingEmail, setEditingEmail] = useState(false);
+
+const [newEmail, setNewEmail] = useState("");
 
 function StatCard({ label, value }: { label: string; value: any }) {
   return (
@@ -406,13 +421,15 @@ setTopJobs({
 }
 
 async function archiveAd(adId: string) {
-  if (
-    !confirm(
-      "Weet je zeker dat je deze advertentie wilt archiveren?"
-    )
-  ) {
-    return;
-  }
+  const confirmed = await confirm({
+  title: "Advertentie archiveren",
+  description:
+    "Weet je zeker dat je deze advertentie wilt archiveren?",
+  confirmText: "Archiveren",
+  cancelText: "Annuleren",
+});
+
+if (!confirmed) return;
 
   const res = await fetch(
     "/api/admin/archive-advertisement",
@@ -438,6 +455,16 @@ async function archiveAd(adId: string) {
 }
 
 async function restoreAd(adId: string) {
+  const confirmed = await confirm({
+    title: "Advertentie herstellen",
+    description:
+      "Weet je zeker dat je deze advertentie wilt herstellen?",
+    confirmText: "Herstellen",
+    cancelText: "Annuleren",
+  });
+
+  if (!confirmed) return;
+
   const res = await fetch(
     "/api/admin/restore-advertisement",
     {
@@ -462,13 +489,15 @@ async function restoreAd(adId: string) {
 }
 
   async function deleteJob(jobId: string) {
-  if (
-    !confirm(
-      "Weet je zeker dat je deze vacature wilt verwijderen?"
-    )
-  ) {
-    return;
-  }
+  const confirmed = await confirm({
+  title: "Vacature verwijderen",
+  description:
+    "Weet je zeker dat je deze vacature wilt verwijderen?",
+  confirmText: "Verwijderen",
+  cancelText: "Annuleren",
+});
+
+if (!confirmed) return;
 
   const res = await fetch(
     "/api/admin/delete-job",
@@ -499,7 +528,14 @@ async function restoreAd(adId: string) {
   const primary = club.primary_color || "#0d1b2a";
 
   async function retryReport(reportId: string) {
-  if (!confirm("Rapport opnieuw versturen?")) return;
+  const confirmed = await confirm({
+  title: "Rapport opnieuw versturen",
+  description: "Weet je zeker dat je dit rapport opnieuw wilt versturen?",
+  confirmText: "Opnieuw versturen",
+  cancelText: "Annuleren",
+});
+
+if (!confirmed) return;
 
   try {
     const res = await fetch("/api/admin/retry-monthly-report", {
@@ -517,6 +553,38 @@ async function restoreAd(adId: string) {
   } catch {
     toast.error("Opnieuw versturen mislukt.");
   }
+}
+
+async function saveNewEmail() {
+  if (!clubUser) return;
+
+  const res = await fetch("/api/admin/change-user-email", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      userId: clubUser.id,
+      email: newEmail,
+    }),
+  });
+
+  const data = await res.json();
+
+  if (!res.ok || !data.success) {
+    toast.error(data.error || "Email wijzigen mislukt");
+    return;
+  }
+
+  setClubUser({
+    ...clubUser,
+    email: data.email,
+  });
+
+  setEditingEmail(false);
+  setNewEmail("");
+
+  toast.success("E-mailadres gewijzigd.");
 }
   /* ---------- Render ---------- */
 
@@ -550,10 +618,14 @@ async function restoreAd(adId: string) {
       onChange={async (e) => {
         const newPackage = e.target.value;
 
-        const confirmed = confirm(
-          `Pakket wijzigen naar "${newPackage}"?`
-        );
-        if (!confirmed) return;
+        const confirmed = await confirm({
+  title: "Pakket wijzigen",
+  description: `Pakket wijzigen naar "${newPackage}"?`,
+  confirmText: "Wijzigen",
+  cancelText: "Annuleren",
+});
+
+if (!confirmed) return;
 
         await supabase
           .from("clubs")
@@ -661,27 +733,19 @@ async function restoreAd(adId: string) {
 
     <div className="flex gap-3 mb-4">
 
-  <button
+  <Button
+    variant={!showArchivedAds ? "default" : "outline"}
     onClick={() => setShowArchivedAds(false)}
-    className={
-      !showArchivedAds
-        ? "bg-[#0d1b2a] text-white px-4 py-2 rounded"
-        : "border px-4 py-2 rounded"
-    }
-  >
+>
     Actief
-  </button>
+</Button>
 
-  <button
+<Button
+    variant={showArchivedAds ? "default" : "outline"}
     onClick={() => setShowArchivedAds(true)}
-    className={
-      showArchivedAds
-        ? "bg-[#0d1b2a] text-white px-4 py-2 rounded"
-        : "border px-4 py-2 rounded"
-    }
-  >
+>
     Gearchiveerd
-  </button>
+</Button>
 
 </div>
 
@@ -766,54 +830,59 @@ async function restoreAd(adId: string) {
 
               <td className="px-4 py-3 text-center space-x-2">
 
-                <button
+                <Button
+  size="icon"
+  variant="outline"
   onClick={() =>
     window.open(ad.vacancy_url, "_blank")
   }
-  className="border px-2 py-1 rounded"
 >
   👁
-</button>
+</Button>
 
 
 
-                <button
+                <Button
+  size="icon"
+  variant="outline"
   onClick={() =>
     router.push(
       `/admin/clubs/${club.slug}/advertisements/${ad.id}/edit`
     )
   }
-  className="border px-2 py-1 rounded"
 >
   ✏️
-</button>
+</Button>
 
-                <button
+                <Button
+  size="icon"
+  variant="outline"
   onClick={() =>
     toggleAdFeatured(
       ad.id,
       ad.is_featured
     )
   }
-  className="border px-2 py-1 rounded"
 >
   ⭐
-</button>
+</Button>
 
                 {ad.deleted_at ? (
-  <button
-    onClick={() => restoreAd(ad.id)}
-    className="border px-2 py-1 rounded text-green-600"
-  >
-    ↩️
-  </button>
+  <Button
+  size="icon"
+  variant="outline"
+  onClick={() => restoreAd(ad.id)}
+>
+  ↩️
+</Button>
 ) : (
-  <button
-    onClick={() => archiveAd(ad.id)}
-    className="border px-2 py-1 rounded text-red-600"
-  >
-    🗑
-  </button>
+  <Button
+  size="icon"
+  variant="destructive"
+  onClick={() => archiveAd(ad.id)}
+>
+  🗑
+</Button>
 )}
 
               </td>
@@ -858,12 +927,12 @@ async function restoreAd(adId: string) {
         </div>
 
 <div className="flex justify-end mb-4">
-  <button
+  <Button
   onClick={() => router.push(`/admin/clubs/${club.slug}/jobs/new`)}
-  className="bg-green-600 text-white px-5 py-2 rounded-lg text-sm font-semibold hover:bg-green-700 shadow"
+  className="bg-green-600 hover:bg-green-700"
 >
-    + Vacature toevoegen
-  </button>
+  + Vacature toevoegen
+</Button>
 </div>
 
 <div className="overflow-x-auto">
@@ -941,33 +1010,33 @@ async function restoreAd(adId: string) {
                   </td>
 
                   <td className="px-4 py-3 text-center space-x-2">
-                    <button
-                      onClick={() =>
-                        window.open(`/${club.slug}`, "_blank")
-                      }
-                      className="border px-2 py-1 rounded"
-                      title="Publieke vacatures bekijken"
-                    >
-                      👁
-                    </button>
+                    <Button
+  size="icon"
+  variant="outline"
+  onClick={() =>
+    window.open(`/${club.slug}`, "_blank")
+  }
+>
+  👁
+</Button>
 
-                    <button
-                      onClick={() =>
-                        toggleFeatured(job.id, job.featured)
-                      }
-                      className="border px-2 py-1 rounded"
-                      title="Uitlichten"
-                    >
-                      ⭐
-                    </button>
+                    <Button
+  size="icon"
+  variant="outline"
+  onClick={() =>
+    toggleFeatured(job.id, job.featured)
+  }
+>
+  ⭐
+</Button>
 
-                    <button
-                      onClick={() => deleteJob(job.id)}
-                      className="border px-2 py-1 rounded text-red-600"
-                      title="Verwijderen"
-                    >
-                      🗑
-                    </button>
+                    <Button
+  size="icon"
+  variant="destructive"
+  onClick={() => deleteJob(job.id)}
+>
+  🗑
+</Button>
                   </td>
                 </tr>
               ))}
@@ -1011,40 +1080,14 @@ async function restoreAd(adId: string) {
 
       {/* 🔥 Actie */}
       <div className="flex gap-3">
-        <button
-          onClick={async () => {
-            const email = prompt("Nieuw e-mailadres:");
-            if (!email) return;
-
-            const res = await fetch("/api/admin/change-user-email", {
-              method: "POST",
-              headers: {
-                "Content-Type": "application/json",
-              },
-              body: JSON.stringify({
-                userId: clubUser.id,
-                email,
-              }),
-            });
-
-            const data = await res.json();
-
-            if (!res.ok || !data.success) {
-              toast.error(data.error || "Email wijzigen mislukt");
-              return;
-            }
-
-            setClubUser({
-              ...clubUser,
-              email: data.email,
-            });
-
-            toast.success("E-mail gewijzigd");
-          }}
-          className="bg-blue-600 text-white px-4 py-2 rounded-lg text-sm"
-        >
-          Wijzig login e-mail
-        </button>
+        <Button
+  onClick={() => {
+    setNewEmail(clubUser.email);
+    setEditingEmail(true);
+  }}
+>
+  Wijzig login e-mail
+</Button>
       </div>
 
     </div>
@@ -1128,24 +1171,26 @@ async function restoreAd(adId: string) {
 
                     <td className="px-4 py-3 text-center">
                       {r.status === "failed" ? (
-  <button
-    onClick={() => retryReport(r.id)}
-    className="text-blue-600 underline"
-  >
-    Retry
-  </button>
+  <Button
+  size="sm"
+  variant="outline"
+  onClick={() => retryReport(r.id)}
+>
+  Retry
+</Button>
 ) : (
-  <button
-    onClick={() =>
-      window.open(
-        `/api/admin/view-monthly-report/${r.id}`,
-        "_blank"
-      )
-    }
-    className="text-blue-600 underline"
-  >
-    Bekijk
-  </button>
+  <Button
+  size="sm"
+  variant="outline"
+  onClick={() =>
+    window.open(
+      `/api/admin/view-monthly-report/${r.id}`,
+      "_blank"
+    )
+  }
+>
+  Bekijk
+</Button>
 )}
                     </td>
                   </tr>
@@ -1155,6 +1200,52 @@ async function restoreAd(adId: string) {
           </div>
         )}
       </motion.div>
+
+      <Dialog
+  open={editingEmail}
+  onOpenChange={(open) => {
+    setEditingEmail(open);
+
+    if (!open) {
+        setNewEmail("");
+    }
+}}
+>
+  <DialogContent className="max-w-md">
+
+    <DialogHeader>
+      <DialogTitle>
+        Login e-mailadres wijzigen
+      </DialogTitle>
+
+      <DialogDescription>
+        Vul hieronder het nieuwe login e-mailadres in.
+      </DialogDescription>
+    </DialogHeader>
+
+    <Input
+      value={newEmail}
+      onChange={(e) => setNewEmail(e.target.value)}
+      type="email"
+    />
+
+    <DialogFooter>
+
+      <Button
+        variant="outline"
+        onClick={() => setEditingEmail(false)}
+      >
+        Annuleren
+      </Button>
+
+      <Button onClick={saveNewEmail}>
+        Opslaan
+      </Button>
+
+    </DialogFooter>
+
+  </DialogContent>
+</Dialog>
 
     </div>
   );

@@ -4,6 +4,8 @@ import { useEffect, useMemo, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 import { getSupabaseBrowser } from "@/lib/supabaseBrowser";
 import ClubNavbar from "@/components/club/ClubNavbar";
+import { Button } from "@/components/ui/button";
+import { useConfirm } from "@/components/providers/confirm-provider";
 
 /* ---------- Types ---------- */
 
@@ -27,6 +29,7 @@ type Club = {
 export default function JobDetailPage() {
   const supabase = useMemo(() => getSupabaseBrowser(), []);
   const router = useRouter();
+  const { confirm } = useConfirm();
   const { slug, jobId } = useParams<{ slug: string; jobId: string }>();
 
   const [club, setClub] = useState<Club | null>(null);
@@ -62,15 +65,26 @@ export default function JobDetailPage() {
   }, [supabase, jobId, slug]);
 
   async function deleteJob() {
-    if (!confirm("Vacature definitief verwijderen?")) return;
+  const confirmed = await confirm({
+    title: "Vacature verwijderen",
+    description:
+      "Weet je zeker dat je deze vacature wilt verwijderen?",
+    confirmText: "Verwijderen",
+    cancelText: "Annuleren",
+    destructive: true,
+  });
 
-    await supabase
-      .from("jobs")
-      .update({ archived_at: new Date().toISOString() })
-      .eq("id", jobId);
+  if (!confirmed) return;
 
-    router.push(`/club/${slug}/jobs`);
-  }
+  await supabase
+    .from("jobs")
+    .update({
+      archived_at: new Date().toISOString(),
+    })
+    .eq("id", jobId);
+
+  router.push(`/club/${slug}/jobs`);
+}
 
   if (loading) return <p className="p-6">Laden…</p>;
   if (!job || !club)
@@ -127,21 +141,21 @@ export default function JobDetailPage() {
 
         {/* ---------- Admin acties ---------- */}
         <div className="border-t pt-6 flex flex-wrap gap-3 text-sm">
-          <button
-            onClick={() =>
-              router.push(`/club/${slug}/jobs/${jobId}/edit`)
-            }
-            className="border px-4 py-2 rounded"
-          >
-            ✏️ Bewerken
-          </button>
+          <Button
+  variant="outline"
+  onClick={() =>
+    router.push(`/club/${slug}/jobs/${jobId}/edit`)
+  }
+>
+  ✏️ Bewerken
+</Button>
 
-          <button
-            onClick={deleteJob}
-            className="border px-4 py-2 rounded text-red-600"
-          >
-            🗑 Verwijderen
-          </button>
+<Button
+  variant="destructive"
+  onClick={deleteJob}
+>
+  🗑 Verwijderen
+</Button>
         </div>
       </div>
     </main>

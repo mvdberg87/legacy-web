@@ -3,6 +3,8 @@
 import { useEffect, useMemo, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 import { getSupabaseBrowser } from "@/lib/supabaseBrowser";
+import { Button } from "@/components/ui/button";
+import { useConfirm } from "@/components/providers/confirm-provider";
 
 /* ---------- Types ---------- */
 
@@ -23,6 +25,7 @@ type JobWithStats = Job & {
 export default function VacaturesPage() {
   const supabase = useMemo(() => getSupabaseBrowser(), []);
   const router = useRouter();
+  const { confirm } = useConfirm();
   const { slug } = useParams<{ slug: string }>();
 
   const [clubId, setClubId] = useState<string | null>(null);
@@ -105,15 +108,26 @@ export default function VacaturesPage() {
   /* ---------- Acties ---------- */
 
   async function deleteJob(jobId: string) {
-    if (!confirm("Vacature verwijderen?")) return;
+  const confirmed = await confirm({
+    title: "Vacature verwijderen",
+    description:
+      "Weet je zeker dat je deze vacature wilt verwijderen?",
+    confirmText: "Verwijderen",
+    cancelText: "Annuleren",
+    destructive: true,
+  });
 
-    await supabase
-      .from("jobs")
-      .update({ archived_at: new Date().toISOString() })
-      .eq("id", jobId);
+  if (!confirmed) return;
 
-    setJobs((prev) => prev.filter((j) => j.id !== jobId));
-  }
+  await supabase
+    .from("jobs")
+    .update({
+      archived_at: new Date().toISOString(),
+    })
+    .eq("id", jobId);
+
+  setJobs((prev) => prev.filter((j) => j.id !== jobId));
+}
 
   async function toggleFeatured(job: JobWithStats) {
     await supabase
@@ -200,43 +214,44 @@ export default function VacaturesPage() {
                   </td>
 
                   <td className="px-4 py-3 text-center space-x-2">
-                    <button
-                      onClick={() =>
-                        window.open(
-                          `/club/${slug}/jobs/${j.id}`,
-                          "_blank"
-                        )
-                      }
-                      className="border px-2 py-1 rounded"
-                    >
-                      👁
-                    </button>
+                    <Button
+  variant="outline"
+  size="icon"
+  onClick={() =>
+    window.open(
+      `/club/${slug}/jobs/${j.id}`,
+      "_blank"
+    )
+  }
+>
+  👁
+</Button>
 
-                    <button
-                      onClick={() =>
-                        router.push(
-                          `/club/${slug}/jobs/${j.id}/edit`
-                        )
-                      }
-                      className="border px-2 py-1 rounded"
-                    >
-                      ✏️
-                    </button>
+<Button
+  variant="outline"
+  size="icon"
+  onClick={() =>
+    router.push(`/club/${slug}/jobs/${j.id}/edit`)
+  }
+>
+  ✏️
+</Button>
 
-                    <button
-                      onClick={() => toggleFeatured(j)}
-                      className="border px-2 py-1 rounded"
-                      title="Featured aan/uit"
-                    >
-                      ⭐
-                    </button>
+<Button
+  variant={j.featured ? "default" : "outline"}
+  size="icon"
+  onClick={() => toggleFeatured(j)}
+>
+  ⭐
+</Button>
 
-                    <button
-                      onClick={() => deleteJob(j.id)}
-                      className="border px-2 py-1 rounded text-red-600"
-                    >
-                      🗑
-                    </button>
+<Button
+  variant="destructive"
+  size="icon"
+  onClick={() => deleteJob(j.id)}
+>
+  🗑
+</Button>
                   </td>
                 </tr>
               ))}

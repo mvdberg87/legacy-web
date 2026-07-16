@@ -12,6 +12,7 @@ import {
   type PackageKey,
 } from "@/lib/subscriptions";
 import { toast } from "sonner";
+import { useConfirm } from "@/components/providers/confirm-provider";
 
 /* ===============================
    Types
@@ -82,6 +83,7 @@ export default function ClubDashboardPage() {
 const [selectedPackage, setSelectedPackage] = useState<PackageKey | null>(null);
 const [accepted, setAccepted] = useState(false);
 const [copied, setCopied] = useState(false);
+const { confirm } = useConfirm();
 
   /* =====================================================
      DATA OPHALEN
@@ -598,11 +600,16 @@ async function updateExtraAds(newQuantity: number) {
 async function cancelSubscription() {
   if (!club) return;
 
-  const confirmCancel = confirm(
-    "Weet je zeker dat je wilt opzeggen?\n\nJe abonnement stopt aan het einde van de factuurperiode."
-  );
+  const confirmed = await confirm({
+  title: "Abonnement opzeggen",
+  description:
+    "Weet je zeker dat je je abonnement wilt opzeggen?\n\nJe abonnement blijft actief tot het einde van de huidige factuurperiode.",
+  confirmText: "Opzeggen",
+  cancelText: "Annuleren",
+  destructive: true,
+});
 
-  if (!confirmCancel) return;
+if (!confirmed) return;
 
   try {
     const res = await fetch("/api/stripe/cancel-subscription", {

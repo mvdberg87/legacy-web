@@ -5,6 +5,8 @@ import { motion } from "framer-motion";
 import { getSupabaseBrowser } from "@/lib/supabaseBrowser";
 import Link from "next/link";
 import { toast } from "sonner";
+import { useConfirm } from "@/components/providers/confirm-provider";
+import { Button } from "@/components/ui/button";
 
 /* ---------- Types ---------- */
 
@@ -49,6 +51,7 @@ export default function AdminProfilesPage() {
   const [showArchivedClubs, setShowArchivedClubs] =
   useState(false);
   const [refreshing, setRefreshing] = useState(false);
+  const { confirm } = useConfirm();
 
   /* ---------- Data ophalen ---------- */
 
@@ -80,8 +83,25 @@ export default function AdminProfilesPage() {
     clubId: string,
     status: "approved" | "rejected"
   ) {
-    if (!confirm(`Club ${status === "approved" ? "goedkeuren" : "afwijzen"}?`))
-      return;
+    const confirmed = await confirm({
+  title:
+    status === "approved"
+      ? "Club goedkeuren"
+      : "Club afwijzen",
+  description: `Weet je zeker dat je deze club wilt ${
+    status === "approved"
+      ? "goedkeuren"
+      : "afwijzen"
+  }?`,
+  confirmText:
+    status === "approved"
+      ? "Goedkeuren"
+      : "Afwijzen",
+  cancelText: "Annuleren",
+  destructive: status === "rejected",
+});
+
+if (!confirmed) return;
 
     try {
       setRefreshing(true);
@@ -102,12 +122,15 @@ export default function AdminProfilesPage() {
   }
 
   async function deleteClub(clubId: string, clubName: string) {
-    if (
-      !confirm(
-        `Weet je zeker dat je ${clubName} wilt verwijderen?\nDit verwijdert ook vacatures en statistieken.`
-      )
-    )
-      return;
+    const confirmed = await confirm({
+  title: "Club verwijderen",
+  description: `${clubName} wordt volledig verwijderd inclusief vacatures en statistieken.`,
+  confirmText: "Verwijderen",
+  cancelText: "Annuleren",
+  destructive: true,
+});
+
+if (!confirmed) return;
 
     try {
       setRefreshing(true);
@@ -131,69 +154,77 @@ export default function AdminProfilesPage() {
   async function archiveClub(
   clubId: string
 ) {
-  if (
-    !confirm(
-      "Weet je zeker dat je deze club wilt archiveren?"
-    )
-  ) {
+  const confirmed = await confirm({
+    title: "Club archiveren",
+    description:
+      "Weet je zeker dat je deze club wilt archiveren?",
+    confirmText: "Archiveren",
+    cancelText: "Annuleren",
+  });
+
+  if (!confirmed) return;
+
+  const res = await fetch(
+    "/api/admin/archive-club",
+    {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        clubId,
+      }),
+    }
+  );
+
+  const data = await res.json();
+
+  if (!res.ok) {
+    toast.error(
+      data.error ?? "Archiveren mislukt"
+    );
     return;
   }
 
-  const res = await fetch(
-  "/api/admin/archive-club",
-  {
-    method: "POST",
-    headers: {
-      "Content-Type":
-        "application/json",
-    },
-    body: JSON.stringify({
-      clubId,
-    }),
-  }
-);
-
-const data = await res.json();
-
-if (!res.ok) {
-  toast.error(
-    data.error ??
-    "Archiveren mislukt"
-  );
-  return;
-}
-
-await loadProfiles();
+  await loadProfiles();
 }
 
 async function restoreClub(
   clubId: string
 ) {
+  const confirmed = await confirm({
+    title: "Club herstellen",
+    description:
+      "Weet je zeker dat je deze club wilt herstellen?",
+    confirmText: "Herstellen",
+    cancelText: "Annuleren",
+  });
+
+  if (!confirmed) return;
+
   const res = await fetch(
-  "/api/admin/restore-club",
-  {
-    method: "POST",
-    headers: {
-      "Content-Type":
-        "application/json",
-    },
-    body: JSON.stringify({
-      clubId,
-    }),
-  }
-);
-
-const data = await res.json();
-
-if (!res.ok) {
-  toast.error(
-    data.error ??
-    "Herstellen mislukt"
+    "/api/admin/restore-club",
+    {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        clubId,
+      }),
+    }
   );
-  return;
-}
 
-await loadProfiles();
+  const data = await res.json();
+
+  if (!res.ok) {
+    toast.error(
+      data.error ?? "Herstellen mislukt"
+    );
+    return;
+  }
+
+  await loadProfiles();
 }
 
 async function editContactPerson(
@@ -236,7 +267,15 @@ async function editContactPerson(
 }
 
 async function resendActivationLink(requestId: string) {
-  if (!confirm("Nieuwe activatielink versturen?")) return;
+  const confirmed = await confirm({
+  title: "Activatielink opnieuw versturen",
+  description:
+    "Wil je een nieuwe activatielink versturen?",
+  confirmText: "Versturen",
+  cancelText: "Annuleren",
+});
+
+if (!confirmed) return;
 
   try {
     setRefreshing(true);
