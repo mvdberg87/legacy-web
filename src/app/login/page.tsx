@@ -5,6 +5,8 @@ import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
 import { getSupabaseBrowser } from "@/lib/supabaseBrowser";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 
 export default function ClubLoginPage() {
   const supabase = getSupabaseBrowser();
@@ -160,26 +162,25 @@ export default function ClubLoginPage() {
         {step === "email" && (
           <form onSubmit={handleSendCode} className="space-y-3">
 
-            <input
-              type="email"
-              required
-              placeholder="bijv. contact@club.nl"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              className="w-full rounded-lg border-2 border-gray-300 px-3 py-2 text-sm text-[#0d1b2a] placeholder:text-gray-400 focus:outline-none focus:border-[#0d1b2a]"
-            />
+            <Input
+  type="email"
+  placeholder="bijv. contact@club.nl"
+  value={email}
+  onChange={(e) => setEmail(e.target.value)}
+  required
+/>
 
             <p className="text-xs text-gray-400">
               We sturen een veilige eenmalige login code (geen wachtwoord nodig)
             </p>
 
-            <button
-              type="submit"
-              disabled={loading}
-              className="w-full rounded-xl px-4 py-2 text-sm font-semibold transition bg-[#1f9d55] text-white hover:bg-[#15803d] disabled:opacity-60"
-            >
-              {loading ? "Bezig…" : "Ontvang login code"}
-            </button>
+            <Button
+  type="submit"
+  className="w-full"
+  disabled={loading}
+>
+  {loading ? "Bezig…" : "Ontvang login code"}
+</Button>
 
           </form>
         )}
@@ -190,24 +191,24 @@ export default function ClubLoginPage() {
         {step === "code" && (
           <form onSubmit={handleVerifyCode} className="space-y-3">
 
-            <input
-              type="text"
-              inputMode="numeric"
-              maxLength={6}
-              required
-              placeholder="Voer 6-cijferige code in"
-              value={code}
-              onChange={(e) => setCode(e.target.value)}
-              className="w-full rounded-lg border-2 border-gray-300 px-3 py-2 text-sm text-center tracking-widest text-[#0d1b2a] focus:outline-none focus:border-[#0d1b2a]"
-            />
+            <Input
+  type="text"
+  inputMode="numeric"
+  maxLength={6}
+  placeholder="Voer 6-cijferige code in"
+  value={code}
+  onChange={(e) => setCode(e.target.value)}
+  className="text-center tracking-widest"
+  required
+/>
 
-            <button
-              type="submit"
-              disabled={loading}
-              className="w-full rounded-xl px-4 py-2 text-sm font-semibold transition bg-[#0d1b2a] text-white hover:bg-[#132a44] disabled:opacity-60"
-            >
-              {loading ? "Controleren…" : "Inloggen"}
-            </button>
+            <Button
+  type="submit"
+  className="w-full"
+  disabled={loading}
+>
+  {loading ? "Controleren…" : "Inloggen"}
+</Button>
 
             <button
               type="button"
@@ -225,10 +226,10 @@ export default function ClubLoginPage() {
         )}
 
         {status && (
-          <p className="text-sm text-center text-gray-600">
-            {status}
-          </p>
-        )}
+  <div className="rounded-lg bg-blue-50 border border-blue-200 p-3 text-sm text-blue-800 text-center">
+    {status}
+  </div>
+)}
 
         {/* SIGNUP CTA */}
         <div className="pt-4 border-t border-gray-200 text-center space-y-2">
@@ -275,12 +276,9 @@ export default function ClubLoginPage() {
   waarmee je direct kunt inloggen en starten.
 </p>
 
-            <button
-              onClick={() => setShowWelcome(false)}
-              className="px-4 py-2 bg-[#0d1b2a] text-white rounded-lg"
-            >
-              Verder
-            </button>
+            <Button onClick={() => setShowWelcome(false)}>
+  Verder
+</Button>
 
           </div>
         </div>

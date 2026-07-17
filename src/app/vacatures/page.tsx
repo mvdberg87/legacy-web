@@ -1,6 +1,7 @@
 import { getSupabaseServer } from "@/lib/supabase.server";
 import Link from "next/link";
 import { revalidatePath } from "next/cache";
+import { Button } from "@/components/ui/button";
 
 export const dynamic = "force-dynamic";
 
@@ -30,8 +31,15 @@ export default async function VacaturesPage({
     .maybeSingle();
 
   if (!club) {
-    return <p>Club niet gevonden</p>;
-  }
+  return (
+    <div className="py-20 text-center">
+      <h2 className="text-xl font-semibold">Club niet gevonden</h2>
+      <p className="mt-2 text-gray-500">
+        De club kon niet worden geladen.
+      </p>
+    </div>
+  );
+}
 
   /* ===============================
      Vacatures ophalen
@@ -53,9 +61,17 @@ export default async function VacaturesPage({
     .order("created_at", { ascending: false });
 
   if (error) {
-    console.error(error);
-    return <p>Fout bij laden vacatures</p>;
-  }
+  return (
+    <div className="py-20 text-center">
+      <h2 className="text-xl font-semibold">
+        Fout bij laden
+      </h2>
+      <p className="mt-2 text-gray-500">
+        De vacatures konden niet worden opgehaald.
+      </p>
+    </div>
+  );
+}
 
   /* ===============================
      Server Action: toggle featured
@@ -84,78 +100,80 @@ export default async function VacaturesPage({
         Beheer en markeer vacatures als uitgelicht
       </p>
 
-      {jobs.length === 0 ? (
-        <p className="text-gray-500 italic">
-          Nog geen vacatures aangemaakt.
-        </p>
-      ) : (
-        <div className="flex flex-col gap-4">
-          {jobs.map((job) => (
-            <article
-              key={job.id}
-              className={`border rounded-xl p-6 flex items-center justify-between ${
-                job.featured
-                  ? "border-yellow-400 bg-yellow-50"
-                  : "bg-white"
-              }`}
-            >
-              <div>
-                <h2 className="text-lg font-semibold">
-                  {job.title}
-                </h2>
-                <p className="text-sm text-gray-600">
-                  {job.company_name}
-                </p>
+      {!jobs || jobs.length === 0 ? (
+  <div className="py-20 text-center">
+    <h2 className="text-xl font-semibold">
+      Nog geen vacatures
+    </h2>
+    <p className="mt-2 text-gray-500">
+      Maak je eerste vacature aan om deze hier te beheren.
+    </p>
+  </div>
+) : (
+  <div className="flex flex-col gap-4">
+    {jobs.map((job) => (
+      <article
+        key={job.id}
+        className={`border rounded-xl p-6 flex items-center justify-between ${
+          job.featured
+            ? "border-yellow-400 bg-yellow-50"
+            : "bg-white"
+        }`}
+      >
+        <div>
+          <h2 className="text-lg font-semibold">
+            {job.title}
+          </h2>
 
-                {job.featured && (
-                  <span className="inline-block mt-2 text-xs font-medium text-yellow-700">
-                    ⭐ Uitgelichte vacature
-                  </span>
-                )}
-              </div>
+          <p className="text-sm text-gray-600">
+            {job.company_name}
+          </p>
 
-              <div className="flex items-center gap-3">
-                {/* ⭐ Toggle featured */}
-                <form
-                  action={async () => {
-                    await toggleFeatured(job.id, job.featured);
-                  }}
-                >
-                  <button
-                    type="submit"
-                    className={`px-3 py-1 rounded-lg text-xs font-medium border ${
-                      job.featured
-                        ? "border-yellow-500 text-yellow-700"
-                        : "border-gray-300 text-gray-600"
-                    }`}
-                  >
-                    {job.featured ? "Unfeature" : "Feature"}
-                  </button>
-                </form>
-
-                {/* Bewerken */}
-                <Link
-                  href={`/club/${params.slug}/vacatures/${job.id}`}
-                  className="px-3 py-1 rounded-lg border text-sm"
-                >
-                  ✏️ Bewerken
-                </Link>
-
-                {/* Externe link */}
-                {job.apply_url && (
-                  <Link
-                    href={job.apply_url}
-                    target="_blank"
-                    className="px-3 py-1 rounded-lg bg-blue-600 text-white text-sm"
-                  >
-                    Bekijken
-                  </Link>
-                )}
-              </div>
-            </article>
-          ))}
+          {job.featured && (
+            <span className="inline-block mt-2 text-xs font-medium text-yellow-700">
+              ⭐ Uitgelichte vacature
+            </span>
+          )}
         </div>
-      )}
+
+        <div className="flex items-center gap-3">
+          <form
+            action={async () => {
+              await toggleFeatured(job.id, job.featured);
+            }}
+          >
+            <Button
+              type="submit"
+              variant={job.featured ? "secondary" : "outline"}
+              size="sm"
+            >
+              {job.featured
+                ? "Uitgelicht verwijderen"
+                : "Uitlichten"}
+            </Button>
+          </form>
+
+          <Link
+            href={`/club/${params.slug}/vacatures/${job.id}`}
+            className="px-3 py-1 rounded-lg border text-sm"
+          >
+            ✏️ Bewerken
+          </Link>
+
+          {job.apply_url && (
+            <Link
+              href={job.apply_url}
+              target="_blank"
+              className="px-3 py-1 rounded-lg bg-blue-600 text-white text-sm"
+            >
+              Bekijken
+            </Link>
+          )}
+        </div>
+      </article>
+    ))}
+  </div>
+)}
     </main>
   );
 }

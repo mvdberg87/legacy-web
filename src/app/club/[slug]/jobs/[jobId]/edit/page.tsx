@@ -5,6 +5,11 @@ import { useParams, useRouter } from "next/navigation";
 import { getSupabaseBrowser } from "@/lib/supabaseBrowser";
 import ClubNavbar from "@/components/club/ClubNavbar";
 import { toast } from "sonner";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import LoadingCard from "@/components/ui/LoadingCard";
+import EmptyState from "@/components/ui/EmptyState";
 
 /* ---------- Types ---------- */
 
@@ -163,17 +168,24 @@ const [uploadingImage, setUploadingImage] =
   }
 
   if (loading) {
-    return (
-      <main className="min-h-screen flex items-center justify-center">
-        Laden…
-      </main>
-    );
-  }
+  return (
+    <main className="min-h-screen bg-[#0d1b2a] p-6">
+      <ClubNavbar slug={slug} />
+
+      <div className="max-w-3xl mx-auto mt-6">
+        <LoadingCard rows={6} />
+      </div>
+    </main>
+  );
+}
 
   if (!job || !club) {
     return (
       <main className="min-h-screen flex items-center justify-center">
-        Vacature niet gevonden
+        <EmptyState
+  title="Vacature niet gevonden"
+  description="Deze vacature bestaat niet of is verwijderd."
+/>
       </main>
     );
   }
@@ -192,49 +204,36 @@ const [uploadingImage, setUploadingImage] =
 
         <form onSubmit={saveJob} className="space-y-4">
           <div>
-            <label className="block text-sm font-medium mb-1">
-              Bedrijfsnaam
-            </label>
-            <input
-              type="text"
-              value={companyName}
-              onChange={(e) => setCompanyName(e.target.value)}
-              className="w-full border rounded-lg px-3 py-2"
-              required
-            />
+            <Label>Bedrijfsnaam</Label>
+            <Input
+  value={companyName}
+  onChange={(e) => setCompanyName(e.target.value)}
+  required
+/>
           </div>
 
           <div>
-            <label className="block text-sm font-medium mb-1">
-              Functietitel
-            </label>
-            <input
-              type="text"
-              value={title}
-              onChange={(e) => setTitle(e.target.value)}
-              className="w-full border rounded-lg px-3 py-2"
-              required
-            />
+            <Label>Functietitel</Label>
+            <Input
+  value={title}
+  onChange={(e) => setTitle(e.target.value)}
+  required
+/>
           </div>
 
           <div>
-            <label className="block text-sm font-medium mb-1">
-              Vacaturelink
-            </label>
-            <input
-              type="url"
-              value={applyUrl}
-              onChange={(e) => setApplyUrl(e.target.value)}
-              className="w-full border rounded-lg px-3 py-2"
-              required
-            />
+            <Label>Vacaturelink</Label>
+            <Input
+  type="url"
+  value={applyUrl}
+  onChange={(e) => setApplyUrl(e.target.value)}
+  required
+/>
           </div>
 
 {canUseManagedAds && (
           <div>
-  <label className="block text-sm font-medium mb-2">
-    Achtergrondfoto vacature
-  </label>
+  <Label>Achtergrondfoto vacature</Label>
 
   {activationImageUrl && (
     <p className="text-xs text-green-600 mb-2">
@@ -297,21 +296,20 @@ const [uploadingImage, setUploadingImage] =
 )}
 
           <div className="flex justify-between items-center pt-4">
-            <button
-              type="button"
-              onClick={() => router.back()}
-              className="px-4 py-2 rounded-lg border border-gray-300 hover:bg-gray-100 transition text-sm"
-            >
-              Annuleren
-            </button>
+            <Button
+  type="button"
+  variant="outline"
+  onClick={() => router.back()}
+>
+  Annuleren
+</Button>
 
-            <button
-              type="submit"
-              disabled={saving}
-              className="bg-green-600 text-white px-6 py-2 rounded-lg font-semibold hover:bg-green-700 transition text-sm"
-            >
-              {saving ? "Opslaan…" : "Opslaan"}
-            </button>
+            <Button
+  type="submit"
+  disabled={saving}
+>
+  {saving ? "Opslaan…" : "Opslaan"}
+</Button>
           </div>
         </form>
       </div>

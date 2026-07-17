@@ -2,6 +2,9 @@
 
 import { useState } from "react";
 import Navbar from "@/components/Navbar";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 
 export default function SignupPage() {
   const [form, setForm] = useState({
@@ -95,66 +98,62 @@ export default function SignupPage() {
 
   {/* Clubnaam */}
   <div className="space-y-1">
-    <label className="text-xs text-gray-500">
-      Clubnaam
-    </label>
-    <input
-      required
-      placeholder="Bijv. FC 's-Gravenzande"
-      className="w-full border-2 border-gray-300 rounded-lg px-3 py-2 text-sm bg-white text-[#0d1b2a] placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-[#0d1b2a]"
-      value={form.clubName}
-      onChange={(e) =>
-        setForm({ ...form, clubName: e.target.value })
-      }
-    />
+    <Label className="mb-2 block">
+  Clubnaam
+</Label>
+    <Input
+  required
+  placeholder="Bijv. FC 's-Gravenzande"
+  value={form.clubName}
+  onChange={(e) =>
+    setForm({ ...form, clubName: e.target.value })
+  }
+/>
   </div>
 
   {/* Contactpersoon */}
   <div className="space-y-1">
-    <label className="text-xs text-gray-500">
+    <Label className="mb-2 block">
       Naam contactpersoon
-    </label>
-    <input
-      required
-      placeholder="Bijv. Jan de Vries"
-      className="w-full border-2 border-gray-300 rounded-lg px-3 py-2 text-sm bg-white text-[#0d1b2a] placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-[#0d1b2a]"
-      value={form.contactName}
-      onChange={(e) =>
-        setForm({ ...form, contactName: e.target.value })
-      }
-    />
+    </Label>
+    <Input
+  required
+  placeholder="Bijv. Jan de Vries"
+  value={form.contactName}
+  onChange={(e) =>
+    setForm({ ...form, contactName: e.target.value })
+  }
+/>
   </div>
 
   {/* Email */}
   <div className="space-y-1">
-    <label className="text-xs text-gray-500">
+    <Label className="mb-2 block">
       E-mailadres
-    </label>
-    <input
-      type="email"
-      required
-      placeholder="contact@club.nl"
-      className="w-full border-2 border-gray-300 rounded-lg px-3 py-2 text-sm bg-white text-[#0d1b2a] placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-[#0d1b2a]"
-      value={form.email}
-      onChange={(e) =>
-        setForm({ ...form, email: e.target.value })
-      }
-    />
+    </Label>
+    <Input
+  type="email"
+  required
+  placeholder="contact@club.nl"
+  value={form.email}
+  onChange={(e) =>
+    setForm({ ...form, email: e.target.value })
+  }
+/>
   </div>
 
   {/* Telefoon */}
   <div className="space-y-1">
-    <label className="text-xs text-gray-500">
+    <Label className="mb-2 block">
       Telefoonnummer (optioneel)
-    </label>
-    <input
-      placeholder="06 12345678"
-      className="w-full border-2 border-gray-300 rounded-lg px-3 py-2 text-sm bg-white text-[#0d1b2a] placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-[#0d1b2a]"
-      value={form.phone}
-      onChange={(e) =>
-        setForm({ ...form, phone: e.target.value })
-      }
-    />
+    </Label>
+    <Input
+  placeholder="06 12345678"
+  value={form.phone}
+  onChange={(e) =>
+    setForm({ ...form, phone: e.target.value })
+  }
+/>
   </div>
 
 </div>
@@ -190,19 +189,15 @@ export default function SignupPage() {
           </label>
 
           {/* CTA */}
-          <button
-            type="submit"
-            disabled={loading}
-            className={`w-full py-3 rounded-xl font-semibold text-white transition ${
-              loading
-                ? "bg-gray-400"
-                : "bg-[#1f9d55] hover:bg-[#15803d]"
-            }`}
-          >
-            {loading
-              ? "Bezig…"
-              : "Start gratis (2 maanden)"}
-          </button>
+          <Button
+  type="submit"
+  className="w-full"
+  disabled={loading}
+>
+  {loading
+    ? "Bezig…"
+    : "Start gratis (2 maanden)"}
+</Button>
 
           <p className="mt-3 text-center text-xs text-gray-500">
   Let op: ontvang je geen activatiecode? Controleer dan ook je
@@ -211,10 +206,10 @@ export default function SignupPage() {
 
           {/* STATUS */}
           {status && (
-            <p className="text-sm text-center text-gray-600">
-              {status}
-            </p>
-          )}
+  <div className="rounded-lg bg-blue-50 border border-blue-200 p-3 text-sm text-blue-800 text-center">
+    {status}
+  </div>
+)}
 
           {/* LOGIN LINK */}
 

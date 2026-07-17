@@ -4,6 +4,8 @@ import ListingCard from "@/components/ListingCard";
 import { useEffect, useState, useMemo } from "react";
 import { useSearchParams } from "next/navigation";
 import { getCompanyLogo } from "@/lib/companyLogo";
+import { Button } from "@/components/ui/button";
+import EmptyState from "@/components/ui/EmptyState";
 
 /* ---------- Types ---------- */
 
@@ -451,7 +453,10 @@ const logo = getCompanyLogo(website, company.logo);
         ========================== */}
         {sortedJobs.length === 0 ? (
           <p className="text-gray-300 italic text-center">
-            Geen vacatures beschikbaar.
+            <EmptyState
+  title="Geen vacatures beschikbaar"
+  description="Er zijn momenteel geen vacatures geplaatst."
+/>
           </p>
         ) : (
           <section>
@@ -461,14 +466,14 @@ const logo = getCompanyLogo(website, company.logo);
   </h2>
 
   {companyFilter && (
-    <button
-      onClick={() => {
-        window.location.href = `/${club.slug}`;
-      }}
-      className="text-xs sm:text-sm text-blue-300 underline"
-    >
-      Toon alle vacatures
-    </button>
+    <Button
+  variant="link"
+  onClick={() => {
+    window.location.href = `/${club.slug}`;
+  }}
+>
+  Toon alle vacatures
+</Button>
   )}
 </div>
 

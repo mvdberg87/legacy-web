@@ -8,6 +8,10 @@ import { getCompanyLogo } from "@/lib/companyLogo";
 import LoadingCard from "@/components/ui/LoadingCard";
 import EmptyState from "@/components/ui/EmptyState";
 import ErrorCard from "@/components/ui/ErrorCard";
+import { Button } from "@/components/ui/button";
+import { Label } from "@/components/ui/label";
+import { Select } from "@/components/ui/select";
+import { Textarea } from "@/components/ui/textarea";
 
 type Job = {
   id: string;
@@ -459,9 +463,7 @@ if (error) {
           <>
             <div className="mb-6">
 
-              <label className="block text-sm font-medium mb-2">
-                Kies een vacature
-              </label>
+              <Label>Kies een vacature</Label>
 
               {jobs.length === 0 ? (
 
@@ -499,9 +501,7 @@ if (error) {
 
             <div className="mb-8">
 
-              <label className="block text-sm font-medium mb-2">
-                Activatietype
-              </label>
+              <Label>Activatietype</Label>
 
               <select
                 value={activationType}
@@ -537,9 +537,7 @@ if (error) {
 
 <div className="mb-8">
 
-  <label className="block text-sm font-medium mb-2">
-    Tone of voice
-  </label>
+  <Label>Tone of voice</Label>
 
   <select
     value={tone}
@@ -557,40 +555,24 @@ if (error) {
 </div>
 
             <div className="flex flex-col sm:flex-row gap-3">
-  <button
-    onClick={generatePost}
-    className="
-      bg-[#0d1b2a]
-      text-white
-      px-6
-      py-3
-      rounded-lg
-      hover:opacity-90
-      w-full sm:w-auto
-    "
-  >
-    {generating
-      ? "Genereren..."
-      : "Genereer post"}
-  </button>
+  <Button
+  onClick={generatePost}
+  className="w-full sm:w-auto"
+>
+  {generating
+    ? "Genereren..."
+    : "Genereer post"}
+</Button>
 
-  <button
-    onClick={generateImage}
-    disabled={generatingImage}
-    className="
-      bg-green-700
-      text-white
-      px-6
-      py-3
-      rounded-lg
-      disabled:opacity-60
-      w-full sm:w-auto
-    "
-  >
-    {generatingImage
-      ? "Afbeelding genereren..."
-      : "Genereer afbeelding"}
-  </button>
+  <Button
+  onClick={generateImage}
+  disabled={generatingImage}
+  className="w-full sm:w-auto"
+>
+  {generatingImage
+    ? "Afbeelding genereren..."
+    : "Genereer afbeelding"}
+</Button>
 </div>
 
 <p className="text-xs text-gray-500 mt-3">
@@ -607,33 +589,20 @@ if (error) {
       Gegenereerde post
     </h2>
 
-    <textarea
-      value={generatedText}
-      readOnly
-      className="
-        w-full
-        h-64
-        border-2
-        rounded-xl
-        p-4
-      "
-    />
+    <Textarea
+  value={generatedText}
+  readOnly
+  className="h-64"
+/>
 
-    <button
+    <Button
   onClick={copyPost}
-  className="
-    mt-4
-    bg-green-600
-    text-white
-    px-4
-    py-2
-    rounded-lg
-  "
+  className="mt-4"
 >
   {copied
     ? "✓ Gekopieerd"
     : "Kopieer post"}
-</button>
+</Button>
 
   </div>
         )}
@@ -659,41 +628,24 @@ if (error) {
 </div>
 <div className="flex flex-col sm:flex-row gap-3 mt-4">
 
-  <button
-    onClick={downloadImage}
-    className="
-      bg-[#0d1b2a]
-      text-white
-      px-4
-      py-2
-      rounded-lg
-      w-full sm:w-auto
-    "
-  >
-    {imageDownloaded
-      ? "✓ Download gestart"
-      : "Download afbeelding"}
-  </button>
+  <Button
+  onClick={downloadImage}
+>
+  {imageDownloaded
+    ? "✓ Download gestart"
+    : "Download afbeelding"}
+</Button>
 
-  <button
-    onClick={downloadPackage}
-    disabled={packageDownloading}
-    className="
-      bg-green-700
-      text-white
-      px-4
-      py-2
-      rounded-lg
-      disabled:opacity-60
-      w-full sm:w-auto
-    "
-  >
-    {packageDownloading
-      ? "Pakket maken..."
-      : packageDownloaded
+  <Button
+  onClick={downloadPackage}
+  disabled={packageDownloading}
+>
+  {packageDownloading
+    ? "Pakket maken..."
+    : packageDownloaded
       ? "✓ Download gestart"
       : "Download activatiepakket"}
-  </button>
+</Button>
 
 </div>
 

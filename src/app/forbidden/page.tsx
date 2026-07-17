@@ -3,6 +3,7 @@
 
 import { useRouter } from "next/navigation";
 import { Lock } from "lucide-react";
+import { Button } from "@/components/ui/button";
 
 export default function ForbiddenPage() {
   const router = useRouter();
@@ -24,18 +25,19 @@ export default function ForbiddenPage() {
         </div>
 
         <div className="flex flex-col sm:flex-row gap-3 mt-6">
-          <button
-            onClick={() => router.push("/")}
-            className="flex-1 bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition"
-          >
-            Naar startpagina
-          </button>
-          <button
-            onClick={() => router.back()}
-            className="flex-1 border border-gray-300 text-gray-700 px-4 py-2 rounded-lg hover:bg-gray-100 transition"
-          >
-            Ga terug
-          </button>
+          <Button
+  className="flex-1"
+  onClick={() => router.push("/")}
+>
+  Naar startpagina
+</Button>
+          <Button
+  variant="outline"
+  className="flex-1"
+  onClick={() => router.back()}
+>
+  Ga terug
+</Button>
         </div>
       </div>
 

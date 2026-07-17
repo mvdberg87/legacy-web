@@ -4,6 +4,7 @@ import { useState } from "react";
 import SubscriptionsTable from "@/components/admin/SubscriptionsTable";
 import AdvertisementRevenueTable
 from "@/components/admin/AdvertisementRevenueTable";
+import { Button } from "@/components/ui/button";
 
 export default function AdminRevenuePage() {
 
@@ -21,21 +22,19 @@ export default function AdminRevenuePage() {
 
       <div className="flex flex-col sm:flex-row gap-2">
 
-        <button
-          onClick={() => setTab("subscriptions")}
-          className="px-4 py-2 border rounded"
-        >
-          Abonnementen
-        </button>
+        <Button
+  variant={tab === "subscriptions" ? "default" : "outline"}
+  onClick={() => setTab("subscriptions")}
+>
+  Abonnementen
+</Button>
 
-        <button
-  onClick={() =>
-    setTab("advertisements")
-  }
-  className="px-4 py-2 border rounded"
+        <Button
+  variant={tab === "advertisements" ? "default" : "outline"}
+  onClick={() => setTab("advertisements")}
 >
   Advertenties
-</button>
+</Button>
 
       </div>
 

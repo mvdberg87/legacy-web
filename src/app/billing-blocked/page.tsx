@@ -7,6 +7,8 @@ import {
   SUBSCRIPTIONS,
   type PackageKey,
 } from "@/lib/subscriptions";
+import { Button } from "@/components/ui/button";
+import LoadingCard from "@/components/ui/LoadingCard";
 
 type Insights = {
   active_jobs: number;
@@ -130,12 +132,14 @@ setClubData({
 }
 
   if (loading) {
-    return (
-      <main className="min-h-screen flex items-center justify-center bg-[#0d1b2a] text-white">
-        Laden…
-      </main>
-    );
-  }
+  return (
+    <main className="min-h-screen bg-[#0d1b2a] p-8">
+      <div className="max-w-5xl mx-auto">
+        <LoadingCard rows={6} />
+      </div>
+    </main>
+  );
+}
 
   return (
     <main className="min-h-screen bg-[#0d1b2a] text-white p-8">
@@ -216,12 +220,12 @@ setClubData({
                       }`}
                 </p>
 
-                <button
-                  onClick={() => goToCheckout(key)}
-                  className="w-full py-3 rounded-xl bg-green-600 hover:bg-green-700 text-white font-medium transition"
-                >
-                  Activeer direct
-                </button>
+                <Button
+  onClick={() => goToCheckout(key)}
+  className="w-full"
+>
+  Activeer direct
+</Button>
               </div>
             );
           })}

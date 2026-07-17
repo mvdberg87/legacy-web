@@ -5,6 +5,9 @@ import { useParams, useRouter } from "next/navigation";
 import { getSupabaseBrowser } from "@/lib/supabaseBrowser";
 import ClubNavbar from "@/components/club/ClubNavbar";
 import { toast } from "sonner";
+import { Button } from "@/components/ui/button";
+import LoadingCard from "@/components/ui/LoadingCard";
+import EmptyState from "@/components/ui/EmptyState";
 
 type Club = {
   id: string;
@@ -78,13 +81,28 @@ export default function UpgradePage() {
     setSuccess(true);
   }
 
-  if (loading || !club) {
-    return (
-      <main className="min-h-screen flex items-center justify-center bg-[#0d1b2a] text-white">
-        Laden…
-      </main>
-    );
-  }
+  if (loading) {
+  return (
+    <main className="min-h-screen bg-[#0d1b2a] p-6">
+      <ClubNavbar slug={slug} />
+
+      <div className="max-w-4xl mx-auto mt-6">
+        <LoadingCard rows={6} />
+      </div>
+    </main>
+  );
+}
+
+if (!club) {
+  return (
+    <main className="min-h-screen flex items-center justify-center">
+      <EmptyState
+        title="Club niet gevonden"
+        description="De clubgegevens konden niet worden geladen."
+      />
+    </main>
+  );
+}
 
   return (
     <main className="min-h-screen bg-[#0d1b2a] p-6">
@@ -132,31 +150,25 @@ export default function UpgradePage() {
                   Advertenties: {p.ads}
                 </p>
 
-                <button
-                  disabled={disabled || submitting}
-                  onClick={() => requestUpgrade(p.key)}
-                  className={`
-                    w-full rounded-xl px-4 py-2 text-sm font-semibold transition
-                    ${
-                      disabled
-                        ? "bg-gray-400 text-gray-700 cursor-not-allowed"
-                        : "bg-[#1f9d55] text-white hover:bg-[#15803d]"
-                    }
-                  `}
-                >
-                  {disabled ? "Huidig pakket" : "Upgrade aanvragen"}
-                </button>
+                <Button
+  className="w-full"
+  disabled={disabled || submitting}
+  onClick={() => requestUpgrade(p.key)}
+>
+  {disabled ? "Huidig pakket" : "Upgrade aanvragen"}
+</Button>
               </div>
             );
           })}
         </div>
 
-        <button
-          onClick={() => router.push(`/club/${slug}/dashboard`)}
-          className="mt-8 text-sm underline"
-        >
-          ← Terug naar dashboard
-        </button>
+        <Button
+  variant="outline"
+  className="mt-8"
+  onClick={() => router.push(`/club/${slug}/dashboard`)}
+>
+  ← Terug naar dashboard
+</Button>
       </div>
     </main>
   );

@@ -2,6 +2,11 @@
 
 import { useEffect, useMemo, useState } from "react";
 import { getSupabaseBrowser } from "@/lib/supabaseBrowser";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import LoadingCard from "@/components/ui/LoadingCard";
+import EmptyState from "@/components/ui/EmptyState";
 
 
 type Profile = { user_id: string; club_id: string; role: string };
@@ -232,13 +237,12 @@ export default function AdminSponsorsPage() {
       </div>
 
       {loading ? (
-        <div className="bg-white rounded-2xl shadow p-6">
-          <p>Laden…</p>
-        </div>
+        <LoadingCard rows={6} />
       ) : err && !club ? (
-        <div className="bg-white rounded-2xl shadow p-6">
-          <p className="text-red-600">{err}</p>
-        </div>
+        <EmptyState
+  title="Club niet gevonden"
+  description={err ?? "Er is iets misgegaan."}
+/>
       ) : (
         <div className="grid md:grid-cols-2 gap-8">
           {/* Gekoppelde sponsors */}
@@ -248,9 +252,10 @@ export default function AdminSponsorsPage() {
             </h2>
 
             {linkedSponsors.length === 0 ? (
-              <p className="text-sm text-gray-500">
-                Nog geen sponsors gekoppeld.
-              </p>
+              <EmptyState
+  title="Nog geen sponsors"
+  description="Er zijn nog geen sponsors gekoppeld aan deze club."
+/>
             ) : (
               <ul className="space-y-2">
                 {linkedSponsors.map((s) => (
@@ -266,12 +271,13 @@ export default function AdminSponsorsPage() {
                         {s.website || "—"}
                       </div>
                     </div>
-                    <button
-                      onClick={() => unlinkSponsor(s)}
-                      className="text-sm border rounded-lg px-2 py-1"
-                    >
-                      Ontkoppel
-                    </button>
+                    <Button
+  size="sm"
+  variant="outline"
+  onClick={() => unlinkSponsor(s)}
+>
+  Ontkoppelen
+</Button>
                   </li>
                 ))}
               </ul>
@@ -295,63 +301,54 @@ export default function AdminSponsorsPage() {
               className="space-y-4 mb-6"
             >
               <div>
-                <label className="text-sm block mb-1">
-                  Naam *
-                </label>
-                <input
-                  required
-                  value={newSponsor.name}
-                  onChange={(e) =>
-                    setNewSponsor((s) => ({
-                      ...s,
-                      name: e.target.value,
-                    }))
-                  }
-                  className="w-full border rounded-lg px-3 py-2"
-                />
+                <Label>Naam *</Label>
+                <Input
+  required
+  value={newSponsor.name}
+  onChange={(e) =>
+    setNewSponsor((s) => ({
+      ...s,
+      name: e.target.value,
+    }))
+  }
+/>
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                 <div>
-                  <label className="text-sm block mb-1">
-                    Website
-                  </label>
-                  <input
-                    value={newSponsor.website}
-                    onChange={(e) =>
-                      setNewSponsor((s) => ({
-                        ...s,
-                        website: e.target.value,
-                      }))
-                    }
-                    className="w-full border rounded-lg px-3 py-2"
-                  />
+                  <Label>Website *</Label>
+                  <Input
+  value={newSponsor.website}
+  onChange={(e) =>
+    setNewSponsor((s) => ({
+      ...s,
+      website: e.target.value,
+    }))
+  }
+/>
                 </div>
                 <div>
-                  <label className="text-sm block mb-1">
-                    Logo URL
-                  </label>
-                  <input
-                    value={newSponsor.logo_url}
-                    onChange={(e) =>
-                      setNewSponsor((s) => ({
-                        ...s,
-                        logo_url: e.target.value,
-                      }))
-                    }
-                    className="w-full border rounded-lg px-3 py-2"
-                  />
+                  <Label>Logo URL</Label>
+                  <Input
+  value={newSponsor.logo_url}
+  onChange={(e) =>
+    setNewSponsor((s) => ({
+      ...s,
+      logo_url: e.target.value,
+    }))
+  }
+/>
                 </div>
               </div>
 
-              <button
-                disabled={submitting}
-                className="bg-[#0d1b2a] text-white rounded-lg px-4 py-2 text-sm disabled:opacity-50"
-              >
-                {submitting
-                  ? "Opslaan…"
-                  : "Sponsor opslaan en koppelen"}
-              </button>
+              <Button
+  type="submit"
+  disabled={submitting}
+>
+  {submitting
+    ? "Opslaan…"
+    : "Sponsor opslaan en koppelen"}
+</Button>
             </form>
 
             <div className="border-t pt-4">
@@ -359,20 +356,20 @@ export default function AdminSponsorsPage() {
                 Bestaande sponsor koppelen
               </h3>
               <div className="flex flex-col sm:flex-row gap-2">
-                <input
-                  value={searchTerm}
-                  onChange={(e) =>
-                    setSearchTerm(e.target.value)
-                  }
-                  placeholder="Zoek op naam"
-                  className="flex-1 border rounded-lg px-3 py-2"
-                />
-                <button
-                  onClick={searchSponsors}
-                  className="border rounded-lg px-3 py-2"
-                >
-                  Zoek
-                </button>
+                <Input
+  value={searchTerm}
+  onChange={(e) =>
+    setSearchTerm(e.target.value)
+  }
+  placeholder="Zoek op naam"
+  className="flex-1"
+/>
+                <Button
+  variant="outline"
+  onClick={searchSponsors}
+>
+  Zoek
+</Button>
               </div>
 
               {searchResults.length > 0 && (
@@ -390,12 +387,12 @@ export default function AdminSponsorsPage() {
                           {s.website || "—"}
                         </div>
                       </div>
-                      <button
-                        onClick={() => linkSponsor(s)}
-                        className="text-sm border rounded-lg px-2 py-1"
-                      >
-                        Koppel
-                      </button>
+                      <Button
+  size="sm"
+  onClick={() => linkSponsor(s)}
+>
+  Koppel
+</Button>            
                     </li>
                   ))}
                 </ul>

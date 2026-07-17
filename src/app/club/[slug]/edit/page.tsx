@@ -11,6 +11,12 @@ import {
   DEFAULT_PUBLIC_JOBS_CTA_TEXT,
 } from "@/lib/defaultTexts";
 import { toast } from "sonner";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
+import LoadingCard from "@/components/ui/LoadingCard";
+import EmptyState from "@/components/ui/EmptyState";
 
 /* ---------- Types ---------- */
 
@@ -286,16 +292,23 @@ setTimeout(() => {
   /* ---------- States ---------- */
 
   if (loading)
-    return (
-      <main className="min-h-screen flex items-center justify-center">
-        Laden…
-      </main>
-    );
+  return (
+    <main className="min-h-screen p-6 bg-[#0d1b2a]">
+      <ClubNavbar slug={slug} />
+
+      <div className="max-w-xl mx-auto mt-8">
+        <LoadingCard rows={8} />
+      </div>
+    </main>
+  );
 
   if (!club)
     return (
       <main className="min-h-screen flex items-center justify-center">
-        Geen clubinformatie gevonden.
+        <EmptyState
+  title="Club niet gevonden"
+  description="De clubgegevens konden niet worden geladen."
+/>
       </main>
     );
 
@@ -328,11 +341,8 @@ setTimeout(() => {
         <form onSubmit={handleSave} className="space-y-5">
           {/* Naam */}
           <div>
-            <label className="block text-sm font-medium mb-1">
-              Naam
-            </label>
-            <input
-              type="text"
+            <Label>Naam</Label>
+            <Input
               value={club.name}
               onChange={(e) =>
                 setClub({ ...club, name: e.target.value })
@@ -344,10 +354,8 @@ setTimeout(() => {
 
           {/* Intro vacatures */}
           <div>
-            <label className="block text-sm font-medium mb-1">
-              Introductietekst vacatures
-            </label>
-            <textarea
+            <Label>Introductietekst vacatures</Label>
+            <Textarea
               rows={8}
               value={club.jobs_intro_text}
               onChange={(e) =>
@@ -374,12 +382,9 @@ setTimeout(() => {
           </div>
 
 <div>
-  <label className="block text-sm font-medium mb-1">
-    CTA titel onderaan
-  </label>
+  <Label>CTA titel onderaan</Label>
 
-  <input
-    type="text"
+  <Input
     value={club.jobs_cta_title ?? ""}
     onChange={(e) =>
       setClub({
@@ -405,11 +410,9 @@ setTimeout(() => {
 </div>
 
 <div>
-  <label className="block text-sm font-medium mb-1">
-    CTA tekst onderaan
-  </label>
+  <Label>CTA tekst onderaan</Label>
 
-  <textarea
+  <Textarea
     rows={6}
     value={club.jobs_cta_text ?? ""}
     onChange={(e) =>
@@ -436,9 +439,7 @@ setTimeout(() => {
 </div>
 
 <div>
-  <label className="block text-sm font-medium mb-1">
-    Primaire kleur
-  </label>
+  <Label>Primaire kleur</Label>
 
   <input
     type="color"
@@ -454,9 +455,7 @@ setTimeout(() => {
 </div>
 
 <div>
-  <label className="block text-sm font-medium mb-1">
-    Secundaire kleur
-  </label>
+  <Label>Secundaire kleur</Label                      >
 
   <input
     type="color"
@@ -472,9 +471,7 @@ setTimeout(() => {
 </div>
 
 <div>
-  <label className="block text-sm font-medium mb-1">
-    Accentkleur
-  </label>
+  <Label>Accentkleur</Label>
 
   <input
     type="color"
@@ -494,9 +491,7 @@ setTimeout(() => {
 </div>
 
 <div>
-  <label className="block text-sm font-medium mb-2">
-    Activatietemplate
-  </label>
+  <Label>Activatietemplate</Label>
 
   <select
     value={
@@ -533,9 +528,7 @@ setTimeout(() => {
 
           {/* Logo upload */}
           <div>
-            <label className="block text-sm font-medium mb-2">
-  Clublogo (PNG of JPG)
-</label>
+            <Label>Clublogo (PNG of JPG)</Label>
 
 {club.logo_url && (
   <p className="text-xs text-green-600 mb-2">
@@ -643,17 +636,16 @@ setTimeout(() => {
           {/* Acties */}
           <div className="flex justify-end gap-3">  
 
-            <button
+            <Button
   type="submit"
   disabled={saving}
-  className="rounded-lg bg-green-600 text-white px-4 py-2 font-semibold hover:bg-green-700 text-sm"
 >
   {saving
     ? "Opslaan..."
     : saved
-    ? "✓ Opgeslagen"
-    : "Opslaan"}
-</button>
+      ? "✓ Opgeslagen"
+      : "Opslaan"}
+</Button>
             
           </div>
         </form>

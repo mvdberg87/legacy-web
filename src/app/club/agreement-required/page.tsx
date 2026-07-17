@@ -7,6 +7,8 @@ import {
   AGREEMENT_VERSION,
   AGREEMENT_CHANGES,
 } from "@/lib/constants";
+import { Button } from "@/components/ui/button";
+import LoadingCard from "@/components/ui/LoadingCard";
 
 export default function AgreementRequiredPage() {
   const supabase = getSupabaseBrowser();
@@ -18,7 +20,7 @@ export default function AgreementRequiredPage() {
   const [submitting, setSubmitting] = useState(false);
 
   const changes = AGREEMENT_CHANGES[AGREEMENT_VERSION] || [];
-const versionLabel = AGREEMENT_VERSION;// 👈 HIER toevoegen [];
+const versionLabel = AGREEMENT_VERSION;
 
   /* ===============================
      Club ophalen
@@ -73,12 +75,14 @@ const versionLabel = AGREEMENT_VERSION;// 👈 HIER toevoegen [];
      Loading state
   =============================== */
   if (loading) {
-    return (
-      <main className="min-h-screen flex items-center justify-center bg-[#0d1b2a] text-white">
-        Laden…
-      </main>
-    );
-  }
+  return (
+    <main className="min-h-screen bg-[#0d1b2a] p-6 flex items-center justify-center">
+      <div className="w-full max-w-lg">
+        <LoadingCard rows={5} />
+      </div>
+    </main>
+  );
+}
 
   /* ===============================
      UI
@@ -132,13 +136,13 @@ const versionLabel = AGREEMENT_VERSION;// 👈 HIER toevoegen [];
           Ik ga akkoord met de overeenkomst
         </label>
 
-        <button
-          disabled={!accepted || submitting}
-          onClick={handleContinue}
-          className="w-full py-3 rounded-lg bg-[#0d1b2a] text-white disabled:opacity-50"
-        >
-          {submitting ? "Bezig..." : "Akkoord & doorgaan"}
-        </button>
+        <Button
+  className="w-full"
+  disabled={!accepted || submitting}
+  onClick={handleContinue}
+>
+  {submitting ? "Bezig..." : "Akkoord & doorgaan"}
+</Button>
       </div>
     </main>
   );

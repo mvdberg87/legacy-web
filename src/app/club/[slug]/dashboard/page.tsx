@@ -13,6 +13,10 @@ import {
 } from "@/lib/subscriptions";
 import { toast } from "sonner";
 import { useConfirm } from "@/components/providers/confirm-provider";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import LoadingCard from "@/components/ui/LoadingCard";
+import EmptyState from "@/components/ui/EmptyState";
 
 /* ===============================
    Types
@@ -379,17 +383,24 @@ setSponsors(Object.values(sponsorMap));
   =============================== */
 
   if (loading) {
-    return (
-      <main className="min-h-screen flex items-center justify-center">
-        Laden…
-      </main>
-    );
-  }
+  return (
+    <main className="min-h-screen p-6 bg-[#0d1b2a]">
+      <ClubNavbar slug={slug} />
+
+      <div className="max-w-5xl mx-auto mt-6">
+        <LoadingCard rows={10} />
+      </div>
+    </main>
+  );
+}
 
  if (!club) {
   return (
     <main className="min-h-screen flex items-center justify-center">
-      Club niet gevonden
+      <EmptyState
+  title="Club niet gevonden"
+  description="Deze vereniging bestaat niet of is verwijderd."
+/>
     </main>
   );
 }
@@ -756,14 +767,13 @@ async function connectStripe() {
       </ul>
     )}
 
-    <button
-      onClick={() =>
-        (window.location.href = `/club/${slug}/agreement-required`)
-      }
-      className="px-4 py-2 bg-[#0d1b2a] text-white rounded-lg text-sm"
-    >
-      Bekijk overeenkomst
-    </button>
+    <Button
+  onClick={() =>
+    (window.location.href = `/club/${slug}/agreement-required`)
+  }
+>
+  Bekijk overeenkomst
+</Button>
   </div>
 )}
 
@@ -812,25 +822,16 @@ async function connectStripe() {
     return (
       <>
         <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 mb-3">
-          <input
-            readOnly
-            value={publicUrl}
-            className="flex-1 border rounded-lg px-3 py-2 text-sm bg-white"
-          />
+          <Input
+  readOnly
+  value={publicUrl}
+/>
 
-          <button
+          <Button
   onClick={() => copyPublicUrl(publicUrl)}
-  className={`
-    px-4 py-2 rounded-lg text-sm font-medium transition
-    ${
-      copied
-        ? "bg-green-600 text-white"
-        : "bg-[#0d1b2a] hover:bg-[#132a44] text-white"
-    }
-  `}
 >
   {copied ? "✅ Gekopieerd!" : "Kopieer link"}
-</button>
+</Button>
         </div>
 
         <div className="mt-2 mb-4">
@@ -1092,35 +1093,29 @@ const canDowngrade =
   }`}
 </p>
 
-                  <button
+                  <Button
   disabled={
-  (!canUpgrade && !canDowngrade) ||
-  isBillingBlocked
-}
+    (!canUpgrade && !canDowngrade) ||
+    isBillingBlocked
+  }
   onClick={() => {
-  if (!canUpgrade && !canDowngrade) return;
+    if (!canUpgrade && !canDowngrade) return;
 
-  setSelectedPackage(key);
-  setShowAgreement(true);
-}}
-  className={`mt-4 w-full py-2 rounded-lg text-sm font-medium ${
-    isCurrent
-      ? "bg-gray-300 text-gray-600"
-      : isHigher
-      ? "bg-green-600 hover:bg-green-700 text-white"
-      : "bg-gray-200 text-gray-400 cursor-default"
-  }`}
+    setSelectedPackage(key);
+    setShowAgreement(true);
+  }}
+  className="w-full mt-4"
 >
   {isCurrent
-  ? "Huidig pakket"
-  : isHigher
-  ? isBillingBlocked
-    ? "Geblokkeerd"
-    : "Upgrade"
-  : canDowngrade
-  ? "Downgrade"
-  : "–"}
-</button>
+    ? "Huidig pakket"
+    : isHigher
+      ? isBillingBlocked
+        ? "Geblokkeerd"
+        : "Upgrade"
+      : canDowngrade
+        ? "Downgrade"
+        : "–"}
+</Button>
                 </div>
               );
             })}
@@ -1151,25 +1146,24 @@ const canDowngrade =
   <div className="flex flex-col items-start gap-2">
 
     <div className="flex items-center gap-4">
-      <button
-        onClick={() => updateExtraAds(extraAds - 1)}
-        disabled={extraAds <= 0}
-        className="px-3 py-2 bg-gray-200 rounded-lg"
-      >
-        −
-      </button>
+      <Button
+  variant="outline"
+  onClick={() => updateExtraAds(extraAds - 1)}
+  disabled={extraAds <= 0}
+>
+  −
+</Button>
 
       <div className="text-lg font-semibold">
         {extraAds}
       </div>
 
-      <button
-        onClick={() => updateExtraAds(extraAds + 1)}
-        disabled={extraAds >= 10}
-        className="px-3 py-2 bg-[#0d1b2a] text-white rounded-lg"
-      >
-        +
-      </button>
+      <Button
+  onClick={() => updateExtraAds(extraAds + 1)}
+  disabled={extraAds >= 10}
+>
+  +
+</Button>
     </div>
 
       <div className="text-sm text-gray-600">
@@ -1382,36 +1376,34 @@ const canDowngrade =
 </div>
 
       <label className="flex items-center gap-2 mb-4 text-sm">
-        <input
-          type="checkbox"
-          checked={accepted}
-          onChange={(e) => setAccepted(e.target.checked)}
-        />
-        Ik ga akkoord met de samenwerkingsovereenkomst{" "}
-
-      </label>
+  <input
+    type="checkbox"
+    checked={accepted}
+    onChange={(e) => setAccepted(e.target.checked)}
+  />
+  Ik ga akkoord met de samenwerkingsovereenkomst
+</label>
 
       <div className="flex justify-end gap-2">
-        <button
-          onClick={() => {
-            setShowAgreement(false);
-            setAccepted(false);
-          }}
-          className="px-4 py-2 text-sm bg-gray-100 rounded-lg"
-        >
-          Annuleren
-        </button>
+        <Button
+  variant="outline"
+  onClick={() => {
+    setShowAgreement(false);
+    setAccepted(false);
+  }}
+>
+  Annuleren
+</Button>
 
-        <button
-          disabled={!accepted || !selectedPackage}
-          onClick={() => {
-            if (!selectedPackage) return;
-            goToCheckout(selectedPackage);
-          }}
-          className="px-4 py-2 text-sm bg-[#0d1b2a] text-white rounded-lg disabled:opacity-50"
-        >
-          Doorgaan naar betaling
-        </button>
+        <Button
+  disabled={!accepted || !selectedPackage}
+  onClick={() => {
+    if (!selectedPackage) return;
+    goToCheckout(selectedPackage);
+  }}
+>
+  Doorgaan naar betaling
+</Button>
       </div>
     </div>
   </div>

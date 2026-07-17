@@ -3,6 +3,8 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { getSupabaseBrowser } from "@/lib/supabaseBrowser";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 
 export default function AdminLoginPage() {
   const supabase = getSupabaseBrowser();
@@ -103,22 +105,21 @@ router.push("/admin/dashboard");
         {step === "email" && (
           <form onSubmit={handleSendCode} className="space-y-4">
 
-            <input
-              type="email"
-              required
-              placeholder="admin@sponsorjobs.nl"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              className="w-full border rounded-lg px-3 py-2 text-sm"
-            />
+            <Input
+  type="email"
+  required
+  placeholder="admin@sponsorjobs.nl"
+  value={email}
+  onChange={(e) => setEmail(e.target.value)}
+/>
 
-            <button
-              type="submit"
-              disabled={loading}
-              className="w-full bg-[#0d1b2a] text-white py-2 rounded-lg text-sm font-medium disabled:opacity-50"
-            >
-              {loading ? "Versturen…" : "Verstuur inlogcode"}
-            </button>
+            <Button
+  type="submit"
+  disabled={loading}
+  className="w-full"
+>
+  {loading ? "Versturen…" : "Verstuur inlogcode"}
+</Button>
 
           </form>
         )}
@@ -129,24 +130,24 @@ router.push("/admin/dashboard");
         {step === "code" && (
           <form onSubmit={handleVerifyCode} className="space-y-4">
 
-            <input
-              type="text"
-              inputMode="numeric"
-              maxLength={6}
-              required
-              placeholder="Voer 6-cijferige code in"
-              value={code}
-              onChange={(e) => setCode(e.target.value)}
-              className="w-full border rounded-lg px-3 py-2 text-sm text-center tracking-widest"
-            />
+            <Input
+  type="text"
+  inputMode="numeric"
+  maxLength={6}
+  required
+  placeholder="Voer 6-cijferige code in"
+  value={code}
+  onChange={(e) => setCode(e.target.value)}
+  className="text-center tracking-widest"
+/>
 
-            <button
-              type="submit"
-              disabled={loading}
-              className="w-full bg-black text-white py-2 rounded-lg text-sm font-medium disabled:opacity-50"
-            >
-              {loading ? "Controleren…" : "Inloggen"}
-            </button>
+            <Button
+  type="submit"
+  disabled={loading}
+  className="w-full"
+>
+  {loading ? "Controleren…" : "Inloggen"}
+</Button>
 
             <button
               type="button"

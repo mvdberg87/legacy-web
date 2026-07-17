@@ -7,17 +7,7 @@ import { getSupabaseBrowser } from "@/lib/supabaseBrowser";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { useConfirm } from "@/components/providers/confirm-provider";
-
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogDescription,
-  DialogFooter,
-} from "@/components/ui/dialog";
-
-import { Textarea } from "@/components/ui/textarea";
+import { Input } from "@/components/ui/input";
 
 type ClubRequest = {
   id: string;
@@ -188,13 +178,12 @@ if (!confirmed) return;
 
           {/* Filters */}
           <div className="flex flex-wrap gap-3 items-center">
-            <input
-              type="text"
-              placeholder="Zoeken op club of e-mail"
-              value={search}
-              onChange={(e) => setSearch(e.target.value)}
-              className="border rounded-lg px-3 py-2 text-sm w-full sm:w-52"
-            />
+            <Input
+  placeholder="Zoeken op club of e-mail"
+  value={search}
+  onChange={(e) => setSearch(e.target.value)}
+  className="w-full sm:w-52"
+/>
 
             <select
               value={statusFilter}
@@ -314,17 +303,18 @@ if (!confirmed) return;
                           <span className="text-xs text-gray-600">
                             Goedgekeurd
                           </span>
-                          <button
-                            onClick={() => {
-                              navigator.clipboard.writeText(
-                                `${window.location.origin}/onboarding/claim?token=${req.token}`
-                              );
-                              toast.success("Activatielink gekopieerd.");
-                            }}
-                            className="text-blue-600 text-xs underline"
-                          >
-                            Kopieer activatielink
-                          </button>
+                          <Button
+  variant="link"
+  className="h-auto p-0 justify-start"
+  onClick={() => {
+    navigator.clipboard.writeText(
+      `${window.location.origin}/onboarding/claim?token=${req.token}`
+    );
+    toast.success("Activatielink gekopieerd.");
+  }}
+>
+  Kopieer activatielink
+</Button>
                         </div>
                       ) : req.status === "rejected" ? (
                         <span className="text-gray-400 text-xs italic">

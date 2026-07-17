@@ -4,6 +4,9 @@ import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
 import { getSupabaseBrowser } from "@/lib/supabaseBrowser";
 import { toast } from "sonner";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
 
 const supabase = getSupabaseBrowser();
 
@@ -496,85 +499,72 @@ const startCheckout = async () => {
 
   <div className="grid md:grid-cols-2 gap-4 mt-6">
 
-    <input
-      value={companyName}
-      onChange={(e) => setCompanyName(e.target.value)}
-      placeholder="Bedrijfsnaam *"
-      className="border rounded-xl p-3"
-    />
+    <Input
+  value={companyName}
+  onChange={(e) => setCompanyName(e.target.value)}
+  placeholder="Bedrijfsnaam *"
+/>
 
-    <input
-      value={contactName}
-      onChange={(e) => setContactName(e.target.value)}
-      placeholder="Contactpersoon *"
-      className="border rounded-xl p-3"
-    />
+    <Input
+  value={contactName}
+  onChange={(e) => setContactName(e.target.value)}
+  placeholder="Contactpersoon *"
+/>
 
-    <input
-      value={companyEmail}
-      onChange={(e) => setCompanyEmail(e.target.value)}
-      placeholder="E-mailadres *"
-      className="border rounded-xl p-3"
-    />
+    <Input
+  type="email"
+  value={companyEmail}
+  onChange={(e) => setCompanyEmail(e.target.value)}
+  placeholder="E-mailadres *"
+/>
 
-    <input
-      value={phoneNumber}
-      onChange={(e) => setPhoneNumber(e.target.value)}
-      placeholder="Telefoonnummer"
-      className="border rounded-xl p-3"
-    />
+    <Input
+  value={phoneNumber}
+  onChange={(e) => setPhoneNumber(e.target.value)}
+  placeholder="Telefoonnummer"
+/>
 
-    <input
-      value={companyWebsite}
-      onChange={(e) => setCompanyWebsite(e.target.value)}
-      placeholder="Website *"
-      className="border rounded-xl p-3"
-    />
+    <Input
+  type="url"
+  value={companyWebsite}
+  onChange={(e) => setCompanyWebsite(e.target.value)}
+  placeholder="Website *"
+/>
 
-    <input
-      value={vacancyUrl}
-      onChange={(e) => setVacancyUrl(e.target.value)}
-      placeholder="Vacature URL *"
-      className="border rounded-xl p-3"
-    />
+    <Input
+  type="url"
+  value={vacancyUrl}
+  onChange={(e) => setVacancyUrl(e.target.value)}
+  placeholder="Vacature URL *"
+/>
 
   </div>
 
-  <textarea
-    value={notes}
-    onChange={(e) => setNotes(e.target.value)}
-    placeholder="Extra toelichting"
-    className="border rounded-xl p-3 w-full mt-4"
-    rows={4}
-  />
+  <Textarea
+  value={notes}
+  onChange={(e) => setNotes(e.target.value)}
+  placeholder="Extra toelichting"
+  rows={4}
+  className="mt-4"
+/>
 
 </div>
 
 <div className="mt-10 text-center">
 
-  <button
+  <Button
   onClick={startCheckout}
   disabled={
     loading ||
     !selectedPackage ||
     selectedClubs.length === 0
   }
-  className="
-    bg-[#1f9d55]
-    px-10
-    py-4
-    rounded-2xl
-    font-semibold
-    hover:bg-[#15803d]
-    transition
-    disabled:opacity-40
-    disabled:cursor-not-allowed
-  "
+  className="px-10 py-4 rounded-2xl"
 >
   {loading
     ? "Bezig..."
     : "Start recruitmentcampagne"}
-</button>
+</Button>
 
 </div>
 

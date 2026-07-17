@@ -7,6 +7,7 @@ import ClubNavbar from "@/components/club/ClubNavbar";
 import LoadingCard from "@/components/ui/LoadingCard";
 import EmptyState from "@/components/ui/EmptyState";
 import ErrorCard from "@/components/ui/ErrorCard";
+import { Button } from "@/components/ui/button";
 
 type Advertisement = {
   id: string;
@@ -563,22 +564,21 @@ const expectedRenewalRevenue =
 </td>
 
 <td className="p-3 text-center">
-  <button
-    type="button"
-    onClick={() => toggleFeatured(ad.id)}
-    className={`
-      px-3 py-1 rounded-md text-sm border transition
-      ${
-        ad.is_featured
-          ? "bg-yellow-100 border-yellow-400 text-yellow-800"
-          : "hover:bg-gray-50"
-      }
-    `}
-  >
-    {ad.is_featured
-      ? "⭐ Featured"
-      : "Maak featured"}
-  </button>
+  <Button
+  type="button"
+  size="sm"
+  variant="outline"
+  onClick={() => toggleFeatured(ad.id)}
+  className={
+    ad.is_featured
+      ? "bg-yellow-100 border-yellow-400 text-yellow-800 hover:bg-yellow-200"
+      : ""
+  }
+>
+  {ad.is_featured
+    ? "⭐ Featured"
+    : "Maak featured"}
+</Button>
 </td>
 
                 <td className="p-3 text-center">

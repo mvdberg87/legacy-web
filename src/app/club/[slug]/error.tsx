@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect } from "react";
+import { Button } from "@/components/ui/button";
 
 export default function Error({
   error,
@@ -20,18 +21,18 @@ export default function Error({
       <p className="text-sm opacity-70 mt-2">{error.message}</p>
 
       <div className="mt-4 flex gap-2">
-        <button
-          onClick={() => reset()}
-          className="px-3 py-2 border rounded hover:bg-gray-50"
-        >
-          Probeer opnieuw
-        </button>
-        <button
-          onClick={() => location.reload()}
-          className="px-3 py-2 border rounded hover:bg-gray-50"
-        >
-          Herlaad pagina
-        </button>
+        <Button
+  variant="outline"
+  onClick={reset}
+>
+  Probeer opnieuw
+</Button>
+        <Button
+  variant="outline"
+  onClick={() => location.reload()}
+>
+  Herlaad pagina
+</Button>
       </div>
     </div>
   );

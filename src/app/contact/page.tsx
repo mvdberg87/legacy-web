@@ -2,6 +2,10 @@
 
 import { useSearchParams } from "next/navigation";
 import { useState } from "react";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
 
 export default function ContactPage() {
   const searchParams = useSearchParams();
@@ -79,58 +83,52 @@ export default function ContactPage() {
             <input name="pakket" defaultValue={pakket} type="hidden" />
 
             <div>
-              <label className="text-sm opacity-70">Naam</label>
-              <input
-                name="name"
-                required
-                className="mt-2 w-full px-4 py-3 rounded-xl bg-white text-black"
-              />
+              <Label>Naam</Label>
+              <Input
+  name="name"
+  required
+/>
             </div>
 
             <div>
-              <label className="text-sm opacity-70">Clubnaam</label>
-              <input
-                name="club"
-                required
-                className="mt-2 w-full px-4 py-3 rounded-xl bg-white text-black"
-              />
+              <Label>Clubnaam</Label>
+              <Input
+  name="club"
+  required
+/>
             </div>
 
             <div>
-              <label className="text-sm opacity-70">E-mailadres</label>
-              <input
-                type="email"
-                name="email"
-                required
-                className="mt-2 w-full px-4 py-3 rounded-xl bg-white text-black"
-              />
+              <Label>E-mailadres</Label>
+              <Input
+  type="email"
+  name="email"
+  required
+/>
             </div>
 
             <div>
-              <label className="text-sm opacity-70">Telefoonnummer</label>
-              <input
-                name="phone"
-                className="mt-2 w-full px-4 py-3 rounded-xl bg-white text-black"
-              />
+              <Label>Telefoonnummer</Label>
+              <Input
+  name="phone"
+/>
             </div>
 
             <div>
-              <label className="text-sm opacity-70">
-                Korte toelichting
-              </label>
-              <textarea
-                name="message"
-                rows={4}
-                className="mt-2 w-full px-4 py-3 rounded-xl bg-white text-black"
-              />
+              <Label>Korte toelichting</Label>
+              <Textarea
+  name="message"
+  rows={4}
+/>
             </div>
 
-            <button
-              disabled={loading}
-              className="w-full bg-[#1f9d55] py-4 rounded-xl font-semibold hover:bg-[#15803d] transition"
-            >
-              {loading ? "Versturen..." : "Aanvraag versturen"}
-            </button>
+            <Button
+  type="submit"
+  className="w-full"
+  disabled={loading}
+>
+  {loading ? "Versturen..." : "Aanvraag versturen"}
+</Button>
           </form>
 
         </div>
