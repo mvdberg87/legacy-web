@@ -37,7 +37,7 @@ export default async function PublicJobsPage({ params }: PageProps) {
     jobs_cta_text
   `
 )
-  .eq("slug", slug)
+  .eq("public_slug", slug)
   .maybeSingle();
 
    if (!club) {
