@@ -26,6 +26,7 @@ type Club = {
   id: string;
   name: string;
   active_package: PackageKey;
+  public_slug: string;
   primary_color?: string | null;
   subscription_start?: string | null;
   subscription_end?: string | null;
@@ -173,6 +174,7 @@ useEffect(() => {
     id,
     name,
     active_package,
+    public_slug,
     primary_color,
     subscription_start,
     subscription_end,
@@ -815,9 +817,9 @@ async function connectStripe() {
 
   {(() => {
     const publicUrl =
-      typeof window !== "undefined"
-        ? `${window.location.origin}/${slug}`
-        : "";
+  typeof window !== "undefined"
+    ? `${window.location.origin}/${club.public_slug}`
+    : "";
 
     return (
       <>
