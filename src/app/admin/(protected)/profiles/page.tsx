@@ -37,7 +37,7 @@ type Profile = {
   club_package: string | null;
 
   contact_person?: string | null;
-
+talentpool_enabled?: boolean | null;
   advertising_sales_enabled?: boolean | null;
   subscription_status?: string | null;
   subscription_cancelled_at?: string | null;
@@ -386,6 +386,28 @@ async function toggleManagedAds(
 
   await loadProfiles();
 }
+
+async function toggleTalentpool(
+  clubId: string,
+  currentValue: boolean
+) {
+
+  const { error } =
+    await supabase
+      .from("clubs")
+      .update({
+        talentpool_enabled:
+          !currentValue,
+      })
+      .eq("id", clubId);
+
+  if (error) {
+    toast.error("Opslaan mislukt");
+    return;
+  }
+
+  await loadProfiles();
+}
   /* ---------- Filter ---------- */
 
   const filtered = profiles
@@ -472,6 +494,10 @@ async function toggleManagedAds(
 
 <th className="px-3 py-3 text-center">
   Managed Ads
+</th>
+
+<th className="px-3 py-3 text-center">
+  Talentpool
 </th>
 
 <th className="px-3 py-3 text-left">
@@ -620,6 +646,33 @@ async function toggleManagedAds(
 >
   {p.advertising_sales_enabled ? "AAN" : "UIT"}
 </Button>
+
+  ) : (
+    "—"
+  )}
+
+</td>
+
+<td className="px-3 py-3 text-center">
+
+  {club ? (
+
+    <Button
+      size="sm"
+      variant={
+        p.talentpool_enabled
+          ? "default"
+          : "secondary"
+      }
+      onClick={() =>
+        toggleTalentpool(
+          club.id,
+          p.talentpool_enabled ?? false
+        )
+      }
+    >
+      {p.talentpool_enabled ? "AAN" : "UIT"}
+    </Button>
 
   ) : (
     "—"
