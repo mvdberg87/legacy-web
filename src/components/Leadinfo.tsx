@@ -5,33 +5,48 @@ import { useEffect, useState } from "react";
 import { usePathname } from "next/navigation";
 
 export default function Leadinfo() {
-  const [consent, setConsent] = useState(false);
+  const [enabled, setEnabled] = useState(false);
   const pathname = usePathname();
 
   useEffect(() => {
-    const checkConsent = () => {
-      const cookieConsent = localStorage.getItem("cookie_consent");
-      if (cookieConsent === "accepted") {
-        setConsent(true);
+    const checkPreferences = () => {
+      const preferences = localStorage.getItem("cookie_preferences");
+
+      if (!preferences) {
+        setEnabled(false);
+        return;
+      }
+
+      try {
+        const parsed = JSON.parse(preferences);
+        setEnabled(!!parsed.marketing);
+      } catch {
+        setEnabled(false);
       }
     };
 
-    checkConsent();
+    checkPreferences();
 
-    window.addEventListener("cookieConsentAccepted", checkConsent);
+    window.addEventListener(
+      "cookiePreferencesUpdated",
+      checkPreferences
+    );
 
     return () => {
-      window.removeEventListener("cookieConsentAccepted", checkConsent);
+      window.removeEventListener(
+        "cookiePreferencesUpdated",
+        checkPreferences
+      );
     };
   }, []);
 
-  // Alleen marketing routes
+  // Alleen marketingpagina's
   const isAllowed =
     pathname === "/" ||
     pathname?.startsWith("/signup") ||
     pathname?.startsWith("/verenigingen");
 
-  if (!consent || !isAllowed) return null;
+  if (!enabled || !isAllowed) return null;
 
   return (
     <Script

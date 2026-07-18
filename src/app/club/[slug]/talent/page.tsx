@@ -77,6 +77,29 @@ async function loadTalents() {
   }
 }
 
+async function deleteTalent(id: string) {
+  const confirmed = window.confirm(
+    "Weet je zeker dat je deze kandidaat wilt verwijderen?"
+  );
+
+  if (!confirmed) return;
+
+  const { error } = await supabase
+    .from("talentpool_profiles")
+    .delete()
+    .eq("id", id);
+
+  if (error) {
+    alert("Er is iets misgegaan bij het verwijderen.");
+    console.error(error);
+    return;
+  }
+
+  setTalents((current) =>
+    current.filter((talent) => talent.id !== id)
+  );
+}
+
 const totalTalents = talents.length;
 
 const stageCount = talents.filter((t) =>
@@ -180,14 +203,25 @@ if (loading) {
         {new Date(talent.created_at).toLocaleDateString("nl-NL")}
       </td>
 
-      <td className="px-4 py-3 text-center">
-        <Link
-  href={`/club/${slug}/talent/${talent.id}`}
-  className="px-3 py-1 border rounded-md hover:bg-gray-100"
->
-  Bekijken
-</Link>
-      </td>
+      <td className="px-4 py-3">
+  <div className="flex items-center justify-center gap-2">
+
+    <Link
+      href={`/club/${slug}/talent/${talent.id}`}
+      className="px-3 py-1 border rounded-md hover:bg-gray-100"
+    >
+      Bekijken
+    </Link>
+
+    <button
+      onClick={() => deleteTalent(talent.id)}
+      className="px-3 py-1 rounded-md bg-red-600 text-white hover:bg-red-700 transition"
+    >
+      Verwijderen
+    </button>
+
+  </div>
+</td>
     </tr>
   ))}
 </tbody>

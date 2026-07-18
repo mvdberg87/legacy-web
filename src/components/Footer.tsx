@@ -1,3 +1,5 @@
+"use client";
+
 import Link from "next/link";
 
 export default function Footer() {
@@ -20,8 +22,17 @@ export default function Footer() {
           rel="noopener noreferrer"
           className="hover:text-gray-900"
         >
-          Cookies
+          Cookieverklaring
         </Link>
+
+        <button
+  onClick={() =>
+    window.dispatchEvent(new Event("openCookieSettings"))
+  }
+  className="hover:text-gray-900"
+>
+  Cookie-instellingen
+</button>
 
         <Link
           href="/terms"

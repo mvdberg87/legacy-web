@@ -6,26 +6,41 @@ import { useEffect, useState } from "react";
 const GA_ID = "G-4W0DLDRY34";
 
 export default function GoogleAnalytics() {
-  const [consent, setConsent] = useState(false);
+  const [enabled, setEnabled] = useState(false);
 
   useEffect(() => {
-    const checkConsent = () => {
-      const cookieConsent = localStorage.getItem("cookie_consent");
-      if (cookieConsent === "accepted") {
-        setConsent(true);
+    const checkPreferences = () => {
+      const preferences = localStorage.getItem("cookie_preferences");
+
+      if (!preferences) {
+        setEnabled(false);
+        return;
+      }
+
+      try {
+        const parsed = JSON.parse(preferences);
+        setEnabled(!!parsed.analytics);
+      } catch {
+        setEnabled(false);
       }
     };
 
-    checkConsent();
+    checkPreferences();
 
-    window.addEventListener("cookieConsentAccepted", checkConsent);
+    window.addEventListener(
+      "cookiePreferencesUpdated",
+      checkPreferences
+    );
 
     return () => {
-      window.removeEventListener("cookieConsentAccepted", checkConsent);
+      window.removeEventListener(
+        "cookiePreferencesUpdated",
+        checkPreferences
+      );
     };
   }, []);
 
-  if (!consent) return null;
+  if (!enabled) return null;
 
   return (
     <>
@@ -33,11 +48,13 @@ export default function GoogleAnalytics() {
         src={`https://www.googletagmanager.com/gtag/js?id=${GA_ID}`}
         strategy="afterInteractive"
       />
+
       <Script id="google-analytics" strategy="afterInteractive">
         {`
           window.dataLayer = window.dataLayer || [];
           function gtag(){dataLayer.push(arguments);}
           gtag('js', new Date());
+
           gtag('config', '${GA_ID}', {
             anonymize_ip: true
           });
