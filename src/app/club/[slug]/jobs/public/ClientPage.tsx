@@ -574,7 +574,7 @@ onShare={() => {
     backgroundColor: club.primary_color ?? "#1d4ed8",
   }}
 >
-  👤 Ik zoek werk
+  Ik zoek werk
 </a>
     )}
 
@@ -588,7 +588,7 @@ onShare={() => {
       backgroundColor: club.primary_color ?? "#1d4ed8",
     }}
   >
-    🏢 Ik wil vacatures plaatsen
+    Ik wil vacatures plaatsen
   </a>
 ) : (
       adminEmail && (

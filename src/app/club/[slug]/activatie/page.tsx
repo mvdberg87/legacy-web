@@ -64,8 +64,7 @@ export default function ActivatiePage() {
     const [error, setError] =
   useState<string | null>(null);
 
-const [tone, setTone] =
-  useState("Professioneel");
+const tone = "Professioneel";
 
 const [generatedText, setGeneratedText] =
   useState("");
@@ -204,7 +203,6 @@ function getSelectedJob() {
   jobTitle: job?.title,
   applyUrl: job?.apply_url,
   platform: activationType,
-  tone,
   clubName: slug,
 }),
     }
@@ -534,25 +532,6 @@ if (error) {
               </select>
 
             </div>
-
-<div className="mb-8">
-
-  <Label>Tone of voice</Label>
-
-  <select
-    value={tone}
-    onChange={(e) =>
-      setTone(e.target.value)
-    }
-    className="w-full border-2 rounded-lg p-3"
-  >
-    <option>Professioneel</option>
-    <option>Zakelijk</option>
-    <option>Enthousiast</option>
-    <option>Sportief</option>
-  </select>
-
-</div>
 
             <div className="flex flex-col sm:flex-row gap-3">
   <Button
