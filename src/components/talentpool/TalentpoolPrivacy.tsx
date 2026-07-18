@@ -1,3 +1,5 @@
+import Link from "next/link";
+
 type Props = {
   acceptedPrivacy: boolean;
   acceptedTerms: boolean;
@@ -37,12 +39,15 @@ export default function TalentpoolPrivacy({
 
           <span className="text-sm">
             Ik ga akkoord met de{" "}
-            <a
-              href="#"
-              className="font-semibold underline"
-            >
-              privacyverklaring
-            </a>.
+            <Link
+  href="/privacy"
+  target="_blank"
+  rel="noopener noreferrer"
+  onClick={(e) => e.stopPropagation()}
+  className="font-semibold underline hover:text-blue-600"
+>
+  privacyverklaring ↗
+</Link>.
           </span>
         </label>
 
@@ -56,12 +61,15 @@ export default function TalentpoolPrivacy({
 
           <span className="text-sm">
             Ik ga akkoord met de{" "}
-            <a
-              href="#"
-              className="font-semibold underline"
-            >
-              gebruikersvoorwaarden
-            </a>.
+            <Link
+  href="/voorwaarden"
+  target="_blank"
+  rel="noopener noreferrer"
+  onClick={(e) => e.stopPropagation()}
+  className="font-semibold underline hover:text-blue-600"
+>
+  gebruikersvoorwaarden ↗
+</Link>.
           </span>
         </label>
 

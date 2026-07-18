@@ -1,22 +1,31 @@
+import Link from "next/link";
+
 export default function PrivacyPage() {
   return (
     <main className="max-w-4xl mx-auto px-6 py-24">
+      <Link
+  href="/"
+  className="inline-flex items-center text-sm text-gray-500 hover:text-[#0d1b2a] transition mb-8"
+>
+  ← Terug naar Sponsorjobs
+</Link>
       <h1 className="text-3xl font-bold">Privacyverklaring</h1>
 
       <p className="mt-6">
-        Sponsorjobs hecht veel waarde aan de bescherming van persoonsgegevens.
-        In deze privacyverklaring leggen wij uit welke gegevens wij verzamelen,
-        waarom wij dit doen en hoe wij met deze gegevens omgaan.
+        Sponsorjobs respecteert jouw privacy en verwerkt persoonsgegevens zorgvuldig
+en in overeenstemming met de Algemene Verordening Gegevensbescherming (AVG).
+In deze privacyverklaring leggen wij uit welke gegevens wij verzamelen,
+waarom wij dit doen en hoe wij deze beschermen.
       </p>
 
       <h2 className="mt-10 text-xl font-semibold">Over Sponsorjobs</h2>
 
       <p className="mt-4">
-        Sponsorjobs is een online platform dat sportverenigingen, sponsoren en
-        werkzoekenden met elkaar verbindt via vacatures en netwerkrelaties.
-        Het platform wordt ontwikkeld en beheerd door Sponsuls, gevestigd in
-        Nederland.
-      </p>
+  Sponsorjobs is een online platform dat sportverenigingen, sponsoren en
+  werkzoekenden met elkaar verbindt via vacatures, stages, bijbanen,
+  startersfuncties en netwerkrelaties. Het platform wordt ontwikkeld en
+  beheerd door Sponsuls, gevestigd in Nederland.
+</p>
 
       <h2 className="mt-10 text-xl font-semibold">
         Welke gegevens verzamelen wij?
@@ -30,6 +39,29 @@ export default function PrivacyPage() {
         <li>Statistieken zoals pageviews, klikken op vacatures en interacties</li>
         <li>Technische gegevens zoals IP-adres of browserinformatie</li>
       </ul>
+
+      <h2 className="mt-10 text-xl font-semibold">
+  Talentpool
+</h2>
+
+<p className="mt-4">
+  Wanneer je je aanmeldt voor de Talentpool verwerken wij aanvullende
+  persoonsgegevens, zoals jouw opleidingsniveau, studierichting,
+  woonplaats, beschikbaarheid, voorkeuren voor werk of stage en eventuele
+  aanvullende opmerkingen.
+</p>
+
+<p className="mt-4">
+  Deze gegevens worden uitsluitend gebruikt om jou in contact te brengen
+  met bedrijven die sponsor zijn van jouw vereniging en op zoek zijn naar
+  nieuw talent.
+</p>
+
+<p className="mt-4">
+  Je profiel is niet openbaar zichtbaar. Alleen geautoriseerde beheerders
+  van jouw vereniging en Sponsorjobs hebben toegang tot deze gegevens voor
+  het beheer van het platform en het leggen van een passende match.
+</p>
 
       <h2 className="mt-10 text-xl font-semibold">Doel van de verwerking</h2>
 
@@ -62,8 +94,6 @@ export default function PrivacyPage() {
 
       <h2 className="mt-10 text-xl font-semibold">Verstrekking aan derden</h2>
 
-      <h2 className="mt-10 text-xl font-semibold">Verstrekking aan derden</h2>
-
 <p className="mt-4">
   Voor het functioneren van het platform maakt Sponsorjobs gebruik van
   externe dienstverleners zoals hostingproviders, database-diensten,
@@ -85,10 +115,16 @@ export default function PrivacyPage() {
       <h2 className="mt-10 text-xl font-semibold">Bewaartermijn</h2>
 
       <p className="mt-4">
-        Persoonsgegevens worden niet langer bewaard dan noodzakelijk is voor
-        het doel waarvoor deze zijn verzameld. Accountgegevens worden bewaard
-        zolang een account actief is.
-      </p>
+  Persoonsgegevens worden niet langer bewaard dan noodzakelijk is voor het
+  doel waarvoor zij zijn verzameld.
+</p>
+
+<p className="mt-4">
+  Accountgegevens worden bewaard zolang een account actief is. Profielen in
+  de Talentpool worden maximaal 24 maanden na de laatste activiteit
+  bewaard, tenzij de gebruiker eerder verzoekt om verwijdering of de
+  vereniging het profiel verwijdert.
+</p>
 
       <h2 className="mt-10 text-xl font-semibold">Beveiliging</h2>
 
@@ -116,15 +152,25 @@ export default function PrivacyPage() {
         een klacht in te dienen bij de Autoriteit Persoonsgegevens.
       </p>
 
-      <h2 className="mt-10 text-xl font-semibold">Contact</h2>
+      <h2 className="mt-10 text-xl font-semibold">
+  Contact
+</h2>
 
-      <p className="mt-4">
-        Voor vragen over privacy kun je contact opnemen via{" "}
-        <a href="mailto:info@sponsorjobs.nl" className="underline">
-          info@sponsorjobs.nl
-        </a>
-        .
-      </p>
+<p className="mt-4">
+  Heb je vragen over deze privacyverklaring, wil je jouw gegevens laten
+wijzigen of verwijderen, of heb je een ander privacyverzoek? Neem dan
+gerust contact met ons op via{" "}
+  <a
+    href="mailto:info@sponsorjobs.nl"
+    className="underline"
+  >
+    info@sponsorjobs.nl
+  </a>.
+</p>
+
+<p className="mt-4 text-sm text-gray-500">
+  Laatst bijgewerkt: 18 juli 2026
+</p>
     </main>
   );
 }

@@ -1,7 +1,16 @@
+import Link from "next/link";
+
 export default function VoorwaardenPage() {
   return (
     <main className="min-h-screen bg-white px-6 py-12 text-[#0d1b2a]">
       <div className="max-w-3xl mx-auto">
+
+        <Link
+  href="/"
+  className="inline-flex items-center text-sm text-gray-500 hover:text-[#0d1b2a] transition mb-8"
+>
+  ← Terug naar Sponsorjobs
+</Link>
 
         {/* Intro */}
         <p className="text-sm text-gray-600 mb-6 text-center">
@@ -13,7 +22,7 @@ export default function VoorwaardenPage() {
         </h1>
 
         <p className="text-sm text-gray-500 mb-10 text-center">
-          Versie: v2 – 24 maart 2026
+          Laatst bijgewerkt: 18 juli 2026
         </p>
 
         {/* Content */}
@@ -55,6 +64,41 @@ export default function VoorwaardenPage() {
               <li>het naleven van toepasselijke wet- en regelgeving.</li>
             </ul>
           </section>
+
+          <section>
+  <h2 className="font-semibold text-lg mb-2">
+    Talentpool
+  </h2>
+
+  <p>
+    Sponsorjobs biedt verenigingen de mogelijkheid om een Talentpool aan te
+    bieden waarin leden zich vrijwillig kunnen aanmelden voor stages,
+    bijbanen, startersfuncties en andere carrièremogelijkheden bij
+    aangesloten sponsoren.
+  </p>
+
+  <ul className="list-disc pl-5 mt-4 space-y-2">
+    <li>Deelname aan de Talentpool is vrijwillig.</li>
+    <li>Aanmelden is kosteloos.</li>
+    <li>Profielen zijn niet openbaar zichtbaar.</li>
+    <li>
+      Alleen geautoriseerde beheerders van de betreffende vereniging kunnen
+      de Talentpool bekijken.
+    </li>
+    <li>
+      Een aanmelding geeft geen garantie op een baan, stage of
+      sollicitatiegesprek.
+    </li>
+    <li>
+      Werkgevers bepalen zelfstandig of zij contact opnemen met een
+      kandidaat.
+    </li>
+    <li>
+      Gebruikers kunnen op ieder moment verzoeken hun profiel te laten
+      verwijderen.
+    </li>
+  </ul>
+</section>
 
           <section>
             <h2 className="font-semibold text-lg mb-2">4. Verantwoordelijkheden</h2>
@@ -151,10 +195,36 @@ export default function VoorwaardenPage() {
           </section>
 
           <section>
-            <h2 className="font-semibold text-lg mb-2">12. Contact</h2>
-            <p>📧 info@sponsorjobs.nl</p>
-            <p>🌐 www.sponsorjobs.nl</p>
-          </section>
+  <h2 className="font-semibold text-lg mb-2">
+    Contact
+  </h2>
+
+  <p>Heb je vragen over deze voorwaarden of over het gebruik van Sponsorjobs? Neem gerust contact met ons op.</p>
+
+  <p className="mt-2">
+    📧{" "}
+    <a
+      href="mailto:info@sponsorjobs.nl"
+      className="underline"
+    >
+      info@sponsorjobs.nl
+    </a>
+  </p>
+
+  <p>
+    🌐{" "}
+    <a
+      href="https://www.sponsorjobs.nl"
+      className="underline"
+    >
+      www.sponsorjobs.nl
+    </a>
+  </p>
+
+  <p className="mt-6 text-sm text-gray-500">
+    Laatst bijgewerkt: 18 juli 2026
+  </p>
+</section>
 
         </div>
       </div>
