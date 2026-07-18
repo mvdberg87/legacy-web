@@ -32,6 +32,7 @@ type Profile = {
   club_id: string | null;
   club_name: string | null;
   club_slug: string | null;
+  public_slug: string | null;
   club_status: string | null;
   club_package: string | null;
 
@@ -456,6 +457,10 @@ async function toggleManagedAds(
 >
   {club.name}
 </Button>
+
+<div className="text-xs text-gray-500">
+  /{p.public_slug}
+</div>
 
       <span className="text-xs">
         {p.subscription_cancelled_at ? (
