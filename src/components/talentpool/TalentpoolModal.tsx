@@ -1,5 +1,13 @@
 "use client";
 
+import { useState } from "react";
+import TalentpoolProgress from "./TalentpoolProgress";
+import TalentpoolIntro from "./TalentpoolIntro";
+import TalentpoolPersonal from "./TalentpoolPersonal";
+import TalentpoolPreferences from "./TalentpoolPreferences";
+import TalentpoolEducation from "./TalentpoolEducation";
+import TalentpoolAvailability from "./TalentpoolAvailability";
+
 type Club = {
   name: string;
   primary_color?: string | null;
@@ -18,6 +26,41 @@ export default function TalentpoolModal({
 }: Props) {
   if (!open) return null;
 
+  const [step, setStep] = useState(0);
+  const [formData, setFormData] = useState({
+  firstName: "",
+  lastName: "",
+  email: "",
+  phone: "",
+  preferences: [],
+  education: "",
+study: "",
+field: "",
+city: "",
+distance: 15,
+availableFrom: "",
+notes: "",
+});
+
+function updateField(
+  field: string,
+  value: string | number
+) {
+  setFormData((prev) => ({
+    ...prev,
+    [field]: value,
+  }));
+}
+
+function togglePreference(value: string) {
+  setFormData((prev: any) => ({
+    ...prev,
+    preferences: prev.preferences.includes(value)
+      ? prev.preferences.filter((v: string) => v !== value)
+      : [...prev.preferences, value],
+  }));
+}
+
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 p-4">
 
@@ -31,64 +74,113 @@ export default function TalentpoolModal({
           }}
         >
           <h2 className="text-3xl font-bold">
-            Talentpool
-          </h2>
+  Talentpool
+</h2>
 
-          <p className="mt-2 opacity-90">
-            Laat jouw talent zien aan de sponsoren van {club.name}.
-          </p>
+<p className="mt-2 text-lg opacity-90">
+  Laat jouw talent zien aan de sponsoren van {club.name}.
+</p>
+
+<div className="mt-6">
+  <TalentpoolProgress
+    step={step}
+    totalSteps={5}
+  />
+</div>
         </div>
 
         {/* Content */}
         <div className="p-8">
 
-          <h3 className="text-xl font-semibold mb-4">
-            Welkom!
-          </h3>
+          {step === 0 && (
+  <TalentpoolIntro
+    clubName={club.name}
+  />
+)}
 
-          <p className="text-gray-600 leading-7">
-            Ben je op zoek naar een bijbaan, stage,
-            BBL-plek of een nieuwe uitdaging?
+{step === 1 && (
+  <TalentpoolPersonal
+    firstName={formData.firstName}
+    lastName={formData.lastName}
+    email={formData.email}
+    phone={formData.phone}
+    onChange={updateField}
+  />
+)}
 
-            <br /><br />
+{step === 2 && (
+  <TalentpoolPreferences
+    selected={formData.preferences}
+    onToggle={togglePreference}
+    primaryColor={club.primary_color}
+  />
+)}
 
-            Meld je aan voor de Talentpool van
-            <strong> {club.name}</strong>.
+{step === 3 && (
+  <TalentpoolEducation
+    education={formData.education}
+    study={formData.study}
+    field={formData.field}
+    onChange={updateField}
+  />
+)}
 
-            <br /><br />
+{step === 4 && (
+  <TalentpoolAvailability
+    city={formData.city}
+    distance={formData.distance}
+    availableFrom={formData.availableFrom}
+    notes={formData.notes}
+    onChange={updateField}
+  />
+)}
+          <div className="mt-8 flex justify-between">
 
-            Je profiel is <strong>niet openbaar zichtbaar</strong>.
+  <div>
+    {step > 0 ? (
+      <button
+        onClick={() => setStep(step - 1)}
+        className="rounded-xl border px-5 py-3"
+      >
+        ← Vorige
+      </button>
+    ) : (
+      <button
+        onClick={onClose}
+        className="rounded-xl border px-5 py-3"
+      >
+        Annuleren
+      </button>
+    )}
+  </div>
 
-            Alleen de sponsorcommissie kan jouw gegevens
-            bekijken en neemt contact met je op zodra
-            er een passende mogelijkheid ontstaat.
+  <button
+  onClick={async () => {
+    if (step < 4) {
+      setStep(step + 1);
+    } else {
+      await fetch("/api/talentpool/create", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(formData),
+      });
 
-            <br /><br />
+      console.log("Verzonden");
+    }
+  }}
+  className="rounded-xl px-6 py-3 font-semibold text-white"
+  style={{
+    backgroundColor: club.primary_color ?? "#1d4ed8",
+  }}
+>
+  {step === 0 && "Start aanmelding →"}
+  {step > 0 && step < 4 && "Volgende →"}
+  {step === 4 && "Aanmelden"}
+</button>
 
-            Aan deze aanmelding kunnen geen rechten
-            worden ontleend.
-          </p>
-
-          <div className="mt-8 flex justify-end gap-3">
-
-            <button
-              onClick={onClose}
-              className="rounded-xl border px-5 py-3"
-            >
-              Annuleren
-            </button>
-
-            <button
-              className="rounded-xl px-6 py-3 font-semibold text-white"
-              style={{
-                backgroundColor:
-                  club.primary_color ?? "#1d4ed8",
-              }}
-            >
-              Start aanmelding →
-            </button>
-
-          </div>
+</div>
 
         </div>
 
