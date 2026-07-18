@@ -33,18 +33,23 @@ export default function ClubNavbar({ slug }: { slug: string }) {
     path: `/club/${slug}/jobs`,
   },
 
+  {
+    label: "Talentpool",
+    path: `/club/${slug}/talent`,
+  },
+
   ...(advertisingSalesEnabled
-  ? [
-      {
-        label: "Advertenties",
-        path: `/club/${slug}/advertisements`,
-      },
-      {
-        label: "Activatie",
-        path: `/club/${slug}/activatie`,
-      },
-    ]
-  : []),
+    ? [
+        {
+          label: "Advertenties",
+          path: `/club/${slug}/advertisements`,
+        },
+        {
+          label: "Activatie",
+          path: `/club/${slug}/activatie`,
+        },
+      ]
+    : []),
 
   {
     label: "Club bewerken",
