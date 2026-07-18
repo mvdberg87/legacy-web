@@ -32,6 +32,8 @@ export default async function PublicJobsPage({ params }: PageProps) {
     logo_url,
     primary_color,
     secondary_color,
+    advertising_sales_enabled,
+talentpool_enabled,
     jobs_intro_text,
     jobs_cta_title,
     jobs_cta_text
@@ -225,13 +227,15 @@ const marketplaceJobsMapped =
   return (
     <ClientPage
   club={{
-    id: club.id,
-    name: club.name,
-    slug: club.slug,
-    logo_url: club.logo_url,
-    primary_color: club.primary_color,
-    secondary_color: club.secondary_color,
-  }}
+  id: club.id,
+  name: club.name,
+  slug: club.slug,
+  logo_url: club.logo_url,
+  primary_color: club.primary_color,
+  secondary_color: club.secondary_color,
+  advertising_sales_enabled: club.advertising_sales_enabled,
+  talentpool_enabled: club.talentpool_enabled,
+}}
   adminEmail={adminEmail}
   introText={
     club.jobs_intro_text?.trim() ||

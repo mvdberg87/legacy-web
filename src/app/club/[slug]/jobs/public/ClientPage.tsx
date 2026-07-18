@@ -16,6 +16,9 @@ type Club = {
   logo_url?: string | null;
   primary_color?: string | null;
   secondary_color?: string | null;
+
+  advertising_sales_enabled?: boolean | null;
+  talentpool_enabled?: boolean | null;
 };
 
 type Job = {
@@ -184,6 +187,9 @@ const companyParam = searchParams.get("company");
 
 const [companyFilter, setCompanyFilter] = useState<string | null>(companyParam);
 
+const [showTalentpoolModal, setShowTalentpoolModal] =
+  useState(false);
+
 const filteredJobs = companyFilter
   ? jobs.filter((job) => job.company_name === companyFilter)
   : jobs;
@@ -256,6 +262,9 @@ const companies = Array.from(
     ])
   ).values()
 );
+
+const ctaButtonClass =
+  "inline-flex items-center justify-center rounded-xl px-6 py-3 font-semibold text-white w-full sm:w-auto";
 
   return (
     <main
@@ -547,35 +556,55 @@ onShare={() => {
     shadow-lg
   "
 >
-  <h3 className="text-xl font-bold text-gray-900 mb-3">
-    {ctaTitle ??
-      "Op zoek naar werk of nieuw talent?"}
+  <h3 className="text-xl font-bold text-gray-900 mb-6">
+    Ontdek de mogelijkheden
   </h3>
 
-  <p className="text-gray-700 whitespace-pre-line mb-6">
-    {ctaText}
-  </p>
+  <div className="flex flex-col gap-4 items-center">
 
-  {adminEmail && (
-    <a
-      href={`mailto:${adminEmail}`}
-      className="
-        inline-flex
-        px-6
-        py-3
-        rounded-xl
-        text-white
-        font-semibold
-      "
-      style={{
-        backgroundColor:
-          club.primary_color ??
-          "#1d4ed8",
-      }}
-    >
-      Neem contact op
-    </a>
-  )}
+    {club.talentpool_enabled && (
+      <a
+  href="#"
+  onClick={(e) => {
+    e.preventDefault();
+    setShowTalentpoolModal(true);
+  }}
+  className={ctaButtonClass}
+  style={{
+    backgroundColor: club.primary_color ?? "#1d4ed8",
+  }}
+>
+  👤 Ik zoek werk
+</a>
+    )}
+
+    {club.advertising_sales_enabled ? (
+  <a
+    href="https://www.sponsorjobs.nl/bedrijven"
+    target="_blank"
+    rel="noopener noreferrer"
+    className={ctaButtonClass}
+    style={{
+      backgroundColor: club.primary_color ?? "#1d4ed8",
+    }}
+  >
+    🏢 Ik wil vacatures plaatsen
+  </a>
+) : (
+      adminEmail && (
+        <a
+  href={`mailto:${adminEmail}`}
+  className={ctaButtonClass}
+  style={{
+    backgroundColor: club.primary_color ?? "#1d4ed8",
+  }}
+>
+  🏢 Ik wil vacatures plaatsen
+</a>
+      )
+    )}
+
+  </div>
 </section>
       </div>
     </main>
