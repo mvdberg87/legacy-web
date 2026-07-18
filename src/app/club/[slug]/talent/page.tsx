@@ -7,6 +7,7 @@ import { useParams } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
 import { getSupabaseBrowser } from "@/lib/supabaseBrowser";
 import Link from "next/link";
+import { Eye, Trash2 } from "lucide-react";
 
 type Talent = {
   id: string;
@@ -208,16 +209,18 @@ if (loading) {
 
     <Link
       href={`/club/${slug}/talent/${talent.id}`}
-      className="px-3 py-1 border rounded-md hover:bg-gray-100"
+      className="flex h-9 w-9 items-center justify-center rounded-md border hover:bg-gray-100 transition"
+      title="Bekijken"
     >
-      Bekijken
+      <Eye size={18} />
     </Link>
 
     <button
       onClick={() => deleteTalent(talent.id)}
-      className="px-3 py-1 rounded-md bg-red-600 text-white hover:bg-red-700 transition"
+      className="flex h-9 w-9 items-center justify-center rounded-md bg-red-600 text-white hover:bg-red-700 transition"
+      title="Verwijderen"
     >
-      Verwijderen
+      <Trash2 size={18} />
     </button>
 
   </div>
