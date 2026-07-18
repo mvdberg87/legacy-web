@@ -167,6 +167,7 @@ export default function ClubLoginPage() {
   placeholder="bijv. contact@club.nl"
   value={email}
   onChange={(e) => setEmail(e.target.value)}
+  className="text-gray-900 placeholder:text-gray-400"
   required
 />
 
@@ -198,7 +199,7 @@ export default function ClubLoginPage() {
   placeholder="Voer 6-cijferige code in"
   value={code}
   onChange={(e) => setCode(e.target.value)}
-  className="text-center tracking-widest"
+  className="text-center tracking-widest text-gray-900 placeholder:text-gray-400"
   required
 />
 
