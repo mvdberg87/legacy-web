@@ -6,7 +6,7 @@ import { useSearchParams } from "next/navigation";
 import { getCompanyLogo } from "@/lib/companyLogo";
 import { Button } from "@/components/ui/button";
 import EmptyState from "@/components/ui/EmptyState";
-
+import TalentpoolModal from "@/components/talentpool/TalentpoolModal";
 /* ---------- Types ---------- */
 
 type Club = {
@@ -607,6 +607,11 @@ onShare={() => {
   </div>
 </section>
       </div>
+      <TalentpoolModal
+  open={showTalentpoolModal}
+  onClose={() => setShowTalentpoolModal(false)}
+  club={club}
+/>
     </main>
   );
 }
