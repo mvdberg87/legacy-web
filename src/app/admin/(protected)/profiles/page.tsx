@@ -71,6 +71,12 @@ export default function AdminProfilesPage() {
   id: string;
   currentName: string;
 } | null>(null);
+const [editingPublicSlugClub, setEditingPublicSlugClub] = useState<{
+  id: string;
+  clubName: string;
+} | null>(null);
+
+const [publicSlug, setPublicSlug] = useState("");
 
 const [contactPerson, setContactPerson] = useState("");
 
@@ -280,6 +286,55 @@ async function saveContactPerson() {
   toast.success("Contactpersoon opgeslagen.");
 }
 
+async function savePublicSlug() {
+  if (!editingPublicSlugClub) return;
+
+  const slug = publicSlug
+    .trim()
+    .toLowerCase()
+    .replace(/[^a-z0-9]/g, "");
+
+  if (!slug) {
+    toast.error(
+      "Gebruik alleen kleine letters en cijfers."
+    );
+    return;
+  }
+
+  const { data: existing } = await supabase
+    .from("clubs")
+    .select("id")
+    .eq("public_slug", slug)
+    .neq("id", editingPublicSlugClub.id)
+    .maybeSingle();
+
+  if (existing) {
+    toast.error(
+      "Deze publieke URL bestaat al."
+    );
+    return;
+  }
+
+  const { error } = await supabase
+    .from("clubs")
+    .update({
+      public_slug: slug,
+    })
+    .eq("id", editingPublicSlugClub.id);
+
+  if (error) {
+    toast.error("Opslaan mislukt.");
+    return;
+  }
+
+  await loadProfiles();
+
+  setEditingPublicSlugClub(null);
+  setPublicSlug("");
+
+  toast.success("Publieke URL opgeslagen.");
+}
+
 async function resendActivationLink(requestId: string) {
   const confirmed = await confirm({
   title: "Activatielink opnieuw versturen",
@@ -458,8 +513,31 @@ async function toggleManagedAds(
   {club.name}
 </Button>
 
-<div className="text-xs text-gray-500">
-  /{p.public_slug}
+<div className="flex items-center gap-2">
+  <a
+    href={`/${p.public_slug}`}
+    target="_blank"
+    rel="noopener noreferrer"
+    className="text-xs text-blue-600 hover:underline"
+  >
+    /{p.public_slug}
+  </a>
+
+  <Button
+    size="icon"
+    variant="ghost"
+    className="h-6 w-6"
+    onClick={() => {
+      setEditingPublicSlugClub({
+        id: club.id,
+        clubName: club.name,
+      });
+
+      setPublicSlug(p.public_slug ?? "");
+    }}
+  >
+    ✏️
+  </Button>
 </div>
 
       <span className="text-xs">
@@ -692,6 +770,56 @@ async function toggleManagedAds(
 
     </DialogFooter>
 
+  </DialogContent>
+</Dialog>
+
+<Dialog
+  open={!!editingPublicSlugClub}
+  onOpenChange={(open) => {
+    if (!open) {
+      setEditingPublicSlugClub(null);
+      setPublicSlug("");
+    }
+  }}
+>
+  <DialogContent className="sm:max-w-md">
+    <DialogHeader>
+      <DialogTitle>
+        Publieke URL wijzigen
+      </DialogTitle>
+
+      <DialogDescription>
+        Pas de publieke URL van deze vereniging aan.
+      </DialogDescription>
+    </DialogHeader>
+
+    <div className="space-y-2">
+      <Label>Publieke URL</Label>
+
+      <Input
+        value={publicSlug}
+        onChange={(e) =>
+          setPublicSlug(e.target.value)
+        }
+        placeholder="fcsgravenzande"
+      />
+    </div>
+
+    <DialogFooter>
+      <Button
+        variant="outline"
+        onClick={() => {
+          setEditingPublicSlugClub(null);
+          setPublicSlug("");
+        }}
+      >
+        Annuleren
+      </Button>
+
+      <Button onClick={savePublicSlug}>
+  Opslaan
+</Button>
+    </DialogFooter>
   </DialogContent>
 </Dialog>
     </div>
