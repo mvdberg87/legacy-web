@@ -7,8 +7,10 @@ import TalentpoolPersonal from "./TalentpoolPersonal";
 import TalentpoolPreferences from "./TalentpoolPreferences";
 import TalentpoolEducation from "./TalentpoolEducation";
 import TalentpoolAvailability from "./TalentpoolAvailability";
+import TalentpoolPrivacy from "./TalentpoolPrivacy";
 
 type Club = {
+  id: string;
   name: string;
   primary_color?: string | null;
 };
@@ -24,9 +26,9 @@ export default function TalentpoolModal({
   onClose,
   club,
 }: Props) {
-  if (!open) return null;
 
   const [step, setStep] = useState(0);
+  const [submitted, setSubmitted] = useState(false);
   const [formData, setFormData] = useState({
   firstName: "",
   lastName: "",
@@ -40,11 +42,15 @@ city: "",
 distance: 15,
 availableFrom: "",
 notes: "",
+acceptedPrivacy: false,
+acceptedTerms: false,
 });
+
+if (!open) return null;
 
 function updateField(
   field: string,
-  value: string | number
+  value: string | number | boolean
 ) {
   setFormData((prev) => ({
     ...prev,
@@ -59,6 +65,65 @@ function togglePreference(value: string) {
       ? prev.preferences.filter((v: string) => v !== value)
       : [...prev.preferences, value],
   }));
+}
+
+if (submitted) {
+  return (
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 p-4">
+      <div className="w-full max-w-xl rounded-3xl bg-white p-10 text-center shadow-2xl">
+
+        <div className="text-6xl mb-6">🎉</div>
+
+        <h2 className="text-3xl font-bold mb-4">
+          Bedankt voor je aanmelding!
+        </h2>
+
+        <p className="text-gray-600 leading-relaxed mb-8">
+          Je profiel is succesvol aangemeld voor de Talentpool van{" "}
+          <strong>{club.name}</strong>.
+        </p>
+
+        <div className="rounded-xl bg-gray-100 p-5 text-left text-sm text-gray-700 mb-8">
+          <p>✅ Je gegevens zijn veilig opgeslagen.</p>
+          <p>✅ Alleen de sponsorcommissie kan jouw profiel bekijken.</p>
+          <p>✅ Wanneer een sponsor een passende vacature heeft, kan er contact met je worden opgenomen.</p>
+        </div>
+
+        <button
+          onClick={() => {
+  setSubmitted(false);
+  setStep(0);
+
+  setFormData({
+    firstName: "",
+    lastName: "",
+    email: "",
+    phone: "",
+    preferences: [],
+    education: "",
+    study: "",
+    field: "",
+    city: "",
+    distance: 15,
+    availableFrom: "",
+    notes: "",
+    acceptedPrivacy: false,
+    acceptedTerms: false,
+  });
+
+  onClose();
+}}
+          className="rounded-xl px-8 py-3 font-semibold text-white"
+          style={{
+            backgroundColor: club.primary_color ?? "#1d4ed8",
+          }}
+        >
+          Sluiten
+        </button>
+
+      </div>
+    </div>
+  );
 }
 
   return (
@@ -83,9 +148,9 @@ function togglePreference(value: string) {
 
 <div className="mt-6">
   <TalentpoolProgress
-    step={step}
-    totalSteps={5}
-  />
+  step={step}
+  totalSteps={6}
+/>
 </div>
         </div>
 
@@ -134,6 +199,26 @@ function togglePreference(value: string) {
     onChange={updateField}
   />
 )}
+
+{step === 5 && (
+  <TalentpoolPrivacy
+    clubName={club.name}
+    acceptedPrivacy={formData.acceptedPrivacy}
+    acceptedTerms={formData.acceptedTerms}
+    onTogglePrivacy={() =>
+      updateField(
+        "acceptedPrivacy",
+        !formData.acceptedPrivacy
+      )
+    }
+    onToggleTerms={() =>
+      updateField(
+        "acceptedTerms",
+        !formData.acceptedTerms
+      )
+    }
+  />
+)}
           <div className="mt-8 flex justify-between">
 
   <div>
@@ -146,7 +231,29 @@ function togglePreference(value: string) {
       </button>
     ) : (
       <button
-        onClick={onClose}
+        onClick={() => {
+  setStep(0);
+  setSubmitted(false);
+
+  setFormData({
+    firstName: "",
+    lastName: "",
+    email: "",
+    phone: "",
+    preferences: [],
+    education: "",
+    study: "",
+    field: "",
+    city: "",
+    distance: 15,
+    availableFrom: "",
+    notes: "",
+    acceptedPrivacy: false,
+    acceptedTerms: false,
+  });
+
+  onClose();
+}}
         className="rounded-xl border px-5 py-3"
       >
         Annuleren
@@ -155,29 +262,48 @@ function togglePreference(value: string) {
   </div>
 
   <button
+  disabled={
+    step === 5 &&
+    (!formData.acceptedPrivacy ||
+      !formData.acceptedTerms)
+  }
   onClick={async () => {
-    if (step < 4) {
+    if (step < 5) {
       setStep(step + 1);
     } else {
-      await fetch("/api/talentpool/create", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(formData),
-      });
+      const response = await fetch("/api/talentpool/create", {
+  method: "POST",
+  headers: {
+    "Content-Type": "application/json",
+  },
+  body: JSON.stringify({
+  ...formData,
+  clubId: club.id,
+}),
+});
 
-      console.log("Verzonden");
+if (!response.ok) {
+  alert("Er ging iets mis. Probeer het later opnieuw.");
+  return;
+}
+
+setSubmitted(true);
     }
   }}
-  className="rounded-xl px-6 py-3 font-semibold text-white"
+  className={`rounded-xl px-6 py-3 font-semibold text-white transition ${
+    step === 5 &&
+    (!formData.acceptedPrivacy ||
+      !formData.acceptedTerms)
+      ? "opacity-50 cursor-not-allowed"
+      : ""
+  }`}
   style={{
     backgroundColor: club.primary_color ?? "#1d4ed8",
   }}
 >
   {step === 0 && "Start aanmelding →"}
-  {step > 0 && step < 4 && "Volgende →"}
-  {step === 4 && "Aanmelden"}
+{step > 0 && step < 5 && "Volgende →"}
+{step === 5 && "Aanmelden"}
 </button>
 
 </div>
