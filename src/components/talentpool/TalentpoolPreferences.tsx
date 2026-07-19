@@ -11,12 +11,14 @@ type Props = {
   selected: string[];
   onToggle: (value: string) => void;
   primaryColor?: string | null;
+  showErrors: boolean;
 };
 
 export default function TalentpoolPreferences({
   selected,
   onToggle,
   primaryColor,
+  showErrors,
 }: Props) {
   return (
     <div>
@@ -53,6 +55,11 @@ export default function TalentpoolPreferences({
           );
         })}
       </div>
+      {showErrors && selected.length === 0 && (
+  <p className="mt-4 text-sm text-red-600">
+    ⚠️ Kies minimaal één optie.
+  </p>
+)}
     </div>
   );
 }

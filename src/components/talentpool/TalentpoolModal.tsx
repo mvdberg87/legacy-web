@@ -29,6 +29,7 @@ export default function TalentpoolModal({
 
   const [step, setStep] = useState(0);
   const [submitted, setSubmitted] = useState(false);
+  const [showErrors, setShowErrors] = useState(false);
   const [formData, setFormData] = useState({
     firstName: "",
     lastName: "",
@@ -49,23 +50,31 @@ export default function TalentpoolModal({
   if (!open) return null;
 
   function updateField(
-    field: string,
-    value: string | number | boolean
-  ) {
-    setFormData((prev) => ({
-      ...prev,
-      [field]: value,
-    }));
+  field: string,
+  value: string | number | boolean
+) {
+  setFormData((prev) => ({
+    ...prev,
+    [field]: value,
+  }));
+
+  if (showErrors) {
+    setShowErrors(false);
   }
+}
 
   function togglePreference(value: string) {
-    setFormData((prev: any) => ({
-      ...prev,
-      preferences: prev.preferences.includes(value)
-        ? prev.preferences.filter((v: string) => v !== value)
-        : [...prev.preferences, value],
-    }));
+  setFormData((prev: any) => ({
+    ...prev,
+    preferences: prev.preferences.includes(value)
+      ? prev.preferences.filter((v: string) => v !== value)
+      : [...prev.preferences, value],
+  }));
+
+  if (showErrors) {
+    setShowErrors(false);
   }
+}
 
   if (submitted) {
     return (
@@ -92,7 +101,8 @@ export default function TalentpoolModal({
           <button
             onClick={() => {
               setSubmitted(false);
-              setStep(0);
+setShowErrors(false);
+setStep(0);
 
               setFormData({
                 firstName: "",
@@ -125,6 +135,46 @@ export default function TalentpoolModal({
       </div>
     );
   }
+
+  function canContinue() {
+  switch (step) {
+    case 0:
+      return true;
+
+    case 1:
+      return (
+        formData.firstName.trim() !== "" &&
+        formData.lastName.trim() !== "" &&
+        formData.email.trim() !== "" &&
+        formData.phone.trim() !== ""
+      );
+
+    case 2:
+      return formData.preferences.length > 0;
+
+    case 3:
+      return (
+        formData.education.trim() !== "" &&
+        formData.study.trim() !== "" &&
+        formData.field.trim() !== ""
+      );
+
+    case 4:
+      return (
+        formData.city.trim() !== "" &&
+        formData.availableFrom !== ""
+      );
+
+    case 5:
+      return (
+        formData.acceptedPrivacy &&
+        formData.acceptedTerms
+      );
+
+    default:
+      return false;
+  }
+}
 
   return (
     <div className="fixed inset-0 z-50 overflow-y-auto bg-black/70 p-4">
@@ -167,59 +217,64 @@ export default function TalentpoolModal({
 
             {step === 1 && (
               <TalentpoolPersonal
-                firstName={formData.firstName}
-                lastName={formData.lastName}
-                email={formData.email}
-                phone={formData.phone}
-                onChange={updateField}
-              />
+  firstName={formData.firstName}
+  lastName={formData.lastName}
+  email={formData.email}
+  phone={formData.phone}
+  showErrors={showErrors}
+  onChange={updateField}
+/>
             )}
 
             {step === 2 && (
               <TalentpoolPreferences
-                selected={formData.preferences}
-                onToggle={togglePreference}
-                primaryColor={club.primary_color}
-              />
+  selected={formData.preferences}
+  onToggle={togglePreference}
+  primaryColor={club.primary_color}
+  showErrors={showErrors}
+/>
             )}
 
             {step === 3 && (
               <TalentpoolEducation
-                education={formData.education}
-                study={formData.study}
-                field={formData.field}
-                onChange={updateField}
-              />
+  education={formData.education}
+  study={formData.study}
+  field={formData.field}
+  showErrors={showErrors}
+  onChange={updateField}
+/>
             )}
 
             {step === 4 && (
               <TalentpoolAvailability
-                city={formData.city}
-                distance={formData.distance}
-                availableFrom={formData.availableFrom}
-                notes={formData.notes}
-                onChange={updateField}
-              />
+  city={formData.city}
+  distance={formData.distance}
+  availableFrom={formData.availableFrom}
+  notes={formData.notes}
+  showErrors={showErrors}
+  onChange={updateField}
+/>
             )}
 
             {step === 5 && (
               <TalentpoolPrivacy
-                clubName={club.name}
-                acceptedPrivacy={formData.acceptedPrivacy}
-                acceptedTerms={formData.acceptedTerms}
-                onTogglePrivacy={() =>
-                  updateField(
-                    "acceptedPrivacy",
-                    !formData.acceptedPrivacy
-                  )
-                }
-                onToggleTerms={() =>
-                  updateField(
-                    "acceptedTerms",
-                    !formData.acceptedTerms
-                  )
-                }
-              />
+  clubName={club.name}
+  acceptedPrivacy={formData.acceptedPrivacy}
+  acceptedTerms={formData.acceptedTerms}
+  showErrors={showErrors}
+  onTogglePrivacy={() =>
+    updateField(
+      "acceptedPrivacy",
+      !formData.acceptedPrivacy
+    )
+  }
+  onToggleTerms={() =>
+    updateField(
+      "acceptedTerms",
+      !formData.acceptedTerms
+    )
+  }
+/>
             )}
 
           </div>
@@ -229,7 +284,10 @@ export default function TalentpoolModal({
             <div>
               {step > 0 ? (
                 <button
-                  onClick={() => setStep(step - 1)}
+                  onClick={() => {
+  setShowErrors(false);
+  setStep(step - 1);
+}}
                   className="w-full sm:w-auto rounded-xl border px-5 py-3"
                 >
                   ← Vorige
@@ -237,6 +295,7 @@ export default function TalentpoolModal({
               ) : (
                 <button
                   onClick={() => {
+                    setShowErrors(false);
                     setStep(0);
                     setSubmitted(false);
 
@@ -267,15 +326,17 @@ export default function TalentpoolModal({
             </div>
 
             <button
-              disabled={
-                step === 5 &&
-                (!formData.acceptedPrivacy ||
-                  !formData.acceptedTerms)
-              }
               onClick={async () => {
-                if (step < 5) {
-                  setStep(step + 1);
-                } else {
+                if (!canContinue()) {
+  setShowErrors(true);
+  return;
+}
+
+setShowErrors(false);
+
+if (step < 5) {
+  setStep(step + 1);
+} else {
                   const response = await fetch("/api/talentpool/create", {
                     method: "POST",
                     headers: {
@@ -293,13 +354,13 @@ export default function TalentpoolModal({
                   }
 
                   setSubmitted(true);
+                  setShowErrors(false);
                 }
               }}
               className={`w-full sm:w-auto rounded-xl px-6 py-3 font-semibold text-white transition ${
-  step === 5 &&
-  (!formData.acceptedPrivacy || !formData.acceptedTerms)
-    ? "opacity-50 cursor-not-allowed"
-    : ""
+  !canContinue()
+  ? "opacity-80"
+  : "hover:opacity-90"
 }`}
               style={{
                 backgroundColor: club.primary_color ?? "#1d4ed8",

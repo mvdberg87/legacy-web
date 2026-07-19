@@ -984,7 +984,7 @@ async function connectStripe() {
 <section className="mb-12">
 
   <h2 className="text-lg font-semibold mb-4">
-    📊 Maandrapporten
+    Maandrapporten
   </h2>
 
   {reports.length === 0 ? (

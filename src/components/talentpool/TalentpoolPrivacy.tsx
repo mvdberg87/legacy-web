@@ -6,6 +6,7 @@ type Props = {
   onTogglePrivacy: () => void;
   onToggleTerms: () => void;
   clubName: string;
+  showErrors: boolean;
 };
 
 export default function TalentpoolPrivacy({
@@ -14,6 +15,7 @@ export default function TalentpoolPrivacy({
   onTogglePrivacy,
   onToggleTerms,
   clubName,
+  showErrors,
 }: Props) {
   return (
     <div>
@@ -74,6 +76,13 @@ export default function TalentpoolPrivacy({
         </label>
 
       </div>
+
+      {showErrors &&
+  (!acceptedPrivacy || !acceptedTerms) && (
+    <p className="mt-3 text-sm text-red-600">
+      ⚠️ Accepteer de privacyverklaring en de gebruikersvoorwaarden om verder te gaan.
+    </p>
+)}
 
       <div className="mt-8 rounded-xl bg-gray-100 p-4 text-sm text-gray-700">
         Door je aan te melden geef je toestemming aan <strong>{clubName}</strong> om

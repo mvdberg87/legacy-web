@@ -3,6 +3,7 @@ type Props = {
   study: string;
   field: string;
   onChange: (field: string, value: string) => void;
+  showErrors: boolean;
 };
 
 const fields = [
@@ -24,6 +25,7 @@ export default function TalentpoolEducation({
   study,
   field,
   onChange,
+  showErrors,
 }: Props) {
   return (
     <div>
@@ -45,8 +47,18 @@ export default function TalentpoolEducation({
           onChange={(e) =>
             onChange("education", e.target.value)
           }
-          className="w-full rounded-xl border p-3"
+          className={`w-full rounded-xl border p-3 ${
+  showErrors && !education.trim()
+    ? "border-red-500"
+    : "border-gray-300"
+}`}
         />
+
+        {showErrors && !education.trim() && (
+  <p className="mt-1 text-sm text-red-600">
+    ⚠️ Opleidingsniveau is verplicht.
+  </p>
+)}
 
         <input
           type="text"
@@ -55,27 +67,47 @@ export default function TalentpoolEducation({
           onChange={(e) =>
             onChange("study", e.target.value)
           }
-          className="w-full rounded-xl border p-3"
+          className={`w-full rounded-xl border p-3 ${
+  showErrors && !study.trim()
+    ? "border-red-500"
+    : "border-gray-300"
+}`}
         />
+
+        {showErrors && !study.trim() && (
+  <p className="mt-1 text-sm text-red-600">
+    ⚠️ Studie is verplicht.
+  </p>
+)}
 
         <select
           value={field}
           onChange={(e) =>
             onChange("field", e.target.value)
           }
-          className="w-full rounded-xl border p-3"
+          className={`w-full rounded-xl border p-3 ${
+  showErrors && !field
+    ? "border-red-500"
+    : "border-gray-300"
+}`}
         >
           <option value="">
             Kies een vakgebied
           </option>
 
           {fields.map((item) => (
-            <option key={item}>
-              {item}
-            </option>
-          ))}
+  <option key={item} value={item}>
+    {item}
+  </option>
+))}
 
         </select>
+
+        {showErrors && !field && (
+  <p className="mt-1 text-sm text-red-600">
+    ⚠️ Kies een vakgebied.
+  </p>
+)}
 
       </div>
 
