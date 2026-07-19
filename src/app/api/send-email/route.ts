@@ -26,6 +26,19 @@ export async function POST(req: Request) {
   clubRevenue,
 
   autoRenew,
+  talentName,
+talentEmail,
+talentPhone,
+
+preferences,
+education,
+study,
+field,
+
+city,
+distance,
+availableFrom,
+notes,
 } = await req.json();
 
   // 🔥 club ophalen
@@ -537,6 +550,120 @@ if (
       </p>
     `,
   });
+}
+
+/* ===============================
+   TALENTPOOL NEW PROFILE
+=============================== */
+
+if (type === "talentpool_new_profile") {
+  await resend.emails.send({
+    from: "Sponsorjobs <noreply@sponsorjobs.nl>",
+    to: clubEmail,
+
+    subject: `Nieuwe Talentpool-aanmelding bij ${clubName}`,
+
+    html: `
+      <h2>Nieuwe Talentpool-aanmelding</h2>
+
+      <p>Er heeft zich een nieuw lid aangemeld voor de Talentpool van <strong>${clubName}</strong>.</p>
+
+      <hr />
+
+      <h3>Persoonsgegevens</h3>
+
+      <p>
+        <strong>Naam:</strong><br/>
+        ${talentName}
+      </p>
+
+      <p>
+        <strong>E-mailadres:</strong><br/>
+        ${talentEmail}
+      </p>
+
+      <p>
+        <strong>Telefoon:</strong><br/>
+        ${talentPhone || "-"}
+      </p>
+
+      <hr />
+
+      <h3>Voorkeuren</h3>
+
+      <p>
+        ${preferences?.join(", ") || "-"}
+      </p>
+
+      <hr />
+
+      <h3>Opleiding</h3>
+
+      <p>
+        Niveau: ${education || "-"}<br/>
+        Studie: ${study || "-"}<br/>
+        Vakgebied: ${field || "-"}
+      </p>
+
+      <hr />
+
+      <h3>Beschikbaarheid</h3>
+
+      <p>
+        Woonplaats: ${city || "-"}<br/>
+        Reisafstand: ${distance ?? "-"} km<br/>
+        Beschikbaar vanaf: ${
+          availableFrom
+            ? new Date(availableFrom).toLocaleDateString("nl-NL")
+            : "-"
+        }
+      </p>
+
+      ${
+        notes
+          ? `
+        <hr />
+        <h3>Extra toelichting</h3>
+        <p>${notes}</p>
+      `
+          : ""
+      }
+
+      <hr />
+
+      <p>
+        Log in op Sponsorjobs om alle Talentpool-profielen te bekijken.
+      </p>
+    `,
+  });
+}
+
+if (type === "talentpool_confirmation") {
+
+  await resend.emails.send({
+  from: "Sponsorjobs <noreply@sponsorjobs.nl>",
+  to: talentEmail,
+  replyTo: clubEmail,
+
+  subject: `Bedankt voor je aanmelding bij de Talentpool van ${clubName}`,
+
+  html: `
+    <h2>Bedankt voor je aanmelding!</h2>
+
+    <p>Je profiel is succesvol toegevoegd aan de Talentpool van <strong>${clubName}</strong>.</p>
+
+    <p>
+      Wanneer één van de aangesloten sponsoren een passende vacature heeft,
+      kan er contact met je worden opgenomen.
+    </p>
+
+    <p>
+      Veel succes!
+    </p>
+
+    <p>Team Sponsorjobs</p>
+  `,
+});
 }
 
   return Response.json({ ok: true });

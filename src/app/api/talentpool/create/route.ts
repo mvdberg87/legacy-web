@@ -64,6 +64,64 @@ export async function POST(request: NextRequest) {
       );
     }
 
+    // Club ophalen
+    const { data: club, error: clubError } = await supabaseAdmin
+      .from("clubs")
+      .select("name, email")
+      .eq("id", clubId)
+      .single();
+
+    // E-mails versturen (maar nooit de aanmelding blokkeren)
+    if (!clubError && club) {
+      try {
+        await Promise.all([
+          fetch(`${process.env.NEXT_PUBLIC_SITE_URL}/api/email`, {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              type: "talentpool_new_profile",
+
+              clubName: club.name,
+              clubEmail: club.email,
+
+              talentName: `${firstName} ${lastName}`,
+              talentEmail: email,
+              talentPhone: phone,
+
+              preferences,
+              education,
+              study,
+              field,
+
+              city,
+              distance,
+              availableFrom,
+              notes,
+            }),
+          }),
+
+          fetch(`${process.env.NEXT_PUBLIC_SITE_URL}/api/email`, {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              type: "talentpool_confirmation",
+
+              clubName: club.name,
+              clubEmail: club.email,
+
+              talentEmail: email,
+            }),
+          }),
+        ]);
+      } catch (mailError) {
+        console.error("❌ Talentpool mail error:", mailError);
+      }
+    }
+
     return NextResponse.json({
       success: true,
     });
