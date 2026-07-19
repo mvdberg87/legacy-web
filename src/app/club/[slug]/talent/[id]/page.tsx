@@ -355,30 +355,34 @@ setTimeout(() => {
 
 </div>
 
-<div className="space-y-4">
+<div className="bg-white rounded-2xl shadow border-2 p-6">
 
-  {saved && (
-    <div className="rounded-xl border border-green-300 bg-green-100 px-4 py-3 text-green-700">
-      ✓ Wijzigingen succesvol opgeslagen.
+  <div className="space-y-4">
+
+    {saved && (
+      <div className="rounded-xl border border-green-300 bg-green-100 px-4 py-3 text-green-700">
+        ✓ Wijzigingen succesvol opgeslagen.
+      </div>
+    )}
+
+    <div className="flex justify-end">
+
+      <button
+        onClick={saveChanges}
+        disabled={saving || !hasChanges}
+        className={`
+          rounded-xl px-6 py-3 text-white transition
+          ${
+            saving || !hasChanges
+              ? "bg-gray-400 cursor-not-allowed"
+              : "bg-[#0d1b2a] hover:bg-[#12263d]"
+          }
+        `}
+      >
+        {saving ? "Opslaan..." : "Wijzigingen opslaan"}
+      </button>
+
     </div>
-  )}
-
-  <div className="flex justify-end">
-
-    <button
-      onClick={saveChanges}
-      disabled={saving || !hasChanges}
-      className={`
-        rounded-xl px-6 py-3 text-white transition
-        ${
-          saving || !hasChanges
-            ? "bg-gray-400 cursor-not-allowed"
-            : "bg-[#0d1b2a] hover:bg-[#12263d]"
-        }
-      `}
-    >
-      {saving ? "Opslaan..." : "Wijzigingen opslaan"}
-    </button>
 
   </div>
 

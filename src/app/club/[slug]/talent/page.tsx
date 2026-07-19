@@ -162,8 +162,9 @@ if (loading) {
         </div>
 
         {/* Tabel */}
-        <div className="hidden md:block border-4 border-[#0d1b2a] rounded-xl">
-          <table className="min-w-full text-sm">
+        <div className="hidden md:block overflow-x-auto">
+  <div className="border-4 border-[#0d1b2a] rounded-xl min-w-max">
+          <table className="w-full min-w-[1100px] text-sm">
             <thead className="bg-[#0d1b2a] text-white border-b-4 border-[#0d1b2a]">
               <tr>
                 <th className="px-4 py-3 text-left">Naam</th>
@@ -240,7 +241,8 @@ if (loading) {
 </tbody>
 
           </table>
-        </div>
+</div>
+</div>
 
       </div>
 
