@@ -250,8 +250,6 @@ if (clubsError) {
         }))
         .sort((a, b) => b.clicks - a.clicks);
 
-      const topSponsor = sponsors[0] ?? null;
-
       /* ===============================
          Jobs stats
       =============================== */
@@ -321,26 +319,138 @@ if (club.advertising_sales_enabled) {
     ) ?? 0;
 }
 
+/* ===============================
+   Sponsorjobs Score
+=============================== */
+
+let sponsorjobsScore = 0;
+
+/* CTR (30 punten) */
+sponsorjobsScore += Math.min(
+  30,
+  Math.round(ctrLastMonth * 6)
+);
+
+/* Groei (20 punten) */
+sponsorjobsScore += Math.min(
+  20,
+  Math.max(0, Math.round(growth / 5))
+);
+
+/* Werkgevers (20 punten) */
+
+const activeEmployers = sponsors.length;
+
+sponsorjobsScore += Math.min(
+  20,
+  activeEmployers * 2
+);
+
+/* Vacatures met klikken (20 punten) */
+const jobsWithClicks =
+  jobStats.filter(j => j.clicks > 0).length;
+
+const clickCoverage =
+  jobs.length > 0
+    ? jobsWithClicks / jobs.length
+    : 0;
+
+sponsorjobsScore += Math.round(
+  clickCoverage * 20
+);
+
+/* Managed Ads (10 punten) */
+
+if (club.advertising_sales_enabled) {
+
+  sponsorjobsScore += Math.min(
+    10,
+    advertisementsSold * 2
+  );
+
+} else {
+
+  sponsorjobsScore += 10;
+
+}
+
+sponsorjobsScore = Math.min(
+  100,
+  sponsorjobsScore
+);
+
+let scoreLabel = "";
+let scoreColor = "";
+
+if (sponsorjobsScore >= 90) {
+
+  scoreLabel = "Uitstekend";
+  scoreColor = "#27ae60";
+
+} else if (sponsorjobsScore >= 75) {
+
+  scoreLabel = "Sterk";
+  scoreColor = "#3498db";
+
+} else if (sponsorjobsScore >= 60) {
+
+  scoreLabel = "Goed op weg";
+  scoreColor = "#f39c12";
+
+} else if (sponsorjobsScore >= 40) {
+
+  scoreLabel = "Er liggen kansen";
+  scoreColor = "#e67e22";
+
+} else {
+
+  scoreLabel = "Tijd voor actie";
+  scoreColor = "#e74c3c";
+
+}
+
+
       /* ===============================
          Recommendation
       =============================== */
 
       let recommendation = "";
 
-      if (zeroClickJobs.length > 0) {
-        recommendation = "Je hebt vacatures zonder clicks.";
-      } else if (adsCount === maxAds && maxAds !== Infinity) {
-        recommendation = "Je advertentieruimte is volledig benut.";
-      } else if (ctrLastMonth < 1) {
-        recommendation = "Je CTR is laag.";
-      } else {
-        recommendation = "Sterke prestaties.";
-      }
+if (zeroClickJobs.length > 0) {
 
-      const monthName = firstDayLastMonth.toLocaleDateString("nl-NL", {
-        month: "long",
-        year: "numeric",
-      });
+recommendation =
+`Er staan ${zeroClickJobs.length} vacatures zonder klikken. Deel deze vacatures via Instagram, LinkedIn of WhatsApp en vraag de sponsor hetzelfde te doen.`;
+
+}
+
+else if (ctrLastMonth < 2) {
+
+recommendation =
+"Jullie CTR ligt nog onder het gemiddelde. Gebruik aantrekkelijkere functietitels en deel vacatures vaker via jullie communicatiekanalen.";
+
+}
+
+else if (
+club.advertising_sales_enabled &&
+advertisementsSold === 0
+) {
+
+recommendation =
+"Deze maand zijn er geen nieuwe advertenties verkocht. Benader bestaande sponsoren voor een extra zichtbaarheidscampagne.";
+
+}
+
+else {
+
+  recommendation =
+    "Sterke maand! Richt je volgende maand op meer actieve werkgevers zodat het aanbod verder groeit.";
+
+}
+
+const monthName = firstDayLastMonth.toLocaleDateString("nl-NL", {
+  month: "long",
+  year: "numeric",
+});
 
       const subject =
   `Sponsorjobs Maandrapportage | ${club.name} | ${monthName}`;
@@ -360,20 +470,37 @@ if (club.advertising_sales_enabled) {
         to: email.toLowerCase(),
         subject,
         html: generateHtml({
-          club,
-          monthName,
-          totalClicksLastMonth,
-          totalPageviewsLastMonth,
-          ctrLastMonth,
-          totalSharesLastMonth,
-          shareRate,
-          growth,
-          sponsors,
-          topJobs,
-          recommendation,
-          advertisementRevenue,
-advertisementsSold,
-        }),
+  club,
+  monthName,
+
+  totalClicksLastMonth,
+  totalPageviewsLastMonth,
+  ctrLastMonth,
+  totalSharesLastMonth,
+  shareRate,
+  growth,
+  sponsorjobsScore,
+scoreLabel,
+scoreColor,
+
+  sponsors,
+  topJobs,
+  recommendation,
+
+  advertisementRevenue,
+  advertisementsSold,
+
+  advertisingSalesEnabled:
+    club.advertising_sales_enabled,
+
+  activeJobs: jobs.length,
+
+  totalSponsors: sponsors.length,
+
+  zeroClickJobs: zeroClickJobs.length,
+
+  maxAds,
+}),
       });
 
       if (mailError) {
@@ -489,117 +616,293 @@ function generateHtml(data: any) {
 
       <div style="padding:32px;">
 
-        <h2>
-          Resultaten van ${data.monthName}
-        </h2>
+        <h2 style="
+margin-bottom:6px;
+">
+Resultaten van ${data.monthName}
+</h2>
 
-        <table width="100%" cellpadding="12">
-          <tr>
-            <td align="center">
-              <h2>${data.totalPageviewsLastMonth}</h2>
-              <div>Paginaweergaven</div>
-            </td>
+<p style="
+color:#666;
+margin-top:0;
+margin-bottom:30px;
+">
+Bekijk hoe Sponsorjobs deze maand heeft
+gepresteerd.
+</p>
 
-            <td align="center">
-              <h2>${data.totalClicksLastMonth}</h2>
-              <div>Kliks</div>
-            </td>
-          </tr>
+<div style="
+background:#f4f7fb;
+border-radius:12px;
+padding:24px;
+text-align:center;
+margin-bottom:30px;
+">
 
-          <tr>
-            <td align="center">
-              <h2>${data.ctrLastMonth.toFixed(1)}%</h2>
-              <div>CTR</div>
-            </td>
+<div style="
+font-size:14px;
+color:#666;
+margin-bottom:8px;
+">
+Sponsorjobs Score
+</div>
 
-            <td align="center">
-              <h2>${data.totalSharesLastMonth}</h2>
-              <div>Shares</div>
-            </td>
-          </tr>
-        </table>
+<div style="
+font-size:48px;
+font-weight:bold;
+color:#0d1b2a;
+">
+${data.sponsorjobsScore}
+</div>
 
-        <hr style="margin:30px 0;" />
+<div
+style="
+font-size:18px;
+font-weight:bold;
+color:${data.scoreColor};
+">
 
-        <h3>
-          Groei ten opzichte van vorige maand
-        </h3>
+${data.scoreLabel}
 
-        <p>
-          Klikgroei:
-          <strong>${data.growth}%</strong>
-        </p>
+</div>
 
-        <hr style="margin:30px 0;" />
+<div style="
+background:#e5e7eb;
+height:8px;
+border-radius:8px;
+overflow:hidden;
+margin-top:18px;
+">
 
-        <h3>
-          Meest bekeken sponsoren
-        </h3>
+<div style="
+width:${data.sponsorjobsScore}%;
+height:100%;
+background:${data.scoreColor};
+">
+</div>
 
-        ${
-  data.advertisementsSold > 0
-    ? `
-      <hr style="margin:30px 0;" />
+</div>
 
-      <h3>
-        Advertentieverkopen
-      </h3>
+</div>
 
-      <p>
-        Nieuwe advertenties:
-        <strong>
-          ${data.advertisementsSold}
-        </strong>
-      </p>
+<div style="
+display:grid;
+grid-template-columns:repeat(2,1fr);
+gap:16px;
+margin-bottom:40px;
+">
 
-      <p>
-        Extra opbrengst voor de vereniging:
-        <strong>
-          €${data.advertisementRevenue.toLocaleString("nl-NL")}
-        </strong>
-      </p>
-    `
-    : ""
+<div style="
+background:#fafafa;
+padding:20px;
+border-radius:10px;
+text-align:center;
+">
+
+<div style="font-size:28px;">
+👀
+</div>
+
+<h2>${data.totalPageviewsLastMonth}</h2>
+
+Paginaweergaven
+
+</div>
+
+<div style="
+background:#fafafa;
+padding:20px;
+border-radius:10px;
+text-align:center;
+">
+
+<div style="font-size:28px;">
+🎯
+</div>
+
+<h2>${data.totalClicksLastMonth}</h2>
+
+Vacatureklikken
+
+</div>
+
+<div style="
+background:#fafafa;
+padding:20px;
+border-radius:10px;
+text-align:center;
+">
+
+<div style="font-size:28px;">
+📤
+</div>
+
+<h2>${data.totalSharesLastMonth}</h2>
+
+Gedeeld
+
+</div>
+
+<div style="
+background:#fafafa;
+padding:20px;
+border-radius:10px;
+text-align:center;
+">
+
+<div style="font-size:28px;">
+🏢
+</div>
+
+<h2>${data.totalSponsors}</h2>
+
+Werkgevers
+
+</div>
+
+</div>
+
+        <div style="
+background:#f8fafc;
+padding:24px;
+border-radius:12px;
+margin:30px 0;
+">
+
+<h3 style="margin-top:0;">
+Groei deze maand
+</h3>
+
+<div style="
+display:flex;
+justify-content:space-between;
+margin-top:20px;
+">
+
+<div style="text-align:center;flex:1;">
+<div style="font-size:32px;font-weight:bold;color:#0d1b2a;">
+${data.growth}%
+</div>
+<div>Klikgroei</div>
+</div>
+
+<div style="text-align:center;flex:1;">
+<div style="font-size:32px;font-weight:bold;color:#0d1b2a;">
+${data.ctrLastMonth.toFixed(1)}%
+</div>
+<div>CTR</div>
+</div>
+
+<div style="text-align:center;flex:1;">
+<div style="font-size:32px;font-weight:bold;color:#0d1b2a;">
+${data.totalPageviewsLastMonth}
+</div>
+<div>Bezoekers</div>
+</div>
+
+</div>
+
+</div>
+
+        <div style="
+background:#fff8e8;
+padding:24px;
+border-radius:12px;
+margin:30px 0;
+">
+
+<h3 style="margin-top:0;">
+🏆 Sponsor van de maand
+</h3>
+
+<h2 style="margin-bottom:5px;">
+${data.sponsors[0]?.sponsor ?? "-"}
+</h2>
+
+<p style="margin:0;color:#666;">
+${data.sponsors[0]?.clicks ?? 0} geïnteresseerden
+</p>
+
+</div>
+
+        <div style="
+background:#eef7ff;
+padding:24px;
+border-radius:12px;
+margin:30px 0;
+">
+
+<h3 style="margin-top:0;">
+💼 Vacature van de maand
+</h3>
+
+<h2 style="margin-bottom:5px;">
+${data.topJobs[0]?.title ?? "-"}
+</h2>
+
+<p style="margin:0;color:#666;">
+${data.topJobs[0]?.company ?? ""}
+</p>
+
+<p style="margin-top:10px;">
+🎯 ${data.topJobs[0]?.clicks ?? 0} klikken
+</p>
+
+</div>
+
+${
+data.advertisingSalesEnabled
+? `
+<div style="
+background:#fff4e6;
+padding:24px;
+border-radius:12px;
+margin:30px 0;
+">
+
+<h3 style="margin-top:0;">
+💰 Managed Ads
+</h3>
+
+<p>
+Nieuwe advertenties:
+<strong>${data.advertisementsSold}</strong>
+</p>
+
+<p>
+Extra opbrengst:
+<strong>
+€${data.advertisementRevenue.toLocaleString("nl-NL")}
+</strong>
+</p>
+
+</div>
+`
+: ""
 }
 
-        <ul>
-          ${
-            data.sponsors
-              ?.slice(0, 3)
-              ?.map(
-                (s: any) =>
-                  `<li>${s.sponsor} (${s.clicks} klikken)</li>`
-              )
-              .join("") || ""
-          }
-        </ul>
+        <div style="
+background:#f3fdf5;
+padding:24px;
+border-radius:12px;
+margin:30px 0;
+">
 
-        <hr style="margin:30px 0;" />
+<h3 style="margin-top:0;">
+🧠 Coach van de maand
+</h3>
 
-        <h3>
-          Best presterende vacatures
-        </h3>
+<p style="
+font-size:16px;
+line-height:1.7;
+margin-bottom:0;
+">
 
-        <ul>
-          ${
-            data.topJobs
-              ?.map(
-                (job: any) =>
-                  `<li>${job.title} (${job.clicks} klikken)</li>`
-              )
-              .join("") || ""
-          }
-        </ul>
+${data.recommendation}
 
-        <hr style="margin:30px 0;" />
+</p>
 
-        <h3>
-          Advies van Sponsorjobs
-        </h3>
-
-        <p>
-          ${data.recommendation}
-        </p>
+</div>
 
         <div style="
           margin-top:40px;
