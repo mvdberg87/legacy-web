@@ -29,13 +29,14 @@ export default function TalentpoolPersonal({
       <div className="space-y-4">
 
         <input
+  autoFocus
   type="text"
   placeholder="Voornaam"
   value={firstName}
   onChange={(e) =>
     onChange("firstName", e.target.value)
   }
-  className={`w-full rounded-xl border p-3 ${
+  className={`w-full rounded-xl border px-4 py-3 text-base ${
     showErrors && !firstName.trim()
       ? "border-red-500"
       : "border-gray-300"
@@ -55,7 +56,7 @@ export default function TalentpoolPersonal({
   onChange={(e) =>
     onChange("lastName", e.target.value)
   }
-  className={`w-full rounded-xl border p-3 ${
+  className={`w-full rounded-xl border px-4 py-3 text-base ${
     showErrors && !lastName.trim()
       ? "border-red-500"
       : "border-gray-300"
@@ -73,7 +74,7 @@ export default function TalentpoolPersonal({
   placeholder="E-mailadres"
   value={email}
   onChange={(e) => onChange("email", e.target.value)}
-  className={`w-full rounded-xl border p-3 ${
+  className={`w-full rounded-xl border px-4 py-3 text-base ${
     showErrors && !email.trim()
       ? "border-red-500"
       : "border-gray-300"
@@ -91,7 +92,7 @@ export default function TalentpoolPersonal({
   placeholder="Telefoonnummer"
   value={phone}
   onChange={(e) => onChange("phone", e.target.value)}
-  className={`w-full rounded-xl border p-3 ${
+  className={`w-full rounded-xl border px-4 py-3 text-base ${
     showErrors && !phone.trim()
       ? "border-red-500"
       : "border-gray-300"

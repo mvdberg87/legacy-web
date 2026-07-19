@@ -172,22 +172,25 @@ setStep(0);
   return (
     <div className="fixed inset-0 z-50 overflow-y-auto bg-black/70 p-4">
 
-      <div className="flex min-h-full items-start justify-center py-6">
+      <div className="flex min-h-full items-start justify-center pt-2 sm:py-6">
 
-        <div className="w-full max-w-2xl max-h-[90vh] rounded-3xl bg-white shadow-2xl flex flex-col">
+        <div className="
+  flex h-[100dvh] w-full flex-col bg-white
+  sm:h-auto sm:max-h-[90vh] sm:max-w-2xl sm:rounded-3xl sm:shadow-2xl
+">
 
           {/* Header */}
           <div
-            className="p-8 text-white"
+            className="p-5 sm:p-8 text-white"
             style={{
               backgroundColor: club.primary_color ?? "#1d4ed8",
             }}
           >
-            <h2 className="text-3xl font-bold">
+            <h2 className="text-2xl sm:text-3xl font-bold">
               Talentpool
             </h2>
 
-            <p className="mt-2 text-lg opacity-90">
+            <p className="mt-2 text-base sm:text-lg opacity-90">
               Laat jouw talent zien aan de sponsoren van {club.name}.
             </p>
 
@@ -200,7 +203,7 @@ setStep(0);
           </div>
 
           {/* Content */}
-          <div className="flex-1 overflow-y-auto p-8">
+          <div className="flex-1 overflow-y-auto p-5 sm:p-8">
 
             {step === 0 && (
               <TalentpoolIntro
@@ -270,7 +273,27 @@ setStep(0);
 
           </div>
 
-          <div className="sticky bottom-0 flex flex-col gap-3 border-t bg-white px-8 py-5 sm:flex-row sm:justify-between">
+          <div
+  className="
+    sticky
+    bottom-0
+    border-t
+    bg-white
+
+    px-5
+    py-4
+
+    sm:px-8
+    sm:py-5
+
+    flex
+    flex-col-reverse
+    gap-3
+
+    sm:flex-row
+    sm:justify-between
+  "
+>
 
             <div>
               {step > 0 ? (
