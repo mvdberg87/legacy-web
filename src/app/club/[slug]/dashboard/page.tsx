@@ -81,6 +81,7 @@ export default function ClubDashboardPage() {
     useState<ClubDashboardInsights | null>(null);
   const [sponsors, setSponsors] =
     useState<SponsorOverviewRow[]>([]);
+    const [reports, setReports] = useState<any[]>([]);
 
   const [adsCount, setAdsCount] = useState(0);
   const [loading, setLoading] = useState(true);
@@ -195,6 +196,15 @@ stripe_connect_account_id
       console.log("DASHBOARD CLUB ID:", clubData.id);
 
       setClub(clubData);
+
+      const { data: reportsData } = await supabase
+  .from("monthly_reports")
+  .select("*")
+  .eq("club_id", clubData.id)
+  .order("month", { ascending: false })
+  .limit(12);
+
+setReports(reportsData ?? []);
 
 
       /* ===============================
@@ -969,6 +979,124 @@ async function connectStripe() {
       </div>
     ))}
   </div>
+</section>
+
+<section className="mb-12">
+
+  <h2 className="text-lg font-semibold mb-4">
+    📊 Maandrapporten
+  </h2>
+
+  {reports.length === 0 ? (
+
+    <div className="border rounded-xl p-6 bg-gray-50 text-gray-500">
+      Er zijn nog geen maandrapporten beschikbaar.
+    </div>
+
+  ) : (
+
+    <div className="border-4 border-[#0d1b2a] rounded-xl overflow-hidden">
+
+      <table className="min-w-full text-sm">
+
+        <thead className="bg-[#0d1b2a] text-white">
+
+          <tr>
+            <th className="px-4 py-2 text-left">
+              Maand
+            </th>
+
+            <th className="px-4 py-2 text-center">
+              Clicks
+            </th>
+
+            <th className="px-4 py-2 text-center">
+              Groei
+            </th>
+
+            <th className="px-4 py-2 text-center">
+              Status
+            </th>
+
+            <th className="px-4 py-2 text-center">
+  Score
+</th>
+
+            <th className="px-4 py-2 text-center">
+              Actie
+            </th>
+
+          </tr>
+
+        </thead>
+
+        <tbody>
+
+          {reports.map((report) => (
+
+            <tr
+              key={report.id}
+              className="border-t hover:bg-gray-50"
+            >
+
+              <td className="px-4 py-2">
+                {new Date(report.month).toLocaleDateString(
+                  "nl-NL",
+                  {
+                    month: "long",
+                    year: "numeric",
+                  }
+                )}
+              </td>
+
+              <td className="text-center">
+                {report.total_clicks}
+              </td>
+
+              <td className="text-center">
+                {report.growth > 0 ? "+" : ""}
+                {report.growth}%
+              </td>
+
+              <td className="text-center">
+                {report.status === "sent"
+                  ? "✅ Verzonden"
+                  : "❌ Mislukt"}
+              </td>
+
+              <td className="text-center font-semibold">
+  {report.sponsorjobs_score ?? "-"}
+</td>
+
+              <td className="text-center">
+
+                <Button
+                  size="sm"
+                  variant="outline"
+                  onClick={() =>
+                    window.open(
+                      `/api/club/view-monthly-report/${report.id}`,
+                      "_blank"
+                    )
+                  }
+                >
+                  Bekijk
+                </Button>
+
+              </td>
+
+            </tr>
+
+          ))}
+
+        </tbody>
+
+      </table>
+
+    </div>
+
+  )}
+
 </section>
 
         {/* Abonnement blijft exact zoals je had */}
