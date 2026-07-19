@@ -455,21 +455,7 @@ const monthName = firstDayLastMonth.toLocaleDateString("nl-NL", {
       const subject =
   `Sponsorjobs Maandrapportage | ${club.name} | ${monthName}`;
 
-      /* ===============================
-         SEND MAIL
-      =============================== */
-
-      console.log(
-  "SENDING REPORT:",
-  club.name,
-  email
-);
-
-      const { error: mailError } = await resend.emails.send({
-        from: "Sponsorjobs <no-reply@sponsorjobs.nl>",
-        to: email.toLowerCase(),
-        subject,
-        html: generateHtml({
+  const html = generateHtml({
   club,
   monthName,
 
@@ -479,9 +465,10 @@ const monthName = firstDayLastMonth.toLocaleDateString("nl-NL", {
   totalSharesLastMonth,
   shareRate,
   growth,
+
   sponsorjobsScore,
-scoreLabel,
-scoreColor,
+  scoreLabel,
+  scoreColor,
 
   sponsors,
   topJobs,
@@ -500,7 +487,23 @@ scoreColor,
   zeroClickJobs: zeroClickJobs.length,
 
   maxAds,
-}),
+});
+
+      /* ===============================
+         SEND MAIL
+      =============================== */
+
+      console.log(
+  "SENDING REPORT:",
+  club.name,
+  email
+);
+
+      const { error: mailError } = await resend.emails.send({
+        from: "Sponsorjobs <no-reply@sponsorjobs.nl>",
+        to: email.toLowerCase(),
+        subject,
+        html,
       });
 
       if (mailError) {
@@ -554,7 +557,9 @@ if (reportError) {
 
       status: "sent",
 
-      sent_at: new Date(),
+sent_at: new Date(),
+
+html,
     });
 
 if (reportError) {

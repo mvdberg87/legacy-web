@@ -42,19 +42,19 @@ export async function GET(
 
   const { data: profile } = await supabase
     .from("profiles")
-    .select("club_id")
+    .select("role")
     .eq("user_id", user.id)
     .maybeSingle();
 
-  if (!profile?.club_id) {
-    return new NextResponse("Geen club gekoppeld.", {
+  if (!profile || profile.role !== "admin") {
+    return new NextResponse("Geen toegang.", {
       status: 403,
     });
   }
 
   const { data: report, error } = await supabase
     .from("monthly_reports")
-    .select("club_id, html")
+    .select("html")
     .eq("id", id)
     .maybeSingle();
 
@@ -72,12 +72,6 @@ if (!report.html) {
     }
   );
 }
-
-  if (report.club_id !== profile.club_id) {
-    return new NextResponse("Geen toegang.", {
-      status: 403,
-    });
-  }
 
   return new NextResponse(report.html, {
     status: 200,
