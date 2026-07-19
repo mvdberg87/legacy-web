@@ -8,6 +8,7 @@ import { useEffect, useMemo, useState } from "react";
 import { getSupabaseBrowser } from "@/lib/supabaseBrowser";
 import Link from "next/link";
 import { Eye, Trash2 } from "lucide-react";
+import StatusBadge from "@/components/talentpool/StatusBadge";
 
 type Talent = {
   id: string;
@@ -18,6 +19,7 @@ type Talent = {
   education: string;
   study: string;
   city: string;
+  status: string;
   created_at: string;
 };
 
@@ -54,16 +56,17 @@ async function loadTalents() {
     const { data, error } = await supabase
       .from("talentpool_profiles")
       .select(`
-        id,
-        first_name,
-        last_name,
-        email,
-        preferences,
-        education,
-        study,
-        city,
-        created_at
-      `)
+  id,
+  first_name,
+  last_name,
+  email,
+  preferences,
+  education,
+  study,
+  city,
+  status,
+  created_at
+`)
       .eq("club_id", profile.club_id)
       .order("created_at", { ascending: false });
 
@@ -164,6 +167,9 @@ if (loading) {
             <thead className="bg-[#0d1b2a] text-white border-b-4 border-[#0d1b2a]">
               <tr>
                 <th className="px-4 py-3 text-left">Naam</th>
+                <th className="px-4 py-3 text-center">
+  Status
+</th>
                 <th className="px-4 py-3 text-center">Zoekt</th>
                 <th className="px-4 py-3 text-center">Opleiding</th>
                 <th className="px-4 py-3 text-center">Plaats</th>
@@ -187,6 +193,10 @@ if (loading) {
           {talent.email}
         </div>
       </td>
+
+      <td className="px-4 py-3">
+  <StatusBadge status={talent.status} />
+</td>
 
       <td className="px-4 py-3 text-center">
         {talent.preferences.join(", ")}

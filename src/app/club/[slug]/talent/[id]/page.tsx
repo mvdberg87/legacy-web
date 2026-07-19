@@ -7,6 +7,7 @@ import { useParams } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
 import { getSupabaseBrowser } from "@/lib/supabaseBrowser";
 import Link from "next/link";
+import StatusBadge from "@/components/talentpool/StatusBadge";
 
 type Talent = {
   id: string;
@@ -22,6 +23,10 @@ type Talent = {
   distance: number | null;
   available_from: string | null;
   notes: string | null;
+
+  status: string;
+  internal_notes: string | null;
+
   created_at: string;
 };
 
@@ -34,7 +39,14 @@ export default function TalentDetailPage() {
   const supabase = useMemo(() => getSupabaseBrowser(), []);
 
   const [talent, setTalent] = useState<Talent | null>(null);
+  const [status, setStatus] = useState("Nieuw");
+const [internalNotes, setInternalNotes] = useState("");
+const [saving, setSaving] = useState(false);
   const [loading, setLoading] = useState(true);
+  const hasChanges =
+  status !== talent?.status ||
+  internalNotes !== (talent?.internal_notes ?? "");
+  const [saved, setSaved] = useState(false);
 
   useEffect(() => {
     loadTalent();
@@ -55,11 +67,52 @@ export default function TalentDetailPage() {
         return;
       }
 
-      setTalent(data as Talent);
+      const profile = data as Talent;
+
+setTalent(profile);
+setStatus(profile.status ?? "Nieuw");
+setInternalNotes(profile.internal_notes ?? "");
     } finally {
       setLoading(false);
     }
   }
+
+  async function saveChanges() {
+  if (!talent) return;
+
+  try {
+    setSaving(true);
+
+    const { error } = await supabase
+      .from("talentpool_profiles")
+      .update({
+        status,
+        internal_notes: internalNotes,
+      })
+      .eq("id", talent.id);
+
+    if (error) {
+      console.error(error);
+      alert("Opslaan mislukt.");
+      return;
+    }
+
+    setSaved(true);
+
+setTimeout(() => {
+  setSaved(false);
+}, 3000);
+
+    setTalent({
+      ...talent,
+      status,
+      internal_notes: internalNotes,
+    });
+
+  } finally {
+    setSaving(false);
+  }
+}
 
   if (loading) {
     return (
@@ -98,14 +151,24 @@ export default function TalentDetailPage() {
 
           <div>
 
-            <h1 className="text-3xl font-bold text-[#0d1b2a]">
-              {talent.first_name} {talent.last_name}
-            </h1>
+            <div className="flex-1">
 
-            <p className="mt-2 text-gray-500">
-              Ingeschreven op{" "}
-              {new Date(talent.created_at).toLocaleDateString("nl-NL")}
-            </p>
+  <div className="flex flex-col gap-3 lg:flex-row lg:items-start lg:justify-between">
+
+    <div>
+      <h1 className="text-3xl font-bold text-[#0d1b2a]">
+        {talent.first_name} {talent.last_name}
+      </h1>
+
+      <p className="mt-2 text-gray-500">
+        Ingeschreven op{" "}
+        {new Date(talent.created_at).toLocaleDateString("nl-NL")}
+      </p>
+    </div>
+
+    <StatusBadge status={status} />
+
+</div>
 
             <div className="flex flex-wrap gap-2 mt-5">
 
@@ -119,6 +182,8 @@ export default function TalentDetailPage() {
               ))}
 
             </div>
+
+          </div>
 
           </div>
 
@@ -145,6 +210,35 @@ export default function TalentDetailPage() {
         </div>
 
       </div>
+
+      <div className="bg-white rounded-2xl shadow border-2 p-6">
+
+  <h2 className="text-lg font-semibold">
+  Status kandidaat
+</h2>
+
+<div className="mt-4 mb-6">
+  <StatusBadge status={status} />
+</div>
+
+<label className="block text-sm font-medium mb-2">
+  Status wijzigen
+</label>
+
+  <select
+    value={status}
+    onChange={(e) => setStatus(e.target.value)}
+    className="w-full rounded-xl border p-3"
+  >
+    <option>Nieuw</option>
+    <option>In behandeling</option>
+    <option>Voorgesteld aan sponsor</option>
+    <option>Gesprek gepland</option>
+    <option>Geplaatst</option>
+    <option>Afgewezen</option>
+  </select>
+
+</div>
 
       {/* Gegevens */}
       <div className="grid md:grid-cols-2 gap-6">
@@ -244,6 +338,51 @@ export default function TalentDetailPage() {
         </p>
 
       </div>
+
+      <div className="bg-white rounded-2xl shadow border-2 p-6">
+
+  <h2 className="text-lg font-semibold mb-4">
+    Interne notities
+  </h2>
+
+  <textarea
+    value={internalNotes}
+    onChange={(e) => setInternalNotes(e.target.value)}
+    rows={6}
+    className="w-full rounded-xl border p-3"
+    placeholder="Alleen zichtbaar voor de vereniging..."
+  />
+
+</div>
+
+<div className="space-y-4">
+
+  {saved && (
+    <div className="rounded-xl border border-green-300 bg-green-100 px-4 py-3 text-green-700">
+      ✓ Wijzigingen succesvol opgeslagen.
+    </div>
+  )}
+
+  <div className="flex justify-end">
+
+    <button
+      onClick={saveChanges}
+      disabled={saving || !hasChanges}
+      className={`
+        rounded-xl px-6 py-3 text-white transition
+        ${
+          saving || !hasChanges
+            ? "bg-gray-400 cursor-not-allowed"
+            : "bg-[#0d1b2a] hover:bg-[#12263d]"
+        }
+      `}
+    >
+      {saving ? "Opslaan..." : "Wijzigingen opslaan"}
+    </button>
+
+  </div>
+
+</div>
 
       {/* Terug */}
       <div>
