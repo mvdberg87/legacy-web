@@ -1,5 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
 import { supabaseAdmin } from "@/lib/supabaseAdmin";
+import { Resend } from "resend";
+
+const resend = new Resend(process.env.RESEND_API_KEY!);
 
 export async function POST(request: NextRequest) {
   try {
@@ -66,57 +69,94 @@ export async function POST(request: NextRequest) {
 
     // Club ophalen
     const { data: club, error: clubError } = await supabaseAdmin
-      .from("clubs")
-      .select("name, email")
-      .eq("id", clubId)
-      .single();
+  .from("clubs")
+  .select("id, name, email")
+  .eq("id", clubId)
+  .single();
+
+      // E-mailadres bepalen (club → profiel)
+let clubEmail = club?.email;
+
+if (!clubEmail && club) {
+  const { data: profile } = await supabaseAdmin
+    .from("profiles")
+    .select("email")
+    .eq("club_id", club.id)
+    .eq("active", true)
+    .limit(1)
+    .maybeSingle();
+
+  clubEmail = profile?.email;
+}
 
     // E-mails versturen (maar nooit de aanmelding blokkeren)
-    if (!clubError && club) {
+    if (!clubError && club && clubEmail) {
       try {
         await Promise.all([
-          fetch(`${process.env.NEXT_PUBLIC_SITE_URL}/api/email`, {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify({
-              type: "talentpool_new_profile",
+  resend.emails.send({
+    from: "Sponsorjobs <no-reply@sponsorjobs.nl>",
+    to: clubEmail,
+    subject: `Nieuwe Talentpool-aanmelding bij ${club.name}`,
+    html: `
+      <h2>Nieuwe Talentpool-aanmelding</h2>
 
-              clubName: club.name,
-              clubEmail: club.email,
+      <p><strong>Naam:</strong> ${firstName} ${lastName}</p>
+      <p><strong>E-mail:</strong> ${email}</p>
+      <p><strong>Telefoon:</strong> ${phone || "-"}</p>
 
-              talentName: `${firstName} ${lastName}`,
-              talentEmail: email,
-              talentPhone: phone,
+      <hr />
 
-              preferences,
-              education,
-              study,
-              field,
+      <p><strong>Voorkeuren:</strong> ${preferences?.join(", ") || "-"}</p>
 
-              city,
-              distance,
-              availableFrom,
-              notes,
-            }),
-          }),
+      <p>
+        <strong>Opleiding:</strong><br />
+        Niveau: ${education || "-"}<br />
+        Studie: ${study || "-"}<br />
+        Vakgebied: ${field || "-"}
+      </p>
 
-          fetch(`${process.env.NEXT_PUBLIC_SITE_URL}/api/email`, {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify({
-              type: "talentpool_confirmation",
+      <p>
+        <strong>Woonplaats:</strong> ${city || "-"}<br />
+        <strong>Reisafstand:</strong> ${distance ?? "-"} km<br />
+        <strong>Beschikbaar vanaf:</strong> ${
+          availableFrom
+            ? new Date(availableFrom).toLocaleDateString("nl-NL")
+            : "-"
+        }
+      </p>
 
-              clubName: club.name,
-              clubEmail: club.email,
+      ${
+        notes
+          ? `<p><strong>Toelichting:</strong><br/>${notes}</p>`
+          : ""
+      }
+    `,
+  }),
 
-              talentEmail: email,
-            }),
-          }),
-        ]);
+  resend.emails.send({
+    from: "Sponsorjobs <no-reply@sponsorjobs.nl>",
+    to: email,
+    replyTo: clubEmail,
+    subject: `Bedankt voor je aanmelding bij de Talentpool van ${club.name}`,
+    html: `
+      <h2>Bedankt voor je aanmelding!</h2>
+
+      <p>
+        Je profiel is succesvol toegevoegd aan de Talentpool van
+        <strong>${club.name}</strong>.
+      </p>
+
+      <p>
+        Wanneer één van de aangesloten sponsoren een passende vacature heeft,
+        kan er contact met je worden opgenomen.
+      </p>
+
+      <p>Veel succes!</p>
+
+      <p>Team Sponsorjobs</p>
+    `,
+  }),
+]);
       } catch (mailError) {
         console.error("❌ Talentpool mail error:", mailError);
       }
