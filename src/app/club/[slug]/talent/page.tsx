@@ -137,7 +137,7 @@ if (loading) {
         </p>
 
         {/* KPI's */}
-        <div className="grid gap-4 md:grid-cols-4 mb-8">
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
 
           <div className="rounded-xl border p-6">
             <p className="text-sm text-gray-500">Talenten</p>
@@ -160,6 +160,71 @@ if (loading) {
           </div>
 
         </div>
+
+        {/* Mobiele weergave */}
+<div className="md:hidden space-y-4 mb-6">
+  {talents.map((talent) => (
+    <div
+      key={talent.id}
+      className="rounded-xl border border-[#0d1b2a] p-4 shadow-sm"
+    >
+      <div className="flex items-start justify-between gap-3">
+        <div>
+          <h3 className="font-semibold text-lg">
+            {talent.first_name} {talent.last_name}
+          </h3>
+
+          <p className="text-sm text-gray-500 break-all">
+            {talent.email}
+          </p>
+        </div>
+
+        <StatusBadge status={talent.status} />
+      </div>
+
+      <div className="mt-4 space-y-2 text-sm">
+        <p>
+          <span className="font-medium">Zoekt:</span>{" "}
+          {talent.preferences.join(", ")}
+        </p>
+
+        <p>
+          <span className="font-medium">Opleiding:</span>{" "}
+          {talent.education} {talent.study}
+        </p>
+
+        <p>
+          <span className="font-medium">Plaats:</span>{" "}
+          {talent.city}
+        </p>
+
+        <p>
+          <span className="font-medium">Ingeschreven:</span>{" "}
+          {new Date(talent.created_at).toLocaleDateString("nl-NL")}
+        </p>
+      </div>
+
+      <div className="mt-5 flex gap-3">
+        <Link
+          href={`/club/${slug}/talent/${talent.id}`}
+          className="flex-1 rounded-xl border border-[#0d1b2a] px-4 py-2 text-center font-medium hover:bg-gray-100 transition"
+        >
+          <span className="inline-flex items-center gap-2 justify-center">
+            <Eye size={18} />
+            Bekijken
+          </span>
+        </Link>
+
+        <button
+          onClick={() => deleteTalent(talent.id)}
+          className="rounded-xl bg-red-600 px-4 py-2 text-white hover:bg-red-700 transition"
+        >
+          <Trash2 size={18} />
+        </button>
+      </div>
+    </div>
+  ))}
+</div>
 
         {/* Tabel */}
         <div className="hidden md:block overflow-x-auto">
