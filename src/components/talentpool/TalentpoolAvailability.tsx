@@ -4,7 +4,6 @@ type Props = {
   availableFrom: string;
   notes: string;
   onChange: (field: string, value: string | number) => void;
-  showErrors: boolean;
 };
 
 export default function TalentpoolAvailability({
@@ -13,7 +12,6 @@ export default function TalentpoolAvailability({
   availableFrom,
   notes,
   onChange,
-  showErrors,
 }: Props) {
   return (
     <div>
@@ -35,18 +33,8 @@ export default function TalentpoolAvailability({
           onChange={(e) =>
             onChange("city", e.target.value)
           }
-          className={`w-full rounded-xl border p-3 ${
-  showErrors && !city.trim()
-    ? "border-red-500"
-    : "border-gray-300"
-}`}
+          className="w-full rounded-xl border border-gray-300 p-3"
         />
-
-        {showErrors && !city.trim() && (
-  <p className="mt-1 text-sm text-red-600">
-    ⚠️ Woonplaats is verplicht.
-  </p>
-)}
 
         <div>
 
@@ -67,25 +55,25 @@ export default function TalentpoolAvailability({
 
         </div>
 
-        <input
-  type="date"
-  min={new Date().toISOString().split("T")[0]}
-  value={availableFrom}
-  onChange={(e) =>
-    onChange("availableFrom", e.target.value)
-  }
-  className={`w-full rounded-xl border p-3 ${
-    showErrors && !availableFrom
-      ? "border-red-500"
-      : "border-gray-300"
-  }`}
-/>
+        <div>
+  <label className="block text-sm font-medium mb-1">
+    Beschikbaar vanaf
+  </label>
 
-        {showErrors && !availableFrom && (
-  <p className="mt-1 text-sm text-red-600">
-    ⚠️ Kies een beschikbare datum.
+  <p className="mb-2 text-xs text-gray-500">
+    Bijvoorbeeld: 1 september 2026
   </p>
-)}
+
+  <input
+    type="date"
+    min={new Date().toISOString().split("T")[0]}
+    value={availableFrom}
+    onChange={(e) =>
+      onChange("availableFrom", e.target.value)
+    }
+    className="w-full rounded-xl border border-gray-300 p-3 text-gray-500"
+  />
+</div>
 
         <textarea
           rows={4}

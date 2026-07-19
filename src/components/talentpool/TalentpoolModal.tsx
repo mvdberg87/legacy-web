@@ -35,7 +35,7 @@ export default function TalentpoolModal({
     lastName: "",
     email: "",
     phone: "",
-    preferences: [],
+    preferences: [] as string[],
     education: "",
     study: "",
     field: "",
@@ -109,7 +109,7 @@ setStep(0);
                 lastName: "",
                 email: "",
                 phone: "",
-                preferences: [],
+                preferences: [] as string[],
                 education: "",
                 study: "",
                 field: "",
@@ -153,17 +153,10 @@ setStep(0);
       return formData.preferences.length > 0;
 
     case 3:
-      return (
-        formData.education.trim() !== "" &&
-        formData.study.trim() !== "" &&
-        formData.field.trim() !== ""
-      );
+  return true;
 
     case 4:
-      return (
-        formData.city.trim() !== "" &&
-        formData.availableFrom !== ""
-      );
+  return true;
 
     case 5:
       return (
@@ -240,7 +233,6 @@ setStep(0);
   education={formData.education}
   study={formData.study}
   field={formData.field}
-  showErrors={showErrors}
   onChange={updateField}
 />
             )}
@@ -251,7 +243,6 @@ setStep(0);
   distance={formData.distance}
   availableFrom={formData.availableFrom}
   notes={formData.notes}
-  showErrors={showErrors}
   onChange={updateField}
 />
             )}
@@ -304,7 +295,7 @@ setStep(0);
                       lastName: "",
                       email: "",
                       phone: "",
-                      preferences: [],
+                      preferences: [] as string[],
                       education: "",
                       study: "",
                       field: "",
@@ -359,7 +350,7 @@ if (step < 5) {
               }}
               className={`w-full sm:w-auto rounded-xl px-6 py-3 font-semibold text-white transition ${
   !canContinue()
-  ? "opacity-80"
+  ? "opacity-90"
   : "hover:opacity-90"
 }`}
               style={{
