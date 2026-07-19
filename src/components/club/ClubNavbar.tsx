@@ -10,7 +10,7 @@ export default function ClubNavbar({ slug }: { slug: string }) {
   const router = useRouter();
   const pathname = usePathname();
   const supabase = getSupabaseBrowser();
-
+const [publicSlug, setPublicSlug] = useState<string | null>(null);
   const [clubName, setClubName] = useState<string | null>(null);
   const [logoUrl, setLogoUrl] = useState<string | null>(null);
   const [menuOpen, setMenuOpen] = useState(false);
@@ -57,9 +57,9 @@ export default function ClubNavbar({ slug }: { slug: string }) {
   },
 
   {
-    label: "Publieke pagina",
-    path: `/club/${slug}/jobs/public`,
-  },
+  label: "Publieke pagina",
+  path: "__public__",
+},
 ];
 
   useEffect(() => {
@@ -67,19 +67,19 @@ export default function ClubNavbar({ slug }: { slug: string }) {
       const { data } = await supabase
         .from("clubs")
         .select(
-  "name, logo_url, advertising_sales_enabled"
+  "name, logo_url, advertising_sales_enabled, public_slug"
 )
         .eq("slug", slug)
         .maybeSingle();
 
       if (data) {
   setClubName(data.name);
-  setLogoUrl(data.logo_url);
+setLogoUrl(data.logo_url);
+setPublicSlug(data.public_slug);
 
-  setAdvertisingSalesEnabled(
-    data.advertising_sales_enabled ??
-      false
-  );
+setAdvertisingSalesEnabled(
+  data.advertising_sales_enabled ?? false
+);
 }
     })();
   }, [slug, supabase]);
@@ -90,11 +90,15 @@ export default function ClubNavbar({ slug }: { slug: string }) {
   }
 
   function navigate(path: string) {
-  if (path === `/club/${slug}/jobs/public`) {
-    window.open(`/${slug}`, "_blank", "noopener,noreferrer");
-    setMenuOpen(false);
-    return;
-  }
+  if (path === "__public__") {
+  window.open(
+    `/${publicSlug ?? slug}`,
+    "_blank",
+    "noopener,noreferrer"
+  );
+  setMenuOpen(false);
+  return;
+}
 
   router.push(path);
   setMenuOpen(false);
@@ -137,7 +141,9 @@ export default function ClubNavbar({ slug }: { slug: string }) {
         {/* Desktop navigatie */}
         <nav className="hidden xl:flex items-center gap-3">
           {links.map((link) => {
-            const isActive = pathname.startsWith(link.path);
+            const isActive =
+  link.path !== "__public__" &&
+  pathname.startsWith(link.path);
 
             return (
               <button
