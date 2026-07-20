@@ -122,7 +122,7 @@ if (packageKey === "basic") {
   subscription_data: subscriptionData,
 
     success_url: `${process.env.NEXT_PUBLIC_SITE_URL}/club/${clubSlug}/dashboard?upgrade=success`,
-    cancel_url: `${process.env.NEXT_PUBLIC_SITE_URL}/pricing`,
+    cancel_url: `${process.env.NEXT_PUBLIC_SITE_URL}/club/${clubSlug}/dashboard`,
   });
 
   return Response.json({ url: session.url });

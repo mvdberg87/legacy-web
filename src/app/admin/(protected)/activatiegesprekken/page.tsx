@@ -11,7 +11,7 @@ export default async function AdminActivationRequestsPage() {
 
   if (error) {
     return (
-      <div className="p-8">
+  <div className="p-8 text-[#0d1b2a]">
         <h1 className="text-2xl font-bold">Activatiegesprekken</h1>
 
         <p className="mt-6 text-red-500">
@@ -26,26 +26,26 @@ export default async function AdminActivationRequestsPage() {
 
       <div className="flex items-center justify-between mb-8">
         <div>
-          <h1 className="text-3xl font-bold">
+          <h1 className="text-3xl font-bold text-white">
             Activatiegesprekken
           </h1>
 
-          <p className="text-gray-500 mt-2">
+          <p className="mt-2 text-white/70">
             Overzicht van alle aanvragen voor een vrijblijvend
             activatiegesprek.
           </p>
         </div>
 
-        <div className="text-sm text-gray-500">
+        <div className="text-sm text-white/70">
           {requests?.length ?? 0} aanvragen
         </div>
       </div>
 
-      <div className="overflow-hidden rounded-xl border bg-white">
+      <div className="overflow-hidden rounded-xl border bg-white text-[#0d1b2a]">
 
         <table className="w-full">
 
-          <thead className="bg-gray-100">
+          <thead className="bg-[#0d1b2a] text-white">
 
             <tr>
 
@@ -79,16 +79,16 @@ export default async function AdminActivationRequestsPage() {
             ) : (
               requests?.map((request) => (
                 <tr
-                  key={request.id}
-                  className="border-t hover:bg-gray-50"
-                >
+  key={request.id}
+  className="border-t text-[#0d1b2a] hover:bg-gray-50"
+>
                   <td className="px-5 py-4">
                     <span className="rounded-full bg-green-100 px-3 py-1 text-sm font-medium text-green-700">
                       {request.status}
                     </span>
                   </td>
 
-                  <td className="px-5 py-4 font-medium">
+                  <td className="px-5 py-4 font-medium text-[#0d1b2a]">
                     {request.company_name}
                   </td>
 

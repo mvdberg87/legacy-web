@@ -22,7 +22,7 @@ export default async function ActivationRequestDetailPage({
   }
 
   return (
-    <div className="p-8 space-y-8">
+  <div className="p-8 space-y-8 text-[#0d1b2a]">
 
       <div className="flex items-center justify-between">
 
@@ -30,7 +30,7 @@ export default async function ActivationRequestDetailPage({
 
           <Link
             href="/admin/activatiegesprekken"
-            className="text-sm text-gray-500 hover:underline"
+            className="text-sm text-[#0d1b2a] hover:text-[#1f9d55] hover:underline"
           >
             ← Terug naar overzicht
           </Link>
@@ -109,7 +109,7 @@ export default async function ActivationRequestDetailPage({
               Toelichting
             </p>
 
-            <div className="rounded-lg border bg-gray-50 p-4 whitespace-pre-wrap">
+            <div className="rounded-lg border bg-gray-50 p-4 whitespace-pre-wrap text-[#0d1b2a]">
               {request.notes || "Geen toelichting opgegeven."}
             </div>
 
@@ -127,9 +127,9 @@ export default async function ActivationRequestDetailPage({
 
             <div className="space-y-3">
 
-              <div className="rounded-lg bg-green-100 px-4 py-2">
-                {request.status}
-              </div>
+              <div className="rounded-lg bg-green-100 px-4 py-2 text-green-700 font-medium">
+  {request.status}
+</div>
 
               <p className="text-sm text-gray-500">
                 Status wijzigen voegen we in de volgende stap toe.

@@ -35,11 +35,20 @@ export default function ActivatieGesprekBedanktPage() {
 
           <Link href="/">
             <Button
-              variant="outline"
-              className="rounded-2xl px-8 py-6 border-white text-white hover:bg-white hover:text-[#0d1b2a]"
-            >
-              Naar homepage
-            </Button>
+  variant="outline"
+  className="
+    rounded-2xl
+    px-8
+    py-6
+    border-white
+    bg-transparent
+    !text-white
+    hover:bg-white
+    hover:!text-[#0d1b2a]
+  "
+>
+  Naar homepage
+</Button>
           </Link>
 
         </div>
