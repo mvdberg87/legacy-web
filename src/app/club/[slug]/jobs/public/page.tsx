@@ -145,12 +145,16 @@ const {
 } = await supabaseAdmin
   .from("company_advertisements")
   .select(`
-    id,
-    company_name,
-    company_website,
-    vacancy_url,
-    is_featured
-  `)
+  id,
+  title,
+  job_title,
+  company_name,
+  company_website,
+  vacancy_url,
+  logo_url,
+  is_featured,
+  created_at
+`)
   .eq("club_id", club.id)
   .eq("status", "active")
   .is("deleted_at", null);
@@ -192,9 +196,9 @@ console.log(
     .map((ad) => ({
       id: ad.id,
       company_name: ad.company_name,
-      job_title: "Vacature bekijken",
+      job_title: ad.job_title ?? ad.title,
       link_url: ad.vacancy_url,
-      image_url: null,
+      image_url: ad.logo_url,
       is_featured: ad.is_featured,
     }));
 
@@ -209,13 +213,13 @@ const marketplaceJobsMapped =
     .filter((ad) => !ad.is_featured)
     .map((ad) => ({
       id: ad.id,
-      job_title: "Vacature bekijken",
+      job_title: ad.job_title ?? ad.title,
       company_name: ad.company_name,
-      created_at: new Date().toISOString(),
+      created_at: ad.created_at,
       apply_url: ad.vacancy_url,
       is_featured: false,
       company_website: ad.company_website,
-      company_logo_url: null,
+      company_logo_url: ad.logo_url,
       source: "advertisement" as const,
       total_clicks: 0,
       ctr: 0,
