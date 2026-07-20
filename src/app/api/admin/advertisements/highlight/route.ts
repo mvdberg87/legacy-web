@@ -24,17 +24,6 @@ await supabaseAdmin
   })
   .eq("id", advertisementId);
 
-await supabaseAdmin
-  .from("jobs")
-  .update({
-    featured: isFeatured,
-  })
-  .eq("club_id", advertisement.club_id)
-  .eq(
-    "company_name",
-    advertisement.company_name
-  );
-
     return NextResponse.json({
       success: true,
     });

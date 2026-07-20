@@ -213,8 +213,8 @@ console.log(
 
 const combinedAds = [
   ...featuredJobAds,
-  ...(marketplaceAdsMapped ?? []),
-  ...(manualAds ?? []),
+  ...marketplaceAdsMapped,
+  ...manualAdsMapped,
 ];
 
 const marketplaceJobsMapped =

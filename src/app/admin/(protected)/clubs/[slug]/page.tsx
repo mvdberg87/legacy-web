@@ -781,12 +781,10 @@ async function saveNewEmail() {
               <td className="px-4 py-3">
   <div className="font-medium">
   <div className="font-medium">
-  <span className="text-xs bg-blue-100 text-blue-700 px-2 py-0.5 rounded mr-2">
-    Advertentie
-  </span>
-
+  <div className="font-medium">
   {ad.is_featured && "⭐ "}
   {ad.title}
+</div>
 </div>
 
   {ad.status === "inactive" && (

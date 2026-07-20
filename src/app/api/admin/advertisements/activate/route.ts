@@ -86,8 +86,7 @@ if (!existingJob) {
         apply_email:
           advertisement.company_email,
 
-        featured:
-          advertisement.is_featured,
+        featured: false,
 
         is_active: true,
         is_approved: true,
