@@ -1,6 +1,7 @@
 import { notFound } from "next/navigation";
 import Link from "next/link";
 import { supabaseAdmin } from "@/lib/supabaseAdmin";
+import ActivationRequestForm from "./ActivationRequestForm";
 
 type Props = {
   params: {
@@ -117,41 +118,7 @@ export default async function ActivationRequestDetailPage({
 
         </div>
 
-        <div className="space-y-6">
-
-          <div className="rounded-xl border bg-white p-6">
-
-            <h2 className="font-semibold mb-4">
-              Status
-            </h2>
-
-            <div className="space-y-3">
-
-              <div className="rounded-lg bg-green-100 px-4 py-2 text-green-700 font-medium">
-  {request.status}
-</div>
-
-              <p className="text-sm text-gray-500">
-                Status wijzigen voegen we in de volgende stap toe.
-              </p>
-
-            </div>
-
-          </div>
-
-          <div className="rounded-xl border bg-white p-6">
-
-            <h2 className="font-semibold mb-4">
-              Aangevraagd op
-            </h2>
-
-            <p>
-              {new Date(request.created_at).toLocaleString("nl-NL")}
-            </p>
-
-          </div>
-
-        </div>
+                <ActivationRequestForm request={request} />
 
       </div>
 
