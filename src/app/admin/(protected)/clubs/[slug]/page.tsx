@@ -780,8 +780,14 @@ async function saveNewEmail() {
 
               <td className="px-4 py-3">
   <div className="font-medium">
+  <div className="font-medium">
+  <span className="text-xs bg-blue-100 text-blue-700 px-2 py-0.5 rounded mr-2">
+    Advertentie
+  </span>
+
   {ad.is_featured && "⭐ "}
-  {ad.job_title}
+  {ad.title}
+</div>
 
   {ad.status === "inactive" && (
     <span className="ml-2 text-red-500 text-xs">
@@ -928,7 +934,7 @@ async function saveNewEmail() {
             <thead className="bg-[#0d1b2a] text-white text-xs uppercase">
               <tr>
   <th className="px-4 py-3 text-left">
-    Vacature
+    Advertentie
   </th>
 
   <th className="px-4 py-3 text-center">

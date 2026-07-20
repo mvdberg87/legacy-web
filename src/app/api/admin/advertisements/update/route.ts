@@ -8,7 +8,7 @@ export async function POST(
 
     const {
   advertisementId,
-  jobTitle,
+  title,
   companyName,
   vacancyUrl,
   packageName,
@@ -21,10 +21,10 @@ export async function POST(
 await supabaseAdmin
   .from("company_advertisements")
   .update({
-    job_title: jobTitle,
-    company_name: companyName,
-    vacancy_url: vacancyUrl,
-  })
+  title,
+  company_name: companyName,
+  vacancy_url: vacancyUrl,
+})
   .eq("id", advertisementId);
 
 /* ===============================

@@ -23,7 +23,7 @@ type Club = {
 
 type Job = {
   id: string;
-  job_title: string;
+  title: string;
   company_name: string;
   created_at: string;
   apply_url: string | null;
@@ -36,7 +36,7 @@ type Job = {
 
 type Ad = {
   id: string;
-  job_title?: string;
+  title?: string;
   company_name: string;
   link_url: string;
   image_url?: string | null;
@@ -414,7 +414,7 @@ const logo = getCompanyLogo(website, company.logo);
                   <ListingCard
   href={ad.link_url}
   external
-  title={ad.job_title ?? "Vacature bekijken"}
+  title={ad.title ?? "Vacature bekijken"}
   company={ad.company_name}
   website={ad.link_url}
   cachedLogo={ad.image_url}
@@ -514,7 +514,7 @@ const logo = getCompanyLogo(website, company.logo);
       <ListingCard
         href={job.apply_url ?? "#"}
         external
-        title={job.job_title}
+        title={job.title}
         company={job.company_name}
         website={job.company_website || job.apply_url}
         cachedLogo={job.company_logo_url}

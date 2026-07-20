@@ -12,6 +12,7 @@ import { Button } from "@/components/ui/button";
 
 type Advertisement = {
   id: string;
+  title: string | null;
   company_name: string;
   company_email: string;
   vacancy_url: string;
@@ -35,7 +36,7 @@ export default function EditAdvertisementPage() {
 
   const [ad, setAd] = useState<Advertisement | null>(null);
 
-  const [jobTitle, setJobTitle] = useState("");
+  const [title, setTitle] = useState("");
 
   useEffect(() => {
     load();
@@ -56,7 +57,7 @@ export default function EditAdvertisementPage() {
     if (error) throw error;
 
     setAd(data);
-    setJobTitle(data.job_title ?? "");
+    setTitle(data.title ?? "");
 
   } catch (err: any) {
 
@@ -80,13 +81,13 @@ export default function EditAdvertisementPage() {
     const { error } = await supabase
       .from("company_advertisements")
       .update({
-        company_name: ad.company_name,
-        job_title: jobTitle,
-        vacancy_url: ad.vacancy_url,
-        status: ad.status,
-        start_date: ad.start_date,
-        end_date: ad.end_date,
-      })
+  company_name: ad.company_name,
+  title,
+  vacancy_url: ad.vacancy_url,
+  status: ad.status,
+  start_date: ad.start_date,
+  end_date: ad.end_date,
+})
       .eq("id", id);
 
     setSaving(false);
@@ -144,12 +145,12 @@ if (error) {
 
         <div>
   <label className="block text-sm mb-1 text-black">
-  Functietitel
+  Titel
 </label>
 
  <Input
-  value={jobTitle}
-  onChange={(e) => setJobTitle(e.target.value)}
+  value={title}
+  onChange={(e) => setTitle(e.target.value)}
 />
 </div>
 

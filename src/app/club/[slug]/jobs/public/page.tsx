@@ -109,7 +109,7 @@ if (jobIds.length > 0) {
     .filter((job) => job.featured)
     .map((job) => ({
       id: `job-${job.id}`,
-      job_title: job.title,   // ✅ BELANGRIJK
+      title: job.title,
       company_name: job.company_name,
       link_url: job.apply_url,
       image_url: job.company_logo_url,
@@ -120,15 +120,15 @@ if (jobIds.length > 0) {
      4️⃣ Handmatige advertenties
      =============================== */
   const { data: manualAds } = await supabase
-    .from("club_ads")
-    .select(`
-      id,
-      company_name,
-      image_url,
-      link_url,
-      is_featured,
-      job_id
-    `)
+  .from("club_ads")
+  .select(`
+    id,
+    company_name,
+    link_url,
+    image_url,
+    is_featured,
+    job_id
+`)
     .eq("club_id", club.id)
     .eq("is_active", true)
     .is("archived_at", null)
@@ -147,7 +147,6 @@ const {
   .select(`
   id,
   title,
-  job_title,
   company_name,
   company_website,
   vacancy_url,
@@ -175,7 +174,7 @@ console.log(
   const jobsMapped =
   (jobs ?? []).map((job) => ({
     id: job.id,
-    job_title: job.title,
+    title: job.title,
     company_name: job.company_name,
     created_at: job.created_at,
     apply_url: job.apply_url,
@@ -196,11 +195,21 @@ console.log(
     .map((ad) => ({
       id: ad.id,
       company_name: ad.company_name,
-      job_title: ad.job_title ?? ad.title,
+      title: ad.title,
       link_url: ad.vacancy_url,
       image_url: ad.logo_url,
       is_featured: ad.is_featured,
     }));
+
+    const manualAdsMapped =
+  (manualAds ?? []).map((ad) => ({
+    id: ad.id,
+    title: "Vacature bekijken",
+    company_name: ad.company_name,
+    link_url: ad.link_url,
+    image_url: ad.image_url,
+    is_featured: ad.is_featured,
+  }));
 
 const combinedAds = [
   ...featuredJobAds,
@@ -213,7 +222,7 @@ const marketplaceJobsMapped =
     .filter((ad) => !ad.is_featured)
     .map((ad) => ({
       id: ad.id,
-      job_title: ad.job_title ?? ad.title,
+      title: ad.title,
       company_name: ad.company_name,
       created_at: ad.created_at,
       apply_url: ad.vacancy_url,

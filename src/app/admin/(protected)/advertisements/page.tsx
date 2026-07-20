@@ -27,7 +27,7 @@ type Advertisement = {
   club_name: string;
   slug: string;
 
-  job_title: string | null;
+  title: string | null;
 
   company_name: string;
   company_email: string;
@@ -122,8 +122,7 @@ const [rejectionReason, setRejectionReason] =
 const [editCompanyName, setEditCompanyName] =
   useState("");
 
-  const [editJobTitle, setEditJobTitle] =
-  useState("");
+  const [editTitle, setEditTitle] = useState("");
 
 const [editVacancyUrl, setEditVacancyUrl] =
   useState("");
@@ -225,13 +224,9 @@ async function saveAdvertisement() {
 
       body: JSON.stringify({
   advertisementId: editingAd.id,
-
-  jobTitle: editJobTitle,
-
+  title: editTitle,
   companyName: editCompanyName,
-
   vacancyUrl: editVacancyUrl,
-
   packageName: editPackageName,
 }),
     }
@@ -775,7 +770,7 @@ a.status !== "archived"
 
 <td className="px-4 py-3">
   <div className="font-medium">
-    {ad.job_title ?? "Geen functietitel"}
+    {ad.title ?? "Geen titel"}
   </div>
 
   <div className="text-xs text-gray-500">
@@ -905,7 +900,7 @@ a.status !== "archived"
   onClick={() => {
     setEditingAd(ad);
 
-    setEditJobTitle(ad.job_title ?? "");
+    setEditTitle(ad.title ?? "");
     setEditCompanyName(ad.company_name ?? "");
     setEditVacancyUrl(ad.vacancy_url ?? "");
     setEditPackageName(ad.package_name ?? "");
@@ -985,11 +980,11 @@ a.status !== "archived"
 
 </DialogHeader>
 
-      <Label>Vacaturetitel</Label>
+      <Label>Titel</Label>
 
 <Input
-  value={editJobTitle}
-  onChange={(e) => setEditJobTitle(e.target.value)}
+  value={editTitle}
+  onChange={(e) => setEditTitle(e.target.value)}
 />
 
 <Label>Bedrijfsnaam</Label>
