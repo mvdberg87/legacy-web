@@ -2,6 +2,7 @@ import { notFound } from "next/navigation";
 import Link from "next/link";
 import { supabaseAdmin } from "@/lib/supabaseAdmin";
 import ActivationRequestForm from "./ActivationRequestForm";
+import { ArrowLeft } from "lucide-react";
 
 type Props = {
   params: {
@@ -30,11 +31,12 @@ export default async function ActivationRequestDetailPage({
         <div>
 
           <Link
-            href="/admin/activatiegesprekken"
-            className="text-sm text-[#0d1b2a] hover:text-[#1f9d55] hover:underline"
-          >
-            ← Terug naar overzicht
-          </Link>
+  href="/admin/activatiegesprekken"
+  className="inline-flex items-center gap-2 rounded-lg bg-[#0d1b2a] px-4 py-2 text-sm font-medium text-white shadow-sm transition hover:bg-[#16324f]"
+>
+  <ArrowLeft className="h-4 w-4" />
+  Terug naar activatiegesprekken
+</Link>
 
           <h1 className="mt-3 text-3xl font-bold">
             {request.company_name}
