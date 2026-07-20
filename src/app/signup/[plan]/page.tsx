@@ -77,21 +77,21 @@ export default function SignupPage() {
   plus: {
     title: "Plus",
     price: "€49 / maand",
-    subtitle: "2 maanden gratis proef",
+    subtitle: "Direct starten met Plus",
     button: "Start Plus",
   },
 
   pro: {
     title: "Pro",
     price: "€79 / maand",
-    subtitle: "2 maanden gratis proef",
+    subtitle: "Direct starten met Pro",
     button: "Start Pro",
   },
 
   unlimited: {
     title: "Unlimited",
     price: "€99 / maand",
-    subtitle: "2 maanden gratis proef",
+    subtitle: "Direct starten met Unlimited",
     button: "Start Unlimited",
   },
 };
