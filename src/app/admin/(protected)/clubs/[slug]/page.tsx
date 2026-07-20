@@ -782,7 +782,6 @@ async function saveNewEmail() {
   <div className="font-medium">
   <div className="font-medium">
   <div className="font-medium">
-  {ad.is_featured && "⭐ "}
   {ad.title}
 </div>
 </div>
