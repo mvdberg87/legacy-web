@@ -240,7 +240,7 @@ export default function ClubLoginPage() {
           </p>
 
           <Link
-            href="/signup"
+            href="/signup/basic"
             className="block w-full py-2 rounded-xl bg-[#1f9d55] text-white font-semibold hover:bg-[#15803d] transition"
           >
             Start gratis (2 maanden)

@@ -20,9 +20,13 @@ export default function AdminNavbar() {
      =============================== */
   const links = [
   { label: "Dashboard", path: "/admin/dashboard" },
+
   { label: "Clubaanvragen", path: "/admin/club-aanvragen" },
-  { label: "Advertenties", path: "/admin/advertisements" },
   { label: "Profielen", path: "/admin/profiles" },
+
+  { label: "Activatiegesprekken", path: "/admin/activatiegesprekken" },
+  { label: "Advertenties", path: "/admin/advertisements" },
+
   { label: "Abonnementen", path: "/admin/revenue" },
   { label: "Analytics", path: "/admin/analytics" },
 ];

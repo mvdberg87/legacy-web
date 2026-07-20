@@ -5,6 +5,7 @@ import Navbar from "@/components/Navbar";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { useParams } from "next/navigation";
 
 export default function SignupPage() {
   const [form, setForm] = useState({
@@ -35,7 +36,10 @@ export default function SignupPage() {
       const res = await fetch("/api/auth/signup", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(form),
+        body: JSON.stringify({
+  ...form,
+  packageKey: plan,
+}),
       });
 
       const data = await res.json();
@@ -60,6 +64,47 @@ export default function SignupPage() {
     }
   }
 
+  const { plan } = useParams<{ plan: string }>();
+
+  const plans = {
+  basic: {
+  title: "Basic",
+  price: "€0",
+  subtitle: "2 maanden gratis proef",
+  button: "Start Basic",
+},
+
+  plus: {
+    title: "Plus",
+    price: "€49 / maand",
+    subtitle: "2 maanden gratis proef",
+    button: "Start Plus",
+  },
+
+  pro: {
+    title: "Pro",
+    price: "€79 / maand",
+    subtitle: "2 maanden gratis proef",
+    button: "Start Pro",
+  },
+
+  unlimited: {
+    title: "Unlimited",
+    price: "€99 / maand",
+    subtitle: "2 maanden gratis proef",
+    button: "Start Unlimited",
+  },
+};
+
+const selectedPlan =
+  plans[plan as keyof typeof plans] ?? plans.basic;
+
+  const validPlans = ["basic", "plus", "pro", "unlimited"];
+
+if (!validPlans.includes(plan)) {
+  return null;
+}
+
   return (
     <>
       <Navbar />
@@ -73,16 +118,21 @@ export default function SignupPage() {
           {/* HEADLINE */}
           <div className="text-center space-y-2">
             <h1 className="text-xl font-semibold">
-              Start met Sponsorjobs
-            </h1>
+  Start {selectedPlan.title}
+</h1>
 
-            <p className="text-sm text-gray-600">
-              Genereer nieuwe sponsorinkomsten met vacatures
-            </p>
+<p className="text-3xl font-bold text-[#1f9d55] mt-2">
+  {selectedPlan.price}
+</p>
 
-            <p className="text-sm font-semibold text-[#1f9d55]">
-              🚀 2 maanden gratis toegang
-            </p>
+<p className="text-sm font-semibold text-[#1f9d55]">
+  🚀 {selectedPlan.subtitle}
+</p>
+
+<p className="text-sm text-gray-600">
+  Genereer nieuwe sponsorinkomsten met vacatures
+</p>
+
           </div>
 
           {/* USP BLOCK */}
@@ -195,8 +245,8 @@ export default function SignupPage() {
   disabled={loading}
 >
   {loading
-    ? "Bezig…"
-    : "Start gratis (2 maanden)"}
+  ? "Bezig…"
+  : selectedPlan.button}
 </Button>
 
           <p className="mt-3 text-center text-xs text-gray-500">

@@ -17,6 +17,7 @@ type SignupRequest = {
   club_name: string;
   email: string;
   status: "pending" | "approved" | "rejected";
+  selected_package: string;
 };
 
 /* ===============================
@@ -93,7 +94,7 @@ if (profileError || !profile || profile.role !== "admin") {
        ====================================================== */
     const { data: signupData, error: signupError } = await supabaseAdmin
       .from("club_signup_requests")
-      .select("id, club_name, email, status")
+      .select("id, club_name, email, status, selected_package")
       .eq("id", requestId)
       .single();
 
@@ -182,6 +183,10 @@ console.log("✅ auth user:", user.id, user.email);
         status: "approved",
         owner_id: user.id,
         approved_at: new Date().toISOString(),
+        subscription_package: signup.selected_package,
+active_package: signup.selected_package,
+current_plan: signup.selected_package,
+pending_package: signup.selected_package,
       })
       .select("id")
       .single();

@@ -11,7 +11,13 @@ export const runtime = "nodejs";
    =============================== */
 export async function POST(req: NextRequest) {
   try {
-    const { clubName, contactName, email, phone } = await req.json();
+    const {
+  clubName,
+  contactName,
+  email,
+  phone,
+  packageKey,
+} = await req.json();
 
     if (!clubName || !contactName || !email) {
       return NextResponse.json(
@@ -66,6 +72,7 @@ export async function POST(req: NextRequest) {
   email: normalizedEmail,
   message: contactName,
   phone: phone ?? null,
+  selected_package: packageKey,
   status: "pending",
 });
 
@@ -92,6 +99,7 @@ console.log("Sending admin notification email...");
   <h2>Nieuwe club aangemeld</h2>
   <p><strong>Club:</strong> ${clubName}</p>
   <p><strong>Contactpersoon:</strong> ${contactName}</p>
+  <p><strong>Pakket:</strong> ${packageKey}</p>
   <p><strong>E-mail:</strong> ${normalizedEmail}</p>
   <p><strong>Telefoon:</strong> ${phone ?? "niet opgegeven"}</p>
   <p>

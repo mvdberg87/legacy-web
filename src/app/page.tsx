@@ -33,7 +33,7 @@ Sponsorjobs helpt sportverenigingen om vacatures van sponsoren zichtbaar te make
 </Link>
 
           <Link
-  href="/signup"
+  href="/signup/basic"
   className="border border-white px-6 py-3 rounded-xl font-semibold 
            hover:bg-white hover:text-[#0d1b2a] transition duration-200"
 >
@@ -226,7 +226,7 @@ Sponsorjobs helpt sportverenigingen om vacatures van sponsoren zichtbaar te make
   <div className="mt-10 flex flex-col md:flex-row gap-4 justify-center">
 
     <Link
-      href="/signup"
+      href="/signup/basic"
       className="bg-[#1f9d55] px-8 py-4 rounded-2xl font-semibold hover:bg-[#15803d] transition"
     >
       Start gratis met je club

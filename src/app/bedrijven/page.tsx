@@ -572,44 +572,82 @@ const startCheckout = async () => {
 
 </section>
 
-      {/* CTA */}
-      <section className="py-24 text-center">
+      {/* ACTIVATIEGESPREK */}
+<section className="py-24 bg-white text-black">
 
-        <h2 className="text-3xl font-bold">
-          Wil je meer halen uit je sponsoren?
-        </h2>
+  <div className="max-w-5xl mx-auto px-6 text-center">
 
-        <p className="mt-6 text-white/70 max-w-xl mx-auto">
-          Ontdek hoe sponsoractivatie en recruitment samen
-          nieuwe waarde kunnen creëren voor jouw vereniging.
+    <h2 className="text-4xl font-bold">
+      Benieuwd wat sponsoring voor jouw recruitment kan betekenen?
+    </h2>
+
+    <p className="mt-6 text-lg text-gray-600 max-w-3xl mx-auto">
+      De meeste bedrijven benutten hun sponsoring vooral voor zichtbaarheid.
+      Met Sponsorjobs zetten we sponsoring ook in als recruitmentkanaal.
+      Tijdens een vrijblijvend activatiegesprek laten we zien hoe je lokaal
+      talent bereikt via sportverenigingen, welke activaties het beste passen
+      bij jouw organisatie en hoe je meer rendement haalt uit je
+      sponsorinvestering.
+    </p>
+
+    <div className="mt-14 grid md:grid-cols-2 lg:grid-cols-4 gap-6 text-left">
+
+      <div className="rounded-2xl border p-6">
+        <h3 className="font-semibold text-lg">
+          🎯 Bereik lokaal talent
+        </h3>
+
+        <p className="mt-3 text-gray-600 text-sm">
+          Ontdek welke verenigingen het beste aansluiten bij jouw doelgroep.
         </p>
+      </div>
 
-        <div className="mt-10">
+      <div className="rounded-2xl border p-6">
+        <h3 className="font-semibold text-lg">
+          📈 Meer rendement
+        </h3>
 
-          <div className="mt-10 flex flex-col md:flex-row gap-4 justify-center">
+        <p className="mt-3 text-gray-600 text-sm">
+          Maak van je sponsorbijdrage een krachtig recruitmentkanaal.
+        </p>
+      </div>
 
-  <Link
-    href="/signup"
-    className="bg-[#1f9d55] px-8 py-4 rounded-2xl font-semibold hover:bg-[#15803d] transition"
-  >
-    Start jouw recruitment activatie
-  </Link>
+      <div className="rounded-2xl border p-6">
+        <h3 className="font-semibold text-lg">
+          🤝 Activatie op maat
+        </h3>
 
-  <Link
-    href="/contact"
-    target="_blank"
-    rel="noopener noreferrer"
-    className="border border-white px-8 py-4 rounded-2xl font-semibold hover:bg-white hover:text-[#0d1b2a] transition"
-  >
-    Plan een activatiegesprek
-  </Link>
+        <p className="mt-3 text-gray-600 text-sm">
+          Samen bepalen we de beste activatie voor jouw vacatures.
+        </p>
+      </div>
 
-</div>
+      <div className="rounded-2xl border p-6">
+        <h3 className="font-semibold text-lg">
+          📊 Inzicht & advies
+        </h3>
 
-        </div>
+        <p className="mt-3 text-gray-600 text-sm">
+          Je krijgt direct inzicht in de mogelijkheden, het bereik en de investering.
+        </p>
+      </div>
 
-      </section>
+    </div>
 
+    <div className="mt-14">
+
+      <Link
+        href="/bedrijven/activatiegesprek"
+        className="inline-flex bg-[#1f9d55] text-white px-10 py-4 rounded-2xl font-semibold hover:bg-[#15803d] transition"
+      >
+        Plan een vrijblijvend activatiegesprek
+      </Link>
+
+    </div>
+
+  </div>
+
+</section>
 
     </main>
   );

@@ -53,7 +53,7 @@ export default function Navbar() {
   </Link>
 
   <Link
-    href="/signup"
+    href="/signup/basic"
     className="bg-[#1f9d55] text-white px-5 py-2 rounded-xl hover:bg-[#15803d] transition"
   >
     START GRATIS
@@ -65,7 +65,7 @@ export default function Navbar() {
         <div className="flex items-center gap-4 md:hidden">
 
           <Link
-            href="/signup"
+            href="/signup/basic"
             className="bg-[#1f9d55] text-white px-4 py-2 rounded-lg text-sm font-semibold"
           >
             START

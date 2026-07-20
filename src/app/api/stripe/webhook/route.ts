@@ -508,6 +508,8 @@ if (!packageKey) {
   .from("clubs")
   .update({
     active_package: packageKey,
+    current_plan: packageKey,
+subscription_package: packageKey,
     stripe_subscription_id: subscription.id,
     stripe_customer_id: subscription.customer as string, // 👈 toevoegen
     subscription_status: subscription.status,
@@ -622,6 +624,8 @@ if (!packageKey) {
   .from("clubs")
   .update({
     active_package: "basic",
+    current_plan: "basic",
+subscription_package: "basic",
     subscription_status: "cancelled",
     billing_status: "canceled",
     stripe_subscription_id: null,
