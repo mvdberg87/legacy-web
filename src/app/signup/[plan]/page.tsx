@@ -148,7 +148,7 @@ if (!validPlans.includes(plan)) {
 
   {/* Clubnaam */}
   <div className="space-y-1">
-    <Label className="mb-2 block">
+    <Label className="mb-2 block text-[#0d1b2a] font-medium">
   Clubnaam
 </Label>
     <Input
@@ -163,9 +163,9 @@ if (!validPlans.includes(plan)) {
 
   {/* Contactpersoon */}
   <div className="space-y-1">
-    <Label className="mb-2 block">
-      Naam contactpersoon
-    </Label>
+    <Label className="mb-2 block text-[#0d1b2a] font-medium">
+  Clubnaam
+</Label>
     <Input
   required
   placeholder="Bijv. Jan de Vries"
@@ -178,9 +178,9 @@ if (!validPlans.includes(plan)) {
 
   {/* Email */}
   <div className="space-y-1">
-    <Label className="mb-2 block">
-      E-mailadres
-    </Label>
+    <Label className="mb-2 block text-[#0d1b2a] font-medium">
+  E-mailadres
+</Label>
     <Input
   type="email"
   required
@@ -194,9 +194,9 @@ if (!validPlans.includes(plan)) {
 
   {/* Telefoon */}
   <div className="space-y-1">
-    <Label className="mb-2 block">
-      Telefoonnummer (optioneel)
-    </Label>
+    <Label className="mb-2 block text-[#0d1b2a] font-medium">
+  Telefoonnummer
+</Label>
     <Input
   placeholder="06 12345678"
   value={form.phone}
