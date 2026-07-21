@@ -7,19 +7,20 @@ export const runtime = "nodejs";
 export async function POST(req: NextRequest) {
   try {
     const {
-      clubId,
-      contactPerson,
-    } = await req.json();
+  clubId,
+  contactName,
+  contactEmail,
+  contactPhone,
+} = await req.json();
 
-    if (!clubId || !contactPerson) {
-      return NextResponse.json(
-        {
-          error:
-            "clubId en contactPerson zijn verplicht",
-        },
-        { status: 400 }
-      );
-    }
+    if (!clubId || !contactName) {
+  return NextResponse.json(
+    {
+      error: "clubId en contactName zijn verplicht",
+    },
+    { status: 400 }
+  );
+}
 
     /* ===============================
    ADMIN AUTH CHECK
@@ -68,47 +69,27 @@ if (
   );
 }
 
-    const { data: request } =
-      await supabaseAdmin
-        .from("club_signup_requests")
-        .select("id")
-        .eq("club_id", clubId)
-        .order("created_at", {
-          ascending: false,
-        })
-        .limit(1)
-        .single();
+    const { error } = await supabaseAdmin
+  .from("clubs")
+  .update({
+    contact_name: contactName,
+    contact_email: contactEmail,
+    contact_phone: contactPhone,
+  })
+  .eq("id", clubId);
 
-    if (!request) {
-      return NextResponse.json(
-        {
-          error:
-            "Geen signup request gevonden",
-        },
-        { status: 404 }
-      );
-    }
-
-    const { error } =
-      await supabaseAdmin
-        .from("club_signup_requests")
-        .update({
-          message: contactPerson,
-        })
-        .eq("id", request.id);
-
-    if (error) {
-      return NextResponse.json(
-        { error: error.message },
-        { status: 500 }
-      );
-    }
+if (error) {
+  return NextResponse.json(
+    { error: error.message },
+    { status: 500 }
+  );
+}
 
     await supabaseAdmin
   .from("subscription_events")
   .insert({
     club_id: clubId,
-    event_type: "contact_person_updated",
+    event_type: "club_contact_updated",
   });
 
     return NextResponse.json({

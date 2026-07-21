@@ -19,6 +19,11 @@ const [publicSlug, setPublicSlug] = useState<string | null>(null);
   setAdvertisingSalesEnabled
 ] = useState(false);
 
+const [
+  activationEnabled,
+  setActivationEnabled
+] = useState(false);
+
   const PRIMARY = "#0d1b2a"; // Sponsorjobs Navy
   const BORDER = "#ffffff"; // Wit
 
@@ -39,17 +44,22 @@ const [publicSlug, setPublicSlug] = useState<string | null>(null);
   },
 
   ...(advertisingSalesEnabled
-    ? [
-        {
-          label: "Advertenties",
-          path: `/club/${slug}/advertisements`,
-        },
-        {
-          label: "Activatie",
-          path: `/club/${slug}/activatie`,
-        },
-      ]
-    : []),
+  ? [
+      {
+        label: "Advertenties",
+        path: `/club/${slug}/advertisements`,
+      },
+    ]
+  : []),
+
+...(activationEnabled
+  ? [
+      {
+        label: "Activatie",
+        path: `/club/${slug}/activatie`,
+      },
+    ]
+  : []),
 
   {
     label: "Club bewerken",
@@ -67,7 +77,7 @@ const [publicSlug, setPublicSlug] = useState<string | null>(null);
       const { data } = await supabase
         .from("clubs")
         .select(
-  "name, logo_url, advertising_sales_enabled, public_slug"
+"name, logo_url, advertising_sales_enabled, activation_enabled, public_slug"
 )
         .eq("slug", slug)
         .maybeSingle();
@@ -79,6 +89,9 @@ setPublicSlug(data.public_slug);
 
 setAdvertisingSalesEnabled(
   data.advertising_sales_enabled ?? false
+);
+setActivationEnabled(
+  data.activation_enabled ?? false
 );
 }
     })();

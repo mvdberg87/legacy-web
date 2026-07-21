@@ -53,6 +53,7 @@ type Club = {
   primary_color?: string | null;
 
   advertising_sales_enabled?: boolean;
+  activation_enabled?: boolean;
 };
 
 /* ---------- Pagina ---------- */
@@ -107,8 +108,9 @@ const [newEmail, setNewEmail] = useState("");
     slug,
     active_package,
     primary_color,
-    advertising_sales_enabled
-  `)
+    advertising_sales_enabled,
+    activation_enabled
+`)
   .eq("slug", slug)
   .maybeSingle();
 
@@ -650,6 +652,81 @@ async function saveNewEmail() {
   sponsorjobs.nl/{club.slug}
 </a>
     </div>
+    <div className="mt-6 border rounded-xl p-5">
+  <h3 className="font-semibold mb-4">
+    Platformmodules
+  </h3>
+
+  <div className="flex flex-col gap-4">
+
+    {/* Managed Ads */}
+
+    <div className="flex justify-between items-center">
+
+      <span>Managed Ads</span>
+
+      <Button
+        variant={
+          club.advertising_sales_enabled
+            ? "default"
+            : "outline"
+        }
+        onClick={async () => {
+
+          await supabase
+            .from("clubs")
+            .update({
+              advertising_sales_enabled:
+                !club.advertising_sales_enabled,
+            })
+            .eq("id", club.id);
+
+          load();
+
+        }}
+      >
+        {club.advertising_sales_enabled
+          ? "Aan"
+          : "Uit"}
+      </Button>
+
+    </div>
+
+    {/* Activatie */}
+
+    <div className="flex justify-between items-center">
+
+      <span>Activatie</span>
+
+      <Button
+        variant={
+          club.activation_enabled
+            ? "default"
+            : "outline"
+        }
+        onClick={async () => {
+
+          await supabase
+            .from("clubs")
+            .update({
+              activation_enabled:
+                !club.activation_enabled,
+            })
+            .eq("id", club.id);
+
+          load();
+
+        }}
+      >
+        {club.activation_enabled
+          ? "Aan"
+          : "Uit"}
+      </Button>
+
+    </div>
+
+  </div>
+</div>
   </div>
 
   <div className="grid md:grid-cols-2 gap-4 mb-6">

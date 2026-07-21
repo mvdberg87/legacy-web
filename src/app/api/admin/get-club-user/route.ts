@@ -67,7 +67,14 @@ if (
 
     const { data: profile, error } = await supabaseAdmin
       .from("profiles")
-      .select("id, user_id, active")
+      .select(`
+  id,
+  user_id,
+  active,
+  first_name,
+  last_name,
+  phone
+`)
       .eq("club_id", clubId)
       .eq("active", true)
       .maybeSingle();
@@ -88,12 +95,15 @@ if (
     }
 
     return NextResponse.json({
-      user: {
-        id: userId,
-        email: user.user?.email ?? null,
-        active: profile.active,
-      },
-    });
+  user: {
+    id: userId,
+    first_name: profile.first_name,
+    last_name: profile.last_name,
+    email: user.user?.email ?? null,
+    phone: profile.phone,
+    active: profile.active,
+  },
+});
 
   } catch (err) {
     console.error("GET CLUB USER ERROR:", err);

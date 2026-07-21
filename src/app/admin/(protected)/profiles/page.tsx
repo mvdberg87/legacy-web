@@ -36,7 +36,9 @@ type Profile = {
   club_status: string | null;
   club_package: string | null;
 
-  contact_person?: string | null;
+  contact_name?: string | null;
+contact_email?: string | null;
+contact_phone?: string | null;
 talentpool_enabled?: boolean | null;
   advertising_sales_enabled?: boolean | null;
   subscription_status?: string | null;
@@ -69,7 +71,9 @@ export default function AdminProfilesPage() {
   const { confirm } = useConfirm();
   const [editingClub, setEditingClub] = useState<{
   id: string;
-  currentName: string;
+  contactName: string;
+  contactEmail: string;
+  contactPhone: string;
 } | null>(null);
 const [editingPublicSlugClub, setEditingPublicSlugClub] = useState<{
   id: string;
@@ -78,7 +82,9 @@ const [editingPublicSlugClub, setEditingPublicSlugClub] = useState<{
 
 const [publicSlug, setPublicSlug] = useState("");
 
-const [contactPerson, setContactPerson] = useState("");
+const [contactName, setContactName] = useState("");
+const [contactEmail, setContactEmail] = useState("");
+const [contactPhone, setContactPhone] = useState("");
 
   /* ---------- Data ophalen ---------- */
 
@@ -254,20 +260,22 @@ async function restoreClub(
   await loadProfiles();
 }
 
-async function saveContactPerson() {
+async function saveClubContact() {
   if (!editingClub) return;
 
   const res = await fetch(
-    "/api/admin/update-contact-person",
+    "/api/admin/update-club-contact",
     {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        clubId: editingClub.id,
-        contactPerson,
-      }),
+  clubId: editingClub.id,
+  contactName,
+  contactEmail,
+  contactPhone,
+}),
     }
   );
 
@@ -281,9 +289,11 @@ async function saveContactPerson() {
   await loadProfiles();
 
   setEditingClub(null);
-  setContactPerson("");
+  setContactName("");
+setContactEmail("");
+setContactPhone("");
 
-  toast.success("Contactpersoon opgeslagen.");
+  toast.success("Contactgegevens opgeslagen.");
 }
 
 async function savePublicSlug() {
@@ -424,7 +434,9 @@ async function toggleTalentpool(
     const q = search.toLowerCase();
 
     return (
-      p.email.toLowerCase().includes(q) ||
+      (p.contact_email ?? "")
+  .toLowerCase()
+  .includes(q) ||
       (p.club_name ?? "")
         .toLowerCase()
         .includes(q) ||
@@ -483,10 +495,12 @@ async function toggleTalentpool(
               <thead className="bg-[#0d1b2a] text-white text-xs uppercase">
                 <tr>
                   <th className="px-3 py-3 text-left">Club</th>
-                  <th className="px-3 py-3 text-left">E-mail</th>
                   <th className="px-3 py-3 text-left">
   Contactpersoon
 </th>
+<th className="px-3 py-3 text-left">Telefoon</th>
+                  <th className="px-3 py-3 text-left">E-mail</th>
+                  
                   <th className="px-3 py-3 text-left">Rol</th>
 <th className="px-3 py-3 text-left">
   Pakket
@@ -591,31 +605,37 @@ async function toggleTalentpool(
   )}
 </td>
 
-<td className="px-3 py-3 max-w-[200px] break-all">
-  {p.email}
-</td>
-
-                      <td className="px-3 py-3">
+<td className="px-3 py-3">
   {club ? (
     <Button
-  size="sm"
-  variant="ghost"
-  onClick={() => {
-    setEditingClub({
-      id: club.id,
-      currentName: p.contact_person ?? "",
-    });
+      size="sm"
+      variant="ghost"
+      onClick={() => {
+        setEditingClub({
+          id: club.id,
+          contactName: p.contact_name ?? "",
+          contactEmail: p.contact_email ?? "",
+          contactPhone: p.contact_phone ?? "",
+        });
 
-    setContactPerson(
-      p.contact_person ?? ""
-    );
-  }}
->
-  {p.contact_person ?? "—"}
-</Button>
+        setContactName(p.contact_name ?? "");
+        setContactEmail(p.contact_email ?? "");
+        setContactPhone(p.contact_phone ?? "");
+      }}
+    >
+      {p.contact_name ?? "—"}
+    </Button>
   ) : (
     "—"
   )}
+</td>
+
+<td className="px-3 py-3">
+  {p.contact_phone ?? "—"}
+</td>
+
+<td className="px-3 py-3">
+  {p.contact_email ?? "—"}
 </td>
 
                       <td className="px-3 py-3">
@@ -778,7 +798,9 @@ async function toggleTalentpool(
   onOpenChange={(open) => {
     if (!open) {
       setEditingClub(null);
-      setContactPerson("");
+      setContactName("");
+setContactEmail("");
+setContactPhone("");
     }
   }}
 >
@@ -786,11 +808,11 @@ async function toggleTalentpool(
 
     <DialogHeader>
       <DialogTitle>
-        Contactpersoon wijzigen
+        Contactgegevens wijzigen
       </DialogTitle>
 
       <DialogDescription>
-        Pas de contactpersoon van deze club aan.
+        Pas de contactgegevens van deze club aan.
       </DialogDescription>
     </DialogHeader>
 
@@ -798,11 +820,20 @@ async function toggleTalentpool(
       <Label>Naam contactpersoon</Label>
 
       <Input
-        value={contactPerson}
-        onChange={(e) =>
-          setContactPerson(e.target.value)
-        }
+        value={contactName}
+          onChange={(e) => setContactName(e.target.value)}
       />
+      <Label>E-mailadres</Label>
+<Input
+  value={contactEmail}
+  onChange={(e) => setContactEmail(e.target.value)}
+/>
+
+<Label>Telefoonnummer</Label>
+<Input
+  value={contactPhone}
+  onChange={(e) => setContactPhone(e.target.value)}
+/>
     </div>
 
     <DialogFooter>
@@ -811,13 +842,15 @@ async function toggleTalentpool(
         variant="outline"
         onClick={() => {
           setEditingClub(null);
-          setContactPerson("");
+          setContactName("");
+setContactEmail("");
+setContactPhone("");
         }}
       >
         Annuleren
       </Button>
 
-      <Button onClick={saveContactPerson}>
+      <Button onClick={saveClubContact}>
         Opslaan
       </Button>
 

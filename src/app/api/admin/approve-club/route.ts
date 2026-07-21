@@ -15,7 +15,9 @@ export const runtime = "nodejs";
 type SignupRequest = {
   id: string;
   club_name: string;
+  contact_name: string | null;
   email: string;
+  phone: string | null;
   status: "pending" | "approved" | "rejected";
   selected_package: string;
 };
@@ -94,7 +96,15 @@ if (profileError || !profile || profile.role !== "admin") {
        ====================================================== */
     const { data: signupData, error: signupError } = await supabaseAdmin
       .from("club_signup_requests")
-      .select("id, club_name, email, status, selected_package")
+      .select(`
+  id,
+  club_name,
+  contact_name,
+  email,
+  phone,
+  status,
+  selected_package
+`)
       .eq("id", requestId)
       .single();
 
@@ -180,6 +190,9 @@ console.log("✅ auth user:", user.id, user.email);
         name: signup.club_name,
         slug,
         email,
+        contact_name: signup.contact_name,
+contact_email: signup.email,
+contact_phone: signup.phone,
         status: "approved",
         owner_id: user.id,
         approved_at: new Date().toISOString(),

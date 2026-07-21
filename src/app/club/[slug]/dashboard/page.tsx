@@ -40,6 +40,7 @@ deleted_at?: string | null;
   stripe_connect_enabled?: boolean | null;
 stripe_payouts_enabled?: boolean | null;
 stripe_connect_account_id?: string | null;
+activation_enabled?: boolean | null;
 };
 
 type ClubDashboardInsights = {
@@ -187,7 +188,8 @@ useEffect(() => {
     extra_ads,
     stripe_connect_enabled,
 stripe_payouts_enabled,
-stripe_connect_account_id
+stripe_connect_account_id,
+activation_enabled
   `)
   .eq("slug", slug)
   .maybeSingle();
@@ -1365,9 +1367,8 @@ const canDowngrade =
 
         </section>
 
-        <section className="border-2 rounded-xl p-6 bg-gray-50 mt-8">
-
-  {!club.stripe_connect_enabled ? (
+        {!club.activation_enabled && (
+<section className="border-2 rounded-xl p-6 bg-gray-50 mt-8">
 
     <>
   <div className="rounded-xl border bg-white p-5">
@@ -1455,21 +1456,9 @@ const canDowngrade =
   </div>
 </>
 
-  ) : (
-
-    <>
-      <div className="mb-4 text-sm text-gray-600">
-        Advertentieverkoop is actief.
-      </div>
-
-      <div className="inline-flex px-3 py-1 rounded-full bg-green-100 text-green-700 text-sm">
-        Actief
-      </div>
-    </>
-
-  )}
-
 </section>
+
+        )}
 
         {/* ===============================
             Support balk
