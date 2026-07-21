@@ -515,34 +515,48 @@ async function toggleTalentpool(
             <table className="min-w-full text-sm">
               <thead className="bg-[#0d1b2a] text-white text-xs uppercase">
                 <tr>
-                  <th className="px-3 py-3 text-left">Club</th>
-                  <th className="px-3 py-3 text-left">
+                  <th className="w-[220px] px-3 py-3 text-left">
+  Club
+</th>
+
+<th className="w-[190px] px-3 py-3 text-left">
   Contactpersoon
 </th>
-<th className="px-3 py-3 text-left">Telefoon</th>
-                  <th className="px-3 py-3 text-left">E-mail</th>
-                  
-                  <th className="px-3 py-3 text-left">Rol</th>
-<th className="px-3 py-3 text-left">
+
+<th className="w-[130px] px-3 py-3 text-left">
+  Telefoon
+</th>
+
+<th className="w-[260px] px-3 py-3 text-left">
+  E-mail
+</th>
+
+<th className="w-[80px] px-3 py-3 text-left">
+  Rol
+</th>
+
+<th className="w-[90px] px-3 py-3 text-left">
   Pakket
 </th>
 
-<th className="px-3 py-3 text-center">
+<th className="w-[90px] px-3 py-3 text-center">
   Managed Ads
 </th>
 
-<th className="px-3 py-3 text-center">
+<th className="w-[90px] px-3 py-3 text-center">
   Activatie
 </th>
 
-<th className="px-3 py-3 text-center">
+<th className="w-[90px] px-3 py-3 text-center">
   Talentpool
 </th>
 
-<th className="px-3 py-3 text-left">
+<th className="w-[120px] px-3 py-3 text-left">
   Aangemaakt
 </th>
-                  <th className="px-3 py-3 text-center">Acties</th>
+                  <th className="sticky right-0 z-20 bg-[#0d1b2a] px-3 py-3 text-center">
+  Acties
+</th>
                 </tr>
               </thead>
 
@@ -756,9 +770,9 @@ async function toggleTalentpool(
                         {new Date(p.created_at).toLocaleDateString("nl-NL")}
                       </td>
 
-                      <td className="px-3 py-3 text-center">
+                      <td className="sticky right-0 z-10 bg-white px-3 py-3 text-center">
                         {club && (
-                          <div className="flex flex-wrap justify-center gap-2">
+                          <div className="flex flex-col items-center gap-2">
 
   {club.status === "pending" && (
     <>
