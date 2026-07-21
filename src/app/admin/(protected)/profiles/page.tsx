@@ -39,8 +39,10 @@ type Profile = {
   contact_name?: string | null;
 contact_email?: string | null;
 contact_phone?: string | null;
+
+advertising_sales_enabled?: boolean | null;
+activation_enabled?: boolean | null;
 talentpool_enabled?: boolean | null;
-  advertising_sales_enabled?: boolean | null;
   subscription_status?: string | null;
   subscription_cancelled_at?: string | null;
   subscription_end?: string | null;
@@ -397,6 +399,25 @@ async function toggleManagedAds(
   await loadProfiles();
 }
 
+async function toggleActivation(
+  clubId: string,
+  currentValue: boolean
+) {
+  const { error } = await supabase
+    .from("clubs")
+    .update({
+      activation_enabled: !currentValue,
+    })
+    .eq("id", clubId);
+
+  if (error) {
+    toast.error("Opslaan mislukt");
+    return;
+  }
+
+  await loadProfiles();
+}
+
 async function toggleTalentpool(
   clubId: string,
   currentValue: boolean
@@ -508,6 +529,10 @@ async function toggleTalentpool(
 
 <th className="px-3 py-3 text-center">
   Managed Ads
+</th>
+
+<th className="px-3 py-3 text-center">
+  Activatie
 </th>
 
 <th className="px-3 py-3 text-center">
@@ -666,6 +691,33 @@ async function toggleTalentpool(
 >
   {p.advertising_sales_enabled ? "AAN" : "UIT"}
 </Button>
+
+  ) : (
+    "—"
+  )}
+
+</td>
+
+<td className="px-3 py-3 text-center">
+
+  {club ? (
+
+    <Button
+      size="sm"
+      variant={
+        p.activation_enabled
+          ? "default"
+          : "secondary"
+      }
+      onClick={() =>
+        toggleActivation(
+          club.id,
+          p.activation_enabled ?? false
+        )
+      }
+    >
+      {p.activation_enabled ? "AAN" : "UIT"}
+    </Button>
 
   ) : (
     "—"
