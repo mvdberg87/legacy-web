@@ -193,7 +193,7 @@ stripe_payouts_enabled,
 stripe_connect_account_id,
 activation_enabled
   `)
-  .eq("slug", slug)
+  .eq("public_slug", slug)
   .maybeSingle();
 
       if (!clubData) return setLoading(false);

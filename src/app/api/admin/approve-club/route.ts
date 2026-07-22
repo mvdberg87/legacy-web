@@ -185,24 +185,25 @@ console.log("✅ auth user:", user.id, user.email);
     }
 
     const { data: club, error: clubError } = await supabaseAdmin
-      .from("clubs")
-      .insert({
-        name: signup.club_name,
-        slug,
-        email,
-        contact_name: signup.contact_name,
-contact_email: signup.email,
-contact_phone: signup.phone,
-        status: "approved",
-        owner_id: user.id,
-        approved_at: new Date().toISOString(),
-        subscription_package: signup.selected_package,
-active_package: signup.selected_package,
-current_plan: signup.selected_package,
-pending_package: signup.selected_package,
-      })
-      .select("id")
-      .single();
+  .from("clubs")
+  .insert({
+    name: signup.club_name,
+    slug,
+    public_slug: slug,
+    email,
+    contact_name: signup.contact_name,
+    contact_email: signup.email,
+    contact_phone: signup.phone,
+    status: "approved",
+    owner_id: user.id,
+    approved_at: new Date().toISOString(),
+    subscription_package: signup.selected_package,
+    active_package: signup.selected_package,
+    current_plan: signup.selected_package,
+    pending_package: signup.selected_package,
+  })
+  .select("id")
+  .single();
 
     if (clubError || !club) {
       return NextResponse.json(

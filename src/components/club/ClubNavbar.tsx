@@ -79,7 +79,7 @@ const [
         .select(
 "name, logo_url, advertising_sales_enabled, activation_enabled, public_slug"
 )
-        .eq("slug", slug)
+        .eq("public_slug", slug)
         .maybeSingle();
 
       if (data) {
