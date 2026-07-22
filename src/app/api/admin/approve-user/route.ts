@@ -61,9 +61,9 @@ if (
     // 🏗️ Controleer of club al bestaat
     const { data: existing } = await adminDb
   .from("clubs")
-      .select("id")
-      .eq("slug", slug)
-      .maybeSingle();
+  .select("id")
+  .eq("public_slug", slug)
+  .maybeSingle();
 
     let clubId = existing?.id;
 
@@ -72,10 +72,11 @@ if (
       const { data: newClub, error: clubError } = await adminDb
   .from("clubs")
         .insert({
-          name: clubName || slug,
-          slug,
-          status: "approved",
-        })
+  name: clubName || slug,
+  slug,
+  public_slug: slug,
+  status: "approved",
+})
         .select("id")
         .single();
 

@@ -47,7 +47,7 @@ export async function POST(req: Request) {
       const { data: club, error: clubError } = await admin
         .from("clubs")
         .select("id")
-        .eq("slug", slug)
+        .eq("public_slug", slug)
         .maybeSingle();
 
       if (clubError) {

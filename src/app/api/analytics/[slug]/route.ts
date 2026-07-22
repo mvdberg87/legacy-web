@@ -16,7 +16,7 @@ export async function GET(
   const { data: club } = await admin
     .from("clubs")
     .select("id")
-    .eq("slug", slug)
+    .eq("public_slug", slug)
     .maybeSingle();
 
   if (!club) {

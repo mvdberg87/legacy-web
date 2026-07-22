@@ -73,7 +73,7 @@ export default function AdvertisementsPage() {
     .select(
       "advertising_sales_enabled"
     )
-    .eq("slug", slug)
+    .eq("public_slug", slug)
     .single();
 
 setAdvertisingSalesEnabled(
@@ -87,7 +87,7 @@ setAdvertisingSalesEnabled(
           "club_advertisements_overview"
         )
         .select("*")
-        .eq("slug", slug)
+        .eq("public_slug", slug)
         .is("deleted_at", null)
         .order("end_date");
 

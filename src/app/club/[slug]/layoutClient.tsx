@@ -21,7 +21,7 @@ export default function ClubLayoutClient({
       const { data } = await supabase
         .from("clubs")
         .select("name, logo_url, color_primary, color_secondary, bg_pattern_url")
-        .eq("slug", slug)
+        .eq("public_slug", slug)
         .maybeSingle();
       setClub(data);
     })();

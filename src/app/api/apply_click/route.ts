@@ -11,10 +11,10 @@ export async function POST(req: Request) {
   });
 
   const { data: club } = await admin
-    .from("clubs")
-    .select("id")
-    .eq("slug", slug)
-    .maybeSingle();
+  .from("clubs")
+  .select("id")
+  .eq("public_slug", slug)
+  .maybeSingle();
 
   if (club) {
     await admin.from("apply_clicks").insert({

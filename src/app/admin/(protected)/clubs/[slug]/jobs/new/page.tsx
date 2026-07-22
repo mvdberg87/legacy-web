@@ -38,10 +38,10 @@ export default function NewJobPage() {
 (async () => {
 
 const { data: clubData } = await supabase
-.from("clubs")
-.select("id, name, primary_color, secondary_color")
-.eq("slug", slug)
-.maybeSingle();
+  .from("clubs")
+  .select("id, name, primary_color, secondary_color")
+  .eq("public_slug", slug)
+  .maybeSingle();
 
 if (!clubData) {
 setLoading(false);

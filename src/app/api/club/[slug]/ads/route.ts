@@ -36,7 +36,7 @@ export async function GET(
     await supabaseAdmin
       .from("clubs")
       .select("id, name, subscription_status")
-      .eq("slug", slug)
+      .eq("public_slug", slug)
       .maybeSingle();
 
   if (clubError || !club) {
@@ -129,7 +129,7 @@ export async function POST(
     await supabaseAdmin
       .from("clubs")
       .select("id, active_package, admin_override")
-      .eq("slug", slug)
+      .eq("public_slug", slug)
       .maybeSingle();
 
   if (clubError || !club) {

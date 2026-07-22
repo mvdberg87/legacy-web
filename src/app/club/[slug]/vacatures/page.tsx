@@ -45,7 +45,7 @@ export default function VacaturesPage() {
       const { data: club } = await supabase
         .from("clubs")
         .select("id, name")
-        .eq("slug", slug)
+        .eq("public_slug", slug)
         .maybeSingle();
 
       if (!club) return;

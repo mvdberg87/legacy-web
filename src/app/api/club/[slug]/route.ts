@@ -15,10 +15,10 @@ export async function GET(
   });
 
   const { data, error } = await admin
-    .from("clubs")
-    .select("name, primary_color, secondary_color")
-    .eq("slug", slug)
-    .maybeSingle();
+  .from("clubs")
+  .select("name, primary_color, secondary_color")
+  .eq("public_slug", slug)
+  .maybeSingle();
 
   if (error) {
     console.error("Club API error:", error.message);

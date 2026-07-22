@@ -44,7 +44,7 @@ export default function JobDetailPage() {
       const { data: clubData } = await supabase
         .from("clubs")
         .select("id, name, primary_color")
-        .eq("slug", slug)
+        .eq("public_slug", slug)
         .maybeSingle();
 
       /**

@@ -175,10 +175,10 @@ console.log("✅ auth user:", user.id, user.email);
     let slug = generateSlug(signup.club_name);
 
     const { data: slugExists } = await supabaseAdmin
-      .from("clubs")
-      .select("id")
-      .eq("slug", slug)
-      .maybeSingle();
+  .from("clubs")
+  .select("id")
+  .eq("public_slug", slug)
+  .maybeSingle();
 
     if (slugExists) {
       slug = `${slug}-${Date.now()}`;

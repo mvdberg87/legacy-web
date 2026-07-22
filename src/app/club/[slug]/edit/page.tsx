@@ -64,7 +64,7 @@ export default function ClubEditPage() {
       const { data, error } = await supabase
         .from("clubs")
         .select("*")
-        .eq("slug", slug)
+        .eq("public_slug", slug)
         .maybeSingle();
 
       if (error || !data) {

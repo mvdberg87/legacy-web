@@ -114,7 +114,7 @@ const [packageDownloaded, setPackageDownloaded] =
   activation_accent_color,
   activation_template
 `)
-          .eq("slug", slug)
+          .eq("public_slug", slug)
           .single();
 
       if (!club) {

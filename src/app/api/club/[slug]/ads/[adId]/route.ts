@@ -15,7 +15,7 @@ export async function GET(
   const { data: club } = await supabaseAdmin
     .from("clubs")
     .select("id, name, primary_color")
-    .eq("slug", slug)
+    .eq("public_slug", slug)
     .maybeSingle();
 
   if (!club) {

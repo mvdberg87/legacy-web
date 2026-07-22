@@ -49,6 +49,7 @@ type Club = {
   id: string;
   name: string;
   slug: string;
+  public_slug: string | null;
   active_package: string;
   primary_color?: string | null;
 
@@ -103,10 +104,11 @@ const [newEmail, setNewEmail] = useState("");
     const { data: clubData } = await supabase
   .from("clubs")
   .select(`
-    id,
-    name,
-    slug,
-    active_package,
+  id,
+  name,
+  slug,
+  public_slug,
+  active_package,
     primary_color,
     advertising_sales_enabled,
     activation_enabled
@@ -645,11 +647,11 @@ async function saveNewEmail() {
 
       <p className="text-gray-500">Publieke pagina</p>
       <a
-  href={`https://www.sponsorjobs.nl/${club.slug}`}
+  href={`https://www.sponsorjobs.nl/${club.public_slug ?? club.slug}`}
   target="_blank"
   className="text-blue-600 underline"
 >
-  sponsorjobs.nl/{club.slug}
+  sponsorjobs.nl/{club.public_slug ?? club.slug}
 </a>
     </div>
     <div className="mt-6 border rounded-xl p-5">
@@ -905,9 +907,9 @@ async function saveNewEmail() {
   variant="outline"
   onClick={() =>
   window.open(
-    `/${club.slug}`,
-    "_blank"
-  )
+  `/${club.public_slug ?? club.slug}`,
+  "_blank"
+)
 }
 >
   Bekijk
@@ -1083,7 +1085,7 @@ async function saveNewEmail() {
   variant="outline"
   onClick={() =>
     window.open(
-  `/${club.slug}/jobs/${job.id}`,
+  `/${club.public_slug ?? club.slug}/jobs/${job.id}`,
   "_blank"
 )
   }
