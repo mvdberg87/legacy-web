@@ -17,45 +17,36 @@ export async function POST(req: NextRequest) {
   try {
 
     const {
-      clubIds,
-      packageKey,
+  campaigns,
 
-      companyName,
-      contactName,
-      companyEmail,
-      companyWebsite,
-      vacancyUrl,
-      phoneNumber,
-      notes,
-    } = await req.json();
+  companyName,
+  contactName,
+  companyEmail,
+  companyWebsite,
+  vacancyUrl,
+  phoneNumber,
+  notes,
+} = await req.json();
 
-    const packagePrice =
-  packagePrices[
-    packageKey as keyof typeof packagePrices
-  ];
+    let amount = 0;
 
-if (!packagePrice) {
-  return NextResponse.json(
-    { error: "Invalid package" },
-    { status: 400 }
-  );
+for (const campaign of campaigns) {
+  const price =
+    packagePrices[
+      campaign.packageKey as keyof typeof packagePrices
+    ];
+
+  if (!price) {
+    return NextResponse.json(
+      { error: "Invalid package" },
+      { status: 400 }
+    );
+  }
+
+  amount += price * campaign.quantity;
 }
 
-const amount =
-  packagePrice * clubIds.length;
-
-  const packageName =
-  packageKey.charAt(0).toUpperCase() +
-  packageKey.slice(1);
-
-const { data: packageData } =
-  await supabaseAdmin
-    .from("advertisement_packages")
-    .select("id")
-    .eq("name", packageName)
-    .single();
-
-      const { data: lead, error: leadError } =
+const { data: lead, error: leadError } =
   await supabaseAdmin
     .from("advertisement_leads")
     .insert({
@@ -66,10 +57,10 @@ const { data: packageData } =
       vacancy_url: vacancyUrl,
       phone_number: phoneNumber || null,
       notes: notes || null,
-      package_key: packageKey,
-      club_ids: clubIds,
+
+      campaigns,
+
       status: "checkout_pending",
-      package_id: packageData?.id,
     })
     .select()
     .single();
@@ -97,7 +88,7 @@ if (leadError || !lead) {
 
               product_data: {
   name:
-    `${packageKey.toUpperCase()} Recruitment Campagne`,
+  `Sponsorjobs Recruitmentcampagne (${campaigns.length} campagne(s))`,
 },
 
               unit_amount:

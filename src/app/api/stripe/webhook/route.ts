@@ -118,41 +118,35 @@ if (
   });
 }
 
-  const clubIds = lead.club_ids as string[];
+  const campaigns = lead.campaigns as {
+  clubId: string;
+  packageKey: "partner" | "spotlight" | "premium";
+  quantity: number;
+}[];
 
-  const packagePrices = {
-    partner: 350,
-    spotlight: 750,
-    premium: 1250,
-  };
-
-  const packagePrice =
-  packagePrices[
-    lead.package_key as keyof typeof packagePrices
-  ];
-
-if (!packagePrice) {
-  console.error(
-    "❌ Invalid package key:",
-    lead.package_key
-  );
-
-  return NextResponse.json({
-    received: true,
-  });
-}
-const packageNames = {
-  partner: "Partner",
-  spotlight: "Spotlight",
-  premium: "Premium",
+const packagePrices = {
+  partner: 350,
+  spotlight: 750,
+  premium: 1250,
 };
 
-const packageName =
-  packageNames[
-    lead.package_key as keyof typeof packageNames
-  ];
+  for (const campaign of campaigns) {
 
-const { data: packageData } =
+  const clubId = campaign.clubId;
+
+  const packagePrice =
+    packagePrices[campaign.packageKey];
+
+  const packageNames = {
+    partner: "Partner",
+    spotlight: "Spotlight",
+    premium: "Premium",
+  };
+
+  const packageName =
+    packageNames[campaign.packageKey];
+
+    const { data: packageData } =
   await supabaseAdmin
     .from("advertisement_packages")
     .select("id")
@@ -165,12 +159,8 @@ if (!packageData) {
     packageName
   );
 
-  return NextResponse.json({
-    received: true,
-  });
+  continue;
 }
-
-  for (const clubId of clubIds) {
 
     const clubAmount =
       Math.round(packagePrice * 0.7);
@@ -202,6 +192,7 @@ if (!packageData) {
   await supabaseAdmin
     .from("advertisement_orders")
     .insert({
+      lead_id: lead.id,
       club_id: clubId,
 
       company_name:
@@ -210,7 +201,7 @@ if (!packageData) {
       company_email:
         lead.company_email,
 
-      packageName:
+      package_name:
   packageName,
 
       amount:
@@ -318,7 +309,7 @@ if (clubData?.email) {
           lead.vacancy_url,
 
         packageName:
-          lead.package_key,
+  "Meerdere campagnes",
 
         clubRevenue:
           clubAmount,
@@ -341,7 +332,10 @@ if (clubData?.email) {
   await supabaseAdmin
     .from("clubs")
     .select("name")
-    .in("id", clubIds);
+    .in(
+  "id",
+  campaigns.map(c => c.clubId)
+);
 
 const clubNames =
   clubs?.map((c) => c.name) || [];
@@ -373,7 +367,7 @@ const clubNames =
         lead.vacancy_url,
 
       packageName:
-        lead.package_key,
+  "Meerdere campagnes",
 
       clubs:
         clubNames,

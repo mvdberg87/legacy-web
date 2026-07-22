@@ -21,10 +21,19 @@ export default function ActivatiePage() {
 
   const [clubs, setClubs] = useState<Club[]>([]);
 
-  const [selectedClubs, setSelectedClubs] = useState<string[]>([]);
-const [selectedPackage, setSelectedPackage] = useState<
-  "partner" | "spotlight" | "premium" | null
->(null);
+  type PackageKey = "partner" | "spotlight" | "premium";
+
+type CampaignState = Record<
+  string,
+  {
+    partner: number;
+    spotlight: number;
+    premium: number;
+  }
+>;
+
+const [campaigns, setCampaigns] =
+  useState<CampaignState>({});
 
 const [companyName, setCompanyName] = useState("");
 const [contactName, setContactName] = useState("");
@@ -70,32 +79,61 @@ const packagePrices = {
 };
 
 const totalPrice = useMemo(() => {
-  if (!selectedPackage) return 0;
-
-  console.log(
-  "Aantal clubs:",
-  clubs.length
-);
-
-  return (
-    selectedClubs.length *
-    packagePrices[selectedPackage]
+  return Object.values(campaigns).reduce(
+    (total, campaign) => {
+      return (
+        total +
+        campaign.partner * packagePrices.partner +
+        campaign.spotlight * packagePrices.spotlight +
+        campaign.premium * packagePrices.premium
+      );
+    },
+    0
   );
-}, [selectedClubs, selectedPackage]);
+}, [campaigns]);
 
-const toggleClub = (clubId: string) => {
-  setSelectedClubs((prev) =>
-    prev.includes(clubId)
-      ? prev.filter((id) => id !== clubId)
-      : [...prev, clubId]
+const totalAdvertisements = useMemo(() => {
+  return Object.values(campaigns).reduce(
+    (total, campaign) =>
+      total +
+      campaign.partner +
+      campaign.spotlight +
+      campaign.premium,
+    0
   );
+}, [campaigns]);
+
+const updateCampaign = (
+  clubId: string,
+  packageKey: PackageKey,
+  change: number
+) => {
+  setCampaigns((prev) => {
+    const current = prev[clubId] ?? {
+      partner: 0,
+      spotlight: 0,
+      premium: 0,
+    };
+
+    const next = Math.max(
+      0,
+      current[packageKey] + change
+    );
+
+    return {
+      ...prev,
+      [clubId]: {
+        ...current,
+        [packageKey]: next,
+      },
+    };
+  });
 };
 
 const startCheckout = async () => {
 
-  if (
-    !selectedPackage ||
-    selectedClubs.length === 0 ||
+    if (
+  totalAdvertisements === 0 ||
     !companyName ||
     !contactName ||
     !companyEmail ||
@@ -118,17 +156,41 @@ const startCheckout = async () => {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          clubIds: selectedClubs,
-          packageKey: selectedPackage,
+  campaigns: Object.entries(campaigns)
+    .flatMap(([clubId, values]) => [
+      ...(values.partner > 0
+        ? [{
+            clubId,
+            packageKey: "partner",
+            quantity: values.partner,
+          }]
+        : []),
 
-          companyName,
-          contactName,
-          companyEmail,
-          companyWebsite,
-          vacancyUrl,
-          phoneNumber,
-          notes,
-        }),
+      ...(values.spotlight > 0
+        ? [{
+            clubId,
+            packageKey: "spotlight",
+            quantity: values.spotlight,
+          }]
+        : []),
+
+      ...(values.premium > 0
+        ? [{
+            clubId,
+            packageKey: "premium",
+            quantity: values.premium,
+          }]
+        : []),
+    ]),
+
+  companyName,
+  contactName,
+  companyEmail,
+  companyWebsite,
+  vacancyUrl,
+  phoneNumber,
+  notes,
+}),
       }
     );
 
@@ -271,225 +333,128 @@ const startCheckout = async () => {
 
       </section>
 
-      {/* CLUB SELECTIE */}
-<section className="py-24 bg-[#10263a]">
+      <section className="py-24 bg-[#10263a]">
+  <div className="max-w-6xl mx-auto px-6">
 
-  <div className="max-w-7xl mx-auto px-6">
+    <h2 className="text-3xl font-bold text-center">
+      Stel jouw recruitmentcampagne samen
+    </h2>
 
-    <div className="text-center">
-
-      <h2 className="text-3xl font-bold">
-        Kies de verenigingen waar jouw vacatures zichtbaar worden
-      </h2>
-
-      <p className="mt-4 text-white/70">
-  Hieronder staan uitsluitend verenigingen
-  die deelnemen aan het Sponsorjobs
-  Advertentienetwerk.
-</p>
-
-    </div>
-
-    <div className="mt-14 grid md:grid-cols-3 gap-6">
+    <div className="mt-12 space-y-6">
 
       {clubs.map((club) => {
 
-        const selected = selectedClubs.includes(club.id);
+        const campaign =
+          campaigns[club.id] ?? {
+            partner: 0,
+            spotlight: 0,
+            premium: 0,
+          };
 
         return (
-          <button
+
+          <div
             key={club.id}
-            onClick={() => toggleClub(club.id)}
-            className={`
-              rounded-2xl border p-6 text-left transition
-              ${
-                selected
-                  ? "border-green-500 bg-green-500/10"
-                  : "border-white/10 bg-white/5 hover:bg-white/10"
-              }
-            `}
+            className="rounded-2xl bg-white/5 border border-white/10 p-6"
           >
 
-            <div className="flex items-center justify-between">
+            <h3 className="text-2xl font-semibold">
+              {club.name}
+            </h3>
 
-              <div>
-                <h3 className="text-xl font-semibold">
-                  {club.name}
-                </h3>
+            <div className="mt-6 space-y-4">
 
-              </div>
+              {(
+                [
+                  ["partner","Partner",350],
+                  ["spotlight","Spotlight",750],
+                  ["premium","Premium",1250],
+                ] as const
+              ).map(([key,label,price]) => (
 
-              <div
-                className={`
-                  w-6 h-6 rounded-full border-2
-                  ${
-                    selected
-                      ? "bg-green-500 border-green-500"
-                      : "border-white/30"
-                  }
-                `}
-              />
+                <div
+                  key={key}
+                  className="flex items-center justify-between"
+                >
+
+                  <div>
+                    <p className="font-semibold">
+                      {label}
+                    </p>
+
+                    <p className="text-white/60 text-sm">
+                      €{price}
+                    </p>
+
+                  </div>
+
+                  <div className="flex items-center gap-3">
+
+                    <Button
+                      variant="outline"
+                      onClick={() =>
+                        updateCampaign(
+                          club.id,
+                          key,
+                          -1
+                        )
+                      }
+                    >
+                      −
+                    </Button>
+
+                    <span className="w-8 text-center">
+                      {campaign[key]}
+                    </span>
+
+                    <Button
+                      onClick={() =>
+                        updateCampaign(
+                          club.id,
+                          key,
+                          1
+                        )
+                      }
+                    >
+                      +
+                    </Button>
+
+                  </div>
+
+                </div>
+
+              ))}
 
             </div>
 
-          </button>
+          </div>
+
         );
+
       })}
 
     </div>
 
-  </div>
+    <div className="mt-12 text-center">
 
-</section>
+      <p className="text-white/60">
+        {totalAdvertisements} advertenties geselecteerd
+      </p>
 
+      <h2 className="text-5xl font-bold mt-2">
+        €{totalPrice}
+      </h2>
 
-      {/* Recruitment PAKKETTEN */}
-      <section className="py-24 bg-[#0f2233]">
+      <p className="text-white/60">
+        excl. btw
+      </p>
 
-        <div className="max-w-7xl mx-auto px-6 text-center">
-
-          <h2 className="text-3xl font-bold text-white">
-            Recruitment Pakketten
-          </h2>
-
-          <p className="mt-6 text-white/70 max-w-2xl mx-auto">
-            Bereik lokaal talent via sportverenigingen.
-            Wij verzorgen de content, activatie en recruitmentversterking.
-          </p>
-
-
-<div className="mt-16 grid md:grid-cols-3 gap-8 text-left">
-
-
-  {/* PARTNER */}
-  <button
-    onClick={() => setSelectedPackage("partner")}
-    className={`
-      rounded-2xl p-8 flex flex-col h-full shadow-xl transition
-      ${
-        selectedPackage === "partner"
-          ? "bg-green-500 text-black"
-          : "bg-white text-black hover:scale-[1.02]"
-      }
-    `}
-  >
-
-    <h3 className="font-semibold text-lg">
-      Recruitment Partner
-    </h3>
-
-    <p className="mt-4 text-4xl font-bold">
-      €350
-    </p>
-
-    <p className="text-sm opacity-70">
-      per vereniging / jaar
-    </p>
-
-    <ul className="mt-6 space-y-3 text-sm">
-      <li>✓ Vacature zichtbaar op SponsorJobs</li>
-      <li>✓ Zichtbaarheid binnen clubnetwerk</li>
-      <li>✓ Sponsorlogo zichtbaar</li>
-      <li>✓ Dashboard & statistieken</li>
-    </ul>
-
-  </button>
-
-
-  {/* SPOTLIGHT */}
-  <button
-    onClick={() => setSelectedPackage("spotlight")}
-    className={`
-      rounded-2xl p-8 flex flex-col h-full shadow-xl transition relative
-      ${
-        selectedPackage === "spotlight"
-          ? "bg-yellow-400 text-black"
-          : "bg-white text-black hover:scale-[1.02]"
-      }
-    `}
-  >
-
-    <div className="absolute -top-3 left-1/2 -translate-x-1/2 bg-black text-white text-xs px-3 py-1 rounded-full">
-      Meest gekozen
     </div>
 
-    <h3 className="font-semibold text-lg">
-      Recruitment Spotlight
-    </h3>
+  </div>
+</section>
 
-    <p className="mt-4 text-4xl font-bold">
-      €750
-    </p>
-
-    <p className="text-sm opacity-70">
-      per vereniging / jaar
-    </p>
-
-    <ul className="mt-6 space-y-3 text-sm">
-      <li>✓ Alles uit Partner</li>
-      <li>✓ Vacature in the Spotlight</li>
-      <li>✓ Social media post via clubkanalen</li>
-      <li>✓ Extra zichtbaarheid binnen campagnes</li>
-    </ul>
-
-  </button>
-
-
-  {/* PREMIUM */}
-  <button
-    onClick={() => setSelectedPackage("premium")}
-    className={`
-      rounded-2xl p-8 flex flex-col h-full shadow-xl transition
-      ${
-        selectedPackage === "premium"
-          ? "bg-blue-600 text-white"
-          : "bg-white text-black hover:scale-[1.02]"
-      }
-    `}
-  >
-
-    <h3 className="font-semibold text-lg">
-      Recruitment Premium
-    </h3>
-
-    <p className="mt-4 text-4xl font-bold">
-      €1.250
-    </p>
-
-    <p className="text-sm opacity-70">
-      per vereniging / jaar
-    </p>
-
-    <ul className="mt-6 space-y-3 text-sm">
-      <li>✓ Alles uit Spotlight</li>
-      <li>✓ Narrowcasting binnen vereniging</li>
-      <li>✓ Vacatures aanpasbaar gedurende jaar</li>
-      <li>✓ Extra activatiemomenten</li>
-    </ul>
-
-  </button>
-
-</div>
-
-<div className="mt-16 text-center">
-
-  <p className="text-white/60 uppercase tracking-widest text-sm">
-    Totale investering
-  </p>
-
-  <h3 className="mt-4 text-5xl font-bold text-white">
-    €{totalPrice}
-  </h3>
-
-  <p className="mt-3 text-white/60">
-    excl. BTW per jaar
-  </p>
-
-  <p className="mt-6 text-sm text-white/50">
-    {selectedClubs.length} vereniging(en) geselecteerd
-  </p>
-
-</div>
+{/* CLUB SELECTIE */}
 
 <div className="mt-16 max-w-3xl mx-auto bg-white text-black rounded-2xl p-8">
 
@@ -555,10 +520,9 @@ const startCheckout = async () => {
   <Button
   onClick={startCheckout}
   disabled={
-    loading ||
-    !selectedPackage ||
-    selectedClubs.length === 0
-  }
+  loading ||
+  totalAdvertisements === 0
+}
   className="px-10 py-4 rounded-2xl"
 >
   {loading
@@ -567,10 +531,6 @@ const startCheckout = async () => {
 </Button>
 
 </div>
-
-</div>
-
-</section>
 
       {/* ACTIVATIEGESPREK */}
 <section className="py-24 bg-white text-black">
