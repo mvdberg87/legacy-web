@@ -499,6 +499,7 @@ const canReactivate =
   isCancelled;
 
 const canCancel =
+  club.active_package !== "basic" &&
   club.subscription_status === "active" &&
   !isCancelled;
 
@@ -1280,7 +1281,7 @@ const canDowngrade =
     Maximaal 10 extra advertenties mogelijk
   </p>
 
-  <div className="flex flex-col items-start gap-2">
+  <div className="flex flex-col items-center gap-3">
 
   <div className="flex items-center gap-4">
     <Button
@@ -1393,12 +1394,13 @@ Na deze wijziging kun je het aantal weer aanpassen na 30 dagen.`,
 {canReactivate && (
   <div className="mt-6 pt-6 border-t text-sm">
 
-    <button
-      onClick={reactivateSubscription}
-      className="underline text-green-600 hover:text-green-700 transition"
-    >
-      Opzegging annuleren
-    </button>
+    <Button
+  variant="outline"
+  onClick={reactivateSubscription}
+  className="border-green-300 text-green-700 hover:bg-green-50"
+>
+  Opzegging annuleren
+</Button>
 
     <p className="mt-1 text-xs text-gray-400">
       Je abonnement is maandelijks opzegbaar
@@ -1422,7 +1424,7 @@ Na deze wijziging kun je het aantal weer aanpassen na 30 dagen.`,
 <section className="border-2 rounded-xl p-6 bg-gray-50 mt-8">
 
     <>
-  <div className="rounded-xl border bg-white p-5">
+  <div className="rounded-xl border bg-white p-6 text-center">
 
     <h3 className="font-semibold text-lg mb-2">
       Sponsoractivatie
@@ -1483,28 +1485,32 @@ Na deze wijziging kun je het aantal weer aanpassen na 30 dagen.`,
       Samen kijken hoe jouw vereniging meer rendement uit sponsorrelaties kan halen?
     </p>
 
-    <a
-  href="https://www.sponsorjobs.nl/contact"
-  target="_blank"
-  rel="noopener noreferrer"
-  className="
-    inline-block
-    bg-[#0d1b2a]
-    hover:bg-[#132a44]
-    !text-white
-    hover:!text-white
-    px-4
-    py-2
-    rounded-lg
-    font-medium
-    no-underline
-    transition
-  "
->
-  Vraag een activatiegesprek aan
-</a>
+    <div className="flex justify-center mt-6">
+  <a
+    href="https://www.sponsorjobs.nl/contact"
+    target="_blank"
+    rel="noopener noreferrer"
+    className="
+      inline-flex
+      items-center
+      justify-center
+      bg-[#0d1b2a]
+      hover:bg-[#132a44]
+      !text-white
+      hover:!text-white
+      px-5
+      py-2.5
+      rounded-lg
+      font-medium
+      no-underline
+      transition
+    "
+  >
+    Vraag een activatiegesprek aan
+  </a>
+</div>
 
-  </div>
+</div>
 </>
 
 </section>

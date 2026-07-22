@@ -62,14 +62,58 @@ if (!isAdmin && profile.club_id !== clubId) {
 
     // 1. club ophalen
     const { data: club } = await supabaseAdmin
-      .from("clubs")
-      .select("stripe_subscription_id")
-      .eq("id", clubId)
-      .single();
+  .from("clubs")
+  .select(`
+  stripe_subscription_id,
+  last_extra_ads_change_at,
+  extra_ads
+`)
+  .eq("id", clubId)
+  .single();
 
-    if (!club?.stripe_subscription_id) {
-      return NextResponse.json({ error: "No subscription" }, { status: 400 });
-    }
+  if (!club) {
+  return NextResponse.json(
+    { error: "Club niet gevonden" },
+    { status: 404 }
+  );
+}
+
+if (!club.stripe_subscription_id) {
+  return NextResponse.json(
+    { error: "No subscription" },
+    { status: 400 }
+  );
+}
+
+    // Geen wijziging nodig
+if ((club.extra_ads ?? 0) === quantity) {
+  return NextResponse.json({
+    success: true,
+  });
+}
+
+    if (club.last_extra_ads_change_at) {
+  const lastChange = new Date(
+    club.last_extra_ads_change_at
+  );
+
+  const now = new Date();
+
+  const diffDays =
+    (now.getTime() - lastChange.getTime()) /
+    (1000 * 60 * 60 * 24);
+
+  if (diffDays < 30) {
+  const remainingDays = Math.ceil(30 - diffDays);
+
+  return NextResponse.json(
+    {
+      error: `Je kunt het aantal extra advertenties over ${remainingDays} dag${remainingDays === 1 ? "" : "en"} opnieuw wijzigen.`,
+    },
+    { status: 400 }
+  );
+}
+}
 
     // 2. subscription ophalen
     const subscription = await stripe.subscriptions.retrieve(
@@ -100,10 +144,25 @@ if (!isAdmin && profile.club_id !== clubId) {
     }
 
     // 4. Supabase sync
-    await supabaseAdmin
-      .from("clubs")
-      .update({ extra_ads: quantity })
-      .eq("id", clubId);
+    const { error } = await supabaseAdmin
+  .from("clubs")
+  .update({
+    extra_ads: quantity,
+    last_extra_ads_change_at: new Date().toISOString(),
+  })
+  .eq("id", clubId);
+
+if (error) {
+  console.error(error);
+
+  return NextResponse.json(
+    {
+      error:
+        "Stripe is bijgewerkt, maar de database kon niet worden gesynchroniseerd.",
+    },
+    { status: 500 }
+  );
+}
 
     return NextResponse.json({ success: true });
 
