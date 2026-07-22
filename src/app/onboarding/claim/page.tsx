@@ -33,7 +33,7 @@ export default function ClaimPage() {
 
       setTimeout(() => {
   router.replace("/login");
-}, 1500);
+}, 3000);
     } catch {
       setStatus("error");
     }
@@ -44,7 +44,7 @@ export default function ClaimPage() {
 
   return (
     <main className="min-h-screen flex items-center justify-center bg-[#0d1b2a] p-6">
-      <div className="bg-white rounded-2xl shadow p-8 max-w-md w-full text-center">
+      <div className="bg-white rounded-2xl shadow-xl p-10 max-w-xl w-full text-center">
         {status === "loading" && (
           <>
             <h1 className="text-xl font-semibold mb-2">
@@ -56,18 +56,21 @@ export default function ClaimPage() {
 
         {status === "success" && (
   <>
-    <h1 className="text-xl font-semibold mb-2">
-      Club geactiveerd 🎉
+    <h1 className="text-2xl font-semibold mb-4 text-[#0d1b2a]">
+      Club succesvol geactiveerd
     </h1>
-    <p className="mb-3">
-      Je club is succesvol geactiveerd.
+
+    <p className="text-gray-700 leading-7">
+      Je account is succesvol geactiveerd en gekoppeld aan jouw vereniging.
     </p>
-    <p className="text-sm text-gray-600">
-      🚀 Jullie hebben nu <strong>2 maanden volledige toegang</strong>
-      om SponsorJobs uitgebreid te testen.
+
+    <p className="mt-5 text-gray-700 leading-7">
+      Je kunt nu <strong>2 maanden kosteloos</strong> gebruikmaken van alle
+      functionaliteiten van Sponsorjobs en het platform uitgebreid ontdekken.
     </p>
-    <p className="text-sm text-gray-600 mt-2">
-      Je wordt doorgestuurd naar de loginpagina…
+
+    <p className="mt-5 text-sm text-gray-500">
+      Je wordt automatisch doorgestuurd naar de inlogpagina...
     </p>
   </>
 )}
