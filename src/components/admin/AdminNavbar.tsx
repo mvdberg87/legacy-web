@@ -26,6 +26,7 @@ export default function AdminNavbar() {
 
   { label: "Activatiegesprekken", path: "/admin/activatiegesprekken" },
   { label: "Advertenties", path: "/admin/advertisements" },
+  { label: "Leads", path: "/admin/advertisement-leads" },
 
   { label: "Abonnementen", path: "/admin/revenue" },
   { label: "Analytics", path: "/admin/analytics" },
