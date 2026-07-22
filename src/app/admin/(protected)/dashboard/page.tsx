@@ -7,6 +7,7 @@ import LoadingCard from "@/components/ui/LoadingCard";
 import EmptyState from "@/components/ui/EmptyState";
 import ErrorCard from "@/components/ui/ErrorCard";
 import { Button } from "@/components/ui/button";
+import ClubSignupRequestsPanel from "@/components/admin/ClubSignupRequestsPanel";
 
 function ClubStatusBadge({ status }: { status?: string }) {
   const styles: Record<string, string> = {
@@ -244,6 +245,10 @@ if (error) {
 }
 
   return (
+  <div className="space-y-8">
+
+    <ClubSignupRequestsPanel />
+
     <div className="bg-white text-black rounded-2xl shadow p-6">
       <h1 className="text-xl font-semibold mb-6">
         Clubs overzicht
@@ -414,6 +419,7 @@ if (error) {
 </table>
 
 </div>
-    </div>
-  );
+        </div>
+  </div>
+);
 }

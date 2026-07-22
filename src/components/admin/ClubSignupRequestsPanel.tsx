@@ -276,14 +276,4 @@ async function confirmReject() {
 );
 }
 
-/* ===============================
-   Admin dashboard page
-   =============================== */
-
-export default function AdminPage() {
-  return (
-    <div className="space-y-8">
-      <ClubSignupRequestsPanel />
-    </div>
-  );
-}
+export default ClubSignupRequestsPanel;
