@@ -20,8 +20,6 @@ export default function AdminNavbar() {
      =============================== */
   const links = [
   { label: "Dashboard", path: "/admin/dashboard" },
-
-  { label: "Clubaanvragen", path: "/admin/club-aanvragen" },
   { label: "Profielen", path: "/admin/profiles" },
 
   { label: "Activatiegesprekken", path: "/admin/activatiegesprekken" },
@@ -67,7 +65,7 @@ export default function AdminNavbar() {
       <div className="max-w-6xl mx-auto flex items-center justify-between px-4 py-3">
         {/* 🔹 Logo + titel */}
         <button
-          onClick={() => navigate("/admin")}
+          onClick={() => navigate("/admin/dashboard")}
           className="flex items-center gap-3 cursor-pointer select-none"
         >
           <div
