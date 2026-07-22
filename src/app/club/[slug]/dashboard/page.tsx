@@ -85,6 +85,8 @@ export default function ClubDashboardPage() {
     const [reports, setReports] = useState<any[]>([]);
 
   const [adsCount, setAdsCount] = useState(0);
+  const [selectedExtraAds, setSelectedExtraAds] = useState(0);
+const [savingExtraAds, setSavingExtraAds] = useState(false);
   const [loading, setLoading] = useState(true);
   const [showAgreement, setShowAgreement] = useState(false);
 const [selectedPackage, setSelectedPackage] = useState<PackageKey | null>(null);
@@ -198,6 +200,7 @@ activation_enabled
       console.log("DASHBOARD CLUB ID:", clubData.id);
 
       setClub(clubData);
+      setSelectedExtraAds(clubData.extra_ads ?? 0);
 
       const { data: reportsData } = await supabase
   .from("monthly_reports")
@@ -445,8 +448,10 @@ if (club.deleted_at) {
     const extraAds = club.extra_ads ?? 0;
 
     const totalPrice =
-  subscription.pricePerMonth + extraAds * 25;
-const totalAdsAllowed = subscription.ads + extraAds;
+  subscription.pricePerMonth +
+  selectedExtraAds * 25;
+const totalAdsAllowed =
+  subscription.ads + selectedExtraAds;
 const canBuyMore = totalAdsAllowed < 10;
 
   const getStartDate = () => {
@@ -1277,67 +1282,113 @@ const canDowngrade =
 
   <div className="flex flex-col items-start gap-2">
 
-    <div className="flex items-center gap-4">
-      <Button
-  variant="outline"
-  onClick={() => updateExtraAds(extraAds - 1)}
-  disabled={extraAds <= 0}
->
-  −
-</Button>
+  <div className="flex items-center gap-4">
+    <Button
+      variant="outline"
+      onClick={() =>
+        setSelectedExtraAds((prev) =>
+          Math.max(prev - 1, 0)
+        )
+      }
+      disabled={selectedExtraAds <= 0}
+    >
+      −
+    </Button>
 
-      <div className="text-lg font-semibold">
-        {extraAds}
-      </div>
-
-      <Button
-  onClick={() => updateExtraAds(extraAds + 1)}
-  disabled={extraAds >= 10}
->
-  +
-</Button>
+    <div className="text-lg font-semibold">
+      {selectedExtraAds}
     </div>
 
-      <div className="text-sm text-gray-600">
-  {extraAds} × €25 = <strong>€{extraAds * 25}</strong> / maand
-</div>
-
-    <p className="text-xs text-gray-500 mt-2">
-  Wijzigingen gaan in per volgende factuurperiode
-</p>
-
+    <Button
+      onClick={() =>
+        setSelectedExtraAds((prev) =>
+          Math.min(prev + 1, 10)
+        )
+      }
+      disabled={selectedExtraAds >= 10}
+    >
+      +
+    </Button>
   </div>
 
-  {canCancel && (
-  <div className="mt-6 pt-6 border-t text-sm text-gray-500">
+  <div className="text-sm text-gray-600">
+    {selectedExtraAds} × €25 =
+    <strong> €{selectedExtraAds * 25}</strong> / maand
+  </div>
 
-    <button
+  <Button
+    className="mt-2"
+    disabled={
+      selectedExtraAds === extraAds ||
+      savingExtraAds
+    }
+    onClick={async () => {
+      const confirmed = await confirm({
+        title: "Abonnement aanpassen",
+        description: `Je past het aantal extra advertenties aan van ${extraAds} naar ${selectedExtraAds}.
+
+Nieuw maandbedrag:
+€${selectedExtraAds * 25}
+
+Deze wijziging wordt direct verwerkt in je abonnement.
+
+Na deze wijziging kun je het aantal weer aanpassen na 30 dagen.`,
+        confirmText: "Ja, aanpassen",
+        cancelText: "Annuleren",
+      });
+
+      if (!confirmed) return;
+
+      setSavingExtraAds(true);
+
+      await updateExtraAds(selectedExtraAds);
+
+      setSavingExtraAds(false);
+    }}
+  >
+    {savingExtraAds
+      ? "Bezig..."
+      : "Abonnement aanpassen"}
+  </Button>
+
+  <p className="text-xs text-gray-500">
+    Na bevestiging wordt je abonnement aangepast.
+    <br />
+    Een volgende wijziging is pas weer mogelijk na 30 dagen.
+  </p>
+
+</div>
+
+  </div>
+)}
+
+{canCancel && (
+  <div className="mt-6 pt-6 border-t">
+
+    <h3 className="font-semibold mb-2">
+      Abonnement beheren
+    </h3>
+
+    <p className="text-sm text-gray-600 mb-4">
+      Wil je je abonnement beëindigen? Je abonnement blijft actief tot het einde van de huidige factuurperiode. Tot die datum kun je alle functies blijven gebruiken.
+    </p>
+
+    <Button
+      variant="outline"
       onClick={cancelSubscription}
-      className="underline hover:text-red-600 transition"
+      className="border-red-300 text-red-600 hover:bg-red-50"
     >
       Abonnement opzeggen
-    </button>
+    </Button>
 
-    <p className="mt-1 text-xs text-gray-400">
-  Je abonnement is maandelijks opzegbaar
-</p>
-
-<p className="text-xs text-gray-400">
-  De huidige periode loopt tot{" "}
-  <strong>{formatDate(getEndDate())}</strong>
-</p>
-
-{canReactivate && (
-  <p className="text-xs text-orange-500 mt-1">
-    Opzegging gepland — stopt automatisch na deze periode
-  </p>
-)}
+    <p className="text-xs text-gray-400 mt-3">
+      De huidige abonnementsperiode loopt tot{" "}
+      <strong>{formatDate(getEndDate())}</strong>.
+    </p>
 
   </div>
 )}
 
-</div>
-)}
 
 {canReactivate && (
   <div className="mt-6 pt-6 border-t text-sm">

@@ -515,7 +515,7 @@ const startCheckout = async () => {
 
 </div>
 
-<div className="mt-10 text-center">
+<div className="mt-16 mb-28 text-center">
 
   <Button
   onClick={startCheckout}
