@@ -69,8 +69,8 @@ export async function POST(req: NextRequest) {
       .from("club_signup_requests")
       .insert({
   club_name: clubName,
+  contact_name: contactName,
   email: normalizedEmail,
-  message: contactName,
   phone: phone ?? null,
   selected_package: packageKey,
   status: "pending",

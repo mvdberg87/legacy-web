@@ -93,18 +93,18 @@ const totalPipelineValue =
 
       <div className="grid grid-cols-1 md:grid-cols-6 gap-4 mb-8">
 
-  <div className="rounded-xl bg-white p-5">
-    <div className="text-3xl font-bold">
-      {totalLeads}
-    </div>
+  <div className="rounded-xl bg-white p-5 min-h-[160px] flex flex-col justify-between">
+    <div className="text-2xl md:text-3xl text-[#0d1b2a]">
+  {totalLeads}
+</div>
 
     <div className="text-sm text-gray-500">
       Leads
     </div>
   </div>
 
-  <div className="rounded-xl bg-white p-5">
-    <div className="text-3xl font-bold text-orange-600">
+  <div className="rounded-xl bg-white p-5 min-h-[160px] flex flex-col justify-between">
+    <div className="text-2xl md:text-3xl text-orange-600">
       {pendingLeads}
     </div>
 
@@ -113,8 +113,8 @@ const totalPipelineValue =
     </div>
   </div>
 
-  <div className="rounded-xl bg-white p-5">
-    <div className="text-3xl font-bold text-green-600">
+  <div className="rounded-xl bg-white p-5 min-h-[160px] flex flex-col justify-between">
+    <div className="text-2xl md:text-3xl text-green-600">
       {paidLeads}
     </div>
 
@@ -123,8 +123,8 @@ const totalPipelineValue =
     </div>
   </div>
 
-  <div className="rounded-xl bg-white p-5">
-    <div className="text-3xl font-bold text-red-600">
+  <div className="rounded-xl bg-white p-5 min-h-[160px] flex flex-col justify-between">
+    <div className="text-2xl md:text-3xl text-red-600">
       {cancelledLeads}
     </div>
 
@@ -133,8 +133,8 @@ const totalPipelineValue =
     </div>
   </div>
 
-  <div className="rounded-xl bg-white p-5">
-    <div className="text-3xl font-bold text-blue-600">
+  <div className="rounded-xl bg-white p-5 min-h-[160px] flex flex-col justify-between">
+    <div className="text-2xl md:text-3xl text-blue-600">
       {conversion}%
     </div>
 
@@ -143,8 +143,8 @@ const totalPipelineValue =
     </div>
   </div>
 
-  <div className="rounded-xl bg-white p-5">
-  <div className="text-3xl font-bold text-[#1f9d55]">
+  <div className="rounded-xl bg-white p-5 min-h-[160px] flex flex-col justify-between">
+  <div className="text-2xl md:text-3xl text-[#1f9d55]">
     € {totalPipelineValue.toLocaleString("nl-NL")}
   </div>
 
@@ -231,7 +231,15 @@ const totalPipelineValue =
           : "bg-gray-100 text-gray-700"
       }`}
   >
-    {lead.status}
+    {
+  lead.status === "checkout_pending"
+    ? "Wacht op betaling"
+    : lead.status === "paid"
+    ? "Betaald"
+    : lead.status === "cancelled"
+    ? "Geannuleerd"
+    : lead.status
+}
   </span>
 </td>
 

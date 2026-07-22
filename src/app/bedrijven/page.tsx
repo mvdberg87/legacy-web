@@ -520,10 +520,10 @@ const startCheckout = async () => {
   <Button
   onClick={startCheckout}
   disabled={
-  loading ||
-  totalAdvertisements === 0
-}
-  className="px-10 py-4 rounded-2xl"
+    loading ||
+    totalAdvertisements === 0
+  }
+  className="mt-4 px-10 py-6 rounded-2xl bg-[#1f9d55] hover:bg-[#15803d] text-white text-lg font-semibold"
 >
   {loading
     ? "Bezig..."
