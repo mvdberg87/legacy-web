@@ -9,20 +9,21 @@ export default function Navbar() {
 
   return (
     <header className="fixed top-0 left-0 w-full z-50 bg-[#0d1b2a]/80 backdrop-blur-lg border-b border-white/10">
-      <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
+      <div className="max-w-7xl mx-auto px-6 py-2.5 md:py-3 flex items-center justify-between">
 
         {/* Logo */}
         <Link href="/">
           <Image
-            src="/logo/sponsorjobs-light.png"
-            alt="SponsorJobs"
-            width={160}
-            height={40}
-          />
+  src="/logo/sponsorjobs-light.png"
+  alt="SponsorJobs"
+  width={145}
+  height={36}
+  className="h-8 md:h-9 w-auto"
+/>
         </Link>
 
         {/* Desktop menu */}
-        <nav className="hidden md:flex items-center gap-8 text-lg font-semibold">
+        <nav className="hidden md:flex items-center gap-7 text-base font-semibold">
 
   <Link
     href="/verenigingen"
@@ -54,7 +55,7 @@ export default function Navbar() {
 
   <Link
     href="/signup/basic"
-    className="bg-[#1f9d55] text-white px-5 py-2 rounded-xl hover:bg-[#15803d] transition"
+    className="bg-[#1f9d55] text-white px-5 py-1.5 rounded-xl text-sm font-semibold hover:bg-[#15803d] transition"
   >
     START GRATIS
   </Link>
@@ -66,7 +67,7 @@ export default function Navbar() {
 
           <Link
             href="/signup/basic"
-            className="bg-[#1f9d55] text-white px-4 py-2 rounded-lg text-sm font-semibold"
+            className="bg-[#1f9d55] text-white px-3.5 py-1.5 rounded-lg text-sm font-semibold"
           >
             START
           </Link>
@@ -74,7 +75,7 @@ export default function Navbar() {
           {/* Hamburger */}
           <button
             onClick={() => setMenuOpen(!menuOpen)}
-            className="text-white text-2xl"
+            className="text-white text-xl"
           >
             ☰
           </button>
